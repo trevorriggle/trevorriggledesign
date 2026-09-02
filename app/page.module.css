@@ -1,0 +1,111 @@
+/* ============================================================================
+   HOME
+   ============================================================================
+   Composition, stated plainly:
+
+   · A masthead that is type and metadata only — no image slot, because there
+     is no image worth putting above a hiring team's first read, and a hero
+     image slot would be the largest placeholder on the site.
+   · Then the top of the running order, as index rows. The lead is AI systems
+     work because the running order says so, not because a date does.
+   · Then the full seven-section index, which is the structural claim.
+
+   What is deliberately not here: three feature columns, a CTA band, a
+   centred axis, and anything that fades up on scroll.
+   ========================================================================= */
+
+.masthead {
+  padding-top: clamp(var(--space-xl), 9vw, var(--space-3xl));
+  padding-bottom: var(--space-xl);
+}
+
+.mastheadGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-xl);
+  align-items: end;
+}
+
+.statement { grid-column: 1 / 10; }
+.vitals { grid-column: 10 / -1; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  padding-bottom: var(--space-sm);
+  margin-bottom: var(--space-md);
+  border-bottom: var(--rule);
+}
+
+/* The one place on the site set at hero scale. Fraunces with the wonk axis on,
+   negative tracking, and leading below 1 so the lines lock together as a
+   block of texture rather than reading as separate sentences. */
+.headline {
+  font-size: var(--text-4xl);
+  line-height: var(--leading-solid);
+  letter-spacing: var(--tracking-tighter);
+  text-wrap: balance;
+  max-width: 22ch;
+}
+
+.subhead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text-quiet);
+  margin-top: var(--space-md);
+  max-width: 44ch;
+  text-wrap: pretty;
+}
+
+/* --- Sections ------------------------------------------------------------ */
+
+.section {
+  border-top: var(--rule-heavy);
+  padding-top: var(--space-md);
+  margin-top: var(--section-gap);
+}
+
+.sectionHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.sectionTitle {
+  font-size: var(--text-2xl);
+  letter-spacing: var(--tracking-tighter);
+}
+
+.sectionNote {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+.more {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-bottom: 2px solid var(--color-signal);
+  padding-bottom: 2px;
+}
+
+.more:hover { color: var(--color-signal); }
+
+@media (max-width: 60rem) {
+  .statement,
+  .vitals { grid-column: 1 / -1; }
+  .mastheadGrid { row-gap: var(--space-lg); }
+}

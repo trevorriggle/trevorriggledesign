@@ -1,0 +1,119 @@
+/* A placeholder is a spec, drawn like one: a ruled plate carrying the four
+   facts needed to produce the asset. It is not an error state, so it does not
+   look like one — no icon, no dashed grey box, no "image not found". */
+
+.plate {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  width: 100%;
+  aspect-ratio: var(--plate-ratio, 3 / 2);
+  padding: var(--space-sm);
+  border: var(--rule);
+  background-color: var(--color-bg-sunk);
+  /* A very low-contrast 45° hatch. Reads as "reserved area" on a technical
+     drawing; at this contrast it never competes with real type. */
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-rule-faint) 0 1px,
+    transparent 1px 9px
+  );
+  color: var(--color-text-meta);
+  container-type: inline-size;
+}
+
+/* Corner ticks — registration marks, drawn with two pseudo-elements. */
+.plate::before,
+.plate::after {
+  content: "";
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border-color: var(--color-rule-strong);
+  border-style: solid;
+}
+.plate::before {
+  top: -1px;
+  left: -1px;
+  border-width: 1px 0 0 1px;
+}
+.plate::after {
+  right: -1px;
+  bottom: -1px;
+  border-width: 0 1px 1px 0;
+}
+
+.head,
+.foot {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: baseline;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.role {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  white-space: nowrap;
+}
+
+.ratio {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* The content label: what the picture has to show. The one line here that is
+   a sentence rather than metadata, so it gets the text face and real size. */
+.label {
+  font-family: var(--font-text);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-quiet);
+  text-wrap: pretty;
+  max-width: 46ch;
+  margin-block: auto 0;
+}
+
+.foot {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.file {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  /* The filename is the actionable half of the footer — hold full contrast. */
+  color: var(--color-text-meta);
+}
+
+.dims {
+  white-space: nowrap;
+}
+
+/* Small plates: drop the label and footer, keep the ratio stamp. A 1:1 tile in
+   a four-up gallery grid has no room for a paragraph. */
+@container (max-width: 240px) {
+  .label,
+  .dims {
+    display: none;
+  }
+}
+
+@container (max-width: 150px) {
+  .foot {
+    display: none;
+  }
+}

@@ -1,0 +1,65 @@
+/* ============================================================================
+   SECTION INDEX
+   ============================================================================
+   The seven sections as a table of contents, in mono, with ordinals. It is the
+   site's structure stated outright — and the structure is the argument, so it
+   is given a page position rather than being buried in a nav menu.
+   ========================================================================= */
+
+.index {
+  border-top: var(--rule);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row { border-bottom: var(--rule-faint); }
+
+.link {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr) 6rem 4.5rem;
+  column-gap: var(--space-md);
+  align-items: baseline;
+  padding-block: var(--space-xs);
+  text-decoration: none;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.link:hover { background-color: var(--color-bg-sunk); }
+.link:hover .title { color: var(--color-signal); }
+
+.ordinal {
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps-wide);
+  color: var(--color-text-faint);
+}
+
+.title {
+  color: var(--color-text);
+  transition: color var(--duration-fast) var(--ease-out);
+  min-width: 0;
+}
+
+.years { color: var(--color-text-meta); }
+
+.count {
+  text-align: right;
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+}
+
+/* An empty section is dimmed rather than hidden — the running order is the
+   point, and a gap in it is information. */
+.vacant .title { color: var(--color-text-faint); }
+
+@media (max-width: 40rem) {
+  .link {
+    grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+    font-size: var(--text-xs);
+  }
+  .count { display: none; }
+}

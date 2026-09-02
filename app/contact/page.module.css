@@ -1,0 +1,58 @@
+.wrap {
+  padding-top: clamp(var(--space-lg), 6vw, var(--space-2xl));
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-xl);
+  align-items: start;
+}
+
+.main { grid-column: 1 / 9; }
+.rail { grid-column: 10 / -1; }
+
+.title {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tighter);
+  margin-bottom: var(--space-md);
+}
+
+.lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text-quiet);
+  max-width: 44ch;
+  text-wrap: pretty;
+}
+
+/* The address, set at display scale. On a contact page the address is the
+   content, so it gets the largest type on the page rather than being a link
+   in a paragraph. */
+.address {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-variation-settings: var(--soft-display), var(--wonk-on);
+  font-size: var(--text-2xl);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-md);
+  border-top: var(--rule-heavy);
+  overflow-wrap: break-word;
+}
+
+.todo {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-faint);
+  border: var(--rule);
+  border-left: 2px solid var(--color-signal);
+  padding: var(--space-sm);
+  margin-top: var(--space-xl);
+}
+
+@media (max-width: 60rem) {
+  .main, .rail { grid-column: 1 / -1; }
+}

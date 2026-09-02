@@ -1,0 +1,61 @@
+/* Prev/next through the running order. Walks across section boundaries,
+   because the running order is one continuous sequence, not seven silos. */
+
+.pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: var(--rule-heavy);
+  margin-top: var(--section-gap);
+}
+
+.link {
+  display: block;
+  padding: var(--space-md) 0;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.next {
+  text-align: right;
+  border-left: var(--rule);
+  padding-left: var(--space-md);
+}
+
+.prev { padding-right: var(--space-md); }
+
+.link:hover { background-color: var(--color-bg-sunk); }
+.link:hover .title { color: var(--color-signal); }
+
+.dir {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  display: block;
+  margin-bottom: var(--space-2xs);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-variation-settings: var(--soft-display), var(--wonk-on);
+  font-size: var(--text-lg);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  transition: color var(--duration-fast) var(--ease-out);
+  display: block;
+}
+
+.section {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+  display: block;
+  margin-top: var(--space-3xs);
+}
+
+/* An empty half keeps its column so the divider stays on the grid. */
+.spacer { min-height: 1px; }

@@ -1,0 +1,91 @@
+/* ============================================================================
+   PROSE
+   ============================================================================
+   Long-form body copy for an MDX entry. Narrow measure, generous leading,
+   hairline-separated subheads. Type sizes come from tokens; nothing here is a
+   raw value.
+   ========================================================================= */
+
+.prose {
+  font-size: var(--text-md);
+  line-height: var(--leading-loose);
+  color: var(--color-text-quiet);
+  max-width: var(--measure);
+}
+
+.prose > * + * { margin-top: var(--space-md); }
+
+.prose p { text-wrap: pretty; }
+
+/* Subheads inside a body drop out of the display face — the page already has
+   a display h1 and section labels, and a third voice makes it a ransom note. */
+.prose :is(h2, h3, h4) {
+  font-family: var(--font-text);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-xs);
+  border-top: var(--rule-faint);
+}
+
+.prose :is(ul, ol) {
+  padding-left: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.prose li::marker { color: var(--color-text-faint); }
+
+.prose strong { color: var(--color-text); font-weight: var(--weight-semibold); }
+
+/* Inline code and blocks: mono, ruled, never a rounded grey pill. */
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--color-bg-sunk);
+  border: var(--rule-faint);
+  padding: 0.1em 0.3em;
+  overflow-wrap: break-word;
+}
+
+.prose pre {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+  border-left: 2px solid var(--color-text);
+  padding: var(--space-sm);
+  overflow-x: auto;
+  /* A wide code block scrolls inside itself; the page never scrolls sideways. */
+  max-width: 100%;
+}
+
+.prose pre code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose blockquote {
+  border-left: 2px solid var(--color-signal);
+  padding-left: var(--space-sm);
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  max-width: 44ch;
+}
+
+/* A figure inside prose is allowed out of the measure. */
+.prose figure { max-width: none; margin-block: var(--space-xl); }
+
+.prose hr {
+  border: 0;
+  border-top: var(--rule);
+  margin-block: var(--space-xl);
+}

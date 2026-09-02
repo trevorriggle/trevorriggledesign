@@ -1,0 +1,47 @@
+/* Structural blocks available inside an MDX body. */
+
+/* A digression that should not interrupt the main line of argument. */
+.aside {
+  border-left: var(--rule-strong);
+  padding-left: var(--space-sm);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+  max-width: 44ch;
+}
+
+.aside > * + * { margin-top: var(--space-xs); }
+
+/* Two things side by side — rejected vs shipped, before vs after. */
+.compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 0;
+  border: var(--rule);
+  max-width: none;
+}
+
+.column {
+  padding: var(--space-sm);
+  border-right: var(--rule);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+}
+
+.column:last-child { border-right: 0; }
+
+.column > * + * { margin-top: var(--space-xs); }
+
+.columnLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-2xs);
+}
+
+@media (max-width: 40rem) {
+  .column { border-right: 0; border-bottom: var(--rule); }
+  .column:last-child { border-bottom: 0; }
+}

@@ -1,0 +1,69 @@
+---
+# SEEDED STUB. Structure only — every prose field is a literal TODO.
+title: "Parallel Claude Code agents across git worktrees"
+deck: TODO
+section: ai-systems
+year: 2025 # CONFIRM — see DECISIONS.md
+role: [TODO]
+context: self-initiated
+
+constraint: TODO
+attempts:
+  - tried: TODO
+    failed: TODO
+tradeoff:
+  chose: TODO
+  instead_of: TODO
+  cost: TODO
+outcome:
+  what: TODO
+revisit: TODO
+
+architecture:
+  caption: TODO
+  stages:
+    - id: repo
+      label: TODO
+      kind: store
+      detail: TODO
+    - id: worktrees
+      label: Git worktrees — one per agent
+      kind: service
+      detail: TODO
+    - id: agents
+      label: Parallel Claude Code agents
+      kind: model
+      detail: TODO
+    - id: merge
+      label: TODO
+      kind: job
+      detail: TODO
+  flow:
+    - repo -> worktrees -> agents -> merge
+
+# Parallel agents conflict, duplicate work, and occasionally each undo the
+# other. What the workflow does about that is the interesting part.
+failureModes:
+  - when: TODO
+    then: TODO
+    surfaced: TODO
+
+cover:
+  src: 01-cover.png
+  alt: TODO
+  aspect: "3:2"
+  minWidth: 2400
+  label: TODO — what must this image show?
+images:
+  - src: 02-detail.png
+    alt: TODO
+    aspect: "16:9"
+    minWidth: 2000
+    label: TODO — what must this image show?
+
+links: []
+stack: [Claude Code, Git, TODO]
+status: draft
+---
+
+TODO

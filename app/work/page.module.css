@@ -1,0 +1,93 @@
+.head {
+  padding-top: clamp(var(--space-lg), 6vw, var(--space-2xl));
+  padding-bottom: var(--space-lg);
+}
+
+.headGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-lg);
+  align-items: end;
+}
+
+.headMain { grid-column: 1 / 9; }
+.headRail { grid-column: 10 / -1; }
+
+.title {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tighter);
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-quiet);
+  max-width: 46ch;
+  margin-top: var(--space-md);
+  text-wrap: pretty;
+}
+
+.section {
+  border-top: var(--rule-heavy);
+  padding-top: var(--space-md);
+  margin-top: var(--section-gap);
+  scroll-margin-top: var(--space-2xl);
+}
+
+.gallerySection { margin-top: var(--section-gap); }
+
+.setHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2xs) var(--space-md);
+  border-top: var(--rule);
+  padding-top: var(--space-xs);
+  margin-bottom: var(--space-sm);
+}
+
+/* The h3 is a structural wrapper only; the type treatment is on the link. */
+.setHead h3 {
+  font-size: inherit;
+  letter-spacing: inherit;
+  margin: 0;
+}
+
+.setTitle {
+  font-family: var(--font-display);
+  font-variation-settings: var(--soft-display), var(--wonk-on);
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  text-decoration: none;
+}
+
+.setTitle:hover { color: var(--color-signal); }
+
+.setMeta {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+.setCaption {
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-quiet);
+  max-width: 52ch;
+  margin-bottom: var(--space-md);
+  text-wrap: pretty;
+}
+
+.setBlock + .setBlock { margin-top: var(--space-2xl); }
+
+@media (max-width: 60rem) {
+  .headMain,
+  .headRail { grid-column: 1 / -1; }
+}

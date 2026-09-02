@@ -1,0 +1,65 @@
+/* Minimal reset. Opinionated only where it prevents bugs. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Nothing on this page is anchored mid-scroll without a rail above it. */
+  scroll-padding-top: var(--space-2xl);
+}
+
+body, h1, h2, h3, h4, h5, h6,
+p, figure, blockquote, dl, dd, ol, ul, fieldset {
+  margin: 0;
+}
+
+ul[role="list"], ol[role="list"] {
+  list-style: none;
+  padding: 0;
+}
+
+body {
+  min-height: 100svh;
+  /* Prevent iOS Safari from inflating the display face in landscape. */
+  text-rendering: optimizeLegibility;
+}
+
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* Long words, URLs and slugs must not blow out a narrow column. */
+p, li, dd, h1, h2, h3, h4 { overflow-wrap: break-word; }
+
+hr {
+  border: 0;
+  border-top: var(--rule);
+  margin: 0;
+}
+
+/* A real, visible focus ring on every interactive element, including the ones
+   that are otherwise unstyled. Two-tone so it survives on both paper and ink. */
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

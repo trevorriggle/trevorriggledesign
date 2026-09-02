@@ -1,0 +1,62 @@
+.nav {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-nav);
+  /* Opaque paper, one hairline. No blur, no translucency, no shadow. */
+  background: var(--color-bg);
+  border-bottom: var(--rule);
+}
+
+.inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding-block: var(--space-xs);
+}
+
+/* The wordmark is set in mono, not the display face: at nav size the display
+   face is a logo, and a logo would be the loudest thing on a type-led site. */
+.mark {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.mark:hover { color: var(--color-signal); }
+
+.links {
+  display: flex;
+  gap: var(--space-md);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.link {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  text-decoration: none;
+  padding-block: var(--space-3xs);
+}
+
+.link:hover { color: var(--color-signal); }
+
+/* Current page: the signal colour earns its keep as a state, not a decoration.
+   Marked with a rule as well as colour so it is not colour-only information. */
+.current {
+  color: var(--color-text);
+  box-shadow: inset 0 -2px 0 0 var(--color-signal);
+}
+
+@media (max-width: 30rem) {
+  .links { gap: var(--space-sm); }
+  .inner { padding-block: var(--space-2xs); }
+}

@@ -1,0 +1,179 @@
+/* ============================================================================
+   THE ARGUMENT
+   ============================================================================
+   A case study is presented as five numbered movements: constraint, attempts,
+   tradeoff, outcome, revisit. The numbering is the point — it reads as a line
+   of reasoning rather than a set of headings, and each movement is short
+   because the schema caps it.
+   ========================================================================= */
+
+.argument {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hanging ordinal in the left margin, body indented past it. The indent is the
+   most visible expression of the grid in the reading column. */
+.movement {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  column-gap: var(--space-md);
+  border-top: var(--rule);
+  padding-block: var(--space-md);
+}
+
+.ordinal {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps-wide);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.35em;
+}
+
+.body { min-width: 0; }
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-xs);
+}
+
+/* The claim itself, set large in the text face. Not display: these are
+   sentences, and Fraunces at paragraph length is a costume. */
+.claim {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-text);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.prose {
+  font-size: var(--text-md);
+  line-height: var(--leading-loose);
+  color: var(--color-text-quiet);
+  max-width: var(--measure);
+  text-wrap: pretty;
+}
+
+/* --- Attempts: each dead end paired with why it died -------------------- */
+
+.attempts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  counter-reset: attempt;
+}
+
+.attempt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3xs);
+  border-left: var(--rule-strong);
+  padding-left: var(--space-sm);
+}
+
+.tried {
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  text-wrap: pretty;
+}
+
+.failed {
+  display: flex;
+  gap: var(--space-2xs);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-quiet);
+  text-wrap: pretty;
+}
+
+/* "failed:" tag. Mono, faint — a data label on a sentence. */
+.failedTag {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  padding-top: 0.25em;
+}
+
+/* --- Tradeoff: three parts, and the cost is not allowed to hide --------- */
+
+.tradeoff {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0;
+  border: var(--rule);
+}
+
+.leg {
+  padding: var(--space-sm);
+  border-right: var(--rule);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  text-wrap: pretty;
+}
+
+.leg:last-child { border-right: 0; }
+
+.legTerm {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  margin-bottom: var(--space-2xs);
+}
+
+/* The cost leg carries the signal colour on its label and a tinted ground.
+   This is the accent's whole job on a case study page: it points at the part
+   most portfolios delete. */
+.costLeg {
+  background: var(--color-signal-quiet);
+}
+
+.costLeg .legTerm { color: var(--color-signal); }
+
+/* --- Outcome evidence --------------------------------------------------- */
+
+.evidence {
+  display: flex;
+  gap: var(--space-2xs);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-xs);
+  border-top: var(--rule-faint);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-quiet);
+}
+
+.evidenceTag {
+  flex: none;
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  padding-top: 0.25em;
+}
+
+@media (max-width: 40rem) {
+  .movement {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: var(--space-2xs);
+  }
+  .ordinal { padding-top: 0; }
+  .leg { border-right: 0; border-bottom: var(--rule); }
+  .leg:last-child { border-bottom: 0; }
+}

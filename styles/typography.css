@@ -1,0 +1,139 @@
+/* ============================================================================
+   GLOBAL TYPE
+   ============================================================================
+   Role assignment, stated once:
+
+     display  Fraunces        page titles, section titles, pull statements
+     text     IBM Plex Sans   body, UI, links
+     mono     IBM Plex Mono   all metadata, ordinals, labels, diagrams
+
+   The rule that keeps it honest: mono means "this is data about the work,"
+   never "this looks technical." If a string is a label, a year, a filename, a
+   provider name or a measurement, it is mono. If it is a sentence, it is not.
+   ========================================================================= */
+
+body {
+  font-family: var(--font-text);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: var(--weight-regular);
+  color: var(--color-text);
+  background: var(--color-bg);
+  font-synthesis-weight: none;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---- Display ------------------------------------------------------------- */
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: var(--soft-display), var(--wonk-on);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--text-3xl);
+  letter-spacing: var(--tracking-tighter);
+  line-height: var(--leading-solid);
+}
+h2 { font-size: var(--text-2xl); }
+h3 { font-size: var(--text-xl); letter-spacing: var(--tracking-snug); }
+
+/* h4+ drop out of display and into the text face — at that size Fraunces'
+   personality reads as noise rather than voice. */
+h4, h5, h6 {
+  font-family: var(--font-text);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-snug);
+  margin: 0;
+}
+
+p { text-wrap: pretty; }
+
+/* ---- Links --------------------------------------------------------------
+   Underline stays on. The signal colour is reserved for hover and for the
+   external-link mark, so a page of links is not a page of orange.          */
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--hairline);
+  text-decoration-color: var(--color-rule-strong);
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+a:hover {
+  color: var(--color-signal);
+  text-decoration-color: currentColor;
+}
+
+/* ---- Mono utilities ------------------------------------------------------ */
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-normal);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Uppercase mono label. The workhorse of the metadata rail. */
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Section ordinal — 01 … 07. Tabular so the column never shifts. */
+.ordinal {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps-wide);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- A11y ---------------------------------------------------------------- */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip link: hidden until focused, then a real, visible target. */
+.skip-link:focus-visible {
+  position: fixed;
+  inset: var(--space-sm) auto auto var(--space-sm);
+  z-index: var(--z-nav);
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: var(--space-2xs) var(--space-sm);
+  clip-path: none;
+  background: var(--color-text);
+  color: var(--color-bg);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  text-decoration: none;
+}

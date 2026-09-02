@@ -1,0 +1,30 @@
+/* External links get a mark. The old site's "Live demo" links were relative
+   paths that 404'd on its own domain; the schema now rejects those at build
+   time, and this component makes the destination visibly external so a dead
+   one is obvious rather than mysterious. */
+
+.link {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+}
+
+.mark {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  color: var(--color-signal);
+  /* Nudge the arrow onto the cap line. */
+  transform: translateY(-0.08em);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.link:hover .mark {
+  transform: translate(0.12em, -0.2em);
+}
+
+.host {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--color-text-faint);
+}

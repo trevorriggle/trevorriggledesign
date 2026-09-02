@@ -1,0 +1,91 @@
+---
+# SEEDED STUB. Structure only — every prose field is a literal TODO.
+#
+# context: shelved — the page renders a "Shelved — capability artifact" mark.
+# Framing shelved work as upcoming is the thing a technical reader always
+# catches; framing it as a capability artifact is both honest and stronger.
+title: "Lynk: multi-provider LLM routing with hierarchical compression"
+deck: TODO
+section: ai-systems
+year: 2025 # CONFIRM — see DECISIONS.md
+role: [TODO]
+context: shelved
+
+constraint: TODO
+attempts:
+  - tried: TODO
+    failed: TODO
+tradeoff:
+  chose: TODO
+  instead_of: TODO
+  cost: TODO
+# For shelved work the outcome is what it demonstrates and why it stopped —
+# both of which are legitimate outcomes, and both defensible in an interview.
+outcome:
+  what: TODO
+revisit: TODO
+
+architecture:
+  caption: TODO
+  stages:
+    - id: client
+      label: TODO
+      kind: client
+      detail: TODO
+    - id: router
+      label: Multi-provider router
+      kind: service
+      detail: TODO
+    - id: compress
+      label: Hierarchical compression
+      kind: job
+      detail: TODO
+    - id: providers
+      label: TODO
+      kind: model
+      detail: TODO
+  flow:
+    - client -> router -> compress -> providers
+  diagram:
+    src: 00-architecture.png
+    alt: TODO
+    aspect: "16:9"
+    minWidth: 2000
+    label: TODO — what must this image show?
+
+# The routing table. One row per provider you actually routed to.
+# models:
+#   - role: TODO
+#     provider: TODO
+#     model: TODO
+#     why: TODO
+
+budget:
+  metric: cost
+  target: TODO
+  method: TODO
+
+failureModes:
+  - when: TODO
+    then: TODO
+    surfaced: TODO
+
+cover:
+  src: 01-cover.png
+  alt: TODO
+  aspect: "3:2"
+  minWidth: 2400
+  label: TODO — what must this image show?
+images:
+  - src: 02-detail.png
+    alt: TODO
+    aspect: "16:9"
+    minWidth: 2000
+    label: TODO — what must this image show?
+
+links: []
+stack: [TODO]
+status: draft
+---
+
+TODO

@@ -1,0 +1,82 @@
+/* ============================================================================
+   THE GRID
+   ============================================================================
+   One 12-column grid, declared here, used asymmetrically everywhere. Content
+   runs 1-8; the metadata rail runs 9-12. It is meant to be visible: the rail
+   boundary is a hairline that runs the height of the page body, and section
+   heads hang their ordinals in the left margin.
+
+   Composition rule: text never occupies the full 12 columns, and nothing is
+   centered. A full-width measure and a centered measure are the two fastest
+   ways for a layout to look untouched.
+   ========================================================================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--block-gap);
+  align-items: start;
+}
+
+/* --- Column spans -------------------------------------------------------- */
+
+.main { grid-column: 1 / 9; }
+.rail { grid-column: 10 / -1; }
+.wide { grid-column: 1 / -1; }
+.narrow { grid-column: 1 / 7; }
+.offset { grid-column: 3 / 11; }
+
+/* The visible rail rule. Drawn on the rail column, not the container, so it
+   starts where the metadata starts rather than at an arbitrary page edge. */
+.railRuled {
+  border-left: var(--rule);
+  padding-left: var(--grid-gap);
+  /* Pull the rule up to meet the section rule above it. */
+  margin-top: calc(var(--space-3xs) * -1);
+}
+
+/* --- Section rhythm ------------------------------------------------------ */
+
+/* A major movement. The heavy top rule is the loudest structural mark on the
+   site and is reserved for section boundaries only. */
+.section {
+  border-top: var(--rule-heavy);
+  padding-top: var(--space-md);
+  margin-top: var(--section-gap);
+  scroll-margin-top: var(--space-lg);
+}
+
+.section:first-of-type { margin-top: var(--space-xl); }
+
+/* A minor division inside a section. */
+.band {
+  border-top: var(--rule);
+  padding-top: var(--space-md);
+  margin-top: var(--block-gap);
+}
+
+/* --- Phone: the grid collapses, the hierarchy does not ------------------- */
+
+@media (max-width: 60rem) {
+  .main,
+  .rail,
+  .narrow,
+  .offset,
+  .wide {
+    grid-column: 1 / -1;
+  }
+
+  /* The rail becomes a ruled block under the content rather than beside it. */
+  .railRuled {
+    border-left: 0;
+    border-top: var(--rule);
+    padding-left: 0;
+    padding-top: var(--space-md);
+    margin-top: var(--space-sm);
+  }
+
+  .grid {
+    row-gap: var(--space-lg);
+  }
+}

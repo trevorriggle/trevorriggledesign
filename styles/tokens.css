@@ -1,0 +1,175 @@
+/* ============================================================================
+   TOKENS — the one file.
+   ============================================================================
+   Every visual decision resolves to a custom property declared here. Component
+   .module.css files reference tokens only: no raw hex, no raw px type size, no
+   font stack. Retheming the site is editing this file and nothing else.
+
+   The palette is literally one ink, one paper, one signal. Everything that
+   looks like a third or fourth grey is `color-mix()` of ink into paper, so the
+   greys can never drift out of tune with each other — there is only one hue in
+   the system to get wrong.
+
+   1 Color  2 Type  3 Space  4 Grid  5 Line  6 Motion  7 Z
+   ========================================================================= */
+
+:root {
+  color-scheme: light;
+
+  /* ---- 1. COLOR --------------------------------------------------------- */
+
+  /* The three. */
+  --paper: #f4f1e9;   /* warm bone — not white, not grey-blue          */
+  --ink: #15140f;     /* warm near-black — reads black, prints warm    */
+  --signal: #bf3b11;  /* vermilion — earned; see DECISIONS.md          */
+
+  /* Derived neutrals. Percentages are ink-into-paper. */
+  --ink-92: color-mix(in oklab, var(--ink) 92%, var(--paper));
+  --ink-72: color-mix(in oklab, var(--ink) 72%, var(--paper));
+  --ink-56: color-mix(in oklab, var(--ink) 56%, var(--paper));
+  --ink-40: color-mix(in oklab, var(--ink) 40%, var(--paper));
+  --ink-22: color-mix(in oklab, var(--ink) 22%, var(--paper));
+  --ink-12: color-mix(in oklab, var(--ink) 12%, var(--paper));
+  --ink-06: color-mix(in oklab, var(--ink) 6%, var(--paper));
+
+  /* Semantic. Recolor by repointing these, never by editing the three. */
+  --color-bg: var(--paper);
+  --color-bg-sunk: var(--ink-06);
+  --color-text: var(--ink);
+  --color-text-quiet: var(--ink-72);
+  --color-text-meta: var(--ink-56);
+  --color-text-faint: var(--ink-40);
+  --color-rule: var(--ink-22);
+  --color-rule-faint: var(--ink-12);
+  --color-rule-strong: var(--ink-40);
+  --color-signal: var(--signal);
+  --color-signal-quiet: color-mix(in oklab, var(--signal) 14%, var(--paper));
+  --color-focus: var(--signal);
+
+  /* ---- 2. TYPE ----------------------------------------------------------
+     Two families. Fraunces carries display; IBM Plex carries everything else
+     in two cuts of one superfamily (Sans for text, Mono for metadata), which
+     is why the mono does not spend the second family slot. Wired in
+     app/fonts.ts; the stacks below are the fallbacks.                       */
+
+  --font-display: var(--font-fraunces), "Iowan Old Style", Palatino, Georgia,
+    serif;
+  --font-text: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Helvetica, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, "SF Mono",
+    Menlo, monospace;
+
+  /* Fraunces variable axes, driven per-role rather than globally. */
+  --wonk-on: "WONK" 1;
+  --wonk-off: "WONK" 0;
+  --soft-display: "SOFT" 0;
+
+  /* Scale. Fluid only where the size is large enough for it to matter. */
+  --text-3xs: 0.625rem;    /* 10px — rail ordinals, index numbers  */
+  --text-2xs: 0.6875rem;   /* 11px — mono labels, eyebrows         */
+  --text-xs: 0.75rem;      /* 12px — chips, captions, placeholders */
+  --text-sm: 0.8125rem;    /* 13px — dense mono metadata           */
+  --text-base: 0.9375rem;  /* 15px — UI baseline                   */
+  --text-md: 1.0625rem;    /* 17px — long-form body                */
+  --text-lg: 1.25rem;      /* 20px — deck / lead                   */
+  --text-xl: 1.5rem;       /* 24px — h3                            */
+  --text-2xl: clamp(1.75rem, 1.35rem + 1.7vw, 2.5rem);   /* h2       */
+  --text-3xl: clamp(2.25rem, 1.5rem + 3.2vw, 3.75rem);   /* h1       */
+  --text-4xl: clamp(2.75rem, 1.1rem + 6.6vw, 6.5rem);    /* hero     */
+
+  --leading-solid: 0.92;   /* stacked display lines                */
+  --leading-tight: 1.04;
+  --leading-snug: 1.22;
+  --leading-normal: 1.45;
+  --leading-loose: 1.62;   /* long-form reading                    */
+
+  --tracking-tighter: -0.028em;
+  --tracking-tight: -0.018em;
+  --tracking-snug: -0.008em;
+  --tracking-normal: 0;
+  --tracking-caps: 0.09em;  /* uppercase mono labels               */
+  --tracking-caps-wide: 0.14em;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-display: 500;
+
+  /* ---- 3. SPACE ---------------------------------------------------------
+     4px base. Deliberately jumps at the top end: the site is dense up close
+     and generous between movements, and a smooth ramp blurs that contrast.  */
+
+  --space-3xs: 0.25rem;   /*   4px */
+  --space-2xs: 0.375rem;  /*   6px */
+  --space-xs: 0.625rem;   /*  10px */
+  --space-sm: 1rem;       /*  16px */
+  --space-md: 1.5rem;     /*  24px */
+  --space-lg: 2.25rem;    /*  36px */
+  --space-xl: 3.5rem;     /*  56px */
+  --space-2xl: 5.5rem;    /*  88px */
+  --space-3xl: 8.5rem;    /* 136px */
+  --space-4xl: 13rem;     /* 208px */
+
+  --section-gap: clamp(var(--space-2xl), 9vw, var(--space-4xl));
+  --block-gap: clamp(var(--space-lg), 4vw, var(--space-2xl));
+
+  /* ---- 4. GRID ----------------------------------------------------------
+     One 12-column grid, declared once, used asymmetrically. Content sits in
+     columns 1-8 by default; the metadata rail takes 9-12. Nothing is
+     centered — see DECISIONS.md.                                            */
+
+  --grid-cols: 12;
+  --grid-gap: clamp(var(--space-sm), 2.2vw, var(--space-lg));
+  --gutter: clamp(var(--space-sm), 5vw, var(--space-2xl));
+
+  --width-page: 84rem;    /* 1344px — outer bound                  */
+  --width-prose: 38rem;   /*  608px — reading measure              */
+  --measure: 66ch;
+
+  /* Rail width: the mono metadata column, and the left indent everything
+     else hangs off of. */
+  --rail: 12.5rem;
+
+  /* ---- 5. LINE ----------------------------------------------------------
+     Hairlines are structural here, not decorative. Radius is near-zero on
+     purpose: nothing on this site is a floating rounded card.              */
+
+  --radius-none: 0;
+  --radius-sm: 1px;
+  --radius-md: 2px;
+
+  --hairline: 1px;
+  --rule: var(--hairline) solid var(--color-rule);
+  --rule-faint: var(--hairline) solid var(--color-rule-faint);
+  --rule-strong: var(--hairline) solid var(--color-rule-strong);
+  --rule-heavy: 2px solid var(--color-text);
+
+  /* ---- 6. MOTION --------------------------------------------------------
+     Short and few. There is no scroll-triggered animation on this site.    */
+
+  --duration-fast: 110ms;
+  --duration-base: 180ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ---- 7. Z ------------------------------------------------------------- */
+
+  --z-base: 0;
+  --z-rail: 5;
+  --z-nav: 100;
+}
+
+/* Dark. The three invert; every derived neutral follows for free because it
+   is a mix of the same two variables. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --paper: #121110;
+    --ink: #edeae0;
+    --signal: #ff6a3c;
+
+    --color-bg: var(--paper);
+    --color-text: var(--ink);
+    --color-signal-quiet: color-mix(in oklab, var(--signal) 20%, var(--paper));
+  }
+}

@@ -1,0 +1,18 @@
+.container {
+  width: 100%;
+  margin-inline: 0;              /* not centered — see DECISIONS.md */
+  padding-inline: var(--gutter);
+  max-width: var(--width-page);
+}
+
+/* On very wide viewports the page stops growing but stays left-weighted, with
+   the slack falling to the right where the metadata rail already lives. */
+@media (min-width: 100rem) {
+  .container {
+    margin-inline: 0 auto;
+  }
+}
+
+.page { max-width: var(--width-page); }
+.prose { max-width: calc(var(--width-prose) + var(--gutter) * 2); }
+.full { max-width: none; }

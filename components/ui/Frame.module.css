@@ -1,0 +1,39 @@
+/* The wrapper both a real image and a placeholder sit inside, so swapping a
+   file in changes the picture and nothing about the layout. */
+
+.frame {
+  position: relative;
+  width: 100%;
+  margin: 0;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  /* Mixed aspect ratios are preserved. Nothing here is cropped to a uniform
+     tile — see DECISIONS.md on the gallery grid. */
+  background-color: var(--color-bg-sunk);
+}
+
+.caption {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  padding-top: var(--space-xs);
+  border-top: var(--rule-faint);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  color: var(--color-text-meta);
+  text-wrap: pretty;
+}
+
+/* Hanging mono ordinal, so a run of figures reads as a numbered plate series. */
+.captionOrdinal {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.15em;
+}
