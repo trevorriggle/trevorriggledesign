@@ -66,12 +66,6 @@ export default async function CaseStudyPage({
           <span className={styles.crumbOrdinal}>
             {String(position).padStart(2, "0")}
           </span>
-          {entry.year && (
-            <>
-              <span aria-hidden="true">/</span>
-              <span>{entry.year}</span>
-            </>
-          )}
         </p>
 
         <div className={styles.headGrid}>
@@ -94,9 +88,7 @@ export default async function CaseStudyPage({
 
           <div className={`${styles.headRail} ${grid.railRuled}`}>
             <MetaRail>
-              <Meta term="Year" value={entry.year} />
               <Meta term="Role" value={entry.role.join(", ")} />
-              <Meta term="Timeline" value={entry.timeline} />
               <Meta term="Context" value={entry.context} />
               <MetaChips term="Stack" items={entry.stack} />
               <MetaLinks term="Links" links={entry.links} />

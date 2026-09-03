@@ -48,13 +48,5 @@
   display: block;
 }
 
-.section {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  color: var(--color-text-faint);
-  display: block;
-  margin-top: var(--space-3xs);
-}
-
 /* An empty half keeps its column so the divider stays on the grid. */
 .spacer { min-height: 1px; }

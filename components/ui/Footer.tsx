@@ -32,8 +32,6 @@ export function Footer() {
             <p className={styles.metaLine}>
               {site.domain}
               <br />
-              © {new Date().getFullYear()}
-              <br />
               Set in Bricolage Grotesque &amp; DM Sans
             </p>
           </div>

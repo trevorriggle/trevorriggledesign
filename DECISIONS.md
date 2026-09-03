@@ -113,17 +113,71 @@ case study bodies are no longer byte-identical to it.
 
 ---
 
+## No dates, anywhere
+
+Every date the site displayed is gone, and the fields that carried them were
+removed from the models so no template can render one by accident:
+
+| Was | Now |
+| --- | --- |
+| `year` and `timeline` on a case study | removed from `CaseStudy`, not read from frontmatter, deleted from the three `.mdx` files |
+| `years` on a design category | removed from `DesignCategory` |
+| "Year" and "Timeline" rows in the case study rail | gone |
+| The year in the breadcrumb, the home rows and the pager | gone |
+| The year on `/design` rows and the category breadcrumb | gone |
+| `© {new Date().getFullYear()}` in the footer | gone |
+| "Manual running order, not date-sorted" | now "Manual running order" |
+| "Shipped to TestFlight in May 2026." | "Shipped to TestFlight." |
+| "Launched August 2026." | "Launched." |
+
+The last two are edits to authored prose, made because the instruction was
+"entirely". Verified: **no four-digit year, no month name and no date label
+appears in the built HTML of any page.**
+
+Durations survive, because they are not dates and they carry real weight:
+"I spent four years making catalogs", "I learned it in about two weeks",
+"the only way one person covers that much surface area in six months".
+
+The design categories were the reason to do this. Five sections stamped 2021,
+2021, 2021, 2022 and 2025 told a reader the design work was old before they had
+looked at any of it, which is the opposite of what an archive is for.
+
+---
+
+## The masthead
+
+Three things sit on one axis at the left edge: the accent bar, the headline and
+the subhead. Measured in the browser at 1440px they land at 79 / 73 / 79px, the
+headline three pixels proud because of a `-0.02em` optical pull that
+compensates for glyph sidebearing at 129px.
+
+**The subhead used to start at column 4** with a 24ch measure, which put its
+left edge on no axis the page used and its right edge nowhere near the metadata
+rail: a block of text floating in the middle of the masthead. It is now flush
+left on a 42ch measure. The asymmetry is still there, carried by the rail
+sitting right rather than by an arbitrary indent.
+
+**There is no padding above the accent bar.** It sits directly under the nav,
+so the page opens on a band of colour rather than on a field of nothing.
+
+---
+
 ## The headline is not the copy file's headline
 
-`portfolio-copy.md` opens "Graphic designer who ships software." That was
-replaced on request with:
+`portfolio-copy.md` opens "Graphic designer who ships software." It has been
+replaced twice, both times on request.
 
-> I design the thing, then I build the thing.
+The first replacement was built from the About copy's "I design the thing,
+build the thing" and was rejected as a slogan, which it was: the construction
+is a rhetorical tic, and it reads as branding rather than as a claim.
 
-It is lifted from the author's own About copy, which reads "I design the thing,
-build the thing, and own the parts of it that break." Using their sentence
-rather than writing a new one keeps the voice and keeps it defensible in an
-interview. One line in `app/page.tsx` to swap.
+The headline now is the opening line of the AI Systems section intro,
+verbatim:
+
+> Products I designed and built end to end.
+
+It is a statement of fact in the same register as the rest of the site, and it
+is the author's own sentence. One line in `app/page.tsx` to swap.
 
 ---
 

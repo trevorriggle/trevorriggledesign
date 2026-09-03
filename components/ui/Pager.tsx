@@ -12,7 +12,6 @@ export function Pager({ prev, next }: { prev: CaseStudy | null; next: CaseStudy 
           <span className={styles.dir}>← Previous</span>
           <span className={styles.title}>{prev.title}</span>
           <span className={styles.section}>
-            {prev.year}
           </span>
         </Link>
       ) : (
@@ -23,7 +22,6 @@ export function Pager({ prev, next }: { prev: CaseStudy | null; next: CaseStudy 
         <Link href={next.href} className={`${styles.link} ${styles.next}`}>
           <span className={styles.dir}>Next →</span>
           <span className={styles.title}>{next.title}</span>
-          <span className={styles.section}>{next.year}</span>
         </Link>
       ) : (
         <span className={styles.spacer} />

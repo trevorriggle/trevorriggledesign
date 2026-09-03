@@ -16,6 +16,10 @@ import matter from "gray-matter";
    The contract now: read what is there, coerce it to a shape the templates can
    render, and when a field is absent leave it absent. Every template already
    renders nothing for an empty value. Nothing here throws.
+
+   NO DATES. `year` and `timeline` are deliberately not read out of frontmatter
+   and not part of this type, so no template can render one by accident. The
+   site does not date its work. See DECISIONS.md.
    ========================================================================= */
 
 const ROOT = process.cwd();
@@ -51,11 +55,9 @@ export type CaseStudy = {
   href: string;
   title: string;
   deck: string;
-  year: string;
   role: string[];
   context: string;
   state: string;
-  timeline: string;
   stack: string[];
   links: LinkRef[];
   video: VideoRef | null;
@@ -157,11 +159,9 @@ function load(): CaseStudy[] {
       href: `/work/${slug}`,
       title: str(d.title, slug),
       deck: str(d.deck),
-      year: str(d.year),
       role: strArray(d.role),
       context: str(d.context),
       state: str(d.state),
-      timeline: str(d.timeline),
       stack: strArray(d.stack),
       links: toLinks(d.links),
       video: toVideo(d.video, slug),

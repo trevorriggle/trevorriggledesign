@@ -40,7 +40,7 @@ export default function HomePage() {
 
           <div className={styles.statement}>
             <h1 className={styles.headline}>
-              I design the thing, then I build the thing.
+              Products I designed and built end to end.
             </h1>
           </div>
 
@@ -67,9 +67,10 @@ export default function HomePage() {
       <Container as="section" id="applications" className={styles.applications}>
         <div className={styles.applicationsHead}>
           <h2 className={styles.applicationsTitle}>Applications</h2>
-          <p className={styles.applicationsNote}>
-            Manual running order · not date-sorted
-          </p>
+          {/* "not date-sorted" went with the dates. Nothing on this site
+              carries a date any more, so the claim had nothing to contrast
+              against. */}
+          <p className={styles.applicationsNote}>Manual running order</p>
         </div>
 
         <SelectedWork entries={selected} />
@@ -119,7 +120,6 @@ export default function HomePage() {
                   <span className={styles.categoryTitle}>{category.title}</span>
                   <span className={styles.categoryIntro}>{category.intro}</span>
                   <span className={styles.categoryMeta}>
-                    <span>{category.years}</span>
                     {images.length > 0 && (
                       <span>
                         {images.length} image{images.length === 1 ? "" : "s"}

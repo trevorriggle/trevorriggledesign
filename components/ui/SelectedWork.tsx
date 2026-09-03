@@ -88,7 +88,6 @@ export function SelectedWork({ entries }: { entries: CaseStudy[] }) {
                 {entry.state && (
                   <span className={styles.state}>{entry.state}</span>
                 )}
-                {entry.year && <span>{entry.year}</span>}
                 {entry.stack.length > 0 && (
                   <span>{entry.stack.join(" · ")}</span>
                 )}

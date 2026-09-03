@@ -17,7 +17,7 @@ export const metadata: Metadata = {
    /design, the five categories.
    ============================================================================
    Order: Print, Marketing, 3D, Motion, Personal. Manual, from
-   content/design.ts, never sorted by the year label.
+   content/design.ts. No dates anywhere.
 
    Each row is a real entry to a real page, not a thumbnail strip: the title at
    display scale, the category's own intro, and, when files exist in its
@@ -72,8 +72,6 @@ export default function DesignPage() {
                 </p>
               )}
             </div>
-
-            <p className={styles.rowYear}>{category.years}</p>
 
             {lead && (
               <Link

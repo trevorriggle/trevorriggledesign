@@ -63,7 +63,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-.rowText { grid-column: 2 / 8; }
+.rowText { grid-column: 2 / 9; }
 
 .rowTitle {
   font-size: var(--type-entry);
@@ -108,17 +108,6 @@
   color: var(--color-signal);
 }
 
-.rowYear {
-  grid-column: 8 / 9;
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-  font-variant-numeric: tabular-nums;
-  padding-top: var(--space-2);
-}
-
 .rowMedia {
   grid-column: 9 / -1;
   display: block;
@@ -138,11 +127,9 @@
 
   .ordinal,
   .rowText,
-  .rowYear,
   .rowMedia { grid-column: 1 / -1; }
 
   .rowText { margin-top: var(--space-3); }
-  .rowYear { padding-top: 0; margin-top: var(--space-4); }
   .rowMedia { margin-top: var(--space-5); }
   .row { padding-block: var(--space-6); }
 }

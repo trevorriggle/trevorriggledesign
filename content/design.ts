@@ -1,8 +1,11 @@
 /* ============================================================================
    DESIGN WORK, the five categories.
    ============================================================================
-   Order is Print, Marketing, 3D, Motion, Personal. Manual, and never sorted by
-   the `years` label, which is display-only.
+   Order is Print, Marketing, 3D, Motion, Personal. Manual, and hardcoded.
+
+   NO DATES. Categories carry no year. A design archive stamped 2021 tells a
+   reader the work is old before they have looked at it, which is the opposite
+   of what an archive is for.
 
    COPY, and where each field comes from:
 
@@ -21,8 +24,6 @@ export type DesignCategory = {
   /** URL segment: /design/<slug>, and the image folder public/design/<slug>/ */
   slug: string;
   title: string;
-  /** Display-only. Never a sort key. */
-  years: string;
   /** Verbatim from portfolio-copy.md. */
   intro: string;
   /** Paragraphs, verbatim from design-work-copy.md. Empty renders nothing. */
@@ -35,7 +36,6 @@ export const designCategories: DesignCategory[] = [
   {
     slug: "print",
     title: "Print",
-    years: "2021",
     intro:
       "Catalog spreads and print layout. Long documents, tight grids, and the kind of typographic discipline that only shows up when it's missing.",
     body: [],
@@ -44,7 +44,6 @@ export const designCategories: DesignCategory[] = [
   {
     slug: "marketing",
     title: "Marketing",
-    years: "2022",
     intro:
       "Campaign work at American Scientific: animated product flyers, web banners, and social assets, produced at volume across hundreds of client accounts.",
     body: [],
@@ -53,7 +52,6 @@ export const designCategories: DesignCategory[] = [
   {
     slug: "3d",
     title: "3D Graphics",
-    years: "2025",
     intro:
       "Product visualization and 3D work. Modeling, lighting, and render passes for commercial use.",
     body: [],
@@ -62,7 +60,6 @@ export const designCategories: DesignCategory[] = [
   {
     slug: "motion",
     title: "Motion Graphics",
-    years: "2021",
     intro:
       "Animation and motion work. Titles, product motion, and short-form pieces.",
     body: [],
@@ -71,7 +68,6 @@ export const designCategories: DesignCategory[] = [
   {
     slug: "personal",
     title: "Personal Works",
-    years: "2021",
     intro:
       "Illustration and comics, mostly made for myself. One of them ended up on the front page of Reddit, which was not the plan.",
     body: [],

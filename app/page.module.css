@@ -53,20 +53,23 @@
   margin-left: -0.045em;
 }
 
-/* Pushed to column 4 and down: the headline hangs left of it, which is the
-   asymmetry the page is built on. A short measure on purpose, 24ch keeps
-   this at four or five lines, so it reads as a caption to the headline
-   rather than as a second paragraph competing with it. */
+/* Flush left, on the same axis as the accent bar and the headline above it.
+
+   It used to start at column 4 with a 24ch measure, which put its left edge on
+   no axis the page uses and its right edge nowhere near the metadata rail: a
+   block of text floating in the middle of the masthead. Column 1 with a real
+   measure is the fix. The asymmetry is still there, it is just carried by the
+   rail sitting right rather than by an arbitrary indent. */
 .subheadWrap {
-  grid-column: 4 / 9;
-  margin-top: var(--space-5);
+  grid-column: 1 / 7;
+  margin-top: var(--space-7);
 }
 
 .subhead {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
   color: var(--color-text);
-  max-width: var(--measure-lead);
+  max-width: 42ch;
 }
 
 /* The single accent mark in the masthead, and one of very few on the site. */

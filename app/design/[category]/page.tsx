@@ -68,8 +68,6 @@ export default async function DesignCategoryPage({
       <Container as="header" className={styles.head}>
         <p className={styles.breadcrumb}>
           <Link href="/design">Design</Link>
-          <span aria-hidden="true">/</span>
-          <span>{found.years}</span>
         </p>
 
         <div className={styles.headGrid}>
