@@ -13,7 +13,13 @@ import {
   type ImageRef,
   type VideoRef,
 } from "./schema";
-import { sections, getSection, type Section, type SectionKind } from "./sections";
+import {
+  sections,
+  getSection,
+  archiveSections,
+  type Section,
+  type SectionKind,
+} from "./sections";
 import { entryOrder } from "./order";
 
 /* ============================================================================
@@ -404,21 +410,55 @@ export function getEntry(slug: string): Entry | null {
   return getAllEntries().find((e) => e.slug === slug) ?? null;
 }
 
-/** Running-order neighbours, for the prev/next pager. Walks across section
- *  boundaries because the running order is one continuous sequence. */
+/** Running-order neighbours, for the prev/next pager.
+ *
+ *  Tier 1 only. The pager exists to walk a reader through the three case
+ *  studies in the order they were meant to be read; archive entries have no
+ *  pages of their own to page to. */
 export function getNeighbours(slug: string): {
   prev: Entry | null;
   next: Entry | null;
 } {
-  const all = getAllEntries();
+  const all: Entry[] = getSelected();
   const i = all.findIndex((e) => e.slug === slug);
   if (i < 0) return { prev: null, next: null };
   return { prev: all[i - 1] ?? null, next: all[i + 1] ?? null };
 }
 
-/** The top of the running order, for the home page. */
-export function getFeatured(count: number): Entry[] {
-  return getAllEntries().slice(0, count);
+/** Tier 1 — the three case studies, in manual order. The home page's spine. */
+export function getSelected(): CaseStudy[] {
+  return loadAll()
+    .filter((s) => s.tier === "selected")
+    .flatMap((s) => s.entries)
+    .filter((e): e is CaseStudy => e.kind === "case");
+}
+
+/** Tier 2 — the archive sections, in archive order, with their entries.
+ *  Returned whether or not a section has entries: a section heading and its
+ *  intro are real content, and the running order is the structural claim. */
+export function getArchive(): PopulatedSection[] {
+  const populated = loadAll();
+  return archiveSections
+    .map((s) => populated.find((p) => p.id === s.id))
+    .filter((s): s is PopulatedSection => Boolean(s));
+}
+
+/** Every archive image, grouped by section — drives MANIFEST.md's archive
+ *  breakdown. */
+export function getArchiveImagesBySection(): {
+  section: PopulatedSection;
+  images: (ResolvedImage & { slug: string; entryTitle: string })[];
+}[] {
+  return getArchive().map((section) => ({
+    section,
+    images: section.entries.flatMap((e) =>
+      e.images.map((img) => ({
+        ...img,
+        slug: e.slug,
+        entryTitle: e.title,
+      })),
+    ),
+  }));
 }
 
 /** Every image the site expects, whether or not it exists. Drives MANIFEST.md

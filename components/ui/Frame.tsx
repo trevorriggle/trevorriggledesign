@@ -45,6 +45,13 @@ export function Frame({
           height={image.height}
           sizes={sizes}
           priority={priority}
+          /* Explicit rather than implied: everything below the fold on an
+             image-heavy page defers, and only a slot a page marks as its LCP
+             candidate loads eagerly. The archive will eventually be the
+             heaviest page here and it must not be what makes the site feel
+             slow. */
+          loading={priority ? "eager" : "lazy"}
+          decoding="async"
           className={styles.image}
         />
       ) : (

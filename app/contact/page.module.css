@@ -1,58 +1,62 @@
+/* ============================================================================
+   CONTACT
+   ============================================================================
+   Three things: a heading, two sentences, and an address. The address is the
+   content, so it gets the largest type on the page — larger than the heading,
+   which is the point. A contact page where the heading outranks the address
+   has its hierarchy backwards.
+   ========================================================================= */
+
 .wrap {
-  padding-top: clamp(var(--space-lg), 6vw, var(--space-2xl));
+  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-bottom: var(--rhythm-loose);
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--space-xl);
+  row-gap: var(--space-7);
   align-items: start;
 }
 
-.main { grid-column: 1 / 9; }
+.main { grid-column: 1 / 10; }
 .rail { grid-column: 10 / -1; }
 
 .title {
-  font-size: var(--text-3xl);
-  letter-spacing: var(--tracking-tighter);
-  margin-bottom: var(--space-md);
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
 }
 
 .lead {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
-  color: var(--color-text-quiet);
-  max-width: 44ch;
-  text-wrap: pretty;
+  color: var(--color-text);
+  max-width: 40ch;
+  margin-top: var(--space-6);
+  margin-left: 16.6667%;
 }
 
-/* The address, set at display scale. On a contact page the address is the
-   content, so it gets the largest type on the page rather than being a link
-   in a paragraph. */
+/* The address, at title scale. It wraps on a phone rather than shrinking,
+   because an address you have to squint at is a contact page that failed. */
 .address {
-  display: inline-block;
+  display: block;
   font-family: var(--font-display);
-  font-variation-settings: var(--soft-display), var(--wonk-on);
-  font-size: var(--text-2xl);
-  letter-spacing: var(--tracking-tight);
-  line-height: var(--leading-tight);
-  margin-top: var(--space-xl);
-  padding-top: var(--space-md);
-  border-top: var(--rule-heavy);
-  overflow-wrap: break-word;
+  font-weight: var(--weight-display);
+  font-size: clamp(var(--display-1), 5.6vw, var(--display-3));
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  margin-top: var(--space-9);
+  overflow-wrap: anywhere;
 }
 
-.todo {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  color: var(--color-text-faint);
-  border: var(--rule);
-  border-left: 2px solid var(--color-signal);
-  padding: var(--space-sm);
-  margin-top: var(--space-xl);
-}
+.address a { text-decoration-color: var(--color-rule); }
+.address a:hover { color: var(--color-signal); }
 
-@media (max-width: 60rem) {
-  .main, .rail { grid-column: 1 / -1; }
+@media (max-width: 62rem) {
+  .main,
+  .rail { grid-column: 1 / -1; }
+  .lead { margin-left: 0; }
+  .address { margin-top: var(--space-7); }
 }

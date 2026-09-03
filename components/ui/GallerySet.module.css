@@ -1,51 +1,52 @@
 /* ============================================================================
-   GALLERY SET
+   GALLERY SET — a masonry-ish grid built for MIXED aspect ratios.
    ============================================================================
-   Mixed aspect ratios, uncropped.
+   The real content is wide print spreads, square social posts, tall phone
+   screenshots and 3D renders. The wrong answer is a uniform 16:9 tile grid,
+   which letterboxes every one of them and throws away the thing an archive
+   is for — showing what the work actually looks like.
 
-   The grid is six columns and each image claims a span based on its declared
-   ratio: portraits and squares take two, landscapes take three, panoramas take
-   all six. Dense auto-flow then closes the gaps. So the images keep their true
-   proportions — nothing is letterboxed, nothing is centre-cropped into a
-   uniform tile — while the page still reads as a composed grid rather than a
-   ragged pile.
+   So: a 12-column grid where each item's SPAN is chosen from its declared
+   aspect ratio, and its height is whatever that ratio produces. Nothing is
+   cropped, nothing is letterboxed, and a panorama gets the full measure while
+   two portraits sit side by side.
 
-   The span is computed on the server from frontmatter, so it is identical
-   before and after the real files land.
+   `grid-auto-flow: dense` lets a narrow item backfill a gap a wide one left,
+   so the page stays tight without any of them being resized to fit.
    ========================================================================= */
 
 .set {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  grid-auto-flow: row dense;
-  gap: var(--grid-gap);
-  align-items: start;
   list-style: none;
   margin: 0;
   padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  gap: var(--grid-gap);
+  grid-auto-flow: dense;
+  align-items: start;
 }
 
 .item { min-width: 0; }
 
-.span2 { grid-column: span 2; }
-.span3 { grid-column: span 3; }
-.span4 { grid-column: span 4; }
-.span6 { grid-column: span 6; }
+/* Spans, by proportion class. */
+.span3 { grid-column: span 3; }   /* tall portrait / phone screenshot */
+.span4 { grid-column: span 4; }   /* square-ish */
+.span6 { grid-column: span 6; }   /* landscape */
+.span8 { grid-column: span 8; }   /* wide spread */
+.span12 { grid-column: span 12; } /* panorama — the full measure */
 
-/* Tablet: halve the grid, and re-map the spans so a landscape still reads as
-   wider than a portrait rather than everything going full-width. */
-@media (max-width: 60rem) {
-  .set { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .span2 { grid-column: span 2; }
+@media (max-width: 62rem) {
   .span3 { grid-column: span 4; }
-  .span4,
-  .span6 { grid-column: span 4; }
+  .span4 { grid-column: span 6; }
+  .span6,
+  .span8 { grid-column: span 12; }
 }
 
-@media (max-width: 34rem) {
-  .set { grid-template-columns: minmax(0, 1fr); gap: var(--space-lg); }
-  .span2,
+@media (max-width: 30rem) {
+  .set { gap: var(--space-4); }
   .span3,
-  .span4,
-  .span6 { grid-column: span 1; }
+  .span4 { grid-column: span 6; }
+  .span6,
+  .span8,
+  .span12 { grid-column: span 12; }
 }

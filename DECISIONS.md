@@ -6,66 +6,94 @@ lines to read first.
 
 ---
 
-## Type
+## Direction
 
-Two families, both SIL Open Font License 1.1, both self-hosted.
+**[A] Editorial.** Chosen, not proposed: of the three, it is the only one whose
+demands match the content. The site is three long-form prose case studies and a
+dense archive; poster scale (14vw, cropped, bled) fights 900 words of argument,
+and the technical direction is dark by default, which is the thing you said you
+did not want.
+
+## There is no dark mode
+
+Deleted, not disabled. `styles/tokens.css` previously carried a
+`@media (prefers-color-scheme: dark)` block that inverted paper and ink, which
+meant anyone with a dark OS saw a completely different site from the one that
+was designed — and that is what you were looking at.
+
+There is now zero `prefers-color-scheme` anywhere in the project (verified
+against the built CSS, not just the source), `color-scheme: light` is declared
+on `:root`, and `app/layout.tsx` sends one unconditional `themeColor`. The page
+is one colour on every device.
+
+---
+
+## Type
 
 | Role | Face | Foundry | Licence |
 | --- | --- | --- | --- |
-| Display | **Fraunces** (variable) | Undercase Type | OFL 1.1 |
-| Text | **IBM Plex Sans** | IBM with Bold Monday | OFL 1.1 |
-| Metadata | **IBM Plex Mono** | IBM with Bold Monday | OFL 1.1 |
+| Display | **Instrument Serif** | Instrument | OFL 1.1 |
+| Text | **Geist** | Vercel | OFL 1.1 |
+| Data | **Geist Mono** | Vercel | OFL 1.1 |
 
-**That is two families, not three.** Plex Sans and Plex Mono are two cuts of one
-superfamily, drawn together on shared skeletons. Using the mono companion of the
-text face is what buys monospace metadata without spending the second family
-slot — and it is why the mono sits next to the text face without the seam you
-get from an unrelated mono.
+Two families. Geist Mono is a cut of Geist, drawn on the same skeleton, so
+tabular data costs no second family — the same argument the previous build made
+for IBM Plex, and still the right one.
 
-**Licensing, plainly.** OFL 1.1 permits commercial use, web embedding and
-self-hosting, with no fee, no attribution requirement in the interface, and no
-per-domain licence. `next/font` downloads the `woff2` files at build time and
-serves them from your own domain, so there is no request to a font CDN in the
-waterfall and no third-party origin in the page's privacy story. Nothing here
-needs a licence purchase before you deploy.
+**Loading.** `next/font/google` fetches the woff2 files at BUILD time and serves
+them from this domain. No font-CDN request in the runtime waterfall, no
+third-party origin in the privacy story. Instrument Serif is loaded at weight
+400 only (it ships one weight); Geist and Geist Mono are variable, so the whole
+range arrives in one file each. Display and text preload; mono does not, because
+it appears below the fold on the pages that use it at all.
+`adjustFontFallback` is on for the serif — it is 129px in places, and an
+unadjusted fallback would shift the layout visibly on a slow connection.
 
-**Why Fraunces for display.** It has real idiosyncrasy — a wonky, high-contrast
-old-style with a `WONK` axis that swaps in genuinely odd alternates, and a
-`SOFT` axis for the terminals. That personality is doing a specific job: it
-signals a person with type judgment without saying anything about technology,
-which leaves the technical claims to be made by the work rather than by the
-lettering. It is also a variable font, so the whole weight range plus both
-optical axes arrive in one request.
+**One weight on the display face is a feature.** Instrument Serif has no bold.
+Every display decision on this site is therefore a SCALE decision, which is what
+stops the hierarchy leaning on weight — the reflex that produced the flat page
+you were looking at.
 
-The axes are driven from `--wonk-on` / `--soft-display` in `styles/tokens.css`,
-not from components, so the face's personality has one knob and it is in the
-token file.
+### The scale: ratio 1.5, and where the 6x came from
 
-**Why Plex for everything else.** Plex was drawn as IBM's corporate type
-programme — engineered, slightly plain, with unusually good mono. On a site
-whose argument is "I build systems," a text face from an engineering house is
-honest rather than costume. It is also a face a technical reader has seen in
-documentation and terminals, so it reads as neutral rather than styled.
+Two tiers, and the split is deliberate.
 
-**Where each face is allowed.** Set in `styles/typography.css`, and worth
-keeping to:
+**Display tier — ratio 1.5**, compounding off the 17px body:
 
-- **Display** — `h1`–`h3` only, plus the entry-row titles and the contact
-  address. Never a paragraph. Fraunces at paragraph length is a costume.
-- **Text** — body, decks, UI, and every sentence including the ones inside data
-  tables.
-- **Mono** — metadata only. The rule that keeps it honest: if a string is a
-  label, a year, a filename, a provider name or a measurement, it is mono. If it
-  is a sentence, it is not. Mono means *this is data about the work*, never
-  *this looks technical*.
+| Step | Size | Used for |
+| --- | --- | --- |
+| `--display-1` | 25.5px | h3, entry titles, prose subheads |
+| `--display-2` | 38.3px | section titles at their small end |
+| `--display-3` | 57.4px | page titles at their small end |
+| `--display-4` | 86.1px | page titles, case study titles |
+| `--display-5` | **129.1px** | the home hero, and nothing else |
 
-`h4`–`h6` deliberately drop out of the display face into semibold text — at that
-size Fraunces reads as noise rather than voice, and a third typographic voice on
-one page is a ransom note.
+`--display-5 ÷ 17px = 7.59x`. The brief asked for at least 6x.
 
-None of the banned faces appear anywhere. There is no Inter, Poppins, Montserrat
-or Roboto in the project, including in fallback stacks — the fallbacks are the
-system UI stacks and Iowan/Palatino for display.
+**Text tier — ratio ~1.14**, 11px to 21px. A 1.5 step between a 12px label and
+the next size is 18px, and there is no 18px UI on this site. The steep ratio is
+for display, where it does work; using it for labels would produce a scale with
+holes in it.
+
+**Every fluid role is clamped between two real steps**, so the scale still holds
+at any viewport — the type gets smaller on a phone, it does not fall out of the
+system:
+
+```
+--type-hero:    clamp(display-3, 11.2vw, display-5)    57 → 129px
+--type-title:   clamp(display-2, 7.6vw,  display-4)    38 →  86px
+--type-section: clamp(display-1, 4.4vw,  display-3)    26 →  57px
+--type-entry:   clamp(display-1, 3.4vw,  display-2)    26 →  38px
+```
+
+**Leading is set per size, never globally**: `0.9` on the hero, `0.94`–`1.02` on
+display, `1.18` snug, `1.62` on body prose. One global line-height applied from
+an 11px label to a 129px headline is the tell that a type system was never
+designed — at 129px, 1.45 leading opens a hole you could park a car in.
+
+Verified at three viewports with `pnpm check:viewports`: hero renders 57px at
+375, 86px at 768, 129px at 1440, and no page scrolls horizontally at any of
+them.
 
 ---
 
@@ -74,90 +102,63 @@ system UI stacks and Iowan/Palatino for display.
 Three values. That is the whole palette:
 
 ```
---paper:  #f4f1e9   warm bone
---ink:    #15140f   warm near-black
---signal: #bf3b11   vermilion
+--ground: #faf8f5   warm off-white
+--ink:    #111111   near-black
+--accent: #c42b12   vermilion
 ```
 
-Every grey on the site is `color-mix(in oklab, var(--ink) N%, var(--paper))`.
-There is no separate grey ramp, which means there is exactly one hue in the
-system to get wrong, and the greys cannot drift out of tune with the ink as the
-palette is adjusted. Change `--ink` and all seven neutrals follow.
+Contrast, measured: ink on ground **17.8:1**; accent on ground **5.35:1**; the
+single muted tone (`#686766`) **5.32:1**. All pass AA for normal text.
 
-Paper is bone, not white, and not the blue-grey `#f8fafc` that ships with every
-utility-CSS starter. Ink is warm, so it reads black on screen without the
-plasticky quality of `#000`.
+**There is no grey ramp.** The previous build declared seven tints of ink mixed
+into paper and used them for hierarchy — `--color-text-quiet`,
+`--color-text-meta`, `--color-text-faint` — which is how a layout ends up
+looking like fog. There is now ONE muted tone, used only for genuine metadata.
+`--color-text-quiet` still exists as an alias so components did not all need
+rewriting, and it deliberately resolves to **full ink**: long copy set in grey
+is the most common way a portfolio reads as unfinished.
 
-**How the accent earns its place.** Vermilion appears in exactly eight places,
-and each one is a state or a piece of meaning, never decoration:
+**The accent is rationed.** It appears on: the rule above the home hero, the
+rule above the lead case study, the closing line of /about, focus rings, hover
+states, the `[[NEEDS]]` hazard block, and the word "Shelved". That is the
+complete list. An accent that shows up in every component is decoration; one
+that shows up rarely is a mark.
 
-1. Section ordinals `01`–`07` — the running order is the site's argument, so the
-   numbers are the one element allowed to be loud.
-2. The **cost** leg of every tradeoff — the part most portfolios delete.
-3. The left rule on the *"what the system does"* column of the failure-mode
-   table.
-4. The **model** node in every architecture diagram — the model is the component
-   that is wrong as a matter of routine, and the diagram says so at a glance.
-5. The external-link mark.
-6. The current-page state in the nav (paired with a rule, so it is never
-   colour-only information).
-7. The `404` code and the "Shelved" mark.
-8. A single 56×8 bar on the OG cards.
-
-**Dark mode** repoints the same three variables and nothing else; the derived
-neutrals re-resolve for free. It follows the system preference only — there is
-no theme toggle, because a toggle means client JS, a storage read on every load,
-and a flash of the wrong theme before hydration, in exchange for a control
-almost nobody uses.
-
-**Absent by intent:** no gradient anywhere, no `backdrop-filter`, no
-`box-shadow` used as depth, no translucency. The sticky nav is opaque paper with
-one hairline. `--radius` maxes out at 2px, so nothing can become a rounded card
-floating on grey.
+No gradients, no shadows, no glassmorphism, and `--radius-*` is `0` throughout.
 
 ---
 
-## Grid
+## Space and composition
 
-One twelve-column grid, declared once in `styles/tokens.css` and
-`components/ui/grid.module.css`, used asymmetrically everywhere.
+**The spacing scale jumps at the top** — `--space-9` is 120px, `--space-10` is
+176px, `--space-11` is 256px — because uniform vertical rhythm was half of why
+the old build read as templated. Components pick a NAMED rhythm rather than a
+number, so the variation survives editing:
 
-- **Content** runs columns 1–8 (1–9 on page heads). **Metadata rail** runs 9–12
-  or 10–12. Text never occupies all twelve columns.
-- **Nothing is centred.** `Container` sets `margin-inline: 0` — the page is
-  left-weighted, and only above 100rem does the slack fall to the right, where
-  the rail already lives. A centred measure and a full-bleed measure are the two
-  fastest ways for a layout to look untouched.
-- **The grid is visible**, by three devices used consistently:
-  - a hairline on the left edge of the rail column (`.railRuled`), so the rule
-    starts where the metadata starts rather than at an arbitrary page edge;
-  - a **2px** rule for major section boundaries and a **1px** hairline for rows
-    inside them — one visual device for separating things, at two weights;
-  - mono ordinals hanging in a fixed 3.25rem left column, which is the grid made
-    legible inside the reading column.
-- **Density** is deliberate: 15px UI baseline, 13px mono metadata, 11px labels,
-  and display leading of 0.92 at hero size so the headline locks into a block of
-  texture. The space ramp jumps at the top end (36 → 56 → 88 → 136 → 208px) —
-  dense up close, generous between movements. A smooth ramp blurs that contrast.
-- **Phone**: every span collapses to full width and the rail becomes a ruled
-  block beneath the content. The hierarchy survives; the columns do not.
+```
+--rhythm-crowd  24px          two blocks that should read as one thought
+--rhythm-tight  36 →  56px    the archive, which crowds itself
+--rhythm-normal 56 → 120px    ordinary section separation
+--rhythm-loose 120 → 256px    the masthead, the footer approach
+```
 
-### Layout choices worth naming
+Applied unequally on purpose: the home masthead gets `loose` beneath it, the
+Selected Work block crowds up against it with a heavy rule and 16px of padding,
+the archive sections sit at `tight`, and the third case study crowds the second
+so it reads as a footnote rather than a third equal item.
 
-**The work index is a ruled list, not a card grid.** With zero images a card
-grid is a grid of empty boxes. A list is a list — it reads correctly in exactly
-the state the site is being designed in, scans faster for someone with eleven
-portfolios open, and is the opposite of the rounded-cards-on-grey look.
+**Nothing is centred.** `Container` sets `margin-inline: 0` and only takes the
+slack on both sides past 118rem. Concretely, on the page:
 
-**The home page has no hero image slot.** There is nothing worth putting above a
-hiring team's first read, and with no assets it would be the largest placeholder
-on the site. The masthead is type and metadata; then the top of the running
-order; then the seven-section index. No three-column feature band, no CTA band.
-
-**There is no scroll animation of any kind.** No fade-up, no reveal, no
-observers. The only transitions are 110–180ms hover states on links and rows,
-and a row acknowledges the pointer by shifting 2px *on the grid* rather than
-lifting off the page.
+- the home hero hangs at the left edge and **overhangs** its own subhead, which
+  is pushed to column 4
+- case study prose starts at **column 3**, so the left margin carries the
+  structure rather than being dead padding
+- the lead media on a case study is **full bleed**, edge to edge — the only
+  element on the site allowed to touch the viewport
+- Selected Work rank 1 mirrors rank 0 (media right, text left) so the three do
+  not read as a repeating template
+- plates alternate between an indented measure and a right bleed
 
 ---
 
@@ -293,35 +294,109 @@ frontmatter, so it is identical before and after the files land.
 
 ---
 
-## Routes and the link bug
+## Structure: two tiers, five routes
 
-Routes are exactly `/`, `/work`, `/work/[slug]`, `/about`, `/contact`, and a
-real `404`.
+The old organisation was inherited from Adobe Portfolio — six categories by
+MEDIUM, sorted by year. That organises work by which tool made it, which is the
+one axis a hiring team does not care about, and it left the reader to assemble
+the argument.
 
-**I removed the `/gallery` route** that the earlier scaffold had. You specified
-five routes plus a 404, and a separate gallery route would have re-created the
-split the section ordering exists to abolish. Galleries are now section groups
-on `/work` and individual sets at `/work/[slug]`, sharing one slug namespace
-with the case studies — so the loader asserts slug uniqueness across both
-folders, since a collision would silently make one entry unreachable.
+**Tier 1 — Selected Work.** Three case studies with full pages, full visual
+weight, presented on the home page at descending weight. Manual order, hardcoded
+in `content/order.ts`: DrawEvolve, thoosie, Lynk.
 
-Slugs are clean and match their labels: `ai-systems`, `full-stack`,
-`3d-graphics`, `marketing`, `motion-graphics`, `print`, `personal-works`.
+**Tier 2 — Archive.** One page. The five former categories are anchored sections
+inside it, in manual order. One line of copy per section — the section intro from
+`portfolio-copy.md`, verbatim — then a grid. No per-project routes.
 
-**Three layers now prevent the broken-external-link bug**, because a relative
+### Routes, exactly
+
+```
+/                  home — hero, three case studies, one archive line
+/work/drawevolve   ┐
+/work/thoosie      ├ Tier 1
+/work/lynk         ┘
+/archive           Tier 2, five anchored sections
+/about
+/contact
+404
+```
+
+`/work` as an index is **deleted**, along with `app/work/page.tsx`, its OG route,
+and the now-dead `EntryRow`, `SectionIndex` and `SectionHead` components.
+
+**Nav.** Three labels, exactly as the copy specifies. "Work" points at
+`/#selected-work` rather than a `/work` route that no longer exists. The archive
+is reachable from the home page and the footer — adding a fourth nav label would
+mean inventing one, and the copy gives three.
+
+**Two clicks, maximum.** Home → any case study is one click. Home → archive →
+any set is two.
+
+### Redirects — every one verified returning 308
+
+| Old | New |
+| --- | --- |
+| `/work` | `/` |
+| `/full-stack-development` | `/work/drawevolve` |
+| `/social-media` | `/archive#marketing` |
+| `/spreads` | `/archive#print` |
+| `/illlustrations`, `/illustrations` | `/archive#personal-works` |
+| `/animations`, `/motion` | `/archive#motion-graphics` |
+| `/3d` | `/archive#3d-graphics` |
+| `/abbott` | `/archive` |
+
+Anchors survive a 308 because the fragment is never sent to the server — the
+browser reapplies it to the destination. Every anchor target was verified
+present in the built HTML.
+
+**`/abbott` is the one I could not resolve.** It is a client name, not a medium,
+so which archive section it belongs to is not derivable from anything in the
+repo. It lands at the top of `/archive` rather than guessing an anchor and
+sending someone to the wrong section. One line in `next.config.ts` when you
+confirm it.
+
+### The archive grid
+
+Built for mixed aspect ratios, because the real content is wide print spreads,
+square social posts, tall phone screenshots and 3D renders. The wrong answer is
+a uniform 16:9 tile grid, which letterboxes all four.
+
+Each item's column SPAN is chosen from its declared ratio on a 12-column grid —
+3 columns for a tall portrait, 4 for a square, 6 for a landscape, 8 for a wide
+spread, 12 for a panorama — and its height is whatever the ratio produces.
+Nothing is cropped. `grid-auto-flow: dense` lets a narrow item backfill the gap
+a wide one left, so the page stays tight without anything being resized to fit.
+
+**Lazy loading** is explicit in `Frame`: `loading="lazy"` unless a slot is
+marked as its page's LCP candidate. On `/archive` only the first set is eager.
+
+**No lightbox.** A broken one is worse than none, and a good one is a
+keyboard-trap surface, a focus-restore problem and a scroll-lock problem for a
+page whose job is to be skimmed. Images render at their real proportions
+instead.
+
+---
+
+## The link bug
+
+Routes are `/`, `/work/[slug]`, `/archive`, `/about`, `/contact` and a real 404.
+
+**Four layers now prevent the broken-external-link bug**, because a relative
 path in a "Live demo" href fails silently and looks like a working link:
 
-1. `content/schema.ts` rejects any content href that is not an absolute `https://`
-   URL with a real hostname — including a bare domain, a protocol-relative `//`
-   URL, plain `http://`, and a literal `TODO` left in place.
+1. `content/schema.ts` rejects any content href that is not an absolute
+   `https://` URL with a real hostname — bare domain, protocol-relative `//`,
+   plain `http://`, and a literal `TODO` all fail.
 2. `components/ui/ExternalLink.tsx` throws on a non-absolute href, covering
    hand-written links in page code that the schema never sees.
-3. `scripts/check-links.mjs` runs as `prebuild` and **fails the build**. It
-   scans content frontmatter *and* every `href="…"` in `app/`, `components/` and
-   `lib/`. Content links are held to the stricter rule — a relative path in a
-   content `links[]` array is always the bug, never a valid in-app link. (My
-   first version of this script waved `/live-demo` through; that is fixed and
-   tested.)
+3. `scripts/check-links.mjs` runs in `prebuild` and **fails the build**. It
+   scans content frontmatter, every `href="…"` in `app/`, `components/` and
+   `lib/`, **and the MDX prose bodies** — which the schema never sees, because
+   they are not frontmatter.
+4. `REQUIRED_LIVE` in that script asserts by name that `https://drawevolve.com`
+   and `https://thoosie.net` are present and absolute. Validating the links that
+   happen to exist cannot catch a live link that has gone *missing*.
 
 Dead-but-well-formed URLs are reported, not fatal: `pnpm check:links` probes
 them over the network. A third-party host being down at 3am should not fail a
@@ -460,38 +535,55 @@ active:
 
 ---
 
-## The [[NEEDS]] system
+## The placeholder guard
 
-Two halves, and the second one is the point.
+Two strings must never reach a visitor:
 
-**In dev, a marker is loud.** `components/ui/Needs.tsx` renders it as a
-hazard-striped block in the signal colour, with a `needs` tag and the marker's
-own text. `withNeeds()` handles markers in frontmatter strings; `liftNeeds()`
-in `components/mdx/MdxBody.tsx` handles them in prose bodies.
+- `[[NEEDS: …]]` — a fact only you can supply.
+- `TODO` — an unfilled content field. In frontmatter it becomes alt text or a
+  `<Placeholder>` spec line, and **both ship**.
 
-The marker text is passed to the component as a **plain entity-escaped
-attribute**. This looks over-careful and is not: `<Needs>{"…"}</Needs>` and
-`<Needs text={"…"} />` were both tried first, and compiled through
-next-mdx-remote's RSC entry both arrive with nothing — a correctly-styled
-hazard block with no text in it, which is worse than no marker at all. Only a
-quoted attribute survives. Escaping `"`, `<`, `>`, `{` and `}` is what lets a
-marker contain quotes and dashes without breaking the MDX parse.
+### Environment-aware
 
-**In production, a marker breaks the deploy.** `scripts/check-needs.mjs` runs
-first in `prebuild` and exits 1 if the literal string appears anywhere under
-`content/`, printing the file and line of each. It scans *every* file in that
-tree — not just MDX bodies, not just frontmatter — so a marker pasted into a
-section standfirst, an alt string or a YAML comment fails too. It caught a
-comment in `content/index.ts` during this build, which is the check working.
+| Environment | Behaviour |
+| --- | --- |
+| production | **fail**, exit 1, every occurrence with file and line |
+| preview | warn, exit 0 |
+| development | warn, exit 0 |
 
-**There is no escape hatch, deliberately.** No environment variable, no flag.
-A switch that turns this off is a switch that gets set once, in a hurry, on the
-day it matters, and never unset.
+Resolution order: `ALLOW_PLACEHOLDERS=1` never fails and prints a loud warning
+listing everything it let through; otherwise `VERCEL_ENV` decides; otherwise —
+**no `VERCEL_ENV` is treated as production and fails.**
 
-I also removed the module-level parse cache in dev (`content/index.ts`). It was
-never invalidated, so editing an MDX file changed nothing on screen until the
-dev server was restarted — which defeats the entire purpose of rendering
-markers in dev. Production still parses once per process.
+That last default is deliberate. A local `pnpm build` *is* a production build,
+it is what gets deployed from a laptop in a hurry, and a checker that silently
+degrades to "warn" when it cannot identify its environment is a checker that
+never fires. `pnpm dev` never runs it, so iteration is unaffected either way.
+
+### What is scanned, and why not simply everything
+
+- **`[[NEEDS`** — every file under `content/`, including `.ts` files and YAML
+  comments. A marker pasted anywhere in that tree is the same broken promise.
+- **`TODO`** — content `.mdx` files, `content/sections.ts` and `lib/site.ts`
+  only. Those are the strings that render. A `// TODO:` in a schema doc comment
+  is a note to a developer, and failing a deploy for one would train everybody
+  to reach for the escape hatch. `_template` folders are skipped for `TODO`
+  — being a sheet of TODOs to copy from is their entire purpose.
+
+The guard caught two of its own false positives during this build (an
+explanatory comment in `content/index.ts`, another in thoosie's frontmatter).
+Both were reworded rather than exempted, which is the right direction: the
+scanner stayed strict.
+
+### In dev, a marker is loud
+
+`components/ui/Needs.tsx` renders one as a hazard-striped block in the accent
+colour with its own text. The text reaches the component as a **plain
+entity-escaped attribute**, which looks over-careful and is not:
+`<Needs>{"…"}</Needs>` and `<Needs text={"…"} />` were both tried first, and
+compiled through next-mdx-remote's RSC entry both arrive with nothing — a
+correctly-styled block with no text in it, which is worse than no marker. Only a
+quoted attribute survives.
 
 ---
 
@@ -558,23 +650,41 @@ the mp4 is absent.
 
 ## Verified, not assumed
 
-Run on the current tree:
+Run against the current tree, on a clean `.next`:
 
-- `pnpm typecheck` clean. `pnpm build` clean — 16 routes, no warnings.
-- **The `[[NEEDS]]` guard was demonstrated failing a production build** with
-  all five markers in place, naming each file and line, before any were
-  removed.
-- The dev marker block was verified rendering its own text on a live page —
-  and two earlier implementations that rendered an *empty* block were caught
-  and fixed by that check rather than shipped.
-- `node scripts/check-links.mjs --probe`: both live links `200`, both absolute.
-- Every `href` in the built HTML is absolute-https, `mailto:`, rooted, or a
-  fragment. No bare domain, no protocol-relative URL, no relative external.
-- All six routes return the right status in dev, including `404`.
-- Lynk's built page contains no external link and no status word other than
-  "Shelved".
-- thoosie's built page contains no `<video>` element and no client JS for one —
-  it degrades to the poster slot as designed.
-- Case study bodies verified verbatim against `portfolio-copy.md` by the script
-  at the top of this section.
+- `pnpm typecheck` clean. Production build clean — 15 routes, no warnings.
+- **The guard was demonstrated in all three modes**: production fails and lists
+  both TODOs with file and line; `VERCEL_ENV=preview` warns and exits 0;
+  `ALLOW_PLACEHOLDERS=1` warns loudly and exits 0.
+- **All ten redirects verified returning 308** to the right destination,
+  anchors included, against a real server. Every anchor target confirmed
+  present in the built HTML.
+- All seven routes return 200, `/no-such-page` returns 404.
+- `node scripts/check-links.mjs --probe`: both live links **200**, both
+  absolute. Every `href` in the built HTML is absolute-https, `mailto:`, rooted
+  or a fragment.
+- **`pnpm check:viewports` passes at 375 / 768 / 1440**: no horizontal overflow
+  on any route at any width, and the hero measures 57 / 86 / 129px — it holds
+  its clamp floor on a phone rather than collapsing to body size.
+- **Zero `prefers-color-scheme` rules in the built CSS**, not just the source.
+- Case study bodies verified verbatim against `portfolio-copy.md`.
+- Lynk's page carries no external link and no status word but "Shelved".
+- thoosie's page ships no `<video>` element and no client JS for one — it
+  degrades to the poster slot as designed.
 
+### Fixed after looking at the rendered pages
+
+Four things only a screenshot catches, all found and fixed in this pass:
+
+1. The footer colophon still read "Set in Fraunces & IBM Plex" after the font
+   swap.
+2. The case study rail printed a **Status** row carrying the same sentence as
+   the status chip two inches above it.
+3. `MetaLinks` stacked three labels on one link — a "Links" group heading, a
+   "LIVE" eyebrow, and a link labelled "Live".
+4. **The Selected Work hierarchy read backwards.** DrawEvolve has no cover file
+   and thoosie has a declared poster, so rank 1's placeholder was the largest
+   object on the page — measured 736×414 against a 465px-tall lead block. Rank
+   1's media slot is now capped at five columns and the lead took the accent
+   rule and a display-face deck. Re-measured: lead title 86px against thoosie's
+   38px.

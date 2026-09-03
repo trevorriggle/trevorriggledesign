@@ -84,7 +84,7 @@
 .stageId {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-snug);
+  letter-spacing: var(--tracking-tight);
   color: var(--color-text-faint);
   padding-block: var(--space-xs);
   border-bottom: var(--rule-faint);

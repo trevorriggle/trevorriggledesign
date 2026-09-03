@@ -1,72 +1,80 @@
-/* The metadata rail. Everything factual about an entry, in mono, in the right
-   four columns. Two rules make it work:
-   · it is a description list, because that is what it is;
-   · nothing in it is a sentence, so nothing in it competes with the prose. */
+/* ============================================================================
+   META RAIL
+   ============================================================================
+   Metadata, set as a definition list. Terms are uppercase letterspaced Geist
+   — not monospace. Mono here was the previous build's tell: it made ordinary
+   labels look like terminal output, which is decoration pretending to be
+   information. Values that ARE data (a year) get tabular figures instead.
+   ========================================================================= */
 
 .rail {
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
 }
 
-.group { min-width: 0; }
+.group {
+  border-top: var(--rule-faint);
+  padding-block: var(--space-3);
+}
+
+.group:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
 
 .term {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
+  font-size: var(--text-3xs);
   font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
+  letter-spacing: var(--tracking-caps-wide);
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  margin-bottom: var(--space-3xs);
+  color: var(--color-text-meta);
+  margin-bottom: var(--space-2);
 }
 
 .value {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  margin: 0;
+  font-size: var(--text-base);
   line-height: var(--leading-snug);
   color: var(--color-text);
-  margin: 0;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: break-word;
 }
 
 .stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3xs) var(--space-2xs);
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
 }
 
-/* Not pills. A hairline-ruled tag, square corners — the site has no rounded
-   floating anything. */
 .chip {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-snug);
-  color: var(--color-text-quiet);
+  font-size: var(--text-xs);
+  color: var(--color-text);
   border: var(--rule);
-  padding: 0.15em 0.45em;
-  white-space: nowrap;
+  padding: var(--space-1) var(--space-2);
 }
 
 .links {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xs);
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: var(--text-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.links li {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
 }
 
 .linkKind {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-caps);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  display: block;
+  color: var(--color-text-meta);
 }

@@ -24,12 +24,11 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  /* The paper and ink colours, so the browser chrome matches the page in both
-     schemes rather than flashing white behind a dark page. */
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f4f1e9" },
-    { media: "(prefers-color-scheme: dark)", color: "#121110" },
-  ],
+  /* ONE colour, unconditionally. There is no dark scheme on this site — it
+     was removed, not disabled, so there is no media-query branch here either.
+     The browser chrome matches the page ground on every device. */
+  themeColor: "#faf8f5",
+  colorScheme: "light",
 };
 
 export default function RootLayout({

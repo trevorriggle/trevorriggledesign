@@ -1,48 +1,76 @@
+/* ============================================================================
+   ABOUT
+   ============================================================================
+   Four paragraphs of continuous prose, no headings, exactly as written.
+
+   The composition does the work the missing subheads would otherwise do: the
+   title hangs at the left edge at title scale, the lead paragraph is set at
+   lead size and indented to column 3, and the remaining three run at body
+   size on a narrower measure further right. The column steps inward as the
+   argument narrows.
+   ========================================================================= */
+
 .head {
-  padding-top: clamp(var(--space-lg), 6vw, var(--space-2xl));
-  padding-bottom: var(--space-lg);
+  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-bottom: var(--space-7);
 }
 
 .title {
-  font-size: var(--text-3xl);
-  letter-spacing: var(--tracking-tighter);
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  margin-left: -0.045em;
 }
 
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--space-xl);
+  row-gap: var(--space-7);
   align-items: start;
+  padding-bottom: var(--rhythm-normal);
 }
 
-.main { grid-column: 1 / 8; }
-.rail { grid-column: 9 / -1; }
+.main { grid-column: 3 / 10; }
+.rail { grid-column: 10 / -1; }
 
-/* The lead statement, set larger than the body: the one paragraph a hiring
-   team reads if they read only one. */
+/* The lead: bigger, full ink, short measure. The one paragraph a hiring team
+   reads if they read only one. */
 .lead {
-  font-size: var(--text-lg);
+  font-size: var(--display-1);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
   line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
   color: var(--color-text);
-  max-width: 46ch;
+  max-width: 26ch;
   text-wrap: pretty;
 }
 
 .prose {
   font-size: var(--text-md);
-  line-height: var(--leading-loose);
-  color: var(--color-text-quiet);
+  line-height: var(--leading-body);
+  color: var(--color-text);
   max-width: var(--measure);
   text-wrap: pretty;
 }
 
+.lead + .prose { margin-top: var(--space-8); }
+.prose + .prose { margin-top: var(--space-5); }
 
-@media (max-width: 60rem) {
-  .main, .rail { grid-column: 1 / -1; }
+/* The closing paragraph — one sentence — gets the accent rule and real air
+   above it. It is the ask, and it should read as one. */
+.prose:last-child {
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: 1.5px solid var(--color-signal);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  max-width: 34ch;
 }
 
-/* Continuous prose, not a stack of labelled sections. The lead sets the top
-   of the column; each following paragraph is spaced off the one above it. */
-.lead + .prose { margin-top: var(--space-lg); }
-.prose + .prose { margin-top: var(--space-md); }
+@media (max-width: 62rem) {
+  .main,
+  .rail { grid-column: 1 / -1; }
+  .title { max-width: none; }
+}

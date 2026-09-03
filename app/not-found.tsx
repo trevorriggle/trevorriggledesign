@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
-import { SectionIndex } from "@/components/ui/SectionIndex";
-import { getSections } from "@/content";
+import { getSelected } from "@/content";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./not-found.module.css";
 
@@ -13,7 +12,7 @@ import styles from "./not-found.module.css";
    useful thing a 404 can do. Legacy URLs from the old site are redirected in
    next.config.ts, so anything arriving here is genuinely unknown. */
 export default function NotFound() {
-  const sections = getSections();
+  const selected = getSelected();
 
   return (
     <Container className={styles.wrap}>
@@ -22,13 +21,25 @@ export default function NotFound() {
           <h1 className={styles.title}>Nothing here.</h1>
           <p className={styles.lead}>
             Which is at least honest.{" "}
-            <Link href="/work">Back to the work →</Link>
+            <Link href="/#selected-work">Back to the work →</Link>
           </p>
         </div>
 
+        {/* The one useful thing a 404 can do is hand over the index. With
+            /work gone that index is the three case studies plus the
+            archive — every route on the site that holds work. */}
         <div className={`${styles.rail} ${grid.railRuled}`}>
           <p className={styles.railLabel}>Index</p>
-          <SectionIndex sections={sections} />
+          <ul className={styles.railList}>
+            {selected.map((entry) => (
+              <li key={entry.slug}>
+                <Link href={entry.href}>{entry.title}</Link>
+              </li>
+            ))}
+            <li>
+              <Link href="/archive">Archive</Link>
+            </li>
+          </ul>
         </div>
       </div>
     </Container>

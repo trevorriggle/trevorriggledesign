@@ -13,9 +13,14 @@
 import type { SectionId } from "./sections";
 
 export const entryOrder: Record<string, string[]> = {
-  /* DrawEvolve, thoosie, Lynk — in that order, fixed by hand. thoosie sits
-     second, directly after DrawEvolve. Do not sort this. */
+  /* TIER 1 — Selected Work. DrawEvolve, thoosie, Lynk, in that order, fixed
+     by hand. thoosie sits second, directly after DrawEvolve. Home presents
+     these three at descending visual weight in exactly this sequence. Do not
+     sort this. */
   "ai-systems": ["drawevolve", "thoosie", "lynk"],
+
+  /* TIER 2 — the archive. Same contract: position decides rank, never a
+     date. Empty until gallery entries exist. */
   "3d-graphics": [],
   marketing: [],
   "motion-graphics": [],

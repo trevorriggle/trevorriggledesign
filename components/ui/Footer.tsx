@@ -34,7 +34,7 @@ export function Footer() {
               <br />
               © {new Date().getFullYear()}
               <br />
-              Set in Fraunces &amp; IBM Plex
+              Set in Instrument Serif &amp; Geist
             </p>
           </div>
         </div>

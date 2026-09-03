@@ -1,99 +1,183 @@
 /* ============================================================================
    HOME
    ============================================================================
-   Composition, stated plainly:
+   Composition:
 
-   · A masthead that is type and metadata only — no image slot, because there
-     is no image worth putting above a hiring team's first read, and a hero
-     image slot would be the largest placeholder on the site.
-   · Then the top of the running order, as index rows. The lead is AI systems
-     work because the running order says so, not because a date does.
-   · Then the full seven-section index, which is the structural claim.
+   · An opening that is type and nothing else, at hero scale, hanging off the
+     left edge with enormous air under it. No image slot — there is no image
+     worth putting above a hiring team's first read, and a hero image slot
+     would be the largest placeholder on the site.
+   · The subhead sits in a NARROW column pushed right and down, so the
+     headline overhangs it. That offset is the whole masthead composition:
+     two blocks on different axes, not a stack on one centre line.
+   · Then the running order, crowded tight so it reads as an index.
+   · Then the section index, with the most air on the page above it.
 
-   What is deliberately not here: three feature columns, a CTA band, a
-   centred axis, and anything that fades up on scroll.
+   Rhythm, deliberately unequal: the masthead gets `--rhythm-loose` under it,
+   the index gets `--rhythm-crowd` between its own rows, and the two big
+   blocks sit at different distances from what precedes them.
    ========================================================================= */
 
 .masthead {
-  padding-top: clamp(var(--space-xl), 9vw, var(--space-3xl));
-  padding-bottom: var(--space-xl);
+  padding-top: clamp(var(--space-7), 11vw, var(--space-10));
+  padding-bottom: var(--rhythm-loose);
 }
 
 .mastheadGrid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--space-xl);
-  align-items: end;
+  row-gap: var(--space-7);
+  align-items: start;
 }
 
-.statement { grid-column: 1 / 10; }
-.vitals { grid-column: 10 / -1; }
+/* Spans 11 of 12 and overhangs the subhead below it. */
+.statement { grid-column: 1 / 12; }
 
-/* The one place on the site set at hero scale. Fraunces with the wonk axis on,
-   negative tracking, and leading below 1 so the lines lock together as a
-   block of texture rather than reading as separate sentences. */
+/* The one place on the site set at hero scale: 129px at the top of the clamp,
+   7.6x the body size. Leading below 1 so the lines lock into a single block
+   of texture instead of reading as three separate sentences. */
 .headline {
-  font-size: var(--text-4xl);
-  line-height: var(--leading-solid);
-  letter-spacing: var(--tracking-tighter);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--type-hero);
+  line-height: var(--leading-hero);
+  letter-spacing: var(--tracking-hero);
+  max-width: 15ch;
   text-wrap: balance;
-  max-width: 22ch;
+  /* Pull the first line's cap-height flush with the top rule. Optical, not
+     structural — the serif carries visible sidebearing at this size. */
+  margin-left: -0.045em;
+}
+
+/* Pushed to column 4 and down: the headline hangs left of it, which is the
+   asymmetry the page is built on. A short measure on purpose — 24ch keeps
+   this at four or five lines, so it reads as a caption to the headline
+   rather than as a second paragraph competing with it. */
+.subheadWrap {
+  grid-column: 4 / 9;
+  margin-top: var(--space-5);
 }
 
 .subhead {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
-  color: var(--color-text-quiet);
-  margin-top: var(--space-md);
-  max-width: 44ch;
-  text-wrap: pretty;
+  color: var(--color-text);
+  max-width: var(--measure-lead);
 }
 
-/* --- Sections ------------------------------------------------------------ */
+/* The single accent mark in the masthead, and one of very few on the site. */
+.rule {
+  grid-column: 1 / -1;
+  height: 0;
+  border-top: 1.5px solid var(--color-signal);
+  margin-bottom: var(--space-6);
+}
 
-.section {
+.vitals { grid-column: 10 / -1; }
+
+/* --- Selected work ------------------------------------------------------- */
+
+/* Crowds the masthead deliberately: the work should begin immediately after
+   the opening statement, not after another beat of silence. */
+.selected {
   border-top: var(--rule-heavy);
-  padding-top: var(--space-md);
-  margin-top: var(--section-gap);
+  padding-top: var(--space-4);
 }
 
-.sectionHead {
-  display: flex;
-  flex-wrap: wrap;
+.selectedHead {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
   align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-sm) var(--space-md);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-8);
 }
 
-.sectionTitle {
-  font-size: var(--text-2xl);
-  letter-spacing: var(--tracking-tighter);
+.selectedTitle {
+  grid-column: 1 / 8;
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
 }
 
-.sectionNote {
-  font-family: var(--font-mono);
+.selectedNote {
+  grid-column: 8 / -1;
   font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  color: var(--color-text-faint);
+  color: var(--color-text-meta);
 }
 
-.more {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
+/* --- The archive line ----------------------------------------------------
+   One line, set quiet. It is the only thing between selected work and the
+   footer, and it must not compete with either. */
+
+.archiveLine {
+  margin-top: var(--rhythm-tight);
+}
+
+.archiveLink {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: baseline;
+  padding-block: var(--space-5);
+  border-bottom: var(--rule);
   text-decoration: none;
-  border-bottom: 2px solid var(--color-signal);
-  padding-bottom: 2px;
+  color: inherit;
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
-.more:hover { color: var(--color-signal); }
+.archiveLink:hover { background: var(--color-bg-sunk); }
+.archiveLink:hover .archiveLabel { color: var(--color-signal); }
 
-@media (max-width: 60rem) {
+.archiveLabel {
+  grid-column: 1 / 4;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.archiveText {
+  grid-column: 4 / 12;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.archiveArrow {
+  grid-column: 12 / -1;
+  justify-self: end;
+  font-size: var(--text-lg);
+  color: var(--color-text-meta);
+}
+
+@media (max-width: 62rem) {
   .statement,
+  .subheadWrap,
   .vitals { grid-column: 1 / -1; }
-  .mastheadGrid { row-gap: var(--space-lg); }
+
+  .subheadWrap { margin-top: 0; }
+  .mastheadGrid { row-gap: var(--space-6); }
+
+  .selectedTitle,
+  .selectedNote { grid-column: 1 / -1; }
+  .selectedHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
+
+  .archiveLabel { grid-column: 1 / 8; }
+  .archiveText { grid-column: 1 / -1; margin-top: var(--space-2); }
+  .archiveArrow { grid-column: 12 / -1; grid-row: 1; }
+}
+
+/* 375px. The hero holds its clamp floor rather than collapsing to body size —
+   the whole point of a steep scale is that it survives the phone. */
+@media (max-width: 30rem) {
+  .headline { max-width: none; }
+  .masthead { padding-bottom: var(--rhythm-normal); }
 }

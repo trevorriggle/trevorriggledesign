@@ -1,79 +1,91 @@
 /* ============================================================================
-   ENTRY PAGE
+   CASE STUDY PAGE — Tier 1.
    ============================================================================
-   One template serves both content types, branching on `kind`. Case studies
-   get the five-part argument plus the AI structure; gallery entries get the
-   mixed-aspect set and almost no chrome.
+   Composition:
+
+   · A title at --type-title (86px) hanging at the left edge, with the deck
+     pushed right into a narrow column beneath it. Same asymmetry as the home
+     masthead, one scale step down, so the two pages read as one system.
+   · The lead media runs FULL BLEED, past the container on both sides. It is
+     the only element on the site allowed to touch the viewport edge.
+   · The prose sits at column 3, so the left margin carries the section marks
+     rather than being dead space.
+   · Plates alternate between the inset measure and a right bleed, so a run of
+     images does not read as a uniform stack.
+
+   Rhythm is uneven on purpose: the head crowds the breadcrumb, the media
+   crowds the head, and the body then gets real air.
    ========================================================================= */
 
 .head {
-  padding-top: clamp(var(--space-lg), 6vw, var(--space-2xl));
-  padding-bottom: var(--space-lg);
+  padding-top: clamp(var(--space-6), 6vw, var(--space-8));
+  padding-bottom: var(--space-7);
 }
 
 .breadcrumb {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--space-2xs) var(--space-xs);
-  font-family: var(--font-mono);
+  gap: var(--space-2) var(--space-3);
   font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  padding-bottom: var(--space-sm);
-  margin-bottom: var(--space-md);
+  color: var(--color-text-meta);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-7);
   border-bottom: var(--rule);
 }
 
 .breadcrumb a { text-decoration: none; }
 .breadcrumb a:hover { color: var(--color-signal); }
 
-.crumbOrdinal { color: var(--color-signal); }
+.crumbOrdinal {
+  color: var(--color-signal);
+  font-variant-numeric: tabular-nums;
+}
 
 .headGrid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--space-lg);
+  row-gap: var(--space-6);
   align-items: start;
 }
 
-.headMain { grid-column: 1 / 9; }
+.headMain { grid-column: 1 / 10; }
 .headRail { grid-column: 10 / -1; }
 
+/* 86px at the top of the clamp — 5x body. One step below the home hero, so
+   the home page still dominates the site's hierarchy. */
 .title {
-  font-size: var(--text-3xl);
-  letter-spacing: var(--tracking-tighter);
-  max-width: 24ch;
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  max-width: 12ch;
+  margin-left: -0.045em;
 }
 
-/* The deck is the claim under the title. Text face, not display — it is a
-   sentence, and it has to be read rather than admired. */
+/* Pushed right, under the overhanging title. Text face — it is a sentence,
+   and it has to be read rather than admired. */
 .deck {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
-  color: var(--color-text-quiet);
-  margin-top: var(--space-md);
-  max-width: 48ch;
-  text-wrap: pretty;
+  color: var(--color-text);
+  margin-top: var(--space-6);
+  margin-left: 16.6667%;
+  max-width: 32ch;
 }
 
-/* The **Status:** line from the copy, set as a chip.
-
-   No `text-transform` on either of these: the string is the author's own
-   sentence — "Shipped to TestFlight; approved for external testing" — and
-   shouting it in caps would be the template editorialising a piece of copy it
-   was handed. `.shelved` takes the signal colour so a shelved project reads as
-   a stated decision at a glance; `.state` is the quiet default. */
+/* The status chip. No uppercase transform — see the note in the component. */
 .shelved,
 .state {
   display: inline-block;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   letter-spacing: var(--tracking-normal);
-  padding: 0.2em 0.5em;
-  margin-top: var(--space-md);
+  padding: var(--space-1) var(--space-3);
+  margin-top: var(--space-6);
+  margin-left: 16.6667%;
 }
 
 .shelved {
@@ -86,56 +98,76 @@
   border: var(--rule);
 }
 
-/* --- Body --------------------------------------------------------------- */
+/* --- Body ----------------------------------------------------------------- */
 
 .body {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--space-xl);
-  align-items: start;
 }
 
-.argument { grid-column: 1 / 9; }
-.systems { grid-column: 1 / 10; }
-.prose { grid-column: 1 / 8; }
-.plates { grid-column: 1 / -1; }
-
-.block {
-  border-top: var(--rule-heavy);
-  padding-top: var(--space-md);
-  margin-top: var(--section-gap);
+/* Column 3. The indent is the composition. */
+.prose,
+.argument {
+  grid-column: 3 / 10;
 }
+
+.systems { grid-column: 3 / -1; }
+
+.block { margin-top: var(--rhythm-normal); }
 
 .blockLabel {
-  font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
+  letter-spacing: var(--tracking-caps-wide);
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  margin-bottom: var(--space-md);
+  color: var(--color-text-meta);
+  border-top: var(--rule-heavy);
+  padding-top: var(--space-3);
+  margin-bottom: var(--space-7);
 }
 
+/* --- Plates ---------------------------------------------------------------
+   Alternating measures. A run of identically-sized images is the single
+   easiest way for a case study to read as a template. */
+
 .plateStack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
   list-style: none;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rhythm-tight);
 }
 
-.plateWide { max-width: none; }
-.plateInset { max-width: var(--width-prose); }
+.plateInset {
+  width: 100%;
+  max-width: var(--width-prose);
+  margin-left: 16.6667%;
+}
 
-@media (max-width: 60rem) {
+.plateWide {
+  width: 100%;
+  margin-right: calc(var(--gutter) * -1);
+}
+
+/* Every second inset plate sits at the left edge instead of indented, so the
+   column shifts down the page rather than holding one axis. */
+.plateInset:nth-child(even) { margin-left: 0; }
+
+@media (max-width: 62rem) {
   .headMain,
-  .headRail,
-  .argument,
-  .systems,
+  .headRail { grid-column: 1 / -1; }
+
+  .deck,
+  .shelved,
+  .state { margin-left: 0; }
+
   .prose,
-  .plates {
-    grid-column: 1 / -1;
-  }
+  .argument,
+  .systems { grid-column: 1 / -1; }
+
+  .plateInset { margin-left: 0; max-width: none; }
+  .plateWide { margin-right: 0; }
+  .title { max-width: none; }
 }

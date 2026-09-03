@@ -8,7 +8,7 @@ no file renders as a spec placeholder carrying the same four facts listed here.
 **To add an asset:** save the file at the exact path in the *Save as* column.
 Nothing else changes — no code edit, no frontmatter edit, no import.
 
-- Declared: **1**
+- Declared: **1** (1 selected work, 0 archive)
 - Present: **0**
 - Still needed: **1**
 
@@ -45,6 +45,44 @@ point carrying an audio track, and `-movflags +faststart` matters because
 playback begins before the file finishes arriving.
 
 Still needed: **1**.
+
+---
+
+## Archive, by section (0)
+
+The archive is Tier 2 — one page at `/archive`, five anchored sections, no
+per-project routes. Images are grouped here the way they are grouped on the
+page, in the same manual order.
+
+### 3D Graphics · 2025
+
+`/archive#3d-graphics`
+
+_No sets in the repository yet._
+
+### Marketing · 2022
+
+`/archive#marketing`
+
+_No sets in the repository yet._
+
+### Motion Graphics · 2021
+
+`/archive#motion-graphics`
+
+_No sets in the repository yet._
+
+### Print · 2021
+
+`/archive#print`
+
+_No sets in the repository yet._
+
+### Personal Works · 2021
+
+`/archive#personal-works`
+
+_No sets in the repository yet._
 
 ---
 

@@ -7,7 +7,8 @@ import { ImageResponse } from "next/og";
    left-weighted type and the single vermilion mark are the same devices the
    site uses, so a shared link reads as this site before anyone clicks it.
 
-   Type note: these render in the renderer's default sans, not Fraunces. next/og
+   Type note: these render in the renderer's default sans, not Instrument
+   Serif. next/og
    rasterises with satori, which cannot consume the woff2 files next/font
    produces — it needs a raw ttf/otf buffer. Rather than fetch a font over the
    network during a build, the cards lean on structure and scale. To upgrade
@@ -17,11 +18,11 @@ import { ImageResponse } from "next/og";
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-const PAPER = "#f4f1e9";
-const INK = "#15140f";
-const SIGNAL = "#bf3b11";
-const RULE = "#cdc8bb";
-const MUTED = "#6f6a5d";
+const PAPER = "#faf8f5";
+const INK = "#111111";
+const SIGNAL = "#c42b12";
+const RULE = "#c5c4c1";
+const MUTED = "#686766";
 
 export function ogCard({
   ordinal,

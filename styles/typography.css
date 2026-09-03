@@ -1,15 +1,26 @@
 /* ============================================================================
    GLOBAL TYPE
    ============================================================================
-   Role assignment, stated once:
+   Role assignment, stated once and enforced everywhere:
 
-     display  Fraunces        page titles, section titles, pull statements
-     text     IBM Plex Sans   body, UI, links
-     mono     IBM Plex Mono   all metadata, ordinals, labels, diagrams
+     display  Instrument Serif  page titles, section titles, entry titles,
+                                the hero, and big hanging numerals
+     text     Geist             body, decks, UI, links — every sentence
+     mono     Geist Mono        DATA ONLY: filenames, pixel dimensions, repo
+                                paths, code spans
 
-   The rule that keeps it honest: mono means "this is data about the work,"
-   never "this looks technical." If a string is a label, a year, a filename, a
-   provider name or a measurement, it is mono. If it is a sentence, it is not.
+   THE MONO RULE CHANGED, and it is the main reason this reads less generic
+   than the previous build. Labels and ordinals used to be monospace, which is
+   the reflex that makes a portfolio look like a dev tool: mono was doing
+   decorative work, signalling "technical" rather than carrying information.
+   Here, uppercase letterspaced Geist carries labels — the editorial
+   convention — and mono is reserved for strings where character alignment is
+   genuinely load-bearing. If it is a label, it is Geist. If it is a filename,
+   it is mono.
+
+   Hierarchy comes from SIZE, and nothing else. There is no grey ramp to lean
+   on and the display face has one weight, so a heading earns its place in the
+   order by being bigger, or it does not earn it.
    ========================================================================= */
 
 body {
@@ -20,32 +31,48 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
   font-synthesis-weight: none;
-  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* ---- Display ------------------------------------------------------------- */
+/* ---- Display -------------------------------------------------------------
+   Leading and tracking are set PER SIZE. A single global line-height applied
+   from an 11px label to a 129px headline is the flatness the brief is about:
+   at 129px, 1.45 leading opens a hole you could park a car in, and at 11px,
+   0.9 leading overlaps the descenders.                                      */
 
 h1, h2, h3 {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: var(--soft-display), var(--wonk-on);
-  line-height: var(--leading-tight);
-  letter-spacing: var(--tracking-tight);
-  text-wrap: balance;
+  font-style: normal;
   margin: 0;
+  /* The serif is high-contrast and wants slightly optical spacing at size. */
+  font-feature-settings: "kern" 1, "liga" 1;
 }
 
 h1 {
-  font-size: var(--text-3xl);
-  letter-spacing: var(--tracking-tighter);
-  line-height: var(--leading-solid);
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
 }
-h2 { font-size: var(--text-2xl); }
-h3 { font-size: var(--text-xl); letter-spacing: var(--tracking-snug); }
 
-/* h4+ drop out of display and into the text face — at that size Fraunces'
-   personality reads as noise rather than voice. */
+h2 {
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+h3 {
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* h4+ drop out of the display face into the text face. At that size the serif
+   reads as noise rather than voice, and a third typographic voice on one page
+   is a ransom note. */
 h4, h5, h6 {
   font-family: var(--font-text);
   font-size: var(--text-base);
@@ -57,16 +84,17 @@ h4, h5, h6 {
 
 p { text-wrap: pretty; }
 
-/* ---- Links --------------------------------------------------------------
-   Underline stays on. The signal colour is reserved for hover and for the
-   external-link mark, so a page of links is not a page of orange.          */
+/* ---- Links ---------------------------------------------------------------
+   The underline stays on — it is the accessible affordance and an editorial
+   one. The accent is reserved for the hovered/focused state, so a page full
+   of links is not a page full of vermilion.                                */
 
 a {
   color: inherit;
   text-decoration-line: underline;
   text-decoration-thickness: var(--hairline);
-  text-decoration-color: var(--color-rule-strong);
-  text-underline-offset: 0.22em;
+  text-decoration-color: var(--color-rule);
+  text-underline-offset: 0.18em;
   transition: text-decoration-color var(--duration-fast) var(--ease-out),
     color var(--duration-fast) var(--ease-out);
 }
@@ -76,8 +104,9 @@ a:hover {
   text-decoration-color: currentColor;
 }
 
-/* ---- Mono utilities ------------------------------------------------------ */
+/* ---- Utilities ----------------------------------------------------------- */
 
+/* Genuine tabular data. Mono, aligned, never used for atmosphere. */
 .mono {
   font-family: var(--font-mono);
   font-size: var(--text-sm);
@@ -85,24 +114,24 @@ a:hover {
   font-variant-numeric: tabular-nums;
 }
 
-/* Uppercase mono label. The workhorse of the metadata rail. */
+/* The workhorse label: uppercase, letterspaced, in the TEXT face. */
 .label {
-  font-family: var(--font-mono);
+  font-family: var(--font-text);
   font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  font-variant-numeric: tabular-nums;
+  color: var(--color-text-meta);
 }
 
-/* Section ordinal — 01 … 07. Tabular so the column never shifts. */
+/* A hanging numeral. Display face, because on this site the section numbers
+   are a typographic event, not a caption. */
 .ordinal {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-caps-wide);
-  color: var(--color-text-faint);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
   font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-tight);
+  line-height: 1;
 }
 
 /* ---- A11y ---------------------------------------------------------------- */
@@ -119,20 +148,20 @@ a:hover {
   border: 0;
 }
 
-/* Skip link: hidden until focused, then a real, visible target. */
 .skip-link:focus-visible {
   position: fixed;
-  inset: var(--space-sm) auto auto var(--space-sm);
+  inset: var(--space-4) auto auto var(--space-4);
   z-index: var(--z-nav);
   width: auto;
   height: auto;
   margin: 0;
-  padding: var(--space-2xs) var(--space-sm);
+  padding: var(--space-2) var(--space-4);
   clip-path: none;
-  background: var(--color-text);
-  color: var(--color-bg);
-  font-family: var(--font-mono);
+  background: var(--color-bg-invert);
+  color: var(--color-text-invert);
+  font-family: var(--font-text);
   font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   text-decoration: none;

@@ -62,9 +62,11 @@ export function MetaLinks({
       <dt className={styles.term}>{term}</dt>
       <dd className={styles.value}>
         <ul className={styles.links}>
+          {/* No `kind` line. The label already says "Live"; stacking a
+              "LIVE" eyebrow above a link labelled "Live" inside a group
+              headed "Links" is three labels for one destination. */}
           {links.map((link) => (
             <li key={link.href}>
-              <span className={styles.linkKind}>{link.kind}</span>
               <ExternalLink href={link.href} showHost>
                 {link.label}
               </ExternalLink>

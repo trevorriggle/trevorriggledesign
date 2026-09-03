@@ -3,7 +3,8 @@
 Portfolio. Next.js App Router, TypeScript, MDX content in-repo, no CMS,
 deployed on Vercel.
 
-Two documents carry the reasoning: **[DECISIONS.md](DECISIONS.md)** for the
+Routes are `/`, `/work/<slug>` for the three case studies, `/archive`,
+`/about`, `/contact` and a 404. Two documents carry the reasoning: **[DECISIONS.md](DECISIONS.md)** for the
 type, palette, grid and content-model choices (and the assumptions to confirm),
 and **[MANIFEST.md](MANIFEST.md)** for the asset shopping list, regenerated on
 every build.
@@ -12,7 +13,8 @@ every build.
 pnpm install
 pnpm dev            # http://localhost:3000 — drafts visible
 pnpm build          # prebuild: [[NEEDS]] check, link check, MANIFEST.md
-pnpm check:needs    # fail if an unfilled [[NEEDS]] marker is left in content/
+pnpm check:placeholders  # [[NEEDS]] + TODO scan; fails a production build
+pnpm check:viewports     # 375/768/1440 overflow + type-scale check (needs a browser)
 pnpm verify         # both checks + typecheck + build
 pnpm check:links    # probe external links over the network (reports only)
 ```
@@ -21,7 +23,8 @@ pnpm check:links    # probe external links over the network (reports only)
 
 ```
 content/
-  sections.ts      the six sections, in order. Move a line to reorder the site.
+  sections.ts      two tiers. Tier 1 = the three case studies; tier 2 = the
+                   five archive sections. Move a line to reorder the site.
   order.ts         entry order within each section. Same rule.
   schema.ts        typed frontmatter, validated at build time
   index.ts         the loader: validation, ordering, image resolution
@@ -64,10 +67,10 @@ slot needs.
 
 ## Things that fail the build, on purpose
 
-- An unfilled `[[NEEDS: …]]` marker anywhere under `content/`. These are facts
-  only you can supply; in dev they render as a loud hazard block, and in a
-  production build they stop the deploy with the file and line of each. There
-  is no flag to skip it. See DECISIONS.md.
+- An unfilled `[[NEEDS: …]]` marker or a bare `TODO` in rendering content.
+  Production builds **fail** and list every occurrence with file and line;
+  preview and development builds **warn** and carry on. `ALLOW_PLACEHOLDERS=1`
+  ships anyway with a loud warning. See DECISIONS.md.
 - A relative, `http://`, protocol-relative or `TODO` external link — the bug
   that turned every "Live demo" on the old site into a 404. Checked in four
   places now, content MDX bodies included; see DECISIONS.md.
@@ -84,7 +87,8 @@ slot needs.
 ## Deploying
 
 Push to the branch Vercel watches. Framework preset is Next.js and needs no
-configuration. Confirm the four assumptions at the top of
+configuration. Preview deploys warn on placeholders; production deploys fail on
+them, which is the intended asymmetry. Confirm the four assumptions at the top of
 [DECISIONS.md](DECISIONS.md#assumptions-i-made-confirm-these) first — the domain
 in `lib/site.ts` especially, since canonical URLs, the sitemap and OG image URLs
 are all built from it.

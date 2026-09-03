@@ -5,15 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-needs.mjs && node scripts/check-links.mjs && node scripts/manifest.mjs",
+    "prebuild": "node scripts/check-placeholders.mjs && node scripts/check-links.mjs && node scripts/manifest.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check:links": "node scripts/check-links.mjs --probe",
     "manifest": "node scripts/manifest.mjs",
-    "verify": "node scripts/check-needs.mjs && node scripts/check-links.mjs && tsc --noEmit && next build",
-    "check:needs": "node scripts/check-needs.mjs"
+    "verify": "node scripts/check-placeholders.mjs && node scripts/check-links.mjs && tsc --noEmit && next build",
+    "check:placeholders": "node scripts/check-placeholders.mjs",
+    "check:viewports": "node scripts/check-viewports.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -32,6 +33,7 @@
     "eslint-config-next": "^16.3.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react-hooks": "7.1.1",
+    "playwright-core": "^1.62.1",
     "typescript": "^7.0.2"
   }
 }

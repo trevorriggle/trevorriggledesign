@@ -41,10 +41,19 @@ function readOrder() {
 function readSections() {
   const src = fs.readFileSync(path.join(ROOT, "content/sections.ts"), "utf8");
   const sections = [];
+  /* Reads id/title/years/kind/tier out of the TS source with a narrow regex,
+     so this script needs no TypeScript toolchain and the manifest is ordered
+     exactly the way the site is. */
   for (const block of src.matchAll(
-    /id:\s*["']([^"']+)["'],\s*\n\s*title:\s*["']([^"']+)["'],\s*\n\s*years:\s*["']([^"']+)["']/g,
+    /id:\s*["']([^"']+)["'],\s*\n\s*title:\s*["']([^"']+)["'],\s*\n\s*years:\s*["']([^"']+)["'],\s*\n\s*kind:\s*["']([^"']+)["'],\s*\n\s*tier:\s*["']([^"']+)["']/g,
   )) {
-    sections.push({ id: block[1], title: block[2], years: block[3] });
+    sections.push({
+      id: block[1],
+      title: block[2],
+      years: block[3],
+      kind: block[4],
+      tier: block[5],
+    });
   }
   return sections;
 }
@@ -99,6 +108,7 @@ for (const section of sections) {
       const poster = data.video.poster ?? {};
       videos.push({
         section: section.title,
+        tier: section.tier,
         slug,
         title: String(data.title ?? slug),
         src: data.video.src,
@@ -116,6 +126,8 @@ for (const section of sections) {
       const dest = path.join("public", "media", slug, img.src);
       rows.push({
         section: section.title,
+        sectionId: section.id,
+        tier: section.tier,
         slug,
         title: String(data.title ?? slug),
         role: img.role,
@@ -172,7 +184,7 @@ no file renders as a spec placeholder carrying the same four facts listed here.
 **To add an asset:** save the file at the exact path in the *Save as* column.
 Nothing else changes — no code edit, no frontmatter edit, no import.
 
-- Declared: **${rows.length}**
+- Declared: **${rows.length}** (${rows.filter((r) => r.tier === "selected").length} selected work, ${rows.filter((r) => r.tier === "archive").length} archive)
 - Present: **${present.length}**
 - Still needed: **${missing.length}**
 
@@ -208,6 +220,25 @@ point carrying an audio track, and \`-movflags +faststart\` matters because
 playback begins before the file finishes arriving.
 
 ${missingVideos.length === 0 ? "All declared clips are present." : `Still needed: **${missingVideos.length}**.`}`
+}
+
+---
+
+## Archive, by section (${rows.filter((r) => r.tier === "archive").length})
+
+The archive is Tier 2 — one page at \`/archive\`, five anchored sections, no
+per-project routes. Images are grouped here the way they are grouped on the
+page, in the same manual order.
+
+${
+  sections.filter((s) => s.tier === "archive").map((section) => {
+    const list = rows.filter((r) => r.sectionId === section.id);
+    return `### ${section.title} · ${section.years}\n\n\`/archive#${section.id}\`\n\n${
+      list.length === 0
+        ? "_No sets in the repository yet._"
+        : table(list)
+    }`;
+  }).join("\n\n")
 }
 
 ---

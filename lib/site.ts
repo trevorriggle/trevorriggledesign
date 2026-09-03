@@ -42,8 +42,14 @@ export const site = {
   social: [] as { label: string; href: string }[],
 } as const;
 
+/* Three labels, exactly as the copy specifies. "Work" points at the Selected
+   Work anchor on the home page, because /work no longer exists as a route —
+   the two-tier structure put the work itself on the home page and everything
+   else on /archive. The archive is reachable from the home page and the
+   footer, which keeps every piece of work within two clicks of the home
+   page without adding a fourth nav label the copy does not have. */
 export const nav = [
-  { label: "Work", href: "/work" },
+  { label: "Work", href: "/#selected-work" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;

@@ -1,46 +1,66 @@
 /* ============================================================================
    PROSE
    ============================================================================
-   Long-form body copy for an MDX entry. Narrow measure, generous leading,
-   hairline-separated subheads. Type sizes come from tokens; nothing here is a
-   raw value.
+   Long-form body copy for a case study. Full ink at 17px on a 62ch measure,
+   with 1.62 leading — the only place on the site running comfortable leading,
+   because it is the only place anyone reads more than two sentences.
+
+   Subheads are the copy's OWN headings ("The premise", "What I built"). They
+   take the display serif at a real step of the scale — d1, 25.5px — so the
+   argument has visible structure at a glance. They are ruled above, with the
+   rule running the full measure, which is what turns a wall of text into
+   movements.
    ========================================================================= */
 
 .prose {
   font-size: var(--text-md);
-  line-height: var(--leading-loose);
-  color: var(--color-text-quiet);
+  line-height: var(--leading-body);
+  color: var(--color-text);
   max-width: var(--measure);
 }
 
-.prose > * + * { margin-top: var(--space-md); }
+.prose > * + * { margin-top: var(--space-5); }
 
 .prose p { text-wrap: pretty; }
 
-/* Subheads inside a body drop out of the display face — the page already has
-   a display h1 and section labels, and a third voice makes it a ransom note. */
-.prose :is(h2, h3, h4) {
+/* The copy's own section headings. */
+.prose :is(h2, h3) {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  /* Real air above, tight beneath: a heading belongs to what follows it. */
+  margin-top: var(--space-8);
+  padding-top: var(--space-4);
+  border-top: var(--rule);
+}
+
+.prose :is(h2, h3) + * { margin-top: var(--space-4); }
+
+.prose h4 {
   font-family: var(--font-text);
   font-size: var(--text-base);
   font-weight: var(--weight-semibold);
-  letter-spacing: var(--tracking-normal);
-  line-height: var(--leading-snug);
-  color: var(--color-text);
-  margin-top: var(--space-xl);
-  padding-top: var(--space-xs);
-  border-top: var(--rule-faint);
+  margin-top: var(--space-6);
 }
 
 .prose :is(ul, ol) {
-  padding-left: var(--space-md);
+  padding-left: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--space-2);
 }
 
-.prose li::marker { color: var(--color-text-faint); }
+.prose li::marker { color: var(--color-text-meta); }
 
-.prose strong { color: var(--color-text); font-weight: var(--weight-semibold); }
+.prose strong {
+  color: var(--color-text);
+  font-weight: var(--weight-semibold);
+}
+
+.prose em { font-style: italic; }
 
 /* Inline code and blocks: mono, ruled, never a rounded grey pill. */
 .prose code {
@@ -58,10 +78,9 @@
   line-height: var(--leading-normal);
   background: var(--color-bg-sunk);
   border: var(--rule);
-  border-left: 2px solid var(--color-text);
-  padding: var(--space-sm);
+  border-left: 1.5px solid var(--color-text);
+  padding: var(--space-4);
   overflow-x: auto;
-  /* A wide code block scrolls inside itself; the page never scrolls sideways. */
   max-width: 100%;
 }
 
@@ -72,20 +91,27 @@
   font-size: inherit;
 }
 
+/* A pull quote takes the accent rule — one of its few appearances. */
 .prose blockquote {
-  border-left: 2px solid var(--color-signal);
-  padding-left: var(--space-sm);
+  border-left: 1.5px solid var(--color-signal);
+  padding-left: var(--space-5);
   color: var(--color-text);
-  font-size: var(--text-lg);
+  font-family: var(--font-display);
+  font-size: var(--display-1);
   line-height: var(--leading-snug);
-  max-width: 44ch;
+  letter-spacing: var(--tracking-tight);
+  max-width: 30ch;
+  margin-block: var(--space-7);
 }
 
 /* A figure inside prose is allowed out of the measure. */
-.prose figure { max-width: none; margin-block: var(--space-xl); }
+.prose figure {
+  max-width: none;
+  margin-block: var(--space-8);
+}
 
 .prose hr {
   border: 0;
   border-top: var(--rule);
-  margin-block: var(--space-xl);
+  margin-block: var(--space-8);
 }

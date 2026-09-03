@@ -1,18 +1,29 @@
+/* Horizontal measure and gutters. The only element allowed to own page-edge
+   padding, so the gutter is defined in exactly one place.
+
+   NOT CENTRED. `margin-inline: 0` is deliberate and load-bearing: the page
+   hangs off the left edge and the slack collects on the right, which is what
+   makes the metadata rail feel like a margin rather than a sidebar. */
+
 .container {
   width: 100%;
-  margin-inline: 0;              /* not centered — see DECISIONS.md */
+  margin-inline: 0;
   padding-inline: var(--gutter);
   max-width: var(--width-page);
 }
 
-/* On very wide viewports the page stops growing but stays left-weighted, with
-   the slack falling to the right where the metadata rail already lives. */
-@media (min-width: 100rem) {
-  .container {
-    margin-inline: 0 auto;
-  }
+/* Past the max width the page stops growing. It stays left-weighted up to a
+   very wide viewport, then finally takes the slack on both sides — beyond
+   ~1900px a hard-left page reads as broken rather than as a decision. */
+@media (min-width: 118rem) {
+  .container { margin-inline: 0 auto; }
 }
 
 .page { max-width: var(--width-page); }
-.prose { max-width: calc(var(--width-prose) + var(--gutter) * 2); }
-.full { max-width: none; }
+.prose { max-width: calc(var(--measure) + var(--gutter) * 2); }
+
+/* Edge to edge, no gutter. For full-bleed bands. */
+.full {
+  max-width: none;
+  padding-inline: 0;
+}

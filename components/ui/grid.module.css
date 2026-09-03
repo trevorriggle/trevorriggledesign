@@ -1,82 +1,128 @@
 /* ============================================================================
    THE GRID
    ============================================================================
-   One 12-column grid, declared here, used asymmetrically everywhere. Content
-   runs 1-8; the metadata rail runs 9-12. It is meant to be visible: the rail
-   boundary is a hairline that runs the height of the page body, and section
-   heads hang their ordinals in the left margin.
+   One 12-column grid, declared here, used ASYMMETRICALLY everywhere.
 
-   Composition rule: text never occupies the full 12 columns, and nothing is
-   centered. A full-width measure and a centered measure are the two fastest
-   ways for a layout to look untouched.
+   The composition rules this file exists to enforce:
+
+     · Nothing is centred. The page is left-weighted and the slack falls
+       right, where the metadata rail already lives.
+     · Text never occupies all 12 columns. A full-width measure and a centred
+       measure are the two fastest ways for a layout to look untouched.
+     · Content routinely starts at column 3, so the left margin is a real,
+       occupied part of the composition rather than dead padding — it is
+       where ordinals and labels hang.
+     · Some things bleed past the container entirely. See `.bleedRight` and
+       Container's `full` width.
    ========================================================================= */
 
 .grid {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--block-gap);
+  row-gap: var(--rhythm-tight);
   align-items: start;
 }
 
-/* --- Column spans -------------------------------------------------------- */
+/* --- Column spans ---------------------------------------------------------
+   Named for the job, not the numbers, so a composition change is one edit. */
 
 .main { grid-column: 1 / 9; }
 .rail { grid-column: 10 / -1; }
 .wide { grid-column: 1 / -1; }
 .narrow { grid-column: 1 / 7; }
-.offset { grid-column: 3 / 11; }
+
+/* Starts at column 3. The workhorse of the asymmetry: body copy indented off
+   the left edge, with the ordinal or label hanging in columns 1-2. */
+.offset { grid-column: 3 / 10; }
+
+/* Hangs in the left margin beside `.offset`. */
+.hang { grid-column: 1 / 3; }
+
+/* A narrow side column for captions and notes, set against a wide element. */
+.aside { grid-column: 9 / -1; }
+
+/* Runs past the right edge of the container. Used for image bands and rules
+   that should feel like they continue off the page. */
+.bleedRight {
+  grid-column: 3 / -1;
+  margin-right: calc(var(--gutter) * -1);
+}
+
+.bleedLeft {
+  grid-column: 1 / -1;
+  margin-left: calc(var(--gutter) * -1);
+}
 
 /* The visible rail rule. Drawn on the rail column, not the container, so it
-   starts where the metadata starts rather than at an arbitrary page edge. */
+   begins where the metadata begins. */
 .railRuled {
   border-left: var(--rule);
   padding-left: var(--grid-gap);
-  /* Pull the rule up to meet the section rule above it. */
-  margin-top: calc(var(--space-3xs) * -1);
 }
 
-/* --- Section rhythm ------------------------------------------------------ */
+/* --- Section rhythm -------------------------------------------------------
+   These are NOT interchangeable and must not be normalised into one value.
+   The varied rhythm is a design decision: the index crowds itself so it reads
+   as a directory, the masthead gets enormous air so it reads as an opening,
+   and a case study's movements sit tight so the argument stays continuous. */
 
-/* A major movement. The heavy top rule is the loudest structural mark on the
-   site and is reserved for section boundaries only. */
+/* A major movement, with air. */
 .section {
+  margin-top: var(--rhythm-normal);
+  scroll-margin-top: var(--space-6);
+}
+
+/* A major movement that CROWDS the one above it — used where two blocks
+   should read as one thought. */
+.sectionTight {
+  margin-top: var(--rhythm-crowd);
+  scroll-margin-top: var(--space-6);
+}
+
+/* A major movement with the most air on the site. Used once or twice. */
+.sectionLoose {
+  margin-top: var(--rhythm-loose);
+  scroll-margin-top: var(--space-6);
+}
+
+/* The heavy rule is the loudest structural mark here and is reserved for
+   top-level section boundaries. */
+.ruled {
   border-top: var(--rule-heavy);
-  padding-top: var(--space-md);
-  margin-top: var(--section-gap);
-  scroll-margin-top: var(--space-lg);
+  padding-top: var(--space-4);
 }
 
-.section:first-of-type { margin-top: var(--space-xl); }
-
-/* A minor division inside a section. */
-.band {
+.ruledFaint {
   border-top: var(--rule);
-  padding-top: var(--space-md);
-  margin-top: var(--block-gap);
+  padding-top: var(--space-4);
 }
 
-/* --- Phone: the grid collapses, the hierarchy does not ------------------- */
+/* --- Collapse -------------------------------------------------------------
+   The grid collapses; the hierarchy does not. Display type keeps its clamp
+   floor, ordinals move inline above their content instead of into a margin
+   that no longer exists. */
 
-@media (max-width: 60rem) {
+@media (max-width: 62rem) {
   .main,
   .rail,
   .narrow,
   .offset,
+  .hang,
+  .aside,
+  .bleedRight,
   .wide {
     grid-column: 1 / -1;
   }
 
-  /* The rail becomes a ruled block under the content rather than beside it. */
+  .bleedRight { margin-right: 0; }
+
   .railRuled {
     border-left: 0;
     border-top: var(--rule);
     padding-left: 0;
-    padding-top: var(--space-md);
-    margin-top: var(--space-sm);
+    padding-top: var(--space-5);
   }
 
-  .grid {
-    row-gap: var(--space-lg);
-  }
+  .grid { row-gap: var(--space-6); }
 }

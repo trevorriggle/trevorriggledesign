@@ -80,7 +80,7 @@
 
 .budgetFigure {
   font-family: var(--font-mono);
-  font-size: var(--text-xl);
+  font-size: var(--display-1);
   letter-spacing: var(--tracking-tight);
   font-variant-numeric: tabular-nums;
 }

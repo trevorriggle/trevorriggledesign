@@ -5,7 +5,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   /* Nothing on this page is anchored mid-scroll without a rail above it. */
-  scroll-padding-top: var(--space-2xl);
+  scroll-padding-top: var(--space-7);
 }
 
 body, h1, h2, h3, h4, h5, h6,
@@ -48,11 +48,19 @@ hr {
 }
 
 /* A real, visible focus ring on every interactive element, including the ones
-   that are otherwise unstyled. Two-tone so it survives on both paper and ink. */
+   that are otherwise unstyled. The accent earns one of its few appearances
+   here: a focus ring is exactly the kind of rare, meaningful signal the one
+   accent colour is being saved for. */
 :focus-visible {
   outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
+  outline-offset: 3px;
   border-radius: var(--radius-sm);
+}
+
+/* Reversed surfaces (the inverted masthead panel) need the ring to survive on
+   ink as well as on ground. */
+.on-ink :focus-visible {
+  outline-color: var(--color-text-invert);
 }
 
 @media (prefers-reduced-motion: reduce) {

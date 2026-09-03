@@ -1,0 +1,192 @@
+/* ============================================================================
+   SELECTED WORK — three ranks, three different weights.
+   ============================================================================
+   The spacing between ranks is deliberately UNEQUAL. The lead gets enormous
+   air beneath it, the second sits closer, and the third crowds up against the
+   second so it reads as a footnote to the pair above rather than as a third
+   equal item. That descending rhythm is most of the hierarchy.
+   ========================================================================= */
+
+.set {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Rank 0: the lead ---------------------------------------------------- */
+
+.lead {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  padding-bottom: var(--rhythm-loose);
+}
+
+.lead .media {
+  grid-column: 1 / -1;
+  margin-bottom: var(--space-7);
+}
+
+/* Text starts at column 3: the media bleeds full width above it and the copy
+   is indented off the left edge, so the two are on different axes. */
+.lead .text { grid-column: 3 / 10; }
+
+.lead .title {
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+}
+
+.lead .deck {
+  font-size: var(--display-1);
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  margin-top: var(--space-5);
+  max-width: 26ch;
+}
+
+/* The accent's one appearance in Selected Work: a short rule over the lead,
+   marking rank without a "Featured" label. */
+.lead .text {
+  border-top: 1.5px solid var(--color-signal);
+  padding-top: var(--space-5);
+}
+
+/* --- Rank 1: second ------------------------------------------------------ */
+
+.second {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: end;
+  border-top: var(--rule);
+  padding-top: var(--space-7);
+  padding-bottom: var(--rhythm-normal);
+}
+
+/* Media on the right, text on the left — the mirror of the lead, so the two
+   do not read as a repeating template.
+
+   FIVE columns, not seven. The lead currently has no cover file, so the second
+   rank's media was the largest object on the page and the hierarchy read
+   backwards — thoosie outweighing DrawEvolve. Capping this slot at ~40% keeps
+   rank order intact whichever assets happen to exist, which matters because
+   the assets arrive one at a time. */
+.second .media { grid-column: 8 / -1; }
+.second .text {
+  grid-column: 1 / 6;
+  padding-bottom: var(--space-4);
+}
+
+.second .title {
+  font-size: var(--type-entry);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+}
+
+.second .deck {
+  font-size: var(--text-md);
+  margin-top: var(--space-4);
+  max-width: 32ch;
+}
+
+/* --- Rank 2: third, and lightest ----------------------------------------- */
+
+.third {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: baseline;
+  border-top: var(--rule);
+  border-bottom: var(--rule);
+  /* Crowds the rank above it. */
+  padding-block: var(--space-6);
+}
+
+.third .text {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+
+.third .title {
+  grid-column: 1 / 4;
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+.third .deck {
+  grid-column: 4 / 10;
+  font-size: var(--text-base);
+  margin-top: 0;
+  max-width: 44ch;
+}
+
+.third .meta {
+  grid-column: 10 / -1;
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+/* --- Shared -------------------------------------------------------------- */
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+}
+
+.titleLink {
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.titleLink:hover { color: var(--color-signal); }
+
+.deck {
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-5);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The one place a status word appears on the home page. Vermilion is spent
+   here because "Shelved" is a claim the copy makes deliberately. */
+.state { color: var(--color-signal); }
+
+@media (max-width: 62rem) {
+  .lead,
+  .second,
+  .third { grid-template-columns: minmax(0, 1fr); }
+
+  .lead .media,
+  .lead .text,
+  .second .media,
+  .second .text,
+  .third .text { grid-column: 1 / -1; }
+
+  .third .text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .second { align-items: start; }
+  .second .media { margin-top: var(--space-6); order: 2; }
+  .second .text { padding-bottom: 0; }
+
+  .lead { padding-bottom: var(--rhythm-normal); }
+  .second { padding-bottom: var(--rhythm-tight); }
+}

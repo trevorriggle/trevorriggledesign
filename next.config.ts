@@ -8,23 +8,55 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
   },
 
-  /* Legacy URLs from the old Adobe Portfolio site.
-     Those slugs never matched their labels — /social-media was the Marketing
-     work, /spreads was Print, and /illlustrations was Personal Works with the
-     typo baked into the URL. The clean slugs are the section ids, and these
-     redirects keep every old inbound link and résumé PDF working.
+  /* ==========================================================================
+     REDIRECTS
+     ==========================================================================
+     Two generations of old URLs point here, and nothing is allowed to 404:
 
-     Add a line per old path as more turn up in analytics. */
+       1. The Adobe Portfolio slugs, organised by medium. Those categories are
+          now anchored sections inside /archive, so each old path redirects to
+          its section anchor.
+       2. This site's own previous structure — /work was a section index and
+          /full-stack-development was a category. Both are gone: the work
+          itself is on the home page and /archive.
+
+     All permanent (308). Anchors survive a 308 because the fragment is never
+     sent to the server — the browser reapplies it to the destination.
+     ======================================================================== */
   async redirects() {
     return [
-      { source: "/social-media", destination: "/work#marketing", permanent: true },
-      { source: "/spreads", destination: "/work#print", permanent: true },
-      { source: "/illlustrations", destination: "/work#personal-works", permanent: true },
+      /* ---- This site's previous structure ---- */
+      { source: "/work", destination: "/", permanent: true },
+      {
+        source: "/full-stack-development",
+        destination: "/work/drawevolve",
+        permanent: true,
+      },
+
+      /* ---- Adobe Portfolio slugs -> archive sections ---- */
+      { source: "/social-media", destination: "/archive#marketing", permanent: true },
+      { source: "/spreads", destination: "/archive#print", permanent: true },
+      {
+        source: "/illlustrations",
+        destination: "/archive#personal-works",
+        permanent: true,
+      },
       /* The typo'd path almost certainly has a correctly-spelled twin in the
          wild, from anyone who retyped it by hand. */
-      { source: "/illustrations", destination: "/work#personal-works", permanent: true },
-      { source: "/motion", destination: "/work#motion-graphics", permanent: true },
-      { source: "/3d", destination: "/work#3d-graphics", permanent: true },
+      {
+        source: "/illustrations",
+        destination: "/archive#personal-works",
+        permanent: true,
+      },
+      { source: "/animations", destination: "/archive#motion-graphics", permanent: true },
+      { source: "/motion", destination: "/archive#motion-graphics", permanent: true },
+      { source: "/3d", destination: "/archive#3d-graphics", permanent: true },
+
+      /* /abbott is a client name, not a medium, so which archive section it
+         belongs to is not derivable from anything in the repo. It lands on the
+         top of /archive rather than guessing an anchor and sending someone to
+         the wrong section. Add the anchor when you confirm it. */
+      { source: "/abbott", destination: "/archive", permanent: true },
     ];
   },
 };

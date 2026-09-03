@@ -1,67 +1,64 @@
+/* The footer is a colophon, not a sitemap. It gets the largest air on the
+   page above it and then sets its own content small and tight. */
+
 .footer {
-  margin-top: var(--section-gap);
+  margin-top: var(--rhythm-loose);
   border-top: var(--rule-heavy);
-  padding-block: var(--space-md) var(--space-2xl);
+  padding-block: var(--space-5) var(--space-9);
 }
 
 .inner {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
-  row-gap: var(--space-lg);
+  row-gap: var(--space-6);
   align-items: start;
 }
 
-.identity { grid-column: 1 / 6; }
+.identity { grid-column: 1 / 7; }
 .elsewhere { grid-column: 7 / 10; }
-.meta { grid-column: 11 / -1; }
+.meta { grid-column: 10 / -1; }
 
+/* The one place the name is set large. It is the sign-off. */
 .name {
   font-family: var(--font-display);
-  font-variation-settings: var(--soft-display), var(--wonk-on);
-  font-size: var(--text-lg);
-  letter-spacing: var(--tracking-tight);
-  margin-bottom: var(--space-2xs);
-}
-
-.line {
-  font-size: var(--text-sm);
-  color: var(--color-text-quiet);
-  max-width: 34ch;
-  text-wrap: pretty;
+  font-weight: var(--weight-display);
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
 }
 
 .heading {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: var(--tracking-caps);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
   text-transform: uppercase;
-  color: var(--color-text-faint);
-  margin-bottom: var(--space-xs);
+  color: var(--color-text-meta);
+  margin-bottom: var(--space-3);
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2xs);
+  gap: var(--space-2);
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: var(--text-sm);
+  font-size: var(--text-base);
 }
 
+/* Genuine data — a domain and a year — so this one is mono. */
 .metaLine {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   line-height: var(--leading-normal);
-  color: var(--color-text-faint);
+  color: var(--color-text-meta);
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 60rem) {
+@media (max-width: 62rem) {
   .identity,
   .elsewhere,
-  .meta {
-    grid-column: 1 / -1;
-  }
+  .meta { grid-column: 1 / -1; }
+  .footer { padding-bottom: var(--space-7); }
 }

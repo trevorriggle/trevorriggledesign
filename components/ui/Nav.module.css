@@ -1,8 +1,10 @@
+/* Sticky, opaque, one hairline. No blur, no translucency, no shadow — the nav
+   is a rule with words on it. */
+
 .nav {
   position: sticky;
   top: 0;
   z-index: var(--z-nav);
-  /* Opaque paper, one hairline. No blur, no translucency, no shadow. */
   background: var(--color-bg);
   border-bottom: var(--rule);
 }
@@ -11,52 +13,54 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-md);
-  padding-block: var(--space-xs);
+  gap: var(--space-5);
+  padding-block: var(--space-3);
 }
 
-/* The wordmark is set in mono, not the display face: at nav size the display
-   face is a logo, and a logo would be the loudest thing on a type-led site. */
+/* The wordmark takes the display serif, small. At this size it reads as a
+   masthead byline rather than as a logo, which is what a type-led site
+   wants — and it introduces the display face before the hero does. */
 .mark {
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--text-lg);
+  letter-spacing: var(--tracking-tight);
   text-decoration: none;
   white-space: nowrap;
+  line-height: 1;
 }
 
 .mark:hover { color: var(--color-signal); }
 
 .links {
   display: flex;
-  gap: var(--space-md);
+  gap: var(--space-5);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 .link {
-  font-family: var(--font-mono);
   font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--color-text-meta);
   text-decoration: none;
-  padding-block: var(--space-3xs);
+  padding-block: var(--space-1);
 }
 
 .link:hover { color: var(--color-signal); }
 
-/* Current page: the signal colour earns its keep as a state, not a decoration.
-   Marked with a rule as well as colour so it is not colour-only information. */
+/* Current page. Marked with a rule as well as colour, so it is never
+   colour-only information. */
 .current {
   color: var(--color-text);
-  box-shadow: inset 0 -2px 0 0 var(--color-signal);
+  box-shadow: inset 0 -1.5px 0 0 var(--color-signal);
 }
 
 @media (max-width: 30rem) {
-  .links { gap: var(--space-sm); }
-  .inner { padding-block: var(--space-2xs); }
+  .links { gap: var(--space-4); }
+  .inner { padding-block: var(--space-2); }
+  .mark { font-size: var(--text-md); }
 }

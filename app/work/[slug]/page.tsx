@@ -19,7 +19,7 @@ import {
 import { MdxBody } from "@/components/mdx/MdxBody";
 
 import { getAllEntries, getEntry, getNeighbours } from "@/content";
-import { sectionOrdinal } from "@/content/sections";
+import { sectionOrdinal, sectionHref } from "@/content/sections";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./page.module.css";
 
@@ -70,16 +70,20 @@ export default async function EntryPage({
     <>
       <Container as="header" className={styles.head}>
         <p className={styles.breadcrumb}>
-          <Link href="/work">Work</Link>
+          <Link href="/#selected-work">Selected work</Link>
           <span aria-hidden="true">/</span>
           <span className={styles.crumbOrdinal}>
             {sectionOrdinal(entry.section)}
           </span>
-          <Link href={`/work#${entry.section}`}>
+          <Link href={sectionHref(entry.section)}>
             {entry.sectionMeta.title}
           </Link>
-          <span aria-hidden="true">/</span>
-          <span>{entry.year}</span>
+          {entry.year && (
+            <>
+              <span aria-hidden="true">/</span>
+              <span>{entry.year}</span>
+            </>
+          )}
         </p>
 
         <div className={styles.headGrid}>
@@ -116,7 +120,9 @@ export default async function EntryPage({
                 <>
                   <Meta term="Role" value={entry.role.join(", ")} />
                   <Meta term="Timeline" value={entry.timeline} />
-                  <Meta term="Status" value={entry.state} />
+                  {/* No Status row: `state` is already set as a chip under
+                      the deck, and printing the same sentence twice on one
+                      screen reads as a template with a slot to fill. */}
                   <Meta term="Context" value={entry.context} />
                   <Meta term="With" value={entry.collaborators} />
                   <MetaChips term="Stack" items={entry.stack} />
@@ -135,21 +141,21 @@ export default async function EntryPage({
         <>
           {/* The video leads. When a case study has a clip, the clip is the
               strongest thing on the page and nothing should sit above it. */}
+          {/* Full bleed. The lead media is the only element on the site that
+              touches the viewport edge, which is what makes it read as the
+              opening of the page rather than as the first item in it. */}
           {entry.video && (
-            <Container>
-              <VideoSlot
-                video={entry.video}
-                sizes="(max-width: 60rem) 100vw, 84rem"
-              />
+            <Container width="full">
+              <VideoSlot video={entry.video} sizes="100vw" />
             </Container>
           )}
 
           {entry.cover && (
-            <Container>
+            <Container width="full">
               <Frame
                 image={entry.cover}
                 role="cover"
-                sizes="(max-width: 60rem) 100vw, 84rem"
+                sizes="100vw"
                 priority={!entry.video}
               />
             </Container>
