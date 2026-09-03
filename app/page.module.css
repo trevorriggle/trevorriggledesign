@@ -109,41 +109,39 @@
   color: var(--color-text-meta);
 }
 
-/* --- The archive line ----------------------------------------------------
-   One line, set quiet. It is the only thing between selected work and the
-   footer, and it must not compete with either. */
+/* --- Design: the second half, and it is a half --------------------------- */
 
-.archiveLine {
-  margin-top: var(--rhythm-tight);
+.design {
+  border-top: var(--rule-heavy);
+  padding-top: var(--space-4);
+  margin-top: var(--rhythm-loose);
+  padding-bottom: var(--rhythm-normal);
 }
 
-.archiveLink {
+.designHead {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
   align-items: baseline;
-  padding-block: var(--space-5);
-  border-bottom: var(--rule);
-  text-decoration: none;
-  color: inherit;
-  transition: background-color var(--duration-fast) var(--ease-out);
+  margin-bottom: var(--space-8);
 }
 
-.archiveLink:hover { background: var(--color-bg-sunk); }
-.archiveLink:hover .archiveLabel { color: var(--color-signal); }
+.designTitle {
+  grid-column: 1 / 8;
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
 
-.archiveLabel {
-  grid-column: 1 / 4;
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-size: var(--display-1);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-tight);
+.designTitleLink {
+  text-decoration: none;
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.archiveText {
-  grid-column: 4 / 12;
+.designTitleLink:hover { color: var(--color-signal); }
+
+.designNote {
+  grid-column: 8 / -1;
   font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
@@ -151,11 +149,76 @@
   color: var(--color-text-meta);
 }
 
-.archiveArrow {
-  grid-column: 12 / -1;
-  justify-self: end;
-  font-size: var(--text-lg);
+.categories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.category { border-top: var(--rule); }
+.category:last-child { border-bottom: var(--rule); }
+
+.categoryLink {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: baseline;
+  padding-block: var(--space-6);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.categoryLink:hover { background: var(--color-bg-sunk); }
+.categoryLink:hover .categoryTitle { color: var(--color-signal); }
+
+/* The lead thumbnail. Present only when the folder has files; when it is
+   absent the title simply starts at column 1 and the row closes up. */
+.categoryMedia {
+  grid-column: 1 / 4;
+  display: block;
+  align-self: start;
+}
+
+.categoryImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--color-bg-sunk);
+}
+
+.categoryMedia + .categoryTitle { grid-column: 4 / 7; }
+.categoryMedia ~ .categoryIntro { grid-column: 7 / 11; }
+
+.categoryTitle {
+  grid-column: 1 / 4;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--type-entry);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.categoryIntro {
+  grid-column: 4 / 11;
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 52ch;
+}
+
+.categoryMeta {
+  grid-column: 11 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
   color: var(--color-text-meta);
+  font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 62rem) {
@@ -170,9 +233,23 @@
   .selectedNote { grid-column: 1 / -1; }
   .selectedHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
 
-  .archiveLabel { grid-column: 1 / 8; }
-  .archiveText { grid-column: 1 / -1; margin-top: var(--space-2); }
-  .archiveArrow { grid-column: 12 / -1; grid-row: 1; }
+  .designTitle,
+  .designNote { grid-column: 1 / -1; }
+  .designHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
+
+  .categoryMedia,
+  .categoryTitle,
+  .categoryIntro,
+  .categoryMeta { grid-column: 1 / -1; }
+  .categoryMedia + .categoryTitle { grid-column: 1 / -1; }
+  .categoryMedia ~ .categoryIntro { grid-column: 1 / -1; }
+  .categoryMedia { margin-bottom: var(--space-4); }
+  .categoryIntro { margin-top: var(--space-3); }
+  .categoryMeta {
+    flex-direction: row;
+    gap: var(--space-4);
+    margin-top: var(--space-3);
+  }
 }
 
 /* 375px. The hero holds its clamp floor rather than collapsing to body size —

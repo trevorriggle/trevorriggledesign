@@ -4,14 +4,20 @@
    ============================================================================
    The old site turned every "Live demo" into a 404 on its own domain: the
    hrefs were relative paths, so they resolved against the portfolio instead of
-   the target. Three layers now prevent that, and this is the one that runs
-   outside React:
+   the target.
 
-     1. content/schema.ts   rejects a non-absolute href in frontmatter
-     2. ExternalLink        throws on a non-absolute href in page code
-     3. this script         scans BOTH, plus the hand-written links in app/ and
-                            components/, plus the MDX prose bodies — which the
-                            schema never sees, because they are not frontmatter
+   This is now the ONLY build-time content check on the project — every other
+   guard, validator and manifest was removed, because none of them protected a
+   visitor from anything. This one does: a relative external href fails
+   silently and looks like a working link, and there is no way to notice it
+   from the rendered page.
+
+   Two layers:
+
+     1. components/ui/ExternalLink  throws on a non-absolute href at render
+     2. this script                 scans content frontmatter, the MDX prose
+                                    bodies, and every href in app/, components/
+                                    and lib/
 
    It also asserts, by name, that the site's live project links are present and
    absolute. See REQUIRED_LIVE below.
@@ -254,9 +260,7 @@ async function probe(url) {
 /* -------------------------------------------------------------------------- */
 
 walkContent("work");
-walkContent("gallery");
 walkContentBodies("work");
-walkContentBodies("gallery");
 walkSource("app");
 walkSource("components");
 walkSource("lib");

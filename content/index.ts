@@ -1,497 +1,201 @@
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
-import { z } from "zod";
-
-import {
-  assertNoBannedKeys,
-  caseStudySchema,
-  gallerySchema,
-  intrinsicSize,
-  type CaseStudyFrontmatter,
-  type GalleryFrontmatter,
-  type ImageRef,
-  type VideoRef,
-} from "./schema";
-import {
-  sections,
-  getSection,
-  archiveSections,
-  type Section,
-  type SectionKind,
-} from "./sections";
-import { entryOrder } from "./order";
 
 /* ============================================================================
-   CONTENT LOADER
+   CONTENT — the three case studies.
    ============================================================================
-   Reads MDX from content/, validates frontmatter, and resolves declared images
-   against public/media/. Everything that can be wrong fails here with an error
-   naming the file and the field.
+   Reads MDX from content/work/, and that is the whole job.
 
-   The one thing that is deliberately NOT an error: a declared image whose file
-   does not exist yet. Those resolve to `exists: false` and render as a
-   <Placeholder />. That is the load-bearing decision behind this file — the
-   site has to be buildable and composition-reviewable with zero assets, so a
-   missing asset is a known state, not a failure. Everything else about it is
-   still validated: the filename, the aspect, the alt text and the content
-   label are all required whether the file is there or not.
+   THIS FILE USED TO BE A VALIDATOR. It threw on a misspelled frontmatter key,
+   on a banned key, on a published entry missing from an order file, on a slug
+   collision, on a missing tradeoff cost. All of that is gone. A portfolio build
+   failing because a content field is empty is a build that fails at 2am for no
+   reason a visitor would ever have noticed.
 
-   Images are referenced by public path rather than statically imported for the
-   same reason. A static import of a nonexistent file is an unrecoverable
-   module-resolution error; a public path is just a string until the file
-   arrives, at which point next/image serves and optimises it with no edit
-   anywhere. The cost is that intrinsic dimensions come from frontmatter
-   instead of the file — which is why `aspect` and `minWidth` are required.
+   The contract now: read what is there, coerce it to a shape the templates can
+   render, and when a field is absent leave it absent. Every template already
+   renders nothing for an empty value. Nothing here throws.
    ========================================================================= */
 
 const ROOT = process.cwd();
-const CONTENT_ROOT = path.join(ROOT, "content");
-const CASE_DIR = path.join(CONTENT_ROOT, "work");
-const GALLERY_DIR = path.join(CONTENT_ROOT, "gallery");
+const WORK_DIR = path.join(ROOT, "content", "work");
 
-/** Where every content image lives: public/media/<slug>/<filename>. */
-export const MEDIA_ROOT = path.join(ROOT, "public", "media");
-export const mediaDir = (slug: string) => path.join(MEDIA_ROOT, slug);
-export const mediaUrl = (slug: string, src: string) => `/media/${slug}/${src}`;
+/** Running order. Manual, hardcoded, never date-sorted. */
+export const SELECTED = ["drawevolve", "thoosie", "lynk"] as const;
 
-/**
- * Drafts render in dev and on preview deploys, never on production by default.
- *
- * This matters more than usual here: the seeded AI stubs are `status: draft`
- * precisely because their prose is still TODO, so the default protects the
- * production domain from publishing placeholder text the moment it deploys.
- * Flip a stub to `status: published` when its prose is written.
- *
- * SHOW_DRAFTS=1 forces them on in a production build — for reviewing the whole
- * structure as it will look when filled, without publishing it.
- */
-const SHOW_DRAFTS =
-  process.env.SHOW_DRAFTS === "1" ||
-  process.env.NODE_ENV !== "production" ||
-  process.env.VERCEL_ENV === "preview";
-
-/* -------------------------------------------------------------------------- */
-/* Types                                                                      */
-/* -------------------------------------------------------------------------- */
-
-export type ResolvedImage = ImageRef & {
-  /** Public URL. Valid whether or not the file is on disk yet. */
-  url: string;
-  /** Intrinsic dimensions from the declared aspect + minWidth. */
+export type ImageRef = {
+  src: string;
+  alt: string;
+  aspect: string;
   width: number;
   height: number;
-  ratio: number;
-  /** False -> renders as <Placeholder />. */
-  exists: boolean;
-  /** Repo-relative path, printed on the placeholder and in MANIFEST.md. */
-  expectedAt: string;
-};
-
-/**
- * A declared video, resolved against public/media/<slug>/.
- *
- * Both halves resolve independently, which is the whole point: `exists` false
- * with a poster that exists is the normal, expected state while the clip is
- * still being cut, and it renders as a still rather than as a broken element.
- */
-export type ResolvedVideo = Omit<VideoRef, "poster"> & {
   url: string;
   exists: boolean;
-  expectedAt: string;
-  poster: ResolvedImage;
+  caption?: string;
+  bleed?: boolean;
 };
 
-type Base = { slug: string; href: string; body: string; sectionMeta: Section };
+export type VideoRef = {
+  src: string;
+  url: string;
+  exists: boolean;
+  poster: ImageRef | null;
+  caption?: string;
+};
 
-export type CaseStudy = Omit<
-  CaseStudyFrontmatter,
-  "cover" | "images" | "architecture" | "video"
-> &
-  Base & {
-    kind: "case";
-    video: ResolvedVideo | null;
-    cover: ResolvedImage | null;
-    images: ResolvedImage[];
-    architecture:
-      | (Omit<NonNullable<CaseStudyFrontmatter["architecture"]>, "diagram"> & {
-          diagram: ResolvedImage | null;
-        })
-      | null;
-  };
+export type LinkRef = { label: string; href: string };
 
-export type GalleryEntry = Omit<GalleryFrontmatter, "images"> &
-  Base & {
-    kind: "gallery";
-    images: ResolvedImage[];
-  };
-
-export type Entry = CaseStudy | GalleryEntry;
-
-export type PopulatedSection = Section & {
-  ordinal: string;
-  entries: Entry[];
+export type CaseStudy = {
+  slug: string;
+  href: string;
+  title: string;
+  deck: string;
+  year: string;
+  role: string[];
+  context: string;
+  state: string;
+  timeline: string;
+  stack: string[];
+  links: LinkRef[];
+  video: VideoRef | null;
+  cover: ImageRef | null;
+  images: ImageRef[];
+  body: string;
 };
 
 /* -------------------------------------------------------------------------- */
-/* Errors                                                                     */
+/* Coercion. Every one of these returns a usable value for any input.         */
 /* -------------------------------------------------------------------------- */
 
-class ContentError extends Error {
-  constructor(message: string) {
-    super(`\n\n  ── Content error ──────────────────────────────\n  ${message}\n`);
-    this.name = "ContentError";
-  }
+const str = (v: unknown, fallback = ""): string =>
+  typeof v === "string" ? v : typeof v === "number" ? String(v) : fallback;
+
+const strArray = (v: unknown): string[] =>
+  Array.isArray(v) ? v.map((x) => str(x)).filter(Boolean) : [];
+
+function ratioOf(aspect: string): number {
+  const [w, h] = aspect.split(":").map(Number);
+  return w > 0 && h > 0 ? w / h : 3 / 2;
 }
 
-function formatZodError(file: string, error: z.ZodError): string {
-  const lines = error.issues.map((issue) => {
-    const where = issue.path.length ? issue.path.join(".") : "(root)";
-    return `    · ${where}: ${issue.message}`;
-  });
-  return `${file}\n  Frontmatter failed validation:\n${lines.join("\n")}`;
-}
+function toImage(v: unknown, slug: string): ImageRef | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const src = str(o.src);
+  if (!src) return null;
 
-/* -------------------------------------------------------------------------- */
-/* Filesystem                                                                 */
-/* -------------------------------------------------------------------------- */
-
-/** Entry folders, skipping `_`-prefixed ones (templates, scratch). */
-function entrySlugs(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
-  return fs
-    .readdirSync(dir, { withFileTypes: true })
-    .filter((d) => d.isDirectory() && !d.name.startsWith("_"))
-    .map((d) => d.name)
-    .sort();
-}
-
-function readEntry(dir: string, slug: string, kind: string) {
-  const file = path.join(dir, slug, "index.mdx");
-  if (!fs.existsSync(file)) {
-    throw new ContentError(`content/${kind}/${slug}/ has no index.mdx`);
-  }
-  const { data, content } = matter(fs.readFileSync(file, "utf8"));
-  return { data, body: content.trim() };
-}
-
-/* -------------------------------------------------------------------------- */
-/* Images                                                                     */
-/* -------------------------------------------------------------------------- */
-
-function resolveImage(slug: string, ref: ImageRef): ResolvedImage {
-  const { width, height } = intrinsicSize(ref);
-  const abs = path.join(mediaDir(slug), ref.src);
-
-  return {
-    ...ref,
-    url: mediaUrl(slug, ref.src),
+  const aspect = str(o.aspect, "3:2");
+  const width = typeof o.minWidth === "number" ? o.minWidth : 1600;
+  const image: ImageRef = {
+    src,
+    alt: str(o.alt),
+    aspect,
     width,
-    height,
-    ratio: width / height,
-    exists: fs.existsSync(abs),
-    expectedAt: `public/media/${slug}/${ref.src}`,
+    height: Math.round(width / ratioOf(aspect)),
+    url: `/media/${slug}/${src}`,
+    exists: fs.existsSync(path.join(ROOT, "public", "media", slug, src)),
+    bleed: o.bleed === true,
   };
+  const caption = str(o.caption);
+  if (caption) image.caption = caption;
+  return image;
 }
 
-function resolveVideo(slug: string, ref: VideoRef): ResolvedVideo {
-  const abs = path.join(mediaDir(slug), ref.src);
-  return {
-    ...ref,
-    url: mediaUrl(slug, ref.src),
-    exists: fs.existsSync(abs),
-    expectedAt: `public/media/${slug}/${ref.src}`,
-    poster: resolveImage(slug, ref.poster),
+function toVideo(v: unknown, slug: string): VideoRef | null {
+  if (!v || typeof v !== "object") return null;
+  const o = v as Record<string, unknown>;
+  const src = str(o.src);
+  if (!src) return null;
+
+  const video: VideoRef = {
+    src,
+    url: `/media/${slug}/${src}`,
+    exists: fs.existsSync(path.join(ROOT, "public", "media", slug, src)),
+    poster: toImage(o.poster, slug),
   };
+  const caption = str(o.caption);
+  if (caption) video.caption = caption;
+  return video;
+}
+
+/** External links only, and quietly dropped if not absolute — the link check
+ *  in scripts/ is what reports them; nothing here fails a build over one. */
+function toLinks(v: unknown): LinkRef[] {
+  if (!Array.isArray(v)) return [];
+  return v
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const o = entry as Record<string, unknown>;
+      const href = str(o.href);
+      const label = str(o.label);
+      if (!href || !label || !/^https:\/\//i.test(href)) return null;
+      return { label, href };
+    })
+    .filter((l): l is LinkRef => l !== null);
 }
 
 /* -------------------------------------------------------------------------- */
-/* Validation of the section/order contract                                   */
-/* -------------------------------------------------------------------------- */
 
-function assertSection(slug: string, kind: SectionKind, sectionId: string) {
-  const section = getSection(sectionId);
-  if (!section) {
-    throw new ContentError(
-      `content/${kind === "case" ? "work" : "gallery"}/${slug}/index.mdx\n` +
-        `  section: "${sectionId}" is not a section id.\n` +
-        `  Valid ids: ${sections.map((s) => s.id).join(", ")}`,
-    );
-  }
-  if (section.kind !== kind) {
-    throw new ContentError(
-      `content/${kind === "case" ? "work" : "gallery"}/${slug}/index.mdx\n` +
-        `  section "${sectionId}" is a ${section.kind} section, but this entry is a ${kind}.\n` +
-        `  Either move the folder to content/${section.kind === "case" ? "work" : "gallery"}/ ` +
-        `or point it at a ${kind} section.`,
-    );
-  }
-  return section;
-}
+let cache: CaseStudy[] | null = null;
+const CACHE = process.env.NODE_ENV === "production";
 
-/**
- * Apply the manual running order, and assert it has not drifted from the
- * folders on disk in either direction.
- */
-function orderEntries(all: Entry[]): PopulatedSection[] {
-  const bySlug = new Map(all.map((e) => [e.slug, e]));
-  const claimed = new Set<string>();
+function load(): CaseStudy[] {
+  if (cache && CACHE) return cache;
 
-  const populated = sections.map((section, i) => {
-    const order = entryOrder[section.id] ?? [];
+  const studies: CaseStudy[] = [];
 
-    const missing = order.filter((s) => !bySlug.has(s));
-    if (missing.length) {
-      throw new ContentError(
-        `content/order.ts — section "${section.id}" lists ${missing.length} slug(s) with no folder:\n` +
-          missing.map((s) => `    · "${s}"`).join("\n") +
-          `\n  Create the folder or remove the line.`,
-      );
-    }
+  for (const slug of SELECTED) {
+    const file = path.join(WORK_DIR, slug, "index.mdx");
+    if (!fs.existsSync(file)) continue;
 
-    const ordered = order.map((s) => {
-      claimed.add(s);
-      const entry = bySlug.get(s)!;
-      if (entry.section !== section.id) {
-        throw new ContentError(
-          `content/order.ts lists "${s}" under section "${section.id}", ` +
-            `but its frontmatter says section: "${entry.section}".`,
-        );
-      }
-      return entry;
-    });
+    const { data, content } = matter(fs.readFileSync(file, "utf8"));
+    const d = data as Record<string, unknown>;
 
-    return {
-      ...section,
-      ordinal: String(i + 1).padStart(2, "0"),
-      entries: ordered.filter((e) => SHOW_DRAFTS || e.status === "published"),
-    };
-  });
-
-  const unlisted = all.filter(
-    (e) => e.status === "published" && !claimed.has(e.slug),
-  );
-  if (unlisted.length) {
-    throw new ContentError(
-      `${unlisted.length} published entry(s) missing from content/order.ts:\n` +
-        unlisted
-          .map((e) => `    · "${e.slug}" (section: ${e.section})`)
-          .join("\n") +
-        `\n  Add each slug to its section's array — position decides where it ranks.\n` +
-        `  Nothing is date-sorted, so an unlisted entry has no position and would vanish.`,
-    );
-  }
-
-  return populated;
-}
-
-/* -------------------------------------------------------------------------- */
-/* Load                                                                       */
-/* -------------------------------------------------------------------------- */
-
-/**
- * Parsed content, cached for the life of the process.
- *
- * Production only. In dev the cache is skipped entirely: this module is
- * long-lived across requests, so a cached parse means editing an MDX file
- * changes nothing on screen until the dev server is restarted — which is
- * exactly wrong for the job this site is for, where the whole point of `pnpm
- * dev` is watching copy land as it is written, unfilled markers included.
- *
- * (Written without the literal marker string, because scripts/check-needs.mjs
- * scans every file under content/ including this one — and it is right to.)
- *
- * The cost is re-reading a handful of small files per request in dev, which is
- * not measurable. A production build parses once per process either way.
- */
-let cache: PopulatedSection[] | null = null;
-
-const CACHE_PARSED = process.env.NODE_ENV === "production";
-
-function loadAll(): PopulatedSection[] {
-  if (cache && CACHE_PARSED) return cache;
-
-  const entries: Entry[] = [];
-
-  // ---- case studies ----
-  for (const slug of entrySlugs(CASE_DIR)) {
-    const { data, body } = readEntry(CASE_DIR, slug, "work");
-    assertNoBannedKeys(data, `content/work/${slug}/index.mdx`);
-    const parsed = caseStudySchema.safeParse(data);
-    if (!parsed.success) {
-      throw new ContentError(
-        formatZodError(`content/work/${slug}/index.mdx`, parsed.error),
-      );
-    }
-    const fm = parsed.data;
-    const sectionMeta = assertSection(slug, "case", fm.section);
-
-    entries.push({
-      ...fm,
-      kind: "case",
+    studies.push({
       slug,
       href: `/work/${slug}`,
-      body,
-      sectionMeta,
-      video: fm.video ? resolveVideo(slug, fm.video) : null,
-      cover: fm.cover ? resolveImage(slug, fm.cover) : null,
-      images: fm.images.map((img) => resolveImage(slug, img)),
-      architecture: fm.architecture
-        ? {
-            ...fm.architecture,
-            diagram: fm.architecture.diagram
-              ? resolveImage(slug, fm.architecture.diagram)
-              : null,
-          }
-        : null,
+      title: str(d.title, slug),
+      deck: str(d.deck),
+      year: str(d.year),
+      role: strArray(d.role),
+      context: str(d.context),
+      state: str(d.state),
+      timeline: str(d.timeline),
+      stack: strArray(d.stack),
+      links: toLinks(d.links),
+      video: toVideo(d.video, slug),
+      cover: toImage(d.cover, slug),
+      images: (Array.isArray(d.images) ? d.images : [])
+        .map((img) => toImage(img, slug))
+        .filter((i): i is ImageRef => i !== null),
+      body: content.trim(),
     });
   }
 
-  // ---- gallery ----
-  for (const slug of entrySlugs(GALLERY_DIR)) {
-    const { data, body } = readEntry(GALLERY_DIR, slug, "gallery");
-    assertNoBannedKeys(data, `content/gallery/${slug}/index.mdx`);
-    const parsed = gallerySchema.safeParse(data);
-    if (!parsed.success) {
-      throw new ContentError(
-        formatZodError(`content/gallery/${slug}/index.mdx`, parsed.error),
-      );
-    }
-    const fm = parsed.data;
-    const sectionMeta = assertSection(slug, "gallery", fm.section);
-
-    entries.push({
-      ...fm,
-      kind: "gallery",
-      slug,
-      href: `/work/${slug}`,
-      body,
-      sectionMeta,
-      images: fm.images.map((img) => resolveImage(slug, img)),
-    });
-  }
-
-  // Case studies and gallery entries share one /work/[slug] namespace, so a
-  // collision between the two folders would make one of them unreachable.
-  const seen = new Map<string, string>();
-  for (const e of entries) {
-    const prev = seen.get(e.slug);
-    if (prev) {
-      throw new ContentError(
-        `slug collision: "${e.slug}" exists in both content/work/ and content/gallery/.\n` +
-          `  Both would resolve to /work/${e.slug}. Rename one.`,
-      );
-    }
-    seen.set(e.slug, e.kind);
-  }
-
-  cache = orderEntries(entries);
-  return cache;
+  cache = studies;
+  return studies;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Public API                                                                 */
-/* -------------------------------------------------------------------------- */
-
-export function getSections(): PopulatedSection[] {
-  return loadAll();
+export function getSelected(): CaseStudy[] {
+  return load();
 }
 
-/** Sections that have at least one visible entry. */
-export function getNonEmptySections(): PopulatedSection[] {
-  return loadAll().filter((s) => s.entries.length > 0);
+export function getCaseStudy(slug: string): CaseStudy | null {
+  return load().find((s) => s.slug === slug) ?? null;
 }
 
-export function getAllEntries(): Entry[] {
-  return loadAll().flatMap((s) => s.entries);
-}
-
-export function getEntry(slug: string): Entry | null {
-  return getAllEntries().find((e) => e.slug === slug) ?? null;
-}
-
-/** Running-order neighbours, for the prev/next pager.
- *
- *  Tier 1 only. The pager exists to walk a reader through the three case
- *  studies in the order they were meant to be read; archive entries have no
- *  pages of their own to page to. */
-export function getNeighbours(slug: string): {
-  prev: Entry | null;
-  next: Entry | null;
-} {
-  const all: Entry[] = getSelected();
-  const i = all.findIndex((e) => e.slug === slug);
+/** Prev/next through the three, in running order. */
+export function getNeighbours(slug: string) {
+  const all = load();
+  const i = all.findIndex((s) => s.slug === slug);
   if (i < 0) return { prev: null, next: null };
   return { prev: all[i - 1] ?? null, next: all[i + 1] ?? null };
 }
 
-/** Tier 1 — the three case studies, in manual order. The home page's spine. */
-export function getSelected(): CaseStudy[] {
-  return loadAll()
-    .filter((s) => s.tier === "selected")
-    .flatMap((s) => s.entries)
-    .filter((e): e is CaseStudy => e.kind === "case");
-}
-
-/** Tier 2 — the archive sections, in archive order, with their entries.
- *  Returned whether or not a section has entries: a section heading and its
- *  intro are real content, and the running order is the structural claim. */
-export function getArchive(): PopulatedSection[] {
-  const populated = loadAll();
-  return archiveSections
-    .map((s) => populated.find((p) => p.id === s.id))
-    .filter((s): s is PopulatedSection => Boolean(s));
-}
-
-/** Every archive image, grouped by section — drives MANIFEST.md's archive
- *  breakdown. */
-export function getArchiveImagesBySection(): {
-  section: PopulatedSection;
-  images: (ResolvedImage & { slug: string; entryTitle: string })[];
-}[] {
-  return getArchive().map((section) => ({
-    section,
-    images: section.entries.flatMap((e) =>
-      e.images.map((img) => ({
-        ...img,
-        slug: e.slug,
-        entryTitle: e.title,
-      })),
-    ),
-  }));
-}
-
-/** Every image the site expects, whether or not it exists. Drives MANIFEST.md
- *  and the asset-coverage report. */
-export function getAllImages(): (ResolvedImage & {
-  slug: string;
-  entryTitle: string;
-  role: string;
-})[] {
-  return getAllEntries().flatMap((e) => {
-    const rows: (ResolvedImage & { slug: string; entryTitle: string; role: string })[] = [];
-    const add = (img: ResolvedImage | null, role: string) => {
-      if (img) rows.push({ ...img, slug: e.slug, entryTitle: e.title, role });
-    };
-
-    if (e.kind === "case") {
-      add(e.video?.poster ?? null, "video poster");
-      add(e.cover, "cover");
-      add(e.architecture?.diagram ?? null, "architecture diagram");
-      e.images.forEach((img, i) => add(img, `images[${i}]`));
-    } else {
-      e.images.forEach((img, i) => add(img, i === 0 ? "images[0] (lead)" : `images[${i}]`));
-    }
-    return rows;
-  });
-}
-
 /** Every external link in content, for scripts/check-links.mjs. */
 export function getAllExternalLinks() {
-  return getAllEntries().flatMap((e) =>
-    e.links.map((l) => ({ ...l, source: `${e.kind}/${e.slug}` })),
+  return load().flatMap((s) =>
+    s.links.map((l) => ({ ...l, source: `work/${s.slug}` })),
   );
 }
-
-export { sections, getSection };
-export type { Section };

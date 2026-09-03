@@ -1,9 +1,11 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { SelectedWork } from "@/components/ui/SelectedWork";
 import { MetaRail, Meta } from "@/components/ui/MetaRail";
 import { getSelected } from "@/content";
-import { archiveSections } from "@/content/sections";
+import { designCategories } from "@/content/design";
+import { getDesignImages } from "@/lib/design-images";
 import { site } from "@/lib/site";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./page.module.css";
@@ -73,21 +75,64 @@ export default function HomePage() {
         <SelectedWork entries={selected} />
       </Container>
 
-      {/* One line. Quiet on purpose. */}
-      <Container as="section" className={styles.archiveLine}>
-        <Link href="/archive" className={styles.archiveLink}>
-          <span className={styles.archiveLabel}>Archive</span>
-          {/* The section titles themselves, joined. Derived from the running
-              order, not a written line — so it cannot drift out of date and
-              it adds no copy that is not already on the site. */}
-          <span className={styles.archiveText}>
-            {archiveSections.map((s) => s.title).join(" · ")}
-          </span>
-          <span className={styles.archiveArrow} aria-hidden="true">
-            →
-          </span>
-        </Link>
+      {/* The second half of the argument. "Designer who ships software" only
+          holds if both halves are on the page — this is not an appendix and it
+          is not a single quiet link. */}
+      <Container as="section" id="design" className={styles.design}>
+        <div className={styles.designHead}>
+          <h2 className={styles.designTitle}>
+            <Link href="/design" className={styles.designTitleLink}>
+              Design
+            </Link>
+          </h2>
+          <p className={styles.designNote}>Five bodies of work</p>
+        </div>
+
+        <ul className={styles.categories}>
+          {designCategories.map((category) => {
+            const images = getDesignImages(category.slug, category.title);
+            const lead = images[0];
+
+            return (
+              <li key={category.slug} className={styles.category}>
+                <Link
+                  href={`/design/${category.slug}`}
+                  className={styles.categoryLink}
+                >
+                  {/* The lead image, when the folder has one. Decorative here:
+                      the link is already named by the title beside it, so a
+                      second description would just be read out twice. */}
+                  {lead && (
+                    <span className={styles.categoryMedia}>
+                      <Image
+                        src={lead.src}
+                        alt=""
+                        width={lead.width}
+                        height={lead.height}
+                        sizes="(max-width: 62rem) 100vw, 22rem"
+                        loading="lazy"
+                        className={styles.categoryImage}
+                      />
+                    </span>
+                  )}
+
+                  <span className={styles.categoryTitle}>{category.title}</span>
+                  <span className={styles.categoryIntro}>{category.intro}</span>
+                  <span className={styles.categoryMeta}>
+                    <span>{category.years}</span>
+                    {images.length > 0 && (
+                      <span>
+                        {images.length} image{images.length === 1 ? "" : "s"}
+                      </span>
+                    )}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
       </Container>
+
     </>
   );
 }

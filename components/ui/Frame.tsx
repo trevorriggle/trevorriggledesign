@@ -1,67 +1,54 @@
 import Image from "next/image";
-import type { ResolvedImage } from "@/content";
-import { Placeholder } from "./Placeholder";
+import type { ImageRef } from "@/content";
 import styles from "./Frame.module.css";
 
 /* ============================================================================
    FRAME
    ============================================================================
-   The single place the site decides between a real image and a placeholder.
-   Every image on the site goes through here, so "drop the file in and change
-   nothing else" is true by construction rather than by discipline.
+   A declared image, rendered when the file is on disk.
 
-   next/image gets width/height from the declared aspect and minWidth, so
-   there is no layout shift either before or after the real file arrives.
+   When it is not, this renders NOTHING. It used to render a spec plate —
+   filename, ratio, minimum export size, a line about what the image had to
+   show. That made the site reviewable with zero assets, which was genuinely
+   useful while it was being built and is exactly wrong now: it puts a note
+   from the author to the author on a live page.
+
+   An absent image is simply absent. The page is its copy.
    ========================================================================= */
 
 export function Frame({
   image,
-  role,
   sizes,
   priority = false,
-  showCaption = true,
   ordinal,
   className,
 }: {
-  image: ResolvedImage;
-  role?: string;
-  /** Required reading for performance: tell next/image the rendered width. */
+  image: ImageRef;
   sizes: string;
   priority?: boolean;
-  showCaption?: boolean;
-  /** Plate number in a series, e.g. "03". */
   ordinal?: string;
   className?: string;
 }) {
-  const caption = showCaption && image.caption ? image.caption : null;
+  if (!image.exists) return null;
 
   return (
     <figure className={[styles.frame, className].filter(Boolean).join(" ")}>
-      {image.exists ? (
-        <Image
-          src={image.url}
-          alt={image.alt}
-          width={image.width}
-          height={image.height}
-          sizes={sizes}
-          priority={priority}
-          /* Explicit rather than implied: everything below the fold on an
-             image-heavy page defers, and only a slot a page marks as its LCP
-             candidate loads eagerly. The archive will eventually be the
-             heaviest page here and it must not be what makes the site feel
-             slow. */
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          className={styles.image}
-        />
-      ) : (
-        <Placeholder image={image} role={role} />
-      )}
+      <Image
+        src={image.url}
+        alt={image.alt}
+        width={image.width}
+        height={image.height}
+        sizes={sizes}
+        priority={priority}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+        className={styles.image}
+      />
 
-      {caption && (
+      {image.caption && (
         <figcaption className={styles.caption}>
           {ordinal && <span className={styles.captionOrdinal}>{ordinal}</span>}
-          <span>{caption}</span>
+          <span>{image.caption}</span>
         </figcaption>
       )}
     </figure>

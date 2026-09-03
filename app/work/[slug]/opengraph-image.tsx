@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
 import { ogCard, OG_SIZE, OG_CONTENT_TYPE } from "@/lib/og";
 import { site } from "@/lib/site";
-import { getAllEntries, getEntry } from "@/content";
-import { sectionOrdinal } from "@/content/sections";
+import { SELECTED, getSelected, getCaseStudy } from "@/content";
+
 
 export const alt = "Case study";
 export const size = OG_SIZE;
 export const contentType = OG_CONTENT_TYPE;
 
 export function generateStaticParams() {
-  return getAllEntries().map((entry) => ({ slug: entry.slug }));
+  return SELECTED.map((slug) => ({ slug }));
 }
 
 export default async function Image({
@@ -18,17 +18,17 @@ export default async function Image({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const entry = getEntry(slug);
+  const entry = getCaseStudy(slug);
   if (!entry) notFound();
 
-  /* The deck / caption only. Nothing on the card is generated prose. */
-  const deck = entry.kind === "case" ? entry.deck : (entry.caption ?? undefined);
+  /* The deck only. Nothing on the card is generated prose. */
+  const position = getSelected().findIndex((s) => s.slug === slug) + 1;
 
   return ogCard({
-    ordinal: sectionOrdinal(entry.section),
-    eyebrow: entry.sectionMeta.title,
+    ordinal: String(position).padStart(2, "0"),
+    eyebrow: "Selected work",
     title: entry.title,
-    deck,
+    deck: entry.deck || undefined,
     footer: site.domain,
   });
 }

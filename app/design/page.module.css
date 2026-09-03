@@ -1,0 +1,147 @@
+/* ============================================================================
+   /design — landing
+   ============================================================================
+   Five rows, each a real entry to a real page. Rhythm is looser than the
+   old archive: these are destinations, not a contact sheet.
+   ========================================================================= */
+
+.head {
+  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-bottom: var(--space-8);
+}
+
+.headGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-6);
+  align-items: end;
+}
+
+.title {
+  grid-column: 1 / 8;
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  margin-left: -0.045em;
+}
+
+.landing { grid-column: 4 / 11; }
+
+.landingPara {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 38ch;
+}
+
+.landingPara + .landingPara { margin-top: var(--space-4); }
+
+/* --- Rows ---------------------------------------------------------------- */
+
+.list { padding-bottom: var(--rhythm-normal); }
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: start;
+  border-top: var(--rule-heavy);
+  padding-block: var(--space-7);
+}
+
+.row:last-child { border-bottom: var(--rule-heavy); }
+
+.ordinal {
+  grid-column: 1 / 2;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--display-1);
+  line-height: 1;
+  color: var(--color-text-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+.rowText { grid-column: 2 / 8; }
+
+.rowTitle {
+  font-size: var(--type-entry);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+}
+
+.rowLink {
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.rowLink:hover { color: var(--color-signal); }
+
+.rowIntro {
+  font-size: var(--text-md);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  margin-top: var(--space-4);
+  max-width: 46ch;
+}
+
+/* The "What it demonstrates" line, on the landing row. Labelled, so it never
+   reads as a second sentence of the intro. */
+.demonstrates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: var(--space-5);
+  padding-top: var(--space-3);
+  border-top: var(--rule);
+  max-width: 46ch;
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+}
+
+.demonstratesTerm {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+
+.rowYear {
+  grid-column: 8 / 9;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  font-variant-numeric: tabular-nums;
+  padding-top: var(--space-2);
+}
+
+.rowMedia {
+  grid-column: 9 / -1;
+  display: block;
+  text-decoration: none;
+}
+
+.rowImage {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--color-bg-sunk);
+}
+
+@media (max-width: 62rem) {
+  .title,
+  .landing { grid-column: 1 / -1; }
+
+  .ordinal,
+  .rowText,
+  .rowYear,
+  .rowMedia { grid-column: 1 / -1; }
+
+  .rowText { margin-top: var(--space-3); }
+  .rowYear { padding-top: 0; margin-top: var(--space-4); }
+  .rowMedia { margin-top: var(--space-5); }
+  .row { padding-block: var(--space-6); }
+}

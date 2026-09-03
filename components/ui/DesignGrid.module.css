@@ -1,0 +1,42 @@
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  gap: var(--grid-gap);
+  grid-auto-flow: dense;
+  align-items: start;
+}
+
+.item { min-width: 0; }
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--color-bg-sunk);
+}
+
+/* Spans by proportion class. */
+.span3 { grid-column: span 3; }
+.span4 { grid-column: span 4; }
+.span6 { grid-column: span 6; }
+.span8 { grid-column: span 8; }
+.span12 { grid-column: span 12; }
+
+@media (max-width: 62rem) {
+  .span3 { grid-column: span 4; }
+  .span4 { grid-column: span 6; }
+  .span6,
+  .span8 { grid-column: span 12; }
+}
+
+@media (max-width: 30rem) {
+  .grid { gap: var(--space-4); }
+  .span3,
+  .span4 { grid-column: span 6; }
+  .span6,
+  .span8,
+  .span12 { grid-column: span 12; }
+}

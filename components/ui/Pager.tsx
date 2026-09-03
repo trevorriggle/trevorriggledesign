@@ -1,8 +1,8 @@
 import Link from "next/link";
-import type { Entry } from "@/content";
+import type { CaseStudy } from "@/content";
 import styles from "./Pager.module.css";
 
-export function Pager({ prev, next }: { prev: Entry | null; next: Entry | null }) {
+export function Pager({ prev, next }: { prev: CaseStudy | null; next: CaseStudy | null }) {
   if (!prev && !next) return null;
 
   return (
@@ -12,7 +12,7 @@ export function Pager({ prev, next }: { prev: Entry | null; next: Entry | null }
           <span className={styles.dir}>← Previous</span>
           <span className={styles.title}>{prev.title}</span>
           <span className={styles.section}>
-            {prev.sectionMeta.title}
+            {prev.year}
           </span>
         </Link>
       ) : (
@@ -23,7 +23,7 @@ export function Pager({ prev, next }: { prev: Entry | null; next: Entry | null }
         <Link href={next.href} className={`${styles.link} ${styles.next}`}>
           <span className={styles.dir}>Next →</span>
           <span className={styles.title}>{next.title}</span>
-          <span className={styles.section}>{next.sectionMeta.title}</span>
+          <span className={styles.section}>{next.year}</span>
         </Link>
       ) : (
         <span className={styles.spacer} />

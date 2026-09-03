@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { ExternalLink } from "./ExternalLink";
-import type { ExternalLinkRef } from "@/content/schema";
+import type { LinkRef } from "@/content";
 import styles from "./MetaRail.module.css";
 
 export function MetaRail({ children }: { children: ReactNode }) {
@@ -53,7 +53,7 @@ export function MetaLinks({
   links,
 }: {
   term: string;
-  links: ExternalLinkRef[];
+  links: LinkRef[];
 }) {
   if (links.length === 0) return null;
 

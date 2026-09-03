@@ -1,0 +1,158 @@
+/* ============================================================================
+   /design/[category] — a page about a body of work.
+   ============================================================================
+   Copy first at real reading size, then the grid full width. The category page
+   is deliberately built like the case study pages rather than like a gallery:
+   same head composition, same indent, same rhythm. That is the argument — this
+   is work with reasoning behind it, not a contact sheet.
+   ========================================================================= */
+
+.head {
+  padding-top: clamp(var(--space-6), 6vw, var(--space-8));
+  padding-bottom: var(--space-7);
+}
+
+.breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-7);
+  border-bottom: var(--rule);
+}
+
+.breadcrumb a { text-decoration: none; }
+.breadcrumb a:hover { color: var(--color-signal); }
+
+.headGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-6);
+  align-items: start;
+}
+
+.title {
+  grid-column: 1 / 8;
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  margin-left: -0.045em;
+}
+
+/* The intro sits under the overhanging title, pushed right — same asymmetry
+   as the home masthead and the case study head. */
+.intro {
+  grid-column: 3 / 10;
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 40ch;
+}
+
+/* --- Body copy ----------------------------------------------------------- */
+
+.bodyBlock { margin-top: var(--rhythm-tight); }
+
+.prose {
+  margin-left: 16.6667%;
+  max-width: var(--measure);
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+}
+
+.prose p + p { margin-top: var(--space-5); }
+
+/* --- What it demonstrates ------------------------------------------------
+   Its own block, with the accent rule. It is doing real work for a reader who
+   does not know how to evaluate design, and burying it inside the prose would
+   waste it. */
+
+.demonstratesBlock { margin-top: var(--rhythm-tight); }
+
+.demonstrates {
+  margin-left: 16.6667%;
+  max-width: var(--measure);
+  border-top: 1.5px solid var(--color-signal);
+  padding-top: var(--space-4);
+}
+
+.demonstratesTerm {
+  font-family: var(--font-text);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  color: var(--color-signal);
+  margin-bottom: var(--space-3);
+}
+
+.demonstratesText {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  max-width: 30ch;
+}
+
+/* --- Grid ---------------------------------------------------------------- */
+
+.gridBlock { margin-top: var(--rhythm-normal); }
+
+/* --- Pager --------------------------------------------------------------- */
+
+.pager {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-5);
+  margin-top: var(--rhythm-normal);
+  padding-top: var(--space-4);
+  border-top: var(--rule-heavy);
+  padding-bottom: var(--space-8);
+}
+
+.pagerPrev,
+.pagerNext {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-decoration: none;
+  max-width: 20rem;
+}
+
+.pagerNext { text-align: right; }
+
+.pagerLabel {
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.pagerTitle {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+.pagerPrev:hover .pagerTitle,
+.pagerNext:hover .pagerTitle { color: var(--color-signal); }
+
+@media (max-width: 62rem) {
+  .title,
+  .intro { grid-column: 1 / -1; }
+  .prose,
+  .demonstrates { margin-left: 0; }
+}

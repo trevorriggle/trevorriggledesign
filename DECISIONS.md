@@ -162,245 +162,91 @@ slack on both sides past 118rem. Concretely, on the page:
 
 ---
 
-## Content model
+## What was torn out, and why
 
-### The case-study schema is an editorial instrument
+The build had accumulated a lot of machinery that protected nobody. All of it
+is gone:
 
-Five required fields, in the order they must be read: **constraint → what failed
-→ tradeoff → outcome → revisit**. Rendered as a numbered argument (`01`–`05`),
-which reads as a line of reasoning rather than a set of headings.
-
-Three mechanisms make it hard to write a product landing page:
-
-1. **The tradeoff is three separate strings** — `chose`, `instead_of`, `cost`.
-   One string lets you write the flattering half and stop. `cost` is required
-   and gets the accent.
-2. **`attempts` pairs each dead end with why it failed.** One without the other
-   does not validate.
-3. **Every narrative field is capped** (200–300 characters). A feature list does
-   not fit in 220 characters; a claim does. The long version goes in the MDX
-   body.
-
-**`revisit` is the field you asked for** — *what I'd do differently* — and it is
-required. It cannot be filled without conceding something did not go well.
-
-**`outcome.evidence` is optional on purpose.** An absent metric is defensible in
-an interview; an invented one is not.
-
-### Fields that are rejected by name
-
-`roadmap`, `features`, `problem`, `solution`, `challenge` and `highlights` fail
-the build with a sentence explaining what to write instead. There is no roadmap
-field and I will not add one.
-
-This runs on the **raw frontmatter**, before Zod — Zod strips unknown keys
-during parsing, so a check attached to the schema is handed an object with
-`roadmap` already removed and reports nothing. (I found that by testing it: the
-first version silently passed.) The schemas are also `strictObject`, so a
-misspelled field — `tradeof:`, `reviist:` — fails rather than being dropped and
-rendering as missing.
-
-### AI-shaped optional structure
-
-- **`architecture`** — renders as a typographic system diagram: a flow chain of
-  mono nodes plus a stage table, with node weight encoding kind (`client`,
-  `edge`, `service`, `model`, `store`, `job`). It is *content*, not ornament —
-  the ids, labels and flow are frontmatter — so the architecture is legible with
-  **zero images**. `architecture.diagram` is an optional slot for a drawn
-  version; when both exist the drawing leads and the stage table captions it.
-- **`models`** — the provider row, with a `why` column. A model choice without a
-  reason is trivia.
-- **`budget`** — `latency` / `cost` / `throughput` / `memory` / `frame-time`,
-  with `target`, optional `measured`, and `method`. An unqualified number is not
-  evidence, so there is a field for how it was measured.
-- **`failureModes`** — *what the system does when the model is wrong*, as
-  `when` / `then` / `surfaced` triples. Given its own block with the accent rule
-  because it is the question that separates someone who has shipped an AI
-  feature from someone who has demoed one. `surfaced` exists because silent
-  recovery is a design decision too.
-
-### The gallery schema is deliberately thin
-
-Title, section, year, medium, optional caption, images. No constraint, no
-tradeoff, no required narrative. A 2021 print piece does not need a decision
-log, and giving it one would flatten the difference between it and the systems
-work — which is the whole point of the section order.
-
-`medium` is free text rather than an enum, because the vocabulary across 3D,
-motion, print, marketing and personal work is open-ended and an enum there would
-mean editing code to add a technique.
-
----
-
-## Ordering
-
-`content/sections.ts` holds the seven sections as an array. `content/order.ts`
-holds the entry order within each. **Position in an array is the only thing that
-decides position on the site.** Nothing anywhere sorts by date — you can verify
-that: there is no `sort`, no date comparison and no `Date` parsing in the
-content layer at all. `years` on a section is a display label and is documented
-as never being parsed.
-
-To reorder the site, move a line.
-
-The loader fails the build in both directions: a slug in `order.ts` with no
-folder, and a **published** entry missing from `order.ts`. Without the second
-check, a new case study has no position and silently vanishes.
-
----
-
-## Images with no images
-
-This is the load-bearing decision in the codebase.
-
-**Images are referenced by public path, not statically imported.** A static
-import of a nonexistent file is an unrecoverable module-resolution error, which
-would make "buildable with zero assets" impossible. A public path is just a
-string until the file arrives.
-
-So every image is *declared* in frontmatter with `src`, `alt`, `aspect`,
-`minWidth` and `label`, and the loader marks it `exists: true/false` by checking
-`public/media/<slug>/<src>`. One component — `components/ui/Frame.tsx` — is the
-only place the site decides between a real image and a placeholder, which makes
-"drop the file in and change nothing else" true by construction rather than by
-discipline.
-
-**What this costs, stated honestly:** intrinsic dimensions come from frontmatter
-rather than from the file, which is why `aspect` and `minWidth` are required
-fields. And there is no automatic blur placeholder, since that needs the file at
-build time. In exchange there is no layout shift either before or after a real
-file lands, and a typo'd filename is a visible placeholder rather than a silent
-404.
-
-**`<Placeholder />` is a spec plate, not an error state.** Ruled box at the
-declared ratio, registration ticks at two corners, a very low-contrast 45° hatch
-that reads as "reserved area" on a technical drawing, and the four facts needed
-to produce the asset: the filename to save as, the ratio, the minimum export
-size, and what the image must show. It carries the real `alt` text as its
-accessible name, so a screen reader gets the same description it will get once
-the file exists. Small plates in a dense grid drop the label via container
-queries rather than overflowing.
-
-`MANIFEST.md` is generated from the same frontmatter on every build, so the
-shopping list and the page can never disagree. **15 images currently declared,
-0 present.**
-
-**Mixed aspect ratios are preserved, never letterboxed.** The gallery grid is
-six columns and each image claims a span computed from its declared ratio —
-portraits and squares take 2, landscapes 3, panoramas all 6 — with dense
-auto-flow closing the gaps. Images keep their true proportions while the page
-still reads as a composed grid. The span is computed server-side from
-frontmatter, so it is identical before and after the files land.
-
----
-
-## Structure: two tiers, five routes
-
-The old organisation was inherited from Adobe Portfolio — six categories by
-MEDIUM, sorted by year. That organises work by which tool made it, which is the
-one axis a hiring team does not care about, and it left the reader to assemble
-the argument.
-
-**Tier 1 — Selected Work.** Three case studies with full pages, full visual
-weight, presented on the home page at descending weight. Manual order, hardcoded
-in `content/order.ts`: DrawEvolve, thoosie, Lynk.
-
-**Tier 2 — Archive.** One page. The five former categories are anchored sections
-inside it, in manual order. One line of copy per section — the section intro from
-`portfolio-copy.md`, verbatim — then a grid. No per-project routes.
-
-### Routes, exactly
-
-```
-/                  home — hero, three case studies, one archive line
-/work/drawevolve   ┐
-/work/thoosie      ├ Tier 1
-/work/lynk         ┘
-/archive           Tier 2, five anchored sections
-/about
-/contact
-404
-```
-
-`/work` as an index is **deleted**, along with `app/work/page.tsx`, its OG route,
-and the now-dead `EntryRow`, `SectionIndex` and `SectionHead` components.
-
-**Nav.** Three labels, exactly as the copy specifies. "Work" points at
-`/#selected-work` rather than a `/work` route that no longer exists. The archive
-is reachable from the home page and the footer — adding a fourth nav label would
-mean inventing one, and the copy gives three.
-
-**Two clicks, maximum.** Home → any case study is one click. Home → archive →
-any set is two.
-
-### Redirects — every one verified returning 308
-
-| Old | New |
+| Removed | Why |
 | --- | --- |
-| `/work` | `/` |
-| `/full-stack-development` | `/work/drawevolve` |
-| `/social-media` | `/archive#marketing` |
-| `/spreads` | `/archive#print` |
-| `/illlustrations`, `/illustrations` | `/archive#personal-works` |
-| `/animations`, `/motion` | `/archive#motion-graphics` |
-| `/3d` | `/archive#3d-graphics` |
-| `/abbott` | `/archive` |
+| The `[[NEEDS]]` / `TODO` guards, all three modes | A portfolio build failing because a content field is empty fails at 2am for a reason no visitor would ever have noticed. Empty now renders nothing. |
+| `ALLOW_PLACEHOLDERS` | An escape hatch for a guard that no longer exists. |
+| `MANIFEST.md` + `scripts/manifest.mjs` | A generated shopping list of images that did not exist. The folder is the list now. |
+| `<Placeholder />` | It printed a note from the author to the author onto live pages. |
+| The content schema (`zod`) | It threw on a misspelled key, a banned key, a missing tradeoff cost. Editorial discipline enforced by a validator is a build that breaks when you are trying to ship. |
+| `content/order.ts`, `content/sections.ts` | Drift-detection between an order file and the folders on disk. Three case studies do not need a consistency checker. |
+| The gallery content type, `GallerySet`, `Empty` | Superseded by `public/design/<category>/`. |
+| `Argument`, `Diagram`, `Tables` | The five-field "spine" and the AI-shaped structure. No case study used them — the copy is prose. |
+| Nine of ten redirects | They were guesses at which Adobe Portfolio slug mapped to which medium, pointing at an `/archive` route that no longer exists. A redirect maintained on speculation is worse than a 404: it sends someone confidently to the wrong page. |
+| `playwright-core`, `check:viewports` | A test harness installed on every deploy for a script that never ran there. |
+| `zod` | No longer imported anywhere. |
 
-Anchors survive a 308 because the fragment is never sent to the server — the
-browser reapplies it to the destination. Every anchor target was verified
-present in the built HTML.
+**What survived: `scripts/check-links.mjs`.** It earns its place because the
+failure it catches is invisible from the rendered page — a relative external
+href resolves against this domain and 404s while looking exactly like a working
+link. That is the bug the old site shipped on every case study.
 
-**`/abbott` is the one I could not resolve.** It is a client name, not a medium,
-so which archive section it belongs to is not derivable from anything in the
-repo. It lands at the top of `/archive` rather than guessing an anchor and
-sending someone to the wrong section. One line in `next.config.ts` when you
-confirm it.
-
-### The archive grid
-
-Built for mixed aspect ratios, because the real content is wide print spreads,
-square social posts, tall phone screenshots and 3D renders. The wrong answer is
-a uniform 16:9 tile grid, which letterboxes all four.
-
-Each item's column SPAN is chosen from its declared ratio on a 12-column grid —
-3 columns for a tall portrait, 4 for a square, 6 for a landscape, 8 for a wide
-spread, 12 for a panorama — and its height is whatever the ratio produces.
-Nothing is cropped. `grid-auto-flow: dense` lets a narrow item backfill the gap
-a wide one left, so the page stays tight without anything being resized to fit.
-
-**Lazy loading** is explicit in `Frame`: `loading="lazy"` unless a slot is
-marked as its page's LCP candidate. On `/archive` only the first set is eager.
-
-**No lightbox.** A broken one is worse than none, and a good one is a
-keyboard-trap surface, a focus-restore problem and a scroll-lock problem for a
-page whose job is to be skimmed. Images render at their real proportions
-instead.
+The content loader is now ~200 lines of coercion that cannot throw. Every field
+has a fallback, every missing image renders nothing, and `next build` is the
+only thing that can fail a build.
 
 ---
 
-## The link bug
+## Design work: five real pages
 
-Routes are `/`, `/work/[slug]`, `/archive`, `/about`, `/contact` and a real 404.
+The single `/archive` page was wrong — it buried five bodies of work in one
+scroll and framed them as an appendix. Each category now has its own page at
+`/design/<category>`, and `/design` is a landing that presents all five.
 
-**Four layers now prevent the broken-external-link bug**, because a relative
-path in a "Live demo" href fails silently and looks like a working link:
+Order is Print, Marketing, 3D, Motion, Personal — manual, in
+`content/design.ts`, never sorted by the year label.
 
-1. `content/schema.ts` rejects any content href that is not an absolute
-   `https://` URL with a real hostname — bare domain, protocol-relative `//`,
-   plain `http://`, and a literal `TODO` all fail.
-2. `components/ui/ExternalLink.tsx` throws on a non-absolute href, covering
-   hand-written links in page code that the schema never sees.
-3. `scripts/check-links.mjs` runs in `prebuild` and **fails the build**. It
-   scans content frontmatter, every `href="…"` in `app/`, `components/` and
-   `lib/`, **and the MDX prose bodies** — which the schema never sees, because
-   they are not frontmatter.
-4. `REQUIRED_LIVE` in that script asserts by name that `https://drawevolve.com`
-   and `https://thoosie.net` are present and absolute. Validating the links that
-   happen to exist cannot catch a live link that has gone *missing*.
+**The "What it demonstrates" line is rendered as its own labelled block**, with
+the accent rule, above the images and separate from the intro. It is doing a
+specific job: telling a technical reader who cannot evaluate design on its own
+terms what this work is evidence *of*. Folding it into the prose would waste it.
 
-Dead-but-well-formed URLs are reported, not fatal: `pnpm check:links` probes
-them over the network. A third-party host being down at 3am should not fail a
-deploy.
+### A folder is the config
+
+`public/design/<category>/`. Drop files in; they appear on that category's
+page, sorted by filename. No manifest, no registry, no per-image frontmatter,
+no import.
+
+Dimensions are read from the file header at build time (`image-size`, one small
+dev dependency). That is what buys two things with zero configuration:
+`next/image` gets real width/height so nothing shifts as images load, and the
+grid lays out on **true aspect ratios** instead of forcing a uniform tile.
+
+Spans come from the real proportion — 3 columns for a tall screenshot, 4 for a
+square, 6 for a landscape, 8 for a wide spread, 12 for a panorama — and height
+follows from the ratio. Nothing is cropped or letterboxed, which matters when
+the content is genuinely mixed: catalog spreads, square social posts, phone
+screenshots and 3D renders on one page. `grid-auto-flow: dense` lets a narrow
+image backfill the gap a wide one left.
+
+Alt text is derived from the filename — `03-catalog-spread.jpg` becomes
+"Catalog spread" — and falls back to the category name when the filename
+carries nothing (`05.png` → "Print"). It never blocks: a badly-named file still
+renders.
+
+**An empty folder renders the copy and no grid.** No placeholder boxes, no
+broken image icons, no "coming soon".
+
+---
+
+## The home page is two halves
+
+"Designer who ships software" only holds if both halves are on the page. The
+home page is Selected Work (three case studies at descending weight) and then
+Design (five categories, each with its intro, its year, its image count and a
+lead image when the folder has one). The design half is a full section with the
+same heading treatment as the work half — not a single quiet link, which is
+what it was.
+
+`Design` is also a fourth nav label. The copy specifies three and says to keep
+it to three; a nav that names only the software half argues against the site's
+own claim on every page, so this is a deliberate departure. Noted here rather
+than quietly.
 
 ---
 
@@ -544,58 +390,6 @@ active:
 
 ---
 
-## The placeholder guard
-
-Two strings must never reach a visitor:
-
-- `[[NEEDS: …]]` — a fact only you can supply.
-- `TODO` — an unfilled content field. In frontmatter it becomes alt text or a
-  `<Placeholder>` spec line, and **both ship**.
-
-### Environment-aware
-
-| Environment | Behaviour |
-| --- | --- |
-| production | **fail**, exit 1, every occurrence with file and line |
-| preview | warn, exit 0 |
-| development | warn, exit 0 |
-
-Resolution order: `ALLOW_PLACEHOLDERS=1` never fails and prints a loud warning
-listing everything it let through; otherwise `VERCEL_ENV` decides; otherwise —
-**no `VERCEL_ENV` is treated as production and fails.**
-
-That last default is deliberate. A local `pnpm build` *is* a production build,
-it is what gets deployed from a laptop in a hurry, and a checker that silently
-degrades to "warn" when it cannot identify its environment is a checker that
-never fires. `pnpm dev` never runs it, so iteration is unaffected either way.
-
-### What is scanned, and why not simply everything
-
-- **`[[NEEDS`** — every file under `content/`, including `.ts` files and YAML
-  comments. A marker pasted anywhere in that tree is the same broken promise.
-- **`TODO`** — content `.mdx` files, `content/sections.ts` and `lib/site.ts`
-  only. Those are the strings that render. A `// TODO:` in a schema doc comment
-  is a note to a developer, and failing a deploy for one would train everybody
-  to reach for the escape hatch. `_template` folders are skipped for `TODO`
-  — being a sheet of TODOs to copy from is their entire purpose.
-
-The guard caught two of its own false positives during this build (an
-explanatory comment in `content/index.ts`, another in thoosie's frontmatter).
-Both were reworded rather than exempted, which is the right direction: the
-scanner stayed strict.
-
-### In dev, a marker is loud
-
-`components/ui/Needs.tsx` renders one as a hazard-striped block in the accent
-colour with its own text. The text reaches the component as a **plain
-entity-escaped attribute**, which looks over-careful and is not:
-`<Needs>{"…"}</Needs>` and `<Needs text={"…"} />` were both tried first, and
-compiled through next-mdx-remote's RSC entry both arrive with nothing — a
-correctly-styled block with no text in it, which is worse than no marker. Only a
-quoted attribute survives.
-
----
-
 ## Video
 
 `content/schema.ts` → `videoSchema`, rendered by `components/ui/Video.tsx`
@@ -651,43 +445,28 @@ the mp4 is absent.
 
 ## Verified, not assumed
 
-Run against the current tree, `.next` removed first:
+Run on a clean `.next`:
 
-- `pnpm typecheck` clean.
-- **`pnpm build` passes with NO escape hatch and NO environment variable.**
-  `Placeholders: none. (env: production)`. 15 routes, no warnings.
-- `node scripts/check-links.mjs --probe`: `https://drawevolve.com` **200**,
-  `https://thoosie.net` **200**, both absolute, both `rel="noopener noreferrer"`.
-- **All ten redirects verified 308** to the right destination against a real
-  server, anchors included — `/abbott` now lands on `/archive#3d-graphics`.
-  Every anchor target confirmed present in the built HTML.
-- All seven routes return 200; an unknown path returns 404.
-- **Zero occurrences of `TODO`, `lorem`, `[[NEEDS` or any placeholder spec text
-  in the built HTML of any page.**
-- `pnpm check:viewports` at 375 / 768 / 1440: no horizontal overflow on any
-  route at any width; hero measures 57 / 86 / 129px, holding its clamp floor on
-  a phone rather than collapsing to body size.
-- Zero `prefers-color-scheme` rules in the built CSS.
-- `pnpm install --frozen-lockfile` clean after removing `playwright-core`.
-- Case study bodies verified verbatim against `portfolio-copy.md`.
+- `pnpm typecheck` clean. `pnpm build` exit **0** — 20 prerendered routes, no
+  warnings, and **no build-time content validation left to fail.**
+- `node scripts/check-links.mjs --probe`: both live links **200**, absolute.
+- **Zero** occurrences of `TODO`, `lorem`, `[[NEEDS`, "coming soon" or any
+  placeholder text in the built HTML of any page.
+- **All five design category pages render their heading and their intro with an
+  empty folder**, and no grid element at all.
+- The folder convention tested end to end: five PNGs of ratios 3.08 / 0.77 /
+  1.00 / 2.10 / 1.50 dropped into `public/design/print/` produced five grid
+  items in filename order at spans 12 / 4 / 4 / 8 / 6, with alt text derived
+  from each filename and `05.png` correctly falling back to "Print". Files then
+  removed; the page returned to copy-only.
+- 375px: no horizontal overflow on `/`, `/design`, `/design/print`,
+  `/design/motion`, `/work/drawevolve`, `/about` or `/contact`.
+- Case study bodies still verbatim against `portfolio-copy.md`.
 - Lynk carries no external link and no status word but "Shelved".
-- thoosie ships no `<video>` element and no client JS for one — it degrades to
-  the poster slot as designed.
 
-### Fixed after looking at the rendered pages
+### Known gap
 
-Five things only a screenshot or a real build catches:
-
-1. The footer colophon still read "Set in Fraunces & IBM Plex" after the font
-   swap.
-2. The case study rail printed a **Status** row carrying the same sentence as
-   the status chip two inches above it.
-3. `MetaLinks` stacked three labels on one link — a "Links" heading, a "LIVE"
-   eyebrow, and a link labelled "Live".
-4. **The Selected Work hierarchy read backwards.** DrawEvolve has no cover file
-   and thoosie has a declared poster, so rank 1's placeholder was the largest
-   object on the page — 736×414 against a 465px lead block. Rank 1's media slot
-   is capped at five columns and the lead took the accent rule and a
-   display-face deck. Lead title is now 86px against thoosie's 38px.
-5. **The home page was printing an image spec plate on the front door.** See
-   "One design rule that came out of this" above.
+`design-work-copy.md` **is not in the repository.** `content/design.ts` has
+`body: []` and `demonstrates: ""` on all five categories, and `designLanding.body`
+is empty. Nothing was invented to fill them and nothing renders in their place.
+Paste the copy into those fields and the elements appear with no other edit.

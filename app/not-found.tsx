@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { getSelected } from "@/content";
+import { designCategories } from "@/content/design";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./not-found.module.css";
 
@@ -25,9 +26,8 @@ export default function NotFound() {
           </p>
         </div>
 
-        {/* The one useful thing a 404 can do is hand over the index. With
-            /work gone that index is the three case studies plus the
-            archive — every route on the site that holds work. */}
+        {/* The one useful thing a 404 can do is hand over the index — every
+            route on the site that holds work. */}
         <div className={`${styles.rail} ${grid.railRuled}`}>
           <p className={styles.railLabel}>Index</p>
           <ul className={styles.railList}>
@@ -36,9 +36,11 @@ export default function NotFound() {
                 <Link href={entry.href}>{entry.title}</Link>
               </li>
             ))}
-            <li>
-              <Link href="/archive">Archive</Link>
-            </li>
+            {designCategories.map((category) => (
+              <li key={category.slug}>
+                <Link href={`/design/${category.slug}`}>{category.title}</Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

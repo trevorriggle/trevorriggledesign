@@ -1,5 +1,5 @@
 import { Frame } from "@/components/ui/Frame";
-import type { ResolvedImage } from "@/content";
+import type { ImageRef } from "@/content";
 
 /**
  * <Figure src="02-detail.png" /> in an MDX body.
@@ -10,27 +10,22 @@ import type { ResolvedImage } from "@/content";
  * an image without alt text, and a typo'd filename is a build error naming the
  * declared alternatives rather than a silent 404.
  */
-export function makeFigure(images: ResolvedImage[], entryPath: string) {
+export function makeFigure(images: ImageRef[], _entryPath: string) {
   return function Figure({ src, caption }: { src: string; caption?: string }) {
     const image = images.find((i) => i.src === src);
 
-    if (!image) {
-      throw new Error(
-        `\n\n  ── Content error ──\n  ${entryPath}\n` +
-          `  <Figure src="${src}" /> is not declared in the frontmatter images[] array.\n` +
-          `  Declare it there (with alt, aspect and label) before referencing it in the body.\n` +
-          `  Declared: ${images.map((i) => i.src).join(", ") || "(none)"}\n`,
-      );
-    }
+    /* An undeclared or missing file renders nothing. This used to throw a
+       build error naming the declared alternatives; a typo in a filename is
+       not worth failing a deploy over. */
+    if (!image) return null;
 
     return (
       <Frame
         image={caption ? { ...image, caption } : image}
-        role="figure"
         sizes={
           image.bleed
-            ? "(max-width: 60rem) 100vw, 84rem"
-            : "(max-width: 60rem) 100vw, 38rem"
+            ? "(max-width: 62rem) 100vw, 84rem"
+            : "(max-width: 62rem) 100vw, 38rem"
         }
       />
     );

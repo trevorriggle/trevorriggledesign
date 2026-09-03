@@ -29,23 +29,15 @@ function rankClass(rank: number): string {
 }
 
 /**
- * Does this entry have a real file to show on the HOME PAGE?
+ * Does this entry have a real file to show?
  *
- * Everywhere else on this site, a declared image with no file renders as a
- * spec <Placeholder /> — that is deliberate, and it is what makes the whole
- * site reviewable with zero assets.
- *
- * The home page is the exception, and it is the only one. A plate reading
- * "what must this image show? / 01-gameplay-poster.png / >=2400x1350" is a note
- * from the author to the author, and on the front door it is read by a hiring
- * manager instead. The layout already handles an entry with no media at all
- * (the lead has none today), so a slot with no file simply collapses and the
- * entry sets as type.
- *
- * The spec plate is still on the case study page, where it belongs.
+ * Nothing on this site renders a placeholder for a missing image any more —
+ * <Frame> returns null and the layout closes up. This check exists so the
+ * media COLUMN is not reserved for an image that will not appear, which would
+ * leave a hole in the grid rather than a tighter row.
  */
 function hasRealMedia(entry: CaseStudy): boolean {
-  if (entry.video) return entry.video.exists || entry.video.poster.exists;
+  if (entry.video) return entry.video.exists || Boolean(entry.video.poster?.exists);
   return Boolean(entry.cover?.exists);
 }
 
@@ -72,7 +64,6 @@ export function SelectedWork({ entries }: { entries: CaseStudy[] }) {
                   entry.cover && (
                     <Frame
                       image={entry.cover}
-                      role="cover"
                       priority={rank === 0}
                       sizes={
                         rank === 0

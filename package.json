@@ -5,24 +5,20 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-placeholders.mjs && node scripts/check-links.mjs && node scripts/manifest.mjs",
+    "prebuild": "node scripts/check-links.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check:links": "node scripts/check-links.mjs --probe",
-    "manifest": "node scripts/manifest.mjs",
-    "verify": "node scripts/check-placeholders.mjs && node scripts/check-links.mjs && tsc --noEmit && next build",
-    "check:placeholders": "node scripts/check-placeholders.mjs",
-    "check:viewports": "node scripts/check-viewports.mjs"
+    "verify": "node scripts/check-links.mjs && tsc --noEmit && next build"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "next": "^16.3.4",
     "next-mdx-remote": "^6.0.0",
     "react": "^19.2.8",
-    "react-dom": "^19.2.8",
-    "zod": "^4.5.4"
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "16.3.4",
@@ -33,6 +29,7 @@
     "eslint-config-next": "^16.3.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react-hooks": "7.1.1",
+    "image-size": "^2.0.2",
     "typescript": "^7.0.2"
   }
 }

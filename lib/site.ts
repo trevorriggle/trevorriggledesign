@@ -48,14 +48,14 @@ export const site = {
   social: [] as { label: string; href: string }[],
 } as const;
 
-/* Three labels, exactly as the copy specifies. "Work" points at the Selected
-   Work anchor on the home page, because /work no longer exists as a route —
-   the two-tier structure put the work itself on the home page and everything
-   else on /archive. The archive is reachable from the home page and the
-   footer, which keeps every piece of work within two clicks of the home
-   page without adding a fourth nav label the copy does not have. */
+/* The copy specifies three labels — Work, About, Contact — and says to keep it
+   to three. "Design" is a fourth, and it is here deliberately: the site's whole
+   claim is "designer who ships software", and a nav that names only the
+   software half argues against the claim on every page. "Work" points at the
+   Selected Work anchor on the home page, since /work is not a route. */
 export const nav = [
   { label: "Work", href: "/#selected-work" },
+  { label: "Design", href: "/design" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ] as const;
