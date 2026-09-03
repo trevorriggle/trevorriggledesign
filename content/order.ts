@@ -13,15 +13,9 @@
 import type { SectionId } from "./sections";
 
 export const entryOrder: Record<string, string[]> = {
-  "ai-systems": [
-    "drawevolve-metal-renderer",
-    "drawevolve-critique-memory",
-    "drawevolve-coaching-system",
-    "drawevolve-cost-abuse-hardening",
-    "parallel-agent-worktrees",
-    "lynk-llm-routing",
-  ],
-  "full-stack": [],
+  /* DrawEvolve, thoosie, Lynk — in that order, fixed by hand. thoosie sits
+     second, directly after DrawEvolve. Do not sort this. */
+  "ai-systems": ["drawevolve", "thoosie", "lynk"],
   "3d-graphics": [],
   marketing: [],
   "motion-graphics": [],

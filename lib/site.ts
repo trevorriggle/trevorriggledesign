@@ -4,14 +4,18 @@
    Single source of truth for values used in metadata, the footer, the contact
    page, the sitemap and the OG images.
 
-   Every string marked TODO is deliberately unwritten. Nothing on this site
+   Everything here that is prose comes from portfolio-copy.md, verbatim.
+
+   Two fields are EMPTY STRINGS rather than invented copy: `availability` and
+   `location`. The copy does not state either one, and nothing on this site
    claims anything about the person it belongs to that they did not write
-   themselves — a plausible-sounding invented bio is worse than an empty one,
-   because it has to be defended in an interview.
+   themselves. Empty is not a placeholder — every component that reads them
+   (<Meta />) renders nothing at all for an empty value, so the rails simply
+   omit those rows. Fill either one here and its row reappears everywhere it
+   belongs, with no other edit. See DECISIONS.md.
    ========================================================================= */
 
 export const site = {
-  /** Real, and safe to fill: it is the repository author's own name. */
   name: "Trevor Riggle",
 
   /** ASSUMPTION — confirm before deploy. See DECISIONS.md.
@@ -19,26 +23,23 @@ export const site = {
   domain: "trevorriggle.design",
   url: "https://trevorriggle.design",
 
-  /** TODO: one line, under ~160 characters. Used for <meta description> and as
-   *  the OG description on every page that does not override it. */
-  description: "TODO",
+  /** portfolio-copy.md → "Meta description (site)", verbatim. */
+  description:
+    "Trevor Riggle — graphic designer and self-taught developer building AI products. iOS, full-stack, and design work.",
 
-  /** TODO: the address you want in front of hiring teams. */
-  email: "TODO",
+  /** portfolio-copy.md → "Contact page", verbatim. */
+  email: "trevorriggle@gmail.com",
 
-  /** TODO: what you are looking for. Shown on /contact and /about. */
-  availability: "TODO",
+  /** No copy states this. Empty renders nothing; it is not a placeholder. */
+  availability: "",
 
-  /** TODO: city, or remote + timezone. */
-  location: "TODO",
+  /** No copy states this. Empty renders nothing; it is not a placeholder. */
+  location: "",
 
   /** External profiles. Absolute https URLs only — same rule the content
-   *  schema enforces, for the same reason. Uncomment and fill. */
-  social: [
-    // { label: "GitHub", href: "https://github.com/TODO" },
-    // { label: "LinkedIn", href: "https://www.linkedin.com/in/TODO" },
-    // { label: "Read.cv", href: "https://read.cv/TODO" },
-  ] as { label: string; href: string }[],
+   *  schema enforces, for the same reason. The copy names none, so this is
+   *  empty and the "Elsewhere" blocks render nothing rather than a prompt. */
+  social: [] as { label: string; href: string }[],
 } as const;
 
 export const nav = [

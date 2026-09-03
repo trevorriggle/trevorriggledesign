@@ -1,0 +1,112 @@
+---
+# COPY: every prose string below is portfolio-copy.md, verbatim.
+title: thoosie
+deck: Draw a line, ride it as a roller coaster.
+section: ai-systems
+
+# From "Launched August 2026" in the Outcome copy below.
+year: 2026
+
+role:
+  - Everything — design, engineering, physics, launch
+context: self-initiated
+state: Live
+
+# ---- Media ---------------------------------------------------------------
+# The clip leads. It renders above everything else on the page, and while the
+# mp4 is absent this slot renders `poster` as a still — same box, same
+# position, no broken element and no client JavaScript. Drop the file in at
+# public/media/thoosie/01-gameplay.mp4 and it takes over with no edit here.
+video:
+  src: 01-gameplay.mp4
+  poster:
+    src: 01-gameplay-poster.png
+    alt: TODO
+    aspect: "16:9"
+    minWidth: 2400
+    label: TODO — what must this image show?
+
+# No still plates declared. The copy specifies no images, and a slot whose
+# `label` and `alt` I cannot write is a placeholder box that prints "TODO" on
+# a live page. One slot — the poster, which the video slot requires — is the
+# whole media surface until real alt text exists. Adding more is four lines
+# each; MANIFEST.md picks them up on the next build.
+images: []
+
+# ABSOLUTE. The second of the two live links on this site.
+links:
+  - label: Live
+    href: https://thoosie.net
+    kind: live
+
+stack: []
+
+status: published
+---
+
+## The premise
+
+You draw a track freehand. thoosie turns it into a rideable coaster and runs
+real physics on it — speed, vertical G, airtime, inversions — then lets you
+ride it from the train.
+
+The whole design problem is the gap between those two things. Drawing is
+loose and expressive. Physics is unforgiving. A line that looks great is
+often a ride that either stalls out halfway up the hill or pulls G-forces
+that would put a person in the hospital. The app has to let people draw
+freely and still produce something that works.
+
+## What I built
+
+A full track editor: freehand, straight, and arc tools, plus a library of
+prefab elements — first drops, vertical loops, camelbacks, bunny hops,
+valleys, barrel rolls, half loops, Immelmanns, dive loops. Track types that
+behave differently under the physics sim: chain lift, launch, brake run, and
+trigger track.
+
+A trigger and reaction system, so pieces can respond to the train passing —
+a brake run that holds the train, counts down, then launches it onward, or
+track that physically moves between two positions when a trigger fires. That
+turned the editor from a drawing tool into something closer to a small
+state machine, and it's the feature that made people build things I didn't
+anticipate.
+
+Live physics telemetry surfaced during the ride: current speed, vertical G,
+airtime accumulating in real time, then a summary — height, top speed, max
+and min G, inversions, length, ride time.
+
+Plus the unglamorous half: autosave, cross-platform level sharing, a
+gallery, a tutorial, a content filter on shared coasters, and a full mobile
+pass.
+
+## The decision that mattered
+
+The physics readouts started as debug output. I kept them and made them a
+first-class part of the interface, because watching airtime tick up while
+you're cresting a hill you drew is the thing that makes the feedback loop
+work. Players learn what makes a good coaster by watching the numbers
+respond, not by reading a rule.
+
+It's the same instinct as DrawEvolve, honestly — the system's job is to
+teach you to get better, not to do it for you.
+
+## What I cut
+
+I built the game to run inside Reddit as a Devvit app and then didn't ship
+it there. Two platforms meant two sets of layout bugs, two embed
+environments, and a mobile letterboxing problem I'd have owned indefinitely.
+I shipped the standalone web build only.
+
+Cutting a finished platform is unpleasant. It was the right call — the
+standalone build launched a day early and I spent that time on the game
+instead of on embed CSS.
+
+## Outcome
+
+Launched August 2026. Promoted through the coaster and indie dev
+communities with a single gameplay clip.
+
+The response I actually cared about: two testers played for twenty-five
+minutes unprompted, without being asked to and without stopping to give
+feedback. For a physics toy with no goals, no score, and no progression,
+that's the only signal that means anything.

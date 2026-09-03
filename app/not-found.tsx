@@ -5,10 +5,13 @@ import { getSections } from "@/content";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./not-found.module.css";
 
-/* A real 404: it says what happened, and then does the one useful thing a 404
-   can do, which is hand over the site's index rather than a "go home" button.
-   Legacy URLs from the old site are redirected in next.config.ts, so anything
-   arriving here is genuinely unknown. */
+/* Copy: portfolio-copy.md → "404", verbatim and complete — the heading, the
+   line under it, and the label on the link out. There is no invented
+   "Error 404 — not found" chrome above it any more; the copy is the page.
+
+   The index rail stays, because handing over the site's index is the one
+   useful thing a 404 can do. Legacy URLs from the old site are redirected in
+   next.config.ts, so anything arriving here is genuinely unknown. */
 export default function NotFound() {
   const sections = getSections();
 
@@ -16,12 +19,10 @@ export default function NotFound() {
     <Container className={styles.wrap}>
       <div className={styles.grid}>
         <div className={styles.main}>
-          <p className={styles.code}>Error 404 — not found</p>
-          <h1 className={styles.title}>No page at this address.</h1>
+          <h1 className={styles.title}>Nothing here.</h1>
           <p className={styles.lead}>
-            The link may be from an older version of this site. The full index
-            is on the right; <Link href="/work">all work</Link> is one click
-            away.
+            Which is at least honest.{" "}
+            <Link href="/work">Back to the work →</Link>
           </p>
         </div>
 

@@ -1,0 +1,52 @@
+.slot { margin: 0; }
+
+.video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--color-bg-sunk);
+  border: var(--rule-faint);
+}
+
+.caption {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+}
+
+.captionOrdinal { color: var(--color-signal); }
+
+/* Dev-only note under a poster standing in for an absent clip. Never renders
+   in a production build. */
+.pending {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xs);
+  margin-top: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  border-left: 2px solid var(--color-signal);
+  background: var(--color-bg-sunk);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+  max-width: var(--width-prose);
+}
+
+.pendingTag {
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  font-weight: var(--weight-semibold);
+  color: var(--color-signal);
+}
+
+.pending code {
+  font-family: inherit;
+  color: var(--color-text);
+  overflow-wrap: break-word;
+}

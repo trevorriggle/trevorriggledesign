@@ -11,6 +11,7 @@ import {
   type CaseStudyFrontmatter,
   type GalleryFrontmatter,
   type ImageRef,
+  type VideoRef,
 } from "./schema";
 import { sections, getSection, type Section, type SectionKind } from "./sections";
 import { entryOrder } from "./order";
@@ -81,11 +82,29 @@ export type ResolvedImage = ImageRef & {
   expectedAt: string;
 };
 
+/**
+ * A declared video, resolved against public/media/<slug>/.
+ *
+ * Both halves resolve independently, which is the whole point: `exists` false
+ * with a poster that exists is the normal, expected state while the clip is
+ * still being cut, and it renders as a still rather than as a broken element.
+ */
+export type ResolvedVideo = Omit<VideoRef, "poster"> & {
+  url: string;
+  exists: boolean;
+  expectedAt: string;
+  poster: ResolvedImage;
+};
+
 type Base = { slug: string; href: string; body: string; sectionMeta: Section };
 
-export type CaseStudy = Omit<CaseStudyFrontmatter, "cover" | "images" | "architecture"> &
+export type CaseStudy = Omit<
+  CaseStudyFrontmatter,
+  "cover" | "images" | "architecture" | "video"
+> &
   Base & {
     kind: "case";
+    video: ResolvedVideo | null;
     cover: ResolvedImage | null;
     images: ResolvedImage[];
     architecture:
@@ -166,6 +185,17 @@ function resolveImage(slug: string, ref: ImageRef): ResolvedImage {
     ratio: width / height,
     exists: fs.existsSync(abs),
     expectedAt: `public/media/${slug}/${ref.src}`,
+  };
+}
+
+function resolveVideo(slug: string, ref: VideoRef): ResolvedVideo {
+  const abs = path.join(mediaDir(slug), ref.src);
+  return {
+    ...ref,
+    url: mediaUrl(slug, ref.src),
+    exists: fs.existsSync(abs),
+    expectedAt: `public/media/${slug}/${ref.src}`,
+    poster: resolveImage(slug, ref.poster),
   };
 }
 
@@ -253,10 +283,27 @@ function orderEntries(all: Entry[]): PopulatedSection[] {
 /* Load                                                                       */
 /* -------------------------------------------------------------------------- */
 
+/**
+ * Parsed content, cached for the life of the process.
+ *
+ * Production only. In dev the cache is skipped entirely: this module is
+ * long-lived across requests, so a cached parse means editing an MDX file
+ * changes nothing on screen until the dev server is restarted — which is
+ * exactly wrong for the job this site is for, where the whole point of `pnpm
+ * dev` is watching copy land as it is written, unfilled markers included.
+ *
+ * (Written without the literal marker string, because scripts/check-needs.mjs
+ * scans every file under content/ including this one — and it is right to.)
+ *
+ * The cost is re-reading a handful of small files per request in dev, which is
+ * not measurable. A production build parses once per process either way.
+ */
 let cache: PopulatedSection[] | null = null;
 
+const CACHE_PARSED = process.env.NODE_ENV === "production";
+
 function loadAll(): PopulatedSection[] {
-  if (cache) return cache;
+  if (cache && CACHE_PARSED) return cache;
 
   const entries: Entry[] = [];
 
@@ -280,6 +327,7 @@ function loadAll(): PopulatedSection[] {
       href: `/work/${slug}`,
       body,
       sectionMeta,
+      video: fm.video ? resolveVideo(slug, fm.video) : null,
       cover: fm.cover ? resolveImage(slug, fm.cover) : null,
       images: fm.images.map((img) => resolveImage(slug, img)),
       architecture: fm.architecture
@@ -387,6 +435,7 @@ export function getAllImages(): (ResolvedImage & {
     };
 
     if (e.kind === "case") {
+      add(e.video?.poster ?? null, "video poster");
       add(e.cover, "cover");
       add(e.architecture?.diagram ?? null, "architecture diagram");
       e.images.forEach((img, i) => add(img, `images[${i}]`));

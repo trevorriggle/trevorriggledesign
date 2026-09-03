@@ -9,9 +9,9 @@ export default function Image() {
   return ogCard({
     eyebrow: "Portfolio",
     title: site.name,
-    /* Uses the site description, which is a TODO in lib/site.ts — the card
-       renders without it rather than inventing a tagline. */
-    deck: site.description === "TODO" ? undefined : site.description,
+    /* The site meta description from the copy. Nothing on an OG card is
+       generated prose. */
+    deck: site.description,
     footer: site.domain,
   });
 }

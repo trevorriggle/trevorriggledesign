@@ -7,6 +7,12 @@
    and the minimum export width. Missing files are listed first, because that
    is the actionable half.
 
+   Video slots are listed too, in their own table. A video is two files — the
+   mp4 and its poster frame — and they are tracked separately because they
+   arrive separately and the page is designed to work with only the poster.
+   The poster appears in the image tables like any other image; the mp4 gets
+   the video table, with the encode settings it has to satisfy.
+
    The same frontmatter drives <Placeholder />, so the list and the page can
    never disagree: what the placeholder prints on screen is what this file
    prints in the table.
@@ -58,6 +64,7 @@ function imagesOf(data) {
     if (img && typeof img === "object" && img.src) rows.push({ ...img, role });
   };
 
+  push(data.video?.poster, "video poster");
   push(data.cover, "cover");
   push(data.architecture?.diagram, "architecture diagram");
   if (Array.isArray(data.images)) {
@@ -78,6 +85,7 @@ const sections = readSections();
 const order = readOrder();
 
 const rows = [];
+const videos = [];
 
 for (const section of sections) {
   for (const slug of order[section.id] ?? []) {
@@ -85,6 +93,23 @@ for (const section of sections) {
     if (!found) continue;
 
     const { data } = matter(fs.readFileSync(found.file, "utf8"));
+
+    if (data.video?.src) {
+      const dest = path.join("public", "media", slug, data.video.src);
+      const poster = data.video.poster ?? {};
+      videos.push({
+        section: section.title,
+        slug,
+        title: String(data.title ?? slug),
+        src: data.video.src,
+        dest,
+        aspect: poster.aspect ?? "16:9",
+        posterDest: poster.src
+          ? path.join("public", "media", slug, poster.src)
+          : "(no poster declared)",
+        exists: fs.existsSync(path.join(ROOT, dest)),
+      });
+    }
 
     for (const img of imagesOf(data)) {
       const { width, height, ratio } = dims(img);
@@ -109,6 +134,17 @@ for (const section of sections) {
 
 const missing = rows.filter((r) => !r.exists);
 const present = rows.filter((r) => r.exists);
+const missingVideos = videos.filter((v) => !v.exists);
+
+const videoTable = (list) =>
+  [
+    "| Save as | Aspect | Encode | Falls back to |",
+    "| --- | --- | --- | --- |",
+    ...list.map(
+      (v) =>
+        `| \`${v.dest}\` | ${v.aspect} | H.264 mp4, faststart, no audio track | \`${v.posterDest}\` |`,
+    ),
+  ].join("\n");
 
 const table = (list) =>
   [
@@ -152,6 +188,30 @@ ${missing.length === 0 ? "_Nothing outstanding._" : table(missing)}
 
 ---
 
+## Video (${videos.length})
+
+${
+  videos.length === 0
+    ? "_No video slots declared._"
+    : `${videoTable(videos)}
+
+A video slot is **two files and degrades to one.** While the mp4 is absent the
+page renders the poster frame as a still, in the same box, in the same place —
+so the layout is already correct and nothing is broken. Dropping the mp4 in at
+the path above is the entire operation.
+
+Encode notes, because the player relies on them: the clip plays **muted,
+looped, inline, with controls**, and is started from script rather than by an
+\`autoplay\` attribute — it will not start on its own on a metered or slow
+connection, or for a viewer who has asked for reduced motion. So there is no
+point carrying an audio track, and \`-movflags +faststart\` matters because
+playback begins before the file finishes arriving.
+
+${missingVideos.length === 0 ? "All declared clips are present." : `Still needed: **${missingVideos.length}**.`}`
+}
+
+---
+
 ## Per entry
 
 ${[...bySlug.entries()]
@@ -174,5 +234,6 @@ ${present.length === 0 ? "_None yet._" : table(present)}
 
 fs.writeFileSync(path.join(ROOT, "MANIFEST.md"), out);
 console.log(
-  `  MANIFEST.md: ${rows.length} image(s) declared, ${present.length} present, ${missing.length} needed.`,
+  `  MANIFEST.md: ${rows.length} image(s) declared, ${present.length} present, ${missing.length} needed;` +
+    ` ${videos.length} video(s) declared, ${missingVideos.length} needed.`,
 );

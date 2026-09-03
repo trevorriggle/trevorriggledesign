@@ -9,34 +9,41 @@ import { site } from "@/lib/site";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./page.module.css";
 
+/* Copy: portfolio-copy.md → "Home — opening statement". Both paragraphs,
+   verbatim. The eyebrow slot the scaffold had above the headline is gone —
+   the copy has no label line there, and inventing three words to fill a
+   typographic slot is exactly what this build does not do. */
 export default function HomePage() {
   const featured = getFeatured(HOME_FEATURED_COUNT);
   const sections = getSections();
+  const hasVitals = Boolean(site.availability || site.location);
 
   return (
     <>
       <Container as="section" className={styles.masthead}>
         <div className={styles.mastheadGrid}>
           <div className={styles.statement}>
-            {/* TODO: what you are, in three or four words. This is a label,
-                not a sentence — it sits in mono above the headline. */}
-            <p className={styles.eyebrow}>TODO</p>
+            <h1 className={styles.headline}>
+              Graphic designer who ships software.
+            </h1>
 
-            {/* TODO: the headline. One sentence, said flatly, about what you
-                build. It is the first and possibly only thing a hiring team
-                reads, so it should be a claim they can check against the work
-                below — not a description of how you feel about design. */}
-            <h1 className={styles.headline}>TODO</h1>
-
-            {/* TODO: one or two sentences. What you build, and for whom. */}
-            <p className={styles.subhead}>TODO</p>
+            <p className={styles.subhead}>
+              I spent four years making catalogs and marketing for hundreds of
+              clients, then learned to build the products instead of decorating
+              them. Now I design and ship AI tools end to end — interface,
+              backend, model pipeline, and the parts nobody wants to own.
+            </p>
           </div>
 
           <div className={`${styles.vitals} ${grid.railRuled}`}>
             <MetaRail>
-              {/* TODO in lib/site.ts */}
-              <Meta term="Focus" value={site.availability} />
-              <Meta term="Based" value={site.location} />
+              {/* Both render nothing while unset — see lib/site.ts. */}
+              {hasVitals && (
+                <>
+                  <Meta term="Focus" value={site.availability} />
+                  <Meta term="Based" value={site.location} />
+                </>
+              )}
               <Meta term="Contact">
                 <Link href="/contact">Get in touch</Link>
               </Meta>
@@ -68,7 +75,10 @@ export default function HomePage() {
       <Container as="section" className={styles.section}>
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Index</h2>
-          <p className={styles.sectionNote}>Seven sections</p>
+          {/* Counted, not hard-coded: the scaffold said "Seven sections" and
+              there are six. A number in prose that the data can contradict is
+              a number that will eventually be wrong. */}
+          <p className={styles.sectionNote}>{sections.length} sections</p>
         </div>
         <SectionIndex sections={sections} />
       </Container>

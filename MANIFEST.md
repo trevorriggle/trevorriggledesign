@@ -8,9 +8,9 @@ no file renders as a spec placeholder carrying the same four facts listed here.
 **To add an asset:** save the file at the exact path in the *Save as* column.
 Nothing else changes — no code edit, no frontmatter edit, no import.
 
-- Declared: **15**
+- Declared: **1**
 - Present: **0**
-- Still needed: **15**
+- Still needed: **1**
 
 Minimum sizes are the smallest acceptable export. Larger is fine —
 `next/image` downscales and serves AVIF/WebP at the sizes each layout slot
@@ -18,86 +18,45 @@ actually needs. Smaller means visible softness on a 2× display.
 
 ---
 
-## Still needed (15)
+## Still needed (1)
 
 | Save as | Aspect | Minimum size | Slot | Must show |
 | --- | --- | --- | --- | --- |
-| `public/media/drawevolve-metal-renderer/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-metal-renderer/00-architecture.png` | 16:9 | 2000×1125 | architecture diagram | TODO — what must this image show? |
-| `public/media/drawevolve-metal-renderer/02-detail.png` | 3:2 | 1800×1200 | plate 01 | TODO — what must this image show? |
-| `public/media/drawevolve-metal-renderer/03-detail.png` | 4:3 | 1800×1350 | plate 02 | TODO — what must this image show? |
-| `public/media/drawevolve-critique-memory/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-critique-memory/02-detail.png` | 3:2 | 1800×1200 | plate 01 | TODO — what must this image show? |
-| `public/media/drawevolve-coaching-system/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-coaching-system/02-detail.png` | 3:2 | 1800×1200 | plate 01 | TODO — what must this image show? |
-| `public/media/drawevolve-cost-abuse-hardening/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-cost-abuse-hardening/02-detail.png` | 16:9 | 2000×1125 | plate 01 | TODO — what must this image show? |
-| `public/media/parallel-agent-worktrees/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/parallel-agent-worktrees/02-detail.png` | 16:9 | 2000×1125 | plate 01 | TODO — what must this image show? |
-| `public/media/lynk-llm-routing/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/lynk-llm-routing/00-architecture.png` | 16:9 | 2000×1125 | architecture diagram | TODO — what must this image show? |
-| `public/media/lynk-llm-routing/02-detail.png` | 16:9 | 2000×1125 | plate 01 | TODO — what must this image show? |
+| `public/media/thoosie/01-gameplay-poster.png` | 16:9 | 2400×1350 | video poster | TODO — what must this image show? |
+
+---
+
+## Video (1)
+
+| Save as | Aspect | Encode | Falls back to |
+| --- | --- | --- | --- |
+| `public/media/thoosie/01-gameplay.mp4` | 16:9 | H.264 mp4, faststart, no audio track | `public/media/thoosie/01-gameplay-poster.png` |
+
+A video slot is **two files and degrades to one.** While the mp4 is absent the
+page renders the poster frame as a still, in the same box, in the same place —
+so the layout is already correct and nothing is broken. Dropping the mp4 in at
+the path above is the entire operation.
+
+Encode notes, because the player relies on them: the clip plays **muted,
+looped, inline, with controls**, and is started from script rather than by an
+`autoplay` attribute — it will not start on its own on a metered or slow
+connection, or for a viewer who has asked for reduced motion. So there is no
+point carrying an audio track, and `-movflags +faststart` matters because
+playback begins before the file finishes arriving.
+
+Still needed: **1**.
 
 ---
 
 ## Per entry
 
-### DrawEvolve: Metal tile-based rendering engine migration
+### thoosie
 
-`drawevolve-metal-renderer` · AI Systems & Agents · folder `public/media/drawevolve-metal-renderer/`
-
-| Save as | Aspect | Minimum size | Slot | Must show |
-| --- | --- | --- | --- | --- |
-| `public/media/drawevolve-metal-renderer/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-metal-renderer/00-architecture.png` | 16:9 | 2000×1125 | architecture diagram | TODO — what must this image show? |
-| `public/media/drawevolve-metal-renderer/02-detail.png` | 3:2 | 1800×1200 | plate 01 | TODO — what must this image show? |
-| `public/media/drawevolve-metal-renderer/03-detail.png` | 4:3 | 1800×1350 | plate 02 | TODO — what must this image show? |
-
-### DrawEvolve: iterative critique memory
-
-`drawevolve-critique-memory` · AI Systems & Agents · folder `public/media/drawevolve-critique-memory/`
+`thoosie` · AI Systems & Development · folder `public/media/thoosie/`
 
 | Save as | Aspect | Minimum size | Slot | Must show |
 | --- | --- | --- | --- | --- |
-| `public/media/drawevolve-critique-memory/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-critique-memory/02-detail.png` | 3:2 | 1800×1200 | plate 01 | TODO — what must this image show? |
-
-### DrawEvolve: conversational coaching with rolling summaries
-
-`drawevolve-coaching-system` · AI Systems & Agents · folder `public/media/drawevolve-coaching-system/`
-
-| Save as | Aspect | Minimum size | Slot | Must show |
-| --- | --- | --- | --- | --- |
-| `public/media/drawevolve-coaching-system/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-coaching-system/02-detail.png` | 3:2 | 1800×1200 | plate 01 | TODO — what must this image show? |
-
-### DrawEvolve: cost and abuse hardening
-
-`drawevolve-cost-abuse-hardening` · AI Systems & Agents · folder `public/media/drawevolve-cost-abuse-hardening/`
-
-| Save as | Aspect | Minimum size | Slot | Must show |
-| --- | --- | --- | --- | --- |
-| `public/media/drawevolve-cost-abuse-hardening/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/drawevolve-cost-abuse-hardening/02-detail.png` | 16:9 | 2000×1125 | plate 01 | TODO — what must this image show? |
-
-### Parallel Claude Code agents across git worktrees
-
-`parallel-agent-worktrees` · AI Systems & Agents · folder `public/media/parallel-agent-worktrees/`
-
-| Save as | Aspect | Minimum size | Slot | Must show |
-| --- | --- | --- | --- | --- |
-| `public/media/parallel-agent-worktrees/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/parallel-agent-worktrees/02-detail.png` | 16:9 | 2000×1125 | plate 01 | TODO — what must this image show? |
-
-### Lynk: multi-provider LLM routing with hierarchical compression
-
-`lynk-llm-routing` · AI Systems & Agents · folder `public/media/lynk-llm-routing/`
-
-| Save as | Aspect | Minimum size | Slot | Must show |
-| --- | --- | --- | --- | --- |
-| `public/media/lynk-llm-routing/01-cover.png` | 3:2 | 2400×1600 | cover | TODO — what must this image show? |
-| `public/media/lynk-llm-routing/00-architecture.png` | 16:9 | 2000×1125 | architecture diagram | TODO — what must this image show? |
-| `public/media/lynk-llm-routing/02-detail.png` | 16:9 | 2000×1125 | plate 01 | TODO — what must this image show? |
+| `public/media/thoosie/01-gameplay-poster.png` | 16:9 | 2400×1350 | video poster | TODO — what must this image show? |
 
 ---
 

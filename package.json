@@ -5,14 +5,15 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/check-links.mjs && node scripts/manifest.mjs",
+    "prebuild": "node scripts/check-needs.mjs && node scripts/check-links.mjs && node scripts/manifest.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check:links": "node scripts/check-links.mjs --probe",
     "manifest": "node scripts/manifest.mjs",
-    "verify": "node scripts/check-links.mjs && tsc --noEmit && next build"
+    "verify": "node scripts/check-needs.mjs && node scripts/check-links.mjs && tsc --noEmit && next build",
+    "check:needs": "node scripts/check-needs.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

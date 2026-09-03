@@ -1,0 +1,117 @@
+---
+# COPY: every prose string below is portfolio-copy.md, verbatim.
+#   deck  <- **Subtitle:**    role <- **Role:**
+#   state <- **Status:**      timeline <- **Timeline:**
+#   links <- **Live:**, made absolute.
+# Nothing here is written, paraphrased, expanded or condensed.
+title: DrawEvolve
+deck: An iOS drawing app where the AI coaches instead of critiques.
+section: ai-systems
+
+# Derived from the **Timeline:** line above ("October 2025 – present"), not
+# supplied as a year by the copy. Display label only — nothing sorts on it.
+year: "2025–26"
+
+# One item, not four: the copy writes this as a sentence and splitting it on
+# the punctuation would re-set it as chips it was not written as.
+role:
+  - Everything — design, iOS, backend, infrastructure
+context: self-initiated
+timeline: October 2025 – present
+state: Shipped to TestFlight; approved for external testing
+
+# The spine fields (constraint / attempts / tradeoff / outcome / revisit) are
+# deliberately absent. This case study's argument is its own prose, under the
+# copy's own headings, in the body below — restating it in 220 characters here
+# would mean writing copy that does not exist. See DECISIONS.md.
+
+# ABSOLUTE. drawevolve.com is one of the two live links on this site; the
+# schema, ExternalLink and scripts/check-links.mjs each reject anything that
+# would resolve against this domain instead.
+links:
+  - label: Live
+    href: https://drawevolve.com
+    kind: live
+
+# Named in the copy above. Metadata chips, never a section.
+stack: [Swift, Metal, Cloudflare Workers, Supabase]
+
+status: published
+---
+
+## The premise
+
+Most AI feedback on creative work is stateless. You show it a drawing, it
+tells you what's wrong, and next time you show it a drawing it has no idea
+it's ever met you. That's not coaching. That's a very confident stranger with
+opinions.
+
+DrawEvolve is built on the opposite principle: the critique remembers. A
+second critique on the same piece references the first one and evaluates
+whether you actually acted on it. Progress is the thing being measured, not
+the individual drawing.
+
+The product position is *AI as mentor, not replacement* — the app has an
+Artist Bill of Rights, and nothing in it generates art on your behalf.
+
+## The constraint
+
+I was the entire team. Design, iOS, backend, infrastructure, and every
+decision in between. That shapes everything downstream: I couldn't afford
+architecture that required a team to maintain, and I couldn't afford a cost
+structure that could bankrupt me while I slept.
+
+I also started this not knowing Swift. I learned it in about two weeks and
+started building.
+
+## What I built
+
+**A drawing engine, from scratch.** Metal tile-based rendering, a wet-ink
+stroke system, brush suite, layers, selection tools, symmetry, full Apple
+Pencil support, and portrait/landscape handling.
+
+The renderer went through a multi-phase architectural migration to tiles.
+
+**An iterative critique system.** Four distinct AI voice presets, and "Eve," a
+conversational coaching layer that maintains rolling summaries of your
+conversation history so context survives across sessions without unbounded
+token growth. Critiques reference prior critiques. A My Evolution dashboard
+turns critique history into a visible progress record.
+
+**Infrastructure that assumes the worst.** Every model call routes through a
+Cloudflare Worker proxy that verifies JWTs, enforces App Attest, applies
+tiered rate limits, and hard-caps daily spend. Supabase with row-level
+security behind it. Sign in with Apple and Google via authorization code flow
+with PKCE.
+
+That work isn't glamorous and it's the reason the product exists. A solo
+developer shipping an LLM-backed app without a spend ceiling is one abusive
+script away from a five-figure bill. The ceiling went in before the app went
+out.
+
+## The tradeoff I made
+
+I shipped the tile-based renderer before retrofitting wet-ink onto it, which
+means the stroke system is running on architecture it wasn't originally
+written for until I go back and finish that work. I took the visible progress
+over the clean sequence, deliberately, because a renderer nobody can use
+isn't verified.
+
+That's a debt I named rather than hid, and it's scheduled.
+
+## How I worked
+
+I ran parallel Claude Code agents across git worktrees for most of the build.
+Not as a novelty — as the only way one person covers that much surface area
+in six months. Each agent held a bounded scope on its own branch, and I did
+integration and review.
+
+Learning to decompose work so that agents don't collide is a real skill, and
+it's most of why the timeline was possible at all.
+
+## Outcome
+
+Shipped to TestFlight in May 2026. Three builds; the third passed Beta App
+Review and was approved for external testing. Running with a beta group of
+working artists, including a tattoo artist who's been the heaviest user of
+the critique system.

@@ -11,8 +11,9 @@ every build.
 ```bash
 pnpm install
 pnpm dev            # http://localhost:3000 — drafts visible
-pnpm build          # prebuild runs the link check + regenerates MANIFEST.md
-pnpm verify         # link check + typecheck + build
+pnpm build          # prebuild: [[NEEDS]] check, link check, MANIFEST.md
+pnpm check:needs    # fail if an unfilled [[NEEDS]] marker is left in content/
+pnpm verify         # both checks + typecheck + build
 pnpm check:links    # probe external links over the network (reports only)
 ```
 
@@ -20,7 +21,7 @@ pnpm check:links    # probe external links over the network (reports only)
 
 ```
 content/
-  sections.ts      the seven sections, in order. Move a line to reorder the site.
+  sections.ts      the six sections, in order. Move a line to reorder the site.
   order.ts         entry order within each section. Same rule.
   schema.ts        typed frontmatter, validated at build time
   index.ts         the loader: validation, ordering, image resolution
@@ -44,9 +45,13 @@ scripts/               link check + manifest generation
 5. Set `status: published` when the prose is written. Until then it shows in dev
    and on preview deploys only.
 
-## Adding images
+## Adding images and video
 
 There are none yet, and the site is designed to be fully reviewable that way.
+
+A **video slot** is two files and degrades to one: while the mp4 is absent the
+page renders its poster frame as a still, in the same box, in the same place.
+thoosie declares one. `MANIFEST.md` lists both paths and the encode settings.
 
 Every image is declared in frontmatter with a filename, alt text, aspect ratio,
 minimum width and a note on what it must show. A declared image with no file
@@ -59,9 +64,16 @@ slot needs.
 
 ## Things that fail the build, on purpose
 
+- An unfilled `[[NEEDS: …]]` marker anywhere under `content/`. These are facts
+  only you can supply; in dev they render as a loud hazard block, and in a
+  production build they stop the deploy with the file and line of each. There
+  is no flag to skip it. See DECISIONS.md.
 - A relative, `http://`, protocol-relative or `TODO` external link — the bug
-  that turned every "Live demo" on the old site into a 404. Checked in three
-  places; see DECISIONS.md.
+  that turned every "Live demo" on the old site into a 404. Checked in four
+  places now, content MDX bodies included; see DECISIONS.md.
+- A live project link going *missing*: `REQUIRED_LIVE` in
+  `scripts/check-links.mjs` asserts `drawevolve.com` and `thoosie.net` are
+  declared in content, absolute, and spelled exactly.
 - A `roadmap`, `features`, `problem`, `solution` or `challenge` field, rejected
   by name with an explanation of what to write instead.
 - A misspelled frontmatter key, rather than silently dropping it.

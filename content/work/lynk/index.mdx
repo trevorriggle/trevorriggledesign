@@ -1,0 +1,57 @@
+---
+# COPY: every prose string below is portfolio-copy.md, verbatim.
+title: Lynk
+deck: A multi-model LLM workspace, and the decision to stop building it.
+section: ai-systems
+
+# No year: the copy gives Lynk no date, and one is not invented here. Every
+# template that prints a year already renders nothing when it is absent.
+
+role:
+  - Everything
+
+# SHELVED. Permanently, and framed as a decision — which is the point of the
+# entry. `context: shelved` and `state: Shelved` are the only status this
+# entry has, and there is no template branch anywhere that can render either
+# one as in-progress, upcoming, paused or on hold.
+context: shelved
+state: Shelved
+
+# NO LIVE LINK. There is no live Lynk URL. This array stays empty; the rail
+# renders nothing rather than an empty "Links" label.
+links: []
+
+stack: []
+
+status: published
+---
+
+## What it was
+
+A multi-provider LLM orchestration platform — routing across model
+providers, with hierarchical context compression so long sessions stayed
+usable without blowing up token costs.
+
+The compression work is the part I'd still defend. Long-running LLM sessions
+degrade in predictable ways, and hierarchically summarizing older context
+while keeping recent context intact was a genuinely reasonable answer to it.
+The same idea, scaled down, is what runs Eve's rolling summaries in
+DrawEvolve today.
+
+## Why I killed it
+
+The unit economics didn't work for one person. Every user session cost real
+money against provider APIs, the value proposition was thin against
+first-party tools that had the same models and more engineers, and I would
+have been maintaining provider integrations indefinitely while doing it
+alone.
+
+I shelved it, kept the repo, and moved the parts worth keeping into
+DrawEvolve.
+
+## Why it's on this site
+
+Because knowing when to stop is a skill, and I'd rather show you a project I
+ended deliberately than pretend everything I've started is still alive. The
+compression architecture found a better home. That's the outcome I wanted,
+just not the one I planned.

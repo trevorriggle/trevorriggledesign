@@ -3,9 +3,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/ui/Container";
-import { Argument } from "@/components/ui/Argument";
+import { Argument, hasArgument } from "@/components/ui/Argument";
 import { Diagram } from "@/components/ui/Diagram";
 import { Frame } from "@/components/ui/Frame";
+import { VideoSlot } from "@/components/ui/Video";
 import { GallerySet } from "@/components/ui/GallerySet";
 import { Pager } from "@/components/ui/Pager";
 import { ModelTable, BudgetBlock, FailureTable } from "@/components/ui/Tables";
@@ -91,11 +92,20 @@ export default async function EntryPage({
               entry.caption && <p className={styles.deck}>{entry.caption}</p>
             )}
 
-            {/* A shelved project is labelled as shelved. Framing dead work as
-                "upcoming" is the one thing on a portfolio a technical reader
-                always catches. */}
-            {entry.kind === "case" && entry.context === "shelved" && (
-              <p className={styles.shelved}>Shelved — capability artifact</p>
+            {/* A shelved project is labelled as shelved, in the author's own
+                words from the copy's **Status:** line. Nothing here softens it
+                to "paused", "on hold" or "upcoming", and there is no template
+                branch that could: this prints `state` verbatim or prints
+                nothing. Framing dead work as alive is the one thing on a
+                portfolio a technical reader always catches. */}
+            {entry.kind === "case" && entry.state && (
+              <p
+                className={
+                  entry.context === "shelved" ? styles.shelved : styles.state
+                }
+              >
+                {entry.state}
+              </p>
             )}
           </div>
 
@@ -105,6 +115,8 @@ export default async function EntryPage({
               {entry.kind === "case" ? (
                 <>
                   <Meta term="Role" value={entry.role.join(", ")} />
+                  <Meta term="Timeline" value={entry.timeline} />
+                  <Meta term="Status" value={entry.state} />
                   <Meta term="Context" value={entry.context} />
                   <Meta term="With" value={entry.collaborators} />
                   <MetaChips term="Stack" items={entry.stack} />
@@ -121,24 +133,37 @@ export default async function EntryPage({
       {/* ---- Case study --------------------------------------------------- */}
       {entry.kind === "case" && (
         <>
+          {/* The video leads. When a case study has a clip, the clip is the
+              strongest thing on the page and nothing should sit above it. */}
+          {entry.video && (
+            <Container>
+              <VideoSlot
+                video={entry.video}
+                sizes="(max-width: 60rem) 100vw, 84rem"
+              />
+            </Container>
+          )}
+
           {entry.cover && (
             <Container>
               <Frame
                 image={entry.cover}
                 role="cover"
                 sizes="(max-width: 60rem) 100vw, 84rem"
-                priority
+                priority={!entry.video}
               />
             </Container>
           )}
 
-          <Container>
-            <div className={styles.body}>
-              <div className={styles.argument}>
-                <Argument study={entry} />
+          {hasArgument(entry) && (
+            <Container>
+              <div className={styles.body}>
+                <div className={styles.argument}>
+                  <Argument study={entry} />
+                </div>
               </div>
-            </div>
-          </Container>
+            </Container>
+          )}
 
           {(entry.architecture ||
             entry.models.length > 0 ||
@@ -159,9 +184,11 @@ export default async function EntryPage({
             </Container>
           )}
 
+          {/* No "Detail" label: the body is the case study, not an appendix
+              to a summary. It carries the copy's own headings and nothing
+              else is added around it. */}
           {entry.body && (
             <Container as="section" className={styles.block}>
-              <p className={styles.blockLabel}>Detail</p>
               <div className={styles.body}>
                 <div className={styles.prose}>
                   <MdxBody

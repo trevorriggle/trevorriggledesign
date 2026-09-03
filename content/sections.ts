@@ -14,6 +14,9 @@
      "gallery"  titled visual set, held to the thin schema
 
    `years` is a display label only. It is never parsed, compared or sorted on.
+
+   COPY. Every `standfirst` below is the section intro from portfolio-copy.md,
+   verbatim. Nothing here is written, paraphrased or extended.
    ========================================================================= */
 
 export type SectionKind = "case" | "gallery";
@@ -25,59 +28,58 @@ export type Section = {
   /** Display-only. Not a sort key. */
   years: string;
   kind: SectionKind;
-  /** TODO: one line on what this body of work is. Shown under the heading. */
+  /** Section intro, verbatim from portfolio-copy.md. Shown under the heading. */
   standfirst: string;
 };
 
 export const sections: Section[] = [
   {
     id: "ai-systems",
-    title: "AI Systems & Agents",
+    title: "AI Systems & Development",
     years: "2025–26",
     kind: "case",
-    standfirst: "TODO",
-  },
-  {
-    id: "full-stack",
-    title: "Full Stack Development",
-    years: "2025",
-    kind: "case",
-    standfirst: "TODO",
+    standfirst:
+      "Products I designed and built end to end. Interface through infrastructure.",
   },
   {
     id: "3d-graphics",
     title: "3D Graphics",
     years: "2025",
     kind: "gallery",
-    standfirst: "TODO",
+    standfirst:
+      "Product visualization and 3D work. Modeling, lighting, and render passes for commercial use.",
   },
   {
     id: "marketing",
     title: "Marketing",
     years: "2022",
     kind: "gallery",
-    standfirst: "TODO",
+    standfirst:
+      "Campaign work at American Scientific — animated product flyers, web banners, and social assets, produced at volume across hundreds of client accounts.",
   },
   {
     id: "motion-graphics",
     title: "Motion Graphics",
     years: "2021",
     kind: "gallery",
-    standfirst: "TODO",
+    standfirst:
+      "Animation and motion work. Titles, product motion, and short-form pieces.",
   },
   {
     id: "print",
     title: "Print",
     years: "2021",
     kind: "gallery",
-    standfirst: "TODO",
+    standfirst:
+      "Catalog spreads and print layout. Long documents, tight grids, and the kind of typographic discipline that only shows up when it's missing.",
   },
   {
     id: "personal-works",
     title: "Personal Works",
     years: "2021",
     kind: "gallery",
-    standfirst: "TODO",
+    standfirst:
+      "Illustration and comics, mostly made for myself. One of them ended up on the front page of Reddit, which was not the plan.",
   },
 ];
 
@@ -88,11 +90,11 @@ export function getSection(id: string): Section | undefined {
   return sections.find((s) => s.id === id);
 }
 
-/** Zero-padded display ordinal — 01 … 07. */
+/** Zero-padded display ordinal — 01 … 06. */
 export function sectionOrdinal(id: string): string {
   const i = sections.findIndex((s) => s.id === id);
   return i < 0 ? "--" : String(i + 1).padStart(2, "0");
 }
 
 /** How many entries, from the top of the running order, the home page shows. */
-export const HOME_FEATURED_COUNT = 4;
+export const HOME_FEATURED_COUNT = 3;

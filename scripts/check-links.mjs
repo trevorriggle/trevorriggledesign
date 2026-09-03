@@ -10,7 +10,11 @@
      1. content/schema.ts   rejects a non-absolute href in frontmatter
      2. ExternalLink        throws on a non-absolute href in page code
      3. this script         scans BOTH, plus the hand-written links in app/ and
-                            components/ that the schema never sees
+                            components/, plus the MDX prose bodies — which the
+                            schema never sees, because they are not frontmatter
+
+   It also asserts, by name, that the site's live project links are present and
+   absolute. See REQUIRED_LIVE below.
 
    Malformed URL  -> exit 1, build fails.
    Dead URL       -> reported only, with --probe. A third-party host being down
@@ -29,6 +33,22 @@ const TIMEOUT_MS = 10_000;
 
 const problems = [];
 const links = [];
+
+/* ---------------------------------------------------------------------------
+   The two live external links on this site.
+
+   A tripwire, deliberately hard-coded. The failure this whole file exists to
+   prevent is not "a URL was typed wrong" — it is a Live link that silently
+   stops being a live link, which is what the old site shipped on every case
+   study. Validating the links that happen to be present cannot catch a link
+   that has gone missing, so these two are asserted by name: present somewhere
+   in content/, absolute, and exactly this spelling.
+
+   If a project genuinely goes away, delete its line here in the same commit
+   that removes it. That is the point — it should take a decision, not a
+   silent drift.
+   ------------------------------------------------------------------------ */
+const REQUIRED_LIVE = ["https://drawevolve.com", "https://thoosie.net"];
 
 /* -------------------------------------------------------------------------- */
 /* 1. Content frontmatter                                                     */
@@ -61,6 +81,57 @@ function walkContent(kind) {
            relative path here is the old site's bug verbatim, not a valid
            in-app link, and it must fail. */
         origin: "content",
+      });
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* 1b. Prose bodies in content MDX                                            */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * The half of a content file the frontmatter schema cannot see.
+ *
+ * A markdown link written in a case study body — `[Live demo](drawevolve.com)`
+ * — is the old site's bug verbatim, and nothing else in the pipeline would
+ * catch it: gray-matter hands the body through as an opaque string, and the
+ * schema only ever parses the YAML above it.
+ *
+ * Every markdown link target and every raw href in a body is collected here.
+ * An in-app route (`/work`) or a fragment (`#print`) is legitimate in prose,
+ * so bodies are held to the `source` rule rather than the stricter `content`
+ * one; anything that merely LOOKS external still has to be absolute https.
+ */
+function walkContentBodies(kind) {
+  const dir = path.join(ROOT, "content", kind);
+  if (!fs.existsSync(dir)) return;
+
+  for (const dirent of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (!dirent.isDirectory() || dirent.name.startsWith("_")) continue;
+
+    const rel = `content/${kind}/${dirent.name}/index.mdx`;
+    const file = path.join(ROOT, rel);
+    if (!fs.existsSync(file)) continue;
+
+    const { content } = matter(fs.readFileSync(file, "utf8"));
+
+    // [label](target) — but not ![alt](image), which is not a link.
+    for (const match of content.matchAll(/(?<!!)\[[^\]]*\]\(([^)\s]+)/g)) {
+      links.push({
+        href: match[1],
+        label: "(mdx body)",
+        source: rel,
+        origin: "source",
+      });
+    }
+    // Raw <a href="…"> written as JSX inside a body.
+    for (const match of content.matchAll(/href=["']([^"'{}]+)["']/g)) {
+      links.push({
+        href: match[1],
+        label: "(mdx body href)",
+        source: rel,
+        origin: "source",
       });
     }
   }
@@ -184,11 +255,29 @@ async function probe(url) {
 
 walkContent("work");
 walkContent("gallery");
+walkContentBodies("work");
+walkContentBodies("gallery");
 walkSource("app");
 walkSource("components");
 walkSource("lib");
 
 const external = links.filter(validate);
+
+/* The tripwire. Checked against content only — a live project link belongs in
+   an entry's links[], not hand-written into a template. */
+const contentHrefs = new Set(
+  links.filter((l) => l.origin === "content").map((l) => l.href),
+);
+for (const required of REQUIRED_LIVE) {
+  if (!contentHrefs.has(required)) {
+    problems.push([
+      "content/work/*/index.mdx",
+      `required live link missing: "${required}" is not declared in any ` +
+        `content entry's links[]. If the project is gone, remove it from ` +
+        `REQUIRED_LIVE in this script in the same commit.`,
+    ]);
+  }
+}
 
 if (problems.length) {
   console.error(`\n  ── Malformed links (${problems.length}) ─────────────────\n`);
@@ -204,6 +293,9 @@ if (problems.length) {
 console.log(
   `  Links: ${external.length} external, ${links.length} total checked — all well-formed.`,
 );
+for (const required of REQUIRED_LIVE) {
+  console.log(`         live link present and absolute: ${required}`);
+}
 
 if (PROBE && external.length) {
   console.log(`\n  Probing ${external.length} external link(s)…\n`);

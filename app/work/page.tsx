@@ -7,13 +7,13 @@ import { GallerySet } from "@/components/ui/GallerySet";
 import { SectionIndex } from "@/components/ui/SectionIndex";
 import { Empty } from "@/components/ui/Empty";
 import { getSections } from "@/content";
+import { site } from "@/lib/site";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
   title: "Work",
-  /* TODO: a description of the work index, under ~160 characters. */
-  description: "TODO",
+  description: site.description,
 };
 
 export default function WorkPage() {
@@ -28,9 +28,9 @@ export default function WorkPage() {
         <div className={styles.headGrid}>
           <div className={styles.headMain}>
             <h1 className={styles.title}>Work</h1>
-            {/* TODO: one short paragraph framing the seven sections. Worth
-                saying outright that the order is deliberate. */}
-            <p className={styles.note}>TODO</p>
+            {/* No standfirst. The copy writes none for the work index, and
+                the section intros below say what each body of work is. Each
+                section's own intro is doing this job already. */}
           </div>
           <div className={`${styles.headRail} ${grid.railRuled}`}>
             <SectionIndex sections={sections} />

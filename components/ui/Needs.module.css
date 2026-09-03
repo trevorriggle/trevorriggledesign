@@ -1,0 +1,33 @@
+/* An outstanding [[NEEDS: ...]] marker. Deliberately the ugliest thing on the
+   site — it is a hole in the copy, and it should look like one. */
+
+.needs {
+  display: block;
+  margin-block: var(--space-sm);
+  border: var(--hairline) dashed var(--color-signal);
+  background: var(--color-signal-quiet);
+  /* Hazard stripes, at low contrast so the text stays readable. */
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent 0 7px,
+    color-mix(in oklab, var(--color-signal) 9%, transparent) 7px 14px
+  );
+  padding: var(--space-xs) var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  max-width: var(--width-prose);
+}
+
+.tag {
+  display: block;
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  font-weight: var(--weight-semibold);
+  color: var(--color-signal);
+  margin-bottom: var(--space-3xs);
+}
+
+.text { display: block; text-wrap: pretty; }

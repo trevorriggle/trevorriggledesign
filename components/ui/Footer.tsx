@@ -10,17 +10,14 @@ export function Footer() {
         <div className={styles.inner}>
           <div className={styles.identity}>
             <p className={styles.name}>{site.name}</p>
-            {/* TODO: one line. What you do, stated plainly. */}
-            <p className={styles.line}>TODO</p>
           </div>
 
-          <div className={styles.elsewhere}>
-            <h2 className={styles.heading}>Elsewhere</h2>
-            {site.social.length === 0 ? (
-              <p className={styles.metaLine}>
-                TODO — add profiles in lib/site.ts
-              </p>
-            ) : (
+          {/* Renders only when there is somewhere to send people. An
+              "Elsewhere" heading over a prompt to fill it in is a note to the
+              author printed on the visitor's page. */}
+          {site.social.length > 0 && (
+            <div className={styles.elsewhere}>
+              <h2 className={styles.heading}>Elsewhere</h2>
               <ul className={styles.list}>
                 {site.social.map((s) => (
                   <li key={s.href}>
@@ -28,8 +25,8 @@ export function Footer() {
                   </li>
                 ))}
               </ul>
-            )}
-          </div>
+            </div>
+          )}
 
           <div className={styles.meta}>
             <p className={styles.metaLine}>

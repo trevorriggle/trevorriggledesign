@@ -7,9 +7,12 @@ import { sectionIds } from "./sections";
    The schema is an editorial instrument, not just type safety. Three
    mechanisms do the work:
 
-   1. THE SPINE IS REQUIRED. A case study does not validate without a
-      constraint, a failed attempt, a tradeoff *with its cost*, an outcome, and
-      a revisit. You cannot ship the flattering half.
+   1. THE SPINE IS COMPOUND AND HONEST WHEN USED. `constraint`, `attempts`,
+      `tradeoff`, `outcome` and `revisit` are optional now that the site has
+      real prose — see the note on the shape below — but their shapes are
+      unchanged, so an entry that fills them still cannot ship the flattering
+      half: a tradeoff without its cost, or an attempt without its failure,
+      does not validate.
 
    2. CHARACTER CAPS. Every narrative field is capped. A feature list does not
       fit in 200 characters; a claim does. The long version belongs in the MDX
@@ -145,6 +148,34 @@ export const imageSchema = z.object({
   bleed: z.boolean().default(false),
 });
 
+/**
+ * A self-hosted video slot.
+ *
+ * Self-hosted mp4 only: no embed, no third-party player, no tracking iframe on
+ * a page whose whole argument is that the author owns the stack.
+ *
+ * `poster` is a full image declaration rather than a bare filename, and it is
+ * REQUIRED. That is the degradation contract: when the mp4 is not on disk the
+ * slot renders the poster through <Frame />, and when the poster is not on disk
+ * either it renders the same spec <Placeholder /> every other image does. The
+ * layout box is identical in all three states, because it is sized from the
+ * poster's declared aspect — so a page composes correctly with no video file,
+ * which is the state this repo is in.
+ */
+export const videoSchema = z.object({
+  src: z
+    .string()
+    .min(1)
+    .regex(
+      /^[a-z0-9][a-z0-9._-]*\.mp4$/,
+      "src must be a lowercase .mp4 filename, e.g. 01-gameplay.mp4 (no paths, no spaces)",
+    ),
+  poster: imageSchema,
+  caption: z.string().max(280).optional(),
+  /** Break the content column and run to the wide measure. */
+  bleed: z.boolean().default(false),
+});
+
 const yearSchema = z.union([
   z.number().int().min(1990).max(2100),
   z
@@ -234,11 +265,17 @@ export const failureModeSchema = z.object({
 const caseStudyShape = z.strictObject({
   // ---- identity -----------------------------------------------------------
   title: z.string().min(1).max(70),
-  /** One line under the title. A claim about what was built, not a tagline. */
+  /** One line under the title. A claim about what was built, not a tagline.
+   *  Sourced from the **Subtitle:** line of the case study copy. */
   deck: z.string().min(1).max(150),
   section: z.enum(sectionIds as [string, ...string[]]),
-  year: yearSchema,
-  role: z.array(z.string().max(40)).min(1),
+  /** Optional: a project with no date in the copy gets no invented one.
+   *  Every template that prints it already handles its absence. */
+  year: yearSchema.optional(),
+  /** One entry per line of the **Role:** copy, verbatim. The cap is 120 rather
+   *  than 40 so a written role line survives without being chopped into chips
+   *  it was not written as. */
+  role: z.array(z.string().max(120)).min(1),
   context: z.enum([
     "client",
     "self-initiated",
@@ -249,11 +286,29 @@ const caseStudyShape = z.strictObject({
   ]),
   collaborators: z.string().max(200).optional(),
 
-  // ---- the spine: five required fields, all capped ------------------------
+  /** The **Status:** line, verbatim. Free text, not an enum: "Shipped to
+   *  TestFlight; approved for external testing" is a sentence, and flattening
+   *  it to a keyword is exactly the editorialising this site avoids. It is
+   *  also the field that keeps a shelved project labelled shelved. */
+  state: z.string().max(120).optional(),
+  /** The **Timeline:** line, verbatim. */
+  timeline: z.string().max(80).optional(),
+
+  // ---- the spine: optional, still capped, still compound -------------------
+  /* These five were required when the site was structure-without-copy: the
+     schema was the editorial instrument that forced a decision log to exist.
+     The copy now exists and is written as prose with its own headings, and
+     requiring a 220-character restatement of a paragraph would mean writing
+     new copy to satisfy a validator. So they are optional.
+
+     Everything else about them is unchanged — the caps, the three-legged
+     tradeoff, the tried/failed pairing. An entry that fills them still cannot
+     fill them dishonestly, and <Argument /> renders exactly the movements that
+     are present. See DECISIONS.md. */
 
   /** What limited you. External and specific: a frame budget, a token cost, a
    *  platform API, a device class. Not "users found it confusing". */
-  constraint: z.string().min(1).max(220),
+  constraint: z.string().min(1).max(220).optional(),
 
   /** Dead ends. Each must say what was tried AND why it failed. */
   attempts: z
@@ -263,31 +318,31 @@ const caseStudyShape = z.strictObject({
         failed: z.string().min(1).max(220),
       }),
     )
-    .min(1, "at least one attempt is required — what did you try that failed?"),
+    .default([]),
 
   /** Split three ways so the cost cannot be quietly omitted. */
-  tradeoff: z.object({
-    chose: z.string().min(1).max(220),
-    instead_of: z.string().min(1).max(220),
-    cost: z
-      .string()
-      .min(1, "every tradeoff cost something — name it")
-      .max(220),
-  }),
+  tradeoff: z
+    .object({
+      chose: z.string().min(1).max(220),
+      instead_of: z.string().min(1).max(220),
+      cost: z
+        .string()
+        .min(1, "every tradeoff cost something — name it")
+        .max(220),
+    })
+    .optional(),
 
   /** `evidence` is optional on purpose: an absent metric is defensible in an
    *  interview and a fabricated one is not. */
-  outcome: z.object({
-    what: z.string().min(1).max(300),
-    evidence: z.string().max(220).optional(),
-  }),
+  outcome: z
+    .object({
+      what: z.string().min(1).max(300),
+      evidence: z.string().max(220).optional(),
+    })
+    .optional(),
 
-  /** What you would do differently. Required, and the one field that cannot be
-   *  filled without conceding something did not go well. */
-  revisit: z
-    .string()
-    .min(1, "required: what would you do differently, knowing what you know now?")
-    .max(300),
+  /** What you would do differently. */
+  revisit: z.string().min(1).max(300).optional(),
 
   // ---- AI-shaped structure, all optional ----------------------------------
   architecture: architectureSchema.optional(),
@@ -296,6 +351,9 @@ const caseStudyShape = z.strictObject({
   failureModes: z.array(failureModeSchema).default([]),
 
   // ---- media + links ------------------------------------------------------
+  /** Renders first, above the cover. A case study whose strongest asset moves
+   *  should lead with it. */
+  video: videoSchema.optional(),
   cover: imageSchema.optional(),
   images: z.array(imageSchema).default([]),
   links: z.array(linkSchema).default([]),
@@ -336,6 +394,7 @@ export const gallerySchema = galleryShape;
 export type CaseStudyFrontmatter = z.infer<typeof caseStudyShape>;
 export type GalleryFrontmatter = z.infer<typeof galleryShape>;
 export type ImageRef = z.infer<typeof imageSchema>;
+export type VideoRef = z.infer<typeof videoSchema>;
 export type ExternalLinkRef = z.infer<typeof linkSchema>;
 export type Architecture = z.infer<typeof architectureSchema>;
 export type ModelRow = z.infer<typeof modelRowSchema>;

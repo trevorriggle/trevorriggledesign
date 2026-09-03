@@ -329,88 +329,252 @@ deploy.
 
 ---
 
-## Assumptions I made — confirm these
+## Wiring in portfolio-copy.md
 
-Nine things I resolved on my own. Numbers 1–4 are the ones that could be wrong
-in a way that matters.
+`portfolio-copy.md` is the copy. It was routed, not edited: nothing in it was
+rewritten, paraphrased, expanded or condensed, no new prose was written to fill
+a gap, and the file itself is untouched on disk.
+
+A build-time proof of that is worth having, so here is how to re-run it — it
+lifts each case study body out of `content/`, restores the heading levels, and
+asserts the result is a substring of the copy file:
+
+```bash
+python3 - <<'EOF'
+import re
+copy = open("portfolio-copy.md").read()
+norm = lambda t: re.sub(r"\s+", " ", t).strip()
+for slug in ("drawevolve", "thoosie", "lynk"):
+    lines = open(f"content/work/{slug}/index.mdx").read().split("\n")
+    end = next(i for i in range(1, len(lines)) if lines[i] == "---")
+    body = re.sub(r"^## ", "### ", "\n".join(lines[end+1:]), flags=re.M)
+    print(("VERBATIM " if norm(body) in norm(copy) else "DRIFT    ") + slug)
+EOF
+```
+
+### Where each piece landed
+
+| Copy | Now lives in |
+| --- | --- |
+| Home opening statement | `app/page.tsx` — headline + subhead |
+| Nav labels | `lib/site.ts` → `nav` (already matched) |
+| Meta description | `lib/site.ts` → `description`; used on every page and both OG cards |
+| 404 | `app/not-found.tsx` |
+| Contact page | `app/contact/page.tsx`, address in `lib/site.ts` |
+| About body | `app/about/page.tsx` — four paragraphs |
+| Section intros ×6 | `content/sections.ts` → `standfirst` |
+| Case studies ×3 | `content/work/<slug>/index.mdx` |
+| **Subtitle:** / **Role:** / **Status:** / **Timeline:** / **Live:** | frontmatter `deck` / `role` / `state` / `timeline` / `links` |
+
+### The four edits I made to the structure, and why
+
+**1. The case-study spine is now optional.** `constraint`, `attempts`,
+`tradeoff`, `outcome` and `revisit` were required, capped at ~220 characters
+each, and were the mechanism that forced a decision log to exist when this repo
+had no copy. The copy is written as prose under its own headings — "The
+premise", "The constraint", "What I built", "The tradeoff I made", "How I
+worked", "Outcome". Restating a three-paragraph section in 220 characters is
+writing new copy, and inventing an `attempts[].failed` for thoosie and Lynk,
+which name no failed attempts, is inventing facts. So the fields are optional
+and unused; the argument is the prose. Their shapes are unchanged, `<Argument>`
+renders whichever are present and numbers them over what survives, and the
+banned keys (`roadmap`, `features`, `problem`, `solution`, `challenge`) still
+fail the build by name.
+
+**2. Six DrawEvolve/Lynk stubs became three case studies.** The repo had
+`drawevolve-metal-renderer`, `-critique-memory`, `-coaching-system`,
+`-cost-abuse-hardening`, `parallel-agent-worktrees` and `lynk-llm-routing`,
+all pure TODO. The copy has three case studies, and you specified the AI
+Systems section as DrawEvolve → thoosie → Lynk. The renderer, critique system,
+infrastructure and worktree material are all sections *within* DrawEvolve's
+copy now. Slugs are `drawevolve`, `thoosie`, `lynk`.
+
+**3. Full Stack Development is gone.** Your section order lists six sections
+and that is not one of them. `ai-systems` is retitled "AI Systems &
+Development".
+
+**4. Heading levels were demoted `###` → `##`.** In the copy file the case
+study sections sit under a `# CASE STUDY N` title; on the page the entry title
+is the `h1`, so its own sections are `h2`. Document structure, not copy — no
+word, no punctuation and no ordering changed.
+
+### Things the copy does not cover, that a component wanted
+
+None of these render a placeholder. Every one of them is a component that
+correctly renders *nothing* when the value is absent, so the gap is invisible
+to a visitor and one edit away from filled. **One exception, and it is
+visible** — the first row.
+
+| Gap | Where | What renders now |
+| --- | --- | --- |
+| **Poster alt text + spec** | `content/work/thoosie/index.mdx` → `video.poster` | **`TODO` is visible on the page.** See "Known visible placeholder" below. |
+| Home eyebrow label | `app/page.tsx` | The slot is deleted. The copy has no label line above the headline. |
+| Home / About / Contact rail: "Based", "Focus", "Looking for" | `lib/site.ts` → `location`, `availability` | Rows omitted. Fill either constant and every row reappears. |
+| Footer one-liner | `components/ui/Footer.tsx` | Deleted. The footer is name, domain, year, colophon. |
+| Footer "Elsewhere" | `lib/site.ts` → `social` | Whole block omitted rather than showing an empty heading. |
+| /work index standfirst | `app/work/page.tsx` | Omitted. The six section intros do that job. |
+| About rail chips | `app/about/page.tsx` | Deleted. Filling "Building with" / "Designing with" / "Shipped on" would mean mining tool names out of your prose and re-setting them as tags you did not write. |
+| Lynk's year | `content/work/lynk/index.mdx` | Absent — `year` is now optional. The copy gives Lynk no date. |
+| Gallery entries, all six sections | `content/gallery/` | Each section renders its heading and its intro, then stops. The scaffolding note is dev-only. |
+
+**Derived, so I did build it:** per-page titles and OG images from frontmatter;
+`year` on DrawEvolve (`2025–26`, from its **Timeline:** line) and thoosie
+(`2026`, from "Launched August 2026" in its own Outcome copy); `stack` chips on
+DrawEvolve (Swift, Metal, Cloudflare Workers, Supabase — each named in that
+case study's copy; thoosie and Lynk name none, so theirs are empty).
+
+### Known visible placeholder
+
+`content/work/thoosie/index.mdx` declares the gameplay clip's poster frame,
+because the video slot requires one. Neither the file nor its `alt` and `label`
+strings exist, so `/work/thoosie` renders one spec placeholder box printing
+**"TODO — what must this image show?"**, with `alt="TODO"` behind it.
+
+That is the only placeholder text reachable in the production build. Three ways
+to clear it, in order of preference: save the poster at
+`public/media/thoosie/01-gameplay-poster.png`; or write the two strings; or
+delete the `video:` block, which removes the slot entirely. I did not write
+them, because alt text is content.
+
+---
+
+## Lynk is shelved, structurally
+
+Not a content convention — there is no code path that can render Lynk as
+active:
+
+- `links: []`. There is no live Lynk URL, and `scripts/check-links.mjs` asserts
+  by name that the only two live links on this site are `drawevolve.com` and
+  `thoosie.net`.
+- `context: shelved` and `state: Shelved`. `state` is the **Status:** line from
+  the copy, printed verbatim or not at all — the template has no vocabulary of
+  its own to fall back on, so it cannot say "paused", "on hold", "in progress"
+  or "upcoming".
+- The old template hard-coded the string `Shelved — capability artifact` for
+  any `context: shelved` entry. That is invented copy and it is gone.
+- Nothing is date-sorted anywhere, so Lynk cannot drift to the top of a list
+  and read as current.
+- `text-transform: uppercase` was removed from the status chip. It would have
+  set DrawEvolve's "Shipped to TestFlight; approved for external testing" in
+  caps, which is the template editorialising a sentence it was handed.
+
+---
+
+## The [[NEEDS]] system
+
+Two halves, and the second one is the point.
+
+**In dev, a marker is loud.** `components/ui/Needs.tsx` renders it as a
+hazard-striped block in the signal colour, with a `needs` tag and the marker's
+own text. `withNeeds()` handles markers in frontmatter strings; `liftNeeds()`
+in `components/mdx/MdxBody.tsx` handles them in prose bodies.
+
+The marker text is passed to the component as a **plain entity-escaped
+attribute**. This looks over-careful and is not: `<Needs>{"…"}</Needs>` and
+`<Needs text={"…"} />` were both tried first, and compiled through
+next-mdx-remote's RSC entry both arrive with nothing — a correctly-styled
+hazard block with no text in it, which is worse than no marker at all. Only a
+quoted attribute survives. Escaping `"`, `<`, `>`, `{` and `}` is what lets a
+marker contain quotes and dashes without breaking the MDX parse.
+
+**In production, a marker breaks the deploy.** `scripts/check-needs.mjs` runs
+first in `prebuild` and exits 1 if the literal string appears anywhere under
+`content/`, printing the file and line of each. It scans *every* file in that
+tree — not just MDX bodies, not just frontmatter — so a marker pasted into a
+section standfirst, an alt string or a YAML comment fails too. It caught a
+comment in `content/index.ts` during this build, which is the check working.
+
+**There is no escape hatch, deliberately.** No environment variable, no flag.
+A switch that turns this off is a switch that gets set once, in a hurry, on the
+day it matters, and never unset.
+
+I also removed the module-level parse cache in dev (`content/index.ts`). It was
+never invalidated, so editing an MDX file changed nothing on screen until the
+dev server was restarted — which defeats the entire purpose of rendering
+markers in dev. Production still parses once per process.
+
+---
+
+## Video
+
+`content/schema.ts` → `videoSchema`, rendered by `components/ui/Video.tsx`
+(server) and `components/ui/AutoVideo.tsx` (client). Self-hosted mp4 only — no
+embed, no third-party player, no tracking iframe on a site whose argument is
+that you own the stack.
+
+**Three states, one box.** The box is measured from the poster's declared
+aspect ratio, so the page composes identically whether the clip is there or
+not:
+
+| State | Renders |
+| --- | --- |
+| mp4 present | `<AutoVideo>` — poster, muted, looped, `playsInline`, controls |
+| mp4 missing | the poster frame as a still, through `<Frame>` |
+| poster missing too | the same spec `<Placeholder>` as any other image — **this is the current state** |
+
+`poster` is a required full image declaration, not an optional filename. That
+requirement *is* the degradation contract.
+
+**Autoplay is opt-in and fails closed.** The element never carries an
+`autoplay` attribute; playback is started from script only when the connection
+is known-good, the viewer has not asked for reduced motion, and the clip is on
+screen. `navigator.connection` is the only "mobile data" signal a browser
+gives and it is Chromium-only — so a missing API, `saveData`, `type:
+"cellular"`, or an effective type of 3g or worse all mean *no autoplay*. On an
+unknown connection nothing starts either. Controls are always present, so "did
+not autoplay" is never "cannot play". No client JavaScript ships at all while
+the mp4 is absent.
+
+---
+
+## Assumptions I made — confirm these
 
 1. **Domain: `trevorriggle.design`.** Used for `metadataBase`, canonical URLs,
    the sitemap and OG image URLs. One edit in `lib/site.ts` if it is wrong.
-2. **Per-entry year: `2025` on all six AI stubs**, marked `# CONFIRM` in each
-   file. You gave the section range as 2025–26 but not per-project years.
-3. **The seeded stubs are `status: draft`**, so a production deploy will not
-   publish TODO placeholder text to your domain. They render in dev and on
-   Vercel preview deploys. To review the full structure in a production build:
-   `SHOW_DRAFTS=1 pnpm build`. Flip a stub to `published` when its prose is
-   written — and it will then be required to appear in `content/order.ts`.
-4. **Legacy redirects are partly guesses.** `/social-media` → Marketing,
+   Still the highest-consequence unconfirmed value in the repo.
+2. **The three case studies are `status: published`.** They have real copy now,
+   so they render in production. The gallery sections have no entries at all.
+3. **Legacy redirects are partly guesses.** `/social-media` → Marketing,
    `/spreads` → Print and `/illlustrations` → Personal Works come from you.
-   I also added `/illustrations` (the correctly-spelled twin, which anyone
-   retyping the URL by hand would hit), `/motion` and `/3d` on the assumption
-   they exist. Delete any that do not, and add the real ones from analytics —
-   one line each in `next.config.ts`.
-5. **Your name is filled in; your email is not.** The name came from this
-   repository's git config. The email address in the git config is a work
-   address at another company, so I did not put it on a personal portfolio —
-   `site.email` is `TODO`, and the contact page shows a visible prompt instead
-   of an address until you set it.
-6. **OG cards render in the fallback sans, not Fraunces.** `next/og` rasterises
-   with satori, which needs a raw `ttf`/`otf` buffer and cannot read the `woff2`
-   files `next/font` produces. Rather than fetch a font over the network mid-build,
-   the cards carry the composition — ruled frame, hanging ordinal, left-weighted
-   type, the vermilion bar. To upgrade: drop a `.ttf` into `lib/fonts/` and pass
-   it to the `fonts` option in `lib/og.tsx`.
-7. **The home page features the top 4** entries of the running order
-   (`HOME_FEATURED_COUNT` in `content/sections.ts`).
-8. **Full Stack Development and all five gallery sections are empty**, rendering
-   a visible empty state that names the exact path to fill. You gave me real
-   project names for AI Systems only, and inventing entries for the others would
-   have put undefendable material on the site. The empty state is honest and
-   actionable; a silently hidden section is neither.
-9. **Architecture stages in the stubs use only nouns you supplied** — App
-   Attest, Cloudflare Worker JWT verification, tiered rate limits, daily spend
-   ceiling, git worktrees, multi-provider router, hierarchical compression. Every
-   `detail` under them is `TODO`. I did not invent a stage, a provider, a model
-   name, a metric or an outcome anywhere.
-
-10. **ESLint cannot lint the `.tsx` files, and I left your TypeScript version
-    alone.** The scaffold pins TypeScript `^7`, and `typescript-eslint` — which
-    `eslint-config-next` depends on, and which owns the only usable TS parser
-    for ESLint — throws on TS 7. So `pnpm lint` runs Next's rules, react-hooks
-    and a strict jsx-a11y set over the JS it *can* parse, and skips `.ts`/`.tsx`
-    entirely. The config file explains it and carries the exact replacement.
-
-    Fixing it properly means pinning TypeScript to `^6`, which trades a compiler
-    major for a linter — your call, not mine. It is one line in `package.json`
-    plus the four-line config in the comment at the top of `eslint.config.mjs`.
-    Meanwhile `pnpm typecheck` and `next build` both type-check the whole
-    project, and required-and-validated `alt` text means the a11y defect ESLint
-    would most likely catch cannot be introduced through content at all.
-
-## What I deliberately did not write
-
-No copy. Every prose field on the site is a literal `TODO`, including the
-headline, the decks, all five spine fields on six case studies, the About
-movements, the section standfirsts and the footer line. No invented project
-names, metrics, client names, statistics or outcomes — you will be interviewed
-on this material, and an empty field is defensible where a fabricated number is
-not.
-
-Where a `TODO` needed context to be actionable, the prompt sits next to it as a
-visible hint (`/about`) or a frontmatter comment (`content/work/_template/`),
-saying what belongs there and what does not. Delete the hints as you fill them.
+   `/illustrations`, `/motion` and `/3d` were added on the assumption they
+   exist. `/work#full-stack` no longer resolves to a section — nothing
+   redirected there, so nothing broke, but the section id is gone.
+4. **OG cards render in the fallback sans, not Fraunces.** `next/og`
+   rasterises with satori, which needs a raw `ttf`/`otf` buffer and cannot read
+   the `woff2` files `next/font` produces. To upgrade: drop a `.ttf` into
+   `lib/fonts/` and pass it to the `fonts` option in `lib/og.tsx`.
+5. **The home page features the top 3** entries of the running order
+   (`HOME_FEATURED_COUNT` in `content/sections.ts`), which is now exactly the
+   three case studies.
+6. **`REQUIRED_LIVE` in `scripts/check-links.mjs` is hard-coded** to
+   `https://drawevolve.com` and `https://thoosie.net`. Validating the links
+   that happen to be present cannot catch a live link that has gone *missing*,
+   which is the failure you described. If a project genuinely goes away, delete
+   its line there in the same commit — it should take a decision, not a drift.
+7. **ESLint still cannot lint the `.tsx` files.** `typescript-eslint` throws on
+   TypeScript 7, which this repo pins. `pnpm typecheck` and `next build` both
+   type-check the whole project. Unchanged from before; the fix is still one
+   line in `package.json` plus the config in `eslint.config.mjs`.
 
 ## Verified, not assumed
 
-- `pnpm typecheck` clean; `pnpm build` clean; 22 routes prerender with drafts on.
-- Guardrails tested by deliberately breaking content, then confirming each
-  failure message and removing the test entry: a `roadmap` key, a missing
-  `tradeoff.cost`, a misspelled `revisit`, and a relative `/live-demo` href.
-  All four fail the build. The first `roadmap` check did *not* work and was
-  rewritten.
-- Mixed-ratio gallery spans verified against a temporary four-image entry
-  (2:3 → span 2, 1:1 → span 2, 3:2 → span 3, 32:9 → span 6), then removed.
-- All six routes return the right status, including `404` for an unknown path.
-- Audited: every `var(--token)` resolves to a declaration, every `styles.class`
-  exists in its module, and no `.module.css` file contains a raw hex colour or a
-  raw font size.
+Run on the current tree:
+
+- `pnpm typecheck` clean. `pnpm build` clean — 16 routes, no warnings.
+- **The `[[NEEDS]]` guard was demonstrated failing a production build** with
+  all five markers in place, naming each file and line, before any were
+  removed.
+- The dev marker block was verified rendering its own text on a live page —
+  and two earlier implementations that rendered an *empty* block were caught
+  and fixed by that check rather than shipped.
+- `node scripts/check-links.mjs --probe`: both live links `200`, both absolute.
+- Every `href` in the built HTML is absolute-https, `mailto:`, rooted, or a
+  fragment. No bare domain, no protocol-relative URL, no relative external.
+- All six routes return the right status in dev, including `404`.
+- Lynk's built page contains no external link and no status word other than
+  "Shelved".
+- thoosie's built page contains no `<video>` element and no client JS for one —
+  it degrades to the poster slot as designed.
+- Case study bodies verified verbatim against `portfolio-copy.md` by the script
+  at the top of this section.
+
