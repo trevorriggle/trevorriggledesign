@@ -11,7 +11,7 @@
   width: 100%;
   height: auto;
   /* Mixed aspect ratios are preserved. Nothing here is cropped to a uniform
-     tile — see DECISIONS.md on the gallery grid. */
+     tile, see DECISIONS.md on the gallery grid. */
   background-color: var(--color-bg-sunk);
 }
 

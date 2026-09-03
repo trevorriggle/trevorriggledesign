@@ -1,4 +1,4 @@
-/* Sticky, opaque, one hairline. No blur, no translucency, no shadow — the nav
+/* Sticky, opaque, one hairline. No blur, no translucency, no shadow, the nav
    is a rule with words on it. */
 
 .nav {
@@ -13,16 +13,22 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-5);
+  gap: var(--space-3) var(--space-5);
   padding-block: var(--space-3);
+  /* Five labels do not fit beside the wordmark on a phone. They wrap to a
+     second line rather than being hidden behind a menu button: five items is
+     not enough to justify a drawer, and a nav you can see is a nav you can
+     use. */
+  flex-wrap: wrap;
 }
 
 /* The wordmark takes the display serif, small. At this size it reads as a
    masthead byline rather than as a logo, which is what a type-led site
-   wants — and it introduces the display face before the hero does. */
+   wants, and it introduces the display face before the hero does. */
 .mark {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--text-lg);
   letter-spacing: var(--tracking-tight);
   text-decoration: none;
@@ -34,10 +40,12 @@
 
 .links {
   display: flex;
-  gap: var(--space-5);
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
   list-style: none;
   margin: 0;
   padding: 0;
+  min-width: 0;
 }
 
 .link {
@@ -59,8 +67,19 @@
   box-shadow: inset 0 -1.5px 0 0 var(--color-signal);
 }
 
+@media (max-width: 46rem) {
+  /* The wordmark takes its own line and the tabs sit under it, left aligned
+     on the same axis as everything else on the page. */
+  .inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+  .links { gap: var(--space-2) var(--space-4); }
+}
+
 @media (max-width: 30rem) {
-  .links { gap: var(--space-4); }
   .inner { padding-block: var(--space-2); }
   .mark { font-size: var(--text-md); }
+  .link { font-size: var(--text-3xs); }
 }

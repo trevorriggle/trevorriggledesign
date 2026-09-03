@@ -1,5 +1,5 @@
 /* ============================================================================
-   SELECTED WORK — three ranks, three different weights.
+   SELECTED WORK, three ranks, three different weights.
    ============================================================================
    The spacing between ranks is deliberately UNEQUAL. The lead gets enormous
    air beneath it, the second sits closer, and the third crowds up against the
@@ -40,6 +40,7 @@
   font-size: var(--display-1);
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
   margin-top: var(--space-5);
@@ -65,12 +66,12 @@
   padding-bottom: var(--rhythm-normal);
 }
 
-/* Media on the right, text on the left — the mirror of the lead, so the two
+/* Media on the right, text on the left, the mirror of the lead, so the two
    do not read as a repeating template.
 
    FIVE columns, not seven. The lead currently has no cover file, so the second
    rank's media was the largest object on the page and the hierarchy read
-   backwards — thoosie outweighing DrawEvolve. Capping this slot at ~40% keeps
+   backwards, thoosie outweighing DrawEvolve. Capping this slot at ~40% keeps
    rank order intact whichever assets happen to exist, which matters because
    the assets arrive one at a time. */
 .second .media { grid-column: 8 / -1; }
@@ -135,6 +136,7 @@
 .title {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
 }
 
 .titleLink {

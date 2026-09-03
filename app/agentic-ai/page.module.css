@@ -1,0 +1,83 @@
+.head {
+  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-bottom: var(--space-7);
+}
+
+.headGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-6);
+  align-items: end;
+}
+
+.title {
+  grid-column: 1 / 9;
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+}
+
+.lead { grid-column: 3 / 11; }
+
+.para {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 40ch;
+}
+
+.para + .para { margin-top: var(--space-4); }
+
+/* The pointer to the passage that already covers this ground. */
+.relatedBlock { padding-bottom: var(--rhythm-loose); }
+
+.related {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: baseline;
+  border-top: var(--rule-heavy);
+  border-bottom: var(--rule);
+  padding-block: var(--space-6);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.related:hover { background: var(--color-bg-sunk); }
+.related:hover .relatedTitle { color: var(--color-signal); }
+
+.relatedLabel {
+  grid-column: 1 / 4;
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps-wide);
+  text-transform: uppercase;
+  color: var(--color-signal);
+}
+
+.relatedTitle {
+  grid-column: 4 / 7;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-entry);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.relatedDeck {
+  grid-column: 7 / -1;
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 46ch;
+}
+
+@media (max-width: 62rem) {
+  .title, .lead { grid-column: 1 / -1; }
+  .relatedLabel, .relatedTitle, .relatedDeck { grid-column: 1 / -1; }
+  .relatedTitle, .relatedDeck { margin-top: var(--space-3); }
+}

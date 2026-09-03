@@ -14,8 +14,8 @@ import styles from "./page.module.css";
    HOME
    ============================================================================
    The first screen states the through-line, not a list of projects. The hero
-   is the opening statement from portfolio-copy.md at 129px — the largest type
-   on the site by a wide margin — so "designer who ships software" lands before
+   is the opening statement from portfolio-copy.md at 129px, the largest type
+   on the site by a wide margin, so "designer who ships software" lands before
    anything is clicked.
 
    Below it, the three Selected Work pieces at DESCENDING visual weight:
@@ -40,7 +40,7 @@ export default function HomePage() {
 
           <div className={styles.statement}>
             <h1 className={styles.headline}>
-              Graphic designer who ships software.
+              I design the thing, then I build the thing.
             </h1>
           </div>
 
@@ -48,7 +48,7 @@ export default function HomePage() {
             <p className={styles.subhead}>
               I spent four years making catalogs and marketing for hundreds of
               clients, then learned to build the products instead of decorating
-              them. Now I design and ship AI tools end to end — interface,
+              them. Now I design and ship AI tools end to end: interface,
               backend, model pipeline, and the parts nobody wants to own.
             </p>
           </div>
@@ -64,10 +64,10 @@ export default function HomePage() {
         </div>
       </Container>
 
-      <Container as="section" id="selected-work" className={styles.selected}>
-        <div className={styles.selectedHead}>
-          <h2 className={styles.selectedTitle}>Selected work</h2>
-          <p className={styles.selectedNote}>
+      <Container as="section" id="applications" className={styles.applications}>
+        <div className={styles.applicationsHead}>
+          <h2 className={styles.applicationsTitle}>Applications</h2>
+          <p className={styles.applicationsNote}>
             Manual running order · not date-sorted
           </p>
         </div>
@@ -76,7 +76,7 @@ export default function HomePage() {
       </Container>
 
       {/* The second half of the argument. "Designer who ships software" only
-          holds if both halves are on the page — this is not an appendix and it
+          holds if both halves are on the page, this is not an appendix and it
           is not a single quiet link. */}
       <Container as="section" id="design" className={styles.design}>
         <div className={styles.designHead}>

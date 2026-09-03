@@ -19,7 +19,7 @@ export function Nav() {
         <nav aria-label="Primary">
           <ul className={styles.links}>
             {nav.map((item) => {
-              /* Exact match, or a descendant route — /work/<slug> keeps Work
+              /* Exact match, or a descendant route, /work/<slug> keeps Work
                  marked as current. */
               const current =
                 pathname === item.href ||

@@ -61,7 +61,7 @@ export default async function CaseStudyPage({
     <>
       <Container as="header" className={styles.head}>
         <p className={styles.breadcrumb}>
-          <Link href="/#selected-work">Selected work</Link>
+          <Link href="/#applications">Applications</Link>
           <span aria-hidden="true">/</span>
           <span className={styles.crumbOrdinal}>
             {String(position).padStart(2, "0")}

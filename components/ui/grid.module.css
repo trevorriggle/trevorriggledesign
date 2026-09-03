@@ -10,7 +10,7 @@
      · Text never occupies all 12 columns. A full-width measure and a centred
        measure are the two fastest ways for a layout to look untouched.
      · Content routinely starts at column 3, so the left margin is a real,
-       occupied part of the composition rather than dead padding — it is
+       occupied part of the composition rather than dead padding, it is
        where ordinals and labels hang.
      · Some things bleed past the container entirely. See `.bleedRight` and
        Container's `full` width.
@@ -73,7 +73,7 @@
   scroll-margin-top: var(--space-6);
 }
 
-/* A major movement that CROWDS the one above it — used where two blocks
+/* A major movement that CROWDS the one above it, used where two blocks
    should read as one thought. */
 .sectionTight {
   margin-top: var(--rhythm-crowd);

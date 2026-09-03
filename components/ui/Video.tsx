@@ -8,7 +8,7 @@ import styles from "./Video.module.css";
    ============================================================================
    Three states, and the third is silence:
 
-     mp4 present        <AutoVideo /> — poster, muted, looped, inline, started
+     mp4 present        <AutoVideo />, poster, muted, looped, inline, started
                         from script and never on mobile data
      mp4 missing        the poster frame, as a still
      neither present    nothing at all

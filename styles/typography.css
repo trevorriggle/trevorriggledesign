@@ -3,19 +3,19 @@
    ============================================================================
    Role assignment, stated once and enforced everywhere:
 
-     display  Instrument Serif  page titles, section titles, entry titles,
-                                the hero, and big hanging numerals
-     text     Geist             body, decks, UI, links — every sentence
-     mono     Geist Mono        DATA ONLY: filenames, pixel dimensions, repo
-                                paths, code spans
+     display  Bricolage Grotesque  page titles, section titles, entry titles,
+                                   the hero, and big hanging numerals
+     text     DM Sans              body, decks, UI, links, every sentence
+     mono     DM Mono              DATA ONLY: filenames, pixel dimensions,
+                                   repo paths, code spans
 
    THE MONO RULE CHANGED, and it is the main reason this reads less generic
    than the previous build. Labels and ordinals used to be monospace, which is
    the reflex that makes a portfolio look like a dev tool: mono was doing
    decorative work, signalling "technical" rather than carrying information.
-   Here, uppercase letterspaced Geist carries labels — the editorial
-   convention — and mono is reserved for strings where character alignment is
-   genuinely load-bearing. If it is a label, it is Geist. If it is a filename,
+   Here, uppercase letterspaced DM Sans carries labels, the editorial
+   convention, and mono is reserved for strings where character alignment is
+   genuinely load-bearing. If it is a label, it is DM Sans. If it is a filename,
    it is mono.
 
    Hierarchy comes from SIZE, and nothing else. There is no grey ramp to lean
@@ -46,14 +46,18 @@ h1, h2, h3 {
   font-weight: var(--weight-display);
   font-style: normal;
   margin: 0;
-  /* The serif is high-contrast and wants slightly optical spacing at size. */
   font-feature-settings: "kern" 1, "liga" 1;
+  /* The width axis. Display type is set slightly narrow so a heavy weight at
+     large size stays a shape rather than a wall. This is the axis that makes
+     the face look drawn rather than picked. */
+  font-variation-settings: "wdth" var(--width-display-mid);
 }
 
 h1 {
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
+  font-variation-settings: "wdth" var(--width-display);
   text-wrap: balance;
 }
 
@@ -85,7 +89,7 @@ h4, h5, h6 {
 p { text-wrap: pretty; }
 
 /* ---- Links ---------------------------------------------------------------
-   The underline stays on — it is the accessible affordance and an editorial
+   The underline stays on, it is the accessible affordance and an editorial
    one. The accent is reserved for the hovered/focused state, so a page full
    of links is not a page full of vermilion.                                */
 
@@ -124,14 +128,17 @@ a:hover {
   color: var(--color-text-meta);
 }
 
-/* A hanging numeral. Display face, because on this site the section numbers
-   are a typographic event, not a caption. */
+/* A hanging numeral. Display face and the accent colour, because on this site
+   the section numbers are a typographic event rather than a caption, and the
+   accent has been let off its leash. */
 .ordinal {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display);
   font-variant-numeric: tabular-nums;
   letter-spacing: var(--tracking-tight);
   line-height: 1;
+  color: var(--color-signal);
 }
 
 /* ---- A11y ---------------------------------------------------------------- */

@@ -27,7 +27,7 @@ export async function generateMetadata({
 
   return {
     title: found.title,
-    /* The category's own intro, which is written copy — never generated. */
+    /* The category's own intro, which is written copy, never generated. */
     description: found.intro || site.description,
     alternates: { canonical: `/design/${found.slug}` },
     openGraph: {
@@ -40,7 +40,7 @@ export async function generateMetadata({
 }
 
 /* ============================================================================
-   /design/[category] — a page about a body of work.
+   /design/[category], a page about a body of work.
    ============================================================================
    Copy first, then the images. The "What it demonstrates" line is rendered as
    its own labelled element rather than folded into the prose, because it is
@@ -48,7 +48,7 @@ export async function generateMetadata({
    on its own terms what this work is evidence OF.
 
    Images come from public/design/<category>/. An empty folder renders the copy
-   and no grid — no placeholder boxes, no broken images, no "coming soon".
+   and no grid, no placeholder boxes, no broken images, no "coming soon".
    ========================================================================= */
 
 export default async function DesignCategoryPage({

@@ -2,11 +2,11 @@
    PROSE
    ============================================================================
    Long-form body copy for a case study. Full ink at 17px on a 62ch measure,
-   with 1.62 leading — the only place on the site running comfortable leading,
+   with 1.62 leading, the only place on the site running comfortable leading,
    because it is the only place anyone reads more than two sentences.
 
    Subheads are the copy's OWN headings ("The premise", "What I built"). They
-   take the display serif at a real step of the scale — d1, 25.5px — so the
+   take the display serif at a real step of the scale, d1, 25.5px, so the
    argument has visible structure at a glance. They are ruled above, with the
    rule running the full measure, which is what turns a wall of text into
    movements.
@@ -27,6 +27,7 @@
 .prose :is(h2, h3) {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--display-1);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
@@ -91,7 +92,7 @@
   font-size: inherit;
 }
 
-/* A pull quote takes the accent rule — one of its few appearances. */
+/* A pull quote takes the accent rule, one of its few appearances. */
 .prose blockquote {
   border-left: 1.5px solid var(--color-signal);
   padding-left: var(--space-5);

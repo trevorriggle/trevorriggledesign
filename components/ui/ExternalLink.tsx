@@ -9,8 +9,8 @@ import styles from "./ExternalLink.module.css";
    The href is asserted absolute at runtime as well as in the schema. The
    schema covers content frontmatter; this catches an absolute-URL mistake in
    hand-written page code or MDX, which the schema never sees. Both layers
-   exist because this exact bug — a relative path in a "Live demo" link,
-   resolving against the portfolio's own domain — is the one the old site
+   exist because this exact bug, a relative path in a "Live demo" link,
+   resolving against the portfolio's own domain, is the one the old site
    shipped on every case study.
    ========================================================================= */
 

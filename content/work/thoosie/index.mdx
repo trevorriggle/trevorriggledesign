@@ -8,13 +8,13 @@ section: ai-systems
 year: 2026
 
 role:
-  - Everything — design, engineering, physics, launch
+  - Everything: design, engineering, physics, launch
 context: self-initiated
 state: Live
 
 # ---- Media ---------------------------------------------------------------
 # The clip leads. It renders above everything else on the page, and while the
-# mp4 is absent this slot renders `poster` as a still — same box, same
+# mp4 is absent this slot renders `poster` as a still, same box, same
 # position, no broken element and no client JavaScript. Drop the file in at
 # public/media/thoosie/01-gameplay.mp4 and it takes over with no edit here.
 video:
@@ -24,7 +24,7 @@ video:
     alt: "Thoosie's track editor mid-ride, with the coaster cresting a hill and the live G-force and airtime readouts visible"
     aspect: "16:9"
     minWidth: 2400
-    label: "Gameplay — drawing a coaster and riding it"
+    label: "Gameplay: drawing a coaster and riding it"
 
 # No still plates declared. The copy specifies none, and the poster above is
 # the whole media surface for this entry. Adding a plate is four lines here;
@@ -45,8 +45,8 @@ status: published
 ## The premise
 
 You draw a track freehand. thoosie turns it into a rideable coaster and runs
-real physics on it — speed, vertical G, airtime, inversions — then lets you
-ride it from the train.
+real physics on it, measuring speed, vertical G, airtime and inversions,
+then lets you ride it from the train.
 
 The whole design problem is the gap between those two things. Drawing is
 loose and expressive. Physics is unforgiving. A line that looks great is
@@ -57,12 +57,12 @@ freely and still produce something that works.
 ## What I built
 
 A full track editor: freehand, straight, and arc tools, plus a library of
-prefab elements — first drops, vertical loops, camelbacks, bunny hops,
+prefab elements: first drops, vertical loops, camelbacks, bunny hops,
 valleys, barrel rolls, half loops, Immelmanns, dive loops. Track types that
 behave differently under the physics sim: chain lift, launch, brake run, and
 trigger track.
 
-A trigger and reaction system, so pieces can respond to the train passing —
+A trigger and reaction system, so pieces can respond to the train passing:
 a brake run that holds the train, counts down, then launches it onward, or
 track that physically moves between two positions when a trigger fires. That
 turned the editor from a drawing tool into something closer to a small
@@ -70,8 +70,8 @@ state machine, and it's the feature that made people build things I didn't
 anticipate.
 
 Live physics telemetry surfaced during the ride: current speed, vertical G,
-airtime accumulating in real time, then a summary — height, top speed, max
-and min G, inversions, length, ride time.
+airtime accumulating in real time, then a summary of height, top speed, max
+and min G, inversions, length and ride time.
 
 Plus the unglamorous half: autosave, cross-platform level sharing, a
 gallery, a tutorial, a content filter on shared coasters, and a full mobile
@@ -85,7 +85,7 @@ you're cresting a hill you drew is the thing that makes the feedback loop
 work. Players learn what makes a good coaster by watching the numbers
 respond, not by reading a rule.
 
-It's the same instinct as DrawEvolve, honestly — the system's job is to
+It's the same instinct as DrawEvolve, honestly. The system's job is to
 teach you to get better, not to do it for you.
 
 ## What I cut
@@ -95,7 +95,7 @@ it there. Two platforms meant two sets of layout bugs, two embed
 environments, and a mobile letterboxing problem I'd have owned indefinitely.
 I shipped the standalone web build only.
 
-Cutting a finished platform is unpleasant. It was the right call — the
+Cutting a finished platform is unpleasant. It was the right call. The
 standalone build launched a day early and I spent that time on the game
 instead of on embed CSS.
 

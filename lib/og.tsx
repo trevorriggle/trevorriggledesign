@@ -10,7 +10,7 @@ import { ImageResponse } from "next/og";
    Type note: these render in the renderer's default sans, not Instrument
    Serif. next/og
    rasterises with satori, which cannot consume the woff2 files next/font
-   produces — it needs a raw ttf/otf buffer. Rather than fetch a font over the
+   produces, it needs a raw ttf/otf buffer. Rather than fetch a font over the
    network during a build, the cards lean on structure and scale. To upgrade
    later: drop a .ttf into lib/fonts/ and pass it via the `fonts` option below.
    ========================================================================= */
@@ -33,7 +33,7 @@ export function ogCard({
 }: {
   /** Mono ordinal in the top-left, e.g. "01". */
   ordinal?: string;
-  /** Uppercase mono line above the title — the section, usually. */
+  /** Uppercase mono line above the title, the section, usually. */
   eyebrow: string;
   title: string;
   deck?: string;

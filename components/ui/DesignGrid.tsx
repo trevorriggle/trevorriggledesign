@@ -7,7 +7,7 @@ import styles from "./DesignGrid.module.css";
    ============================================================================
    Aspect-ratio-aware columns on the 12-column grid. Each image's SPAN comes
    from its true proportion, and its height is whatever that proportion
-   produces — nothing is cropped, letterboxed or forced into a uniform tile.
+   produces, nothing is cropped, letterboxed or forced into a uniform tile.
 
    That matters because the real content is genuinely mixed: wide catalog
    spreads, square social posts, tall phone screenshots and 3D renders, often
@@ -17,12 +17,12 @@ import styles from "./DesignGrid.module.css";
    `grid-auto-flow: dense` lets a narrow image backfill the gap a wide one
    left, so the page stays tight without anything being resized to fit.
 
-   An empty array renders nothing at all — no placeholder boxes, no "coming
+   An empty array renders nothing at all, no placeholder boxes, no "coming
    soon". The page is its copy until there are files in the folder.
    ========================================================================= */
 
 function spanClass(ratio: number): string {
-  if (ratio < 0.7) return styles.span3;   // tall — phone screenshot
+  if (ratio < 0.7) return styles.span3;   // tall, phone screenshot
   if (ratio < 1.15) return styles.span4;  // portrait / square
   if (ratio < 1.8) return styles.span6;   // landscape / most renders
   if (ratio < 2.8) return styles.span8;   // wide spread

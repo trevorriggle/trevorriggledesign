@@ -13,7 +13,7 @@
 }
 
 /* Past the max width the page stops growing. It stays left-weighted up to a
-   very wide viewport, then finally takes the slack on both sides — beyond
+   very wide viewport, then finally takes the slack on both sides, beyond
    ~1900px a hard-left page reads as broken rather than as a decision. */
 @media (min-width: 118rem) {
   .container { margin-inline: 0 auto; }

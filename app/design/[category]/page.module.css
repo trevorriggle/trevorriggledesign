@@ -1,9 +1,9 @@
 /* ============================================================================
-   /design/[category] — a page about a body of work.
+   /design/[category], a page about a body of work.
    ============================================================================
    Copy first at real reading size, then the grid full width. The category page
    is deliberately built like the case study pages rather than like a gallery:
-   same head composition, same indent, same rhythm. That is the argument — this
+   same head composition, same indent, same rhythm. That is the argument, this
    is work with reasoning behind it, not a contact sheet.
    ========================================================================= */
 
@@ -46,7 +46,7 @@
   margin-left: -0.045em;
 }
 
-/* The intro sits under the overhanging title, pushed right — same asymmetry
+/* The intro sits under the overhanging title, pushed right, same asymmetry
    as the home masthead and the case study head. */
 .intro {
   grid-column: 3 / 10;
@@ -97,6 +97,7 @@
 .demonstratesText {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--display-1);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
@@ -142,6 +143,7 @@
 .pagerTitle {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--display-1);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);

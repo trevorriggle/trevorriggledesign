@@ -2,7 +2,7 @@
    CONTACT
    ============================================================================
    Three things: a heading, two sentences, and an address. The address is the
-   content, so it gets the largest type on the page — larger than the heading,
+   content, so it gets the largest type on the page, larger than the heading,
    which is the point. A contact page where the heading outranks the address
    has its hierarchy backwards.
    ========================================================================= */
@@ -44,6 +44,7 @@
   display: block;
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: clamp(var(--display-1), 5.6vw, var(--display-3));
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);

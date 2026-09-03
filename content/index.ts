@@ -3,7 +3,7 @@ import path from "node:path";
 import matter from "gray-matter";
 
 /* ============================================================================
-   CONTENT — the three case studies.
+   CONTENT, the three case studies.
    ============================================================================
    Reads MDX from content/work/, and that is the whole job.
 
@@ -119,7 +119,7 @@ function toVideo(v: unknown, slug: string): VideoRef | null {
   return video;
 }
 
-/** External links only, and quietly dropped if not absolute — the link check
+/** External links only, and quietly dropped if not absolute, the link check
  *  in scripts/ is what reports them; nothing here fails a build over one. */
 function toLinks(v: unknown): LinkRef[] {
   if (!Array.isArray(v)) return [];

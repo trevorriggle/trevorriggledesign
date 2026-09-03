@@ -3,7 +3,7 @@ import path from "node:path";
 import { imageSize } from "image-size";
 
 /* ============================================================================
-   DESIGN IMAGES — a folder is the config.
+   DESIGN IMAGES, a folder is the config.
    ============================================================================
    Drop a file into public/design/<category>/ and it appears on that category's
    page, sorted by filename. There is no manifest, no registry, no per-image
@@ -14,8 +14,8 @@ import { imageSize } from "image-size";
    width/height so nothing shifts as images load, and the grid can lay out on
    true aspect ratios instead of forcing everything into a uniform tile.
 
-   Alt text is derived from the filename — "03-catalog-spread.jpg" becomes
-   "catalog spread" — and falls back to the category name. It never blocks:
+   Alt text is derived from the filename, "03-catalog-spread.jpg" becomes
+   "catalog spread", and falls back to the category name. It never blocks:
    a file with an unhelpful name still renders, it just gets a plainer
    description.
 
@@ -80,8 +80,7 @@ export function getDesignImages(category: string, categoryTitle: string): Design
         height = dims.height;
       }
     } catch {
-      /* Unreadable header (an odd SVG, a truncated file). It still renders —
-         it just lays out on the 3:2 default. Never a build failure. */
+      /* Unreadable header (an odd SVG, a truncated file). It still renders, it just lays out on the 3:2 default. Never a build failure. */
     }
 
     images.push({

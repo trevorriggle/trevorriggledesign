@@ -14,14 +14,14 @@ export const metadata: Metadata = {
 };
 
 /* ============================================================================
-   /design — the five categories.
+   /design, the five categories.
    ============================================================================
    Order: Print, Marketing, 3D, Motion, Personal. Manual, from
    content/design.ts, never sorted by the year label.
 
    Each row is a real entry to a real page, not a thumbnail strip: the title at
-   display scale, the category's own intro, and — when files exist in its
-   folder — the first image as a lead. A category with an empty folder renders
+   display scale, the category's own intro, and, when files exist in its
+   folder, the first image as a lead. A category with an empty folder renders
    its copy and no image, which is the correct empty state.
    ========================================================================= */
 

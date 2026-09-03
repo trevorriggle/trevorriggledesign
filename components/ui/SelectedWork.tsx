@@ -12,7 +12,7 @@ import styles from "./SelectedWork.module.css";
      rank 0   lead      title at --type-title, the deck at lead size, the
                         media slot at full width, generous air
      rank 1   second    smaller title, media at two-thirds, less air
-     rank 2   third     a ruled line — title, deck, metadata, no media
+     rank 2   third     a ruled line, title, deck, metadata, no media
 
    The weight is carried entirely by size and space. There is no "Featured"
    badge, no "Case study 1 of 3", no ordinal chip. A label explaining which
@@ -31,8 +31,7 @@ function rankClass(rank: number): string {
 /**
  * Does this entry have a real file to show?
  *
- * Nothing on this site renders a placeholder for a missing image any more —
- * <Frame> returns null and the layout closes up. This check exists so the
+ * Nothing on this site renders a placeholder for a missing image any more, * <Frame> returns null and the layout closes up. This check exists so the
  * media COLUMN is not reserved for an image that will not appear, which would
  * leave a hole in the grid rather than a tighter row.
  */

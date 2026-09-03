@@ -7,8 +7,7 @@ import styles from "./Frame.module.css";
    ============================================================================
    A declared image, rendered when the file is on disk.
 
-   When it is not, this renders NOTHING. It used to render a spec plate —
-   filename, ratio, minimum export size, a line about what the image had to
+   When it is not, this renders NOTHING. It used to render a spec plate, filename, ratio, minimum export size, a line about what the image had to
    show. That made the site reviewable with zero assets, which was genuinely
    useful while it was being built and is exactly wrong now: it puts a note
    from the author to the author on a live page.

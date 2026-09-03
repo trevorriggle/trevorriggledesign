@@ -22,7 +22,7 @@ import styles from "./Video.module.css";
    and it is Chromium-only. So the check is written to FAIL CLOSED: if the API
    is missing, `saveData` is set, the connection reports `cellular`, or the
    effective type is 3g or worse, the clip does not start on its own. On an
-   unknown connection nothing autoplays either — a still frame that the viewer
+   unknown connection nothing autoplays either, a still frame that the viewer
    can start is a much cheaper mistake than a background download on a phone
    plan.
 

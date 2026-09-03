@@ -9,20 +9,20 @@ deck: An iOS drawing app where the AI coaches instead of critiques.
 section: ai-systems
 
 # Derived from the **Timeline:** line above ("October 2025 – present"), not
-# supplied as a year by the copy. Display label only — nothing sorts on it.
+# supplied as a year by the copy. Display label only, nothing sorts on it.
 year: "2025–26"
 
 # One item, not four: the copy writes this as a sentence and splitting it on
 # the punctuation would re-set it as chips it was not written as.
 role:
-  - Everything — design, iOS, backend, infrastructure
+  - Everything: design, iOS, backend, infrastructure
 context: self-initiated
 timeline: October 2025 – present
 state: Shipped to TestFlight; approved for external testing
 
 # The spine fields (constraint / attempts / tradeoff / outcome / revisit) are
 # deliberately absent. This case study's argument is its own prose, under the
-# copy's own headings, in the body below — restating it in 220 characters here
+# copy's own headings, in the body below, restating it in 220 characters here
 # would mean writing copy that does not exist. See DECISIONS.md.
 
 # ABSOLUTE. drawevolve.com is one of the two live links on this site; the
@@ -51,7 +51,7 @@ second critique on the same piece references the first one and evaluates
 whether you actually acted on it. Progress is the thing being measured, not
 the individual drawing.
 
-The product position is *AI as mentor, not replacement* — the app has an
+The product position is *AI as mentor, not replacement*. The app has an
 Artist Bill of Rights, and nothing in it generates art on your behalf.
 
 ## The constraint
@@ -102,8 +102,8 @@ That's a debt I named rather than hid, and it's scheduled.
 ## How I worked
 
 I ran parallel Claude Code agents across git worktrees for most of the build.
-Not as a novelty — as the only way one person covers that much surface area
-in six months. Each agent held a bounded scope on its own branch, and I did
+Not as a novelty, but as the only way one person covers that much surface
+area in six months. Each agent held a bounded scope on its own branch, and I did
 integration and review.
 
 Learning to decompose work so that agents don't collide is a real skill, and

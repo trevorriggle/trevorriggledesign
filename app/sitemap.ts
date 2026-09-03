@@ -4,14 +4,14 @@ import { designCategories } from "@/content/design";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/design", "/about", "/contact"].map((path) => ({
+  const routes = ["", "/design", "/agentic-ai", "/about", "/contact"].map((path) => ({
     url: `${site.url}${path}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: path === "" ? 1 : 0.8,
   }));
 
-  /* Priority descends with the manual running order — the same editorial
+  /* Priority descends with the manual running order, the same editorial
      ranking the site presents, expressed to crawlers. */
   const studies = getSelected().map((entry, i) => ({
     url: `${site.url}${entry.href}`,

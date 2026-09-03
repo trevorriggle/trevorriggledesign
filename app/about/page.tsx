@@ -16,8 +16,8 @@ export const metadata: Metadata = {
    Copy: portfolio-copy.md → "ABOUT". All four paragraphs, verbatim, in the
    order they were written.
 
-   The scaffold here used to be four numbered "movements" — What I do now /
-   How I got here / How I work / What I'm looking for — each with a prompt
+   The scaffold here used to be four numbered "movements", What I do now /
+   How I got here / How I work / What I'm looking for, each with a prompt
    under it. Those headings are gone. The copy is four paragraphs of continuous
    prose with no headings of its own, and slicing it under invented subheads
    would be writing structure the author did not write. The first paragraph
@@ -47,14 +47,14 @@ export default function AboutPage() {
               I&rsquo;m a graphic designer with a BFA from West Virginia
               University. For the last four years I&rsquo;ve run catalogs and
               marketing at American Scientific, managing design for hundreds of
-              clients — the kind of production work that teaches you systems
+              clients. The kind of production work that teaches you systems
               whether you want to learn them or not.
             </p>
 
             <p className={styles.prose}>
               Somewhere in there I got tired of designing interfaces I
               couldn&rsquo;t build. I taught myself Swift, then SwiftUI, then
-              the rest of it — TypeScript, Cloudflare Workers, Supabase, enough
+              the rest of it: TypeScript, Cloudflare Workers, Supabase, enough
               Metal to write a renderer. I now build and ship products under RIG
               Tech LLC.
             </p>
@@ -63,7 +63,7 @@ export default function AboutPage() {
               The through-line is that I don&rsquo;t hand off. I design the
               thing, build the thing, and own the parts of it that break. That
               means I&rsquo;ve had to make real engineering decisions with real
-              costs — architecture I had to migrate, features I had to cut, a
+              costs: architecture I had to migrate, features I had to cut, a
               product I shelved because the economics didn&rsquo;t work. Those
               are on this site too.
             </p>

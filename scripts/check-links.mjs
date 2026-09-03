@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /* ============================================================================
-   EXTERNAL LINK CHECK — runs before every build, fails the build.
+   EXTERNAL LINK CHECK, runs before every build, fails the build.
    ============================================================================
    The old site turned every "Live demo" into a 404 on its own domain: the
    hrefs were relative paths, so they resolved against the portfolio instead of
    the target.
 
-   This is now the ONLY build-time content check on the project — every other
+   This is now the ONLY build-time content check on the project, every other
    guard, validator and manifest was removed, because none of them protected a
    visitor from anything. This one does: a relative external href fails
    silently and looks like a working link, and there is no way to notice it
@@ -44,14 +44,14 @@ const links = [];
    The two live external links on this site.
 
    A tripwire, deliberately hard-coded. The failure this whole file exists to
-   prevent is not "a URL was typed wrong" — it is a Live link that silently
+   prevent is not "a URL was typed wrong", it is a Live link that silently
    stops being a live link, which is what the old site shipped on every case
    study. Validating the links that happen to be present cannot catch a link
    that has gone missing, so these two are asserted by name: present somewhere
    in content/, absolute, and exactly this spelling.
 
    If a project genuinely goes away, delete its line here in the same commit
-   that removes it. That is the point — it should take a decision, not a
+   that removes it. That is the point, it should take a decision, not a
    silent drift.
    ------------------------------------------------------------------------ */
 const REQUIRED_LIVE = ["https://drawevolve.com", "https://thoosie.net"];
@@ -82,7 +82,7 @@ function walkContent(kind) {
         href: String(link.href ?? ""),
         label: link.label ?? "(no label)",
         source: `content/${kind}/${dirent.name}/index.mdx`,
-        /* Declared content links are always external by definition — there is
+        /* Declared content links are always external by definition, there is
            no reason to put an internal route in a case study's links[]. So a
            relative path here is the old site's bug verbatim, not a valid
            in-app link, and it must fail. */
@@ -99,8 +99,8 @@ function walkContent(kind) {
 /**
  * The half of a content file the frontmatter schema cannot see.
  *
- * A markdown link written in a case study body — `[Live demo](drawevolve.com)`
- * — is the old site's bug verbatim, and nothing else in the pipeline would
+ * A markdown link written in a case study body, `[Live demo](drawevolve.com)`
+ *, is the old site's bug verbatim, and nothing else in the pipeline would
  * catch it: gray-matter hands the body through as an opaque string, and the
  * schema only ever parses the YAML above it.
  *
@@ -122,7 +122,7 @@ function walkContentBodies(kind) {
 
     const { content } = matter(fs.readFileSync(file, "utf8"));
 
-    // [label](target) — but not ![alt](image), which is not a link.
+    // [label](target), but not ![alt](image), which is not a link.
     for (const match of content.matchAll(/(?<!!)\[[^\]]*\]\(([^)\s]+)/g)) {
       links.push({
         href: match[1],
@@ -178,7 +178,7 @@ function walkSource(dir) {
 /** Things that look like an external link but are not one, in the exact ways
  *  that produce a 404 on your own domain rather than a visible error. */
 function validate({ href, label, source, origin }) {
-  const where = `${source} — "${label}"`;
+  const where = `${source}, "${label}"`;
 
   if (!href) {
     problems.push([where, "empty href"]);
@@ -189,12 +189,12 @@ function validate({ href, label, source, origin }) {
     return false;
   }
   // In page code, an internal route or a fragment is a legitimate link.
-  // In content frontmatter it never is — see the `origin` note above.
+  // In content frontmatter it never is, see the `origin` note above.
   if (/^(\/|#|mailto:|tel:)/.test(href)) {
     if (origin === "content" && !/^(mailto:|tel:)/.test(href)) {
       problems.push([
         where,
-        `relative path in a content link: "${href}" — links[] is for external ` +
+        `relative path in a content link: "${href}", links[] is for external ` +
           `URLs, and this one resolves against this site and 404s`,
       ]);
     }
@@ -202,11 +202,11 @@ function validate({ href, label, source, origin }) {
   }
 
   if (href.startsWith("//")) {
-    problems.push([where, `protocol-relative URL: "${href}" — use https://`]);
+    problems.push([where, `protocol-relative URL: "${href}", use https://`]);
     return false;
   }
   if (/^http:\/\//i.test(href)) {
-    problems.push([where, `insecure http:// URL: "${href}" — use https://`]);
+    problems.push([where, `insecure http:// URL: "${href}", use https://`]);
     return false;
   }
   // A bare domain or a relative path masquerading as external. This is the
@@ -214,7 +214,7 @@ function validate({ href, label, source, origin }) {
   if (!/^https:\/\//i.test(href)) {
     problems.push([
       where,
-      `not an absolute URL: "${href}" — this resolves against this site and 404s`,
+      `not an absolute URL: "${href}", this resolves against this site and 404s`,
     ]);
     return false;
   }
@@ -267,7 +267,7 @@ walkSource("lib");
 
 const external = links.filter(validate);
 
-/* The tripwire. Checked against content only — a live project link belongs in
+/* The tripwire. Checked against content only, a live project link belongs in
    an entry's links[], not hand-written into a template. */
 const contentHrefs = new Set(
   links.filter((l) => l.origin === "content").map((l) => l.href),
@@ -295,7 +295,7 @@ if (problems.length) {
 }
 
 console.log(
-  `  Links: ${external.length} external, ${links.length} total checked — all well-formed.`,
+  `  Links: ${external.length} external, ${links.length} total checked, all well-formed.`,
 );
 for (const required of REQUIRED_LIVE) {
   console.log(`         live link present and absolute: ${required}`);
@@ -310,11 +310,11 @@ if (PROBE && external.length) {
   for (const r of results) {
     if (!r.ok) dead++;
     console.log(`  ${r.ok ? "ok  " : "DEAD"} ${String(r.status).padEnd(12)} ${r.href}`);
-    if (!r.ok) console.log(`       ${r.source} — "${r.label}"`);
+    if (!r.ok) console.log(`       ${r.source}, "${r.label}"`);
   }
   console.log(
     dead === 0
       ? `\n  All ${results.length} reachable.`
-      : `\n  ${dead} unreachable. Not blocking the build — verify by hand.`,
+      : `\n  ${dead} unreachable. Not blocking the build, verify by hand.`,
   );
 }

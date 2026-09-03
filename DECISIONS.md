@@ -1,7 +1,7 @@
 # Decisions
 
 What I chose, and why. Anything I resolved without you is in
-[Assumptions](#assumptions-i-made-confirm-these) at the bottom — those are the
+[Assumptions](#assumptions-i-made-confirm-these) at the bottom, those are the
 lines to read first.
 
 ---
@@ -19,7 +19,7 @@ did not want.
 Deleted, not disabled. `styles/tokens.css` previously carried a
 `@media (prefers-color-scheme: dark)` block that inverted paper and ink, which
 meant anyone with a dark OS saw a completely different site from the one that
-was designed — and that is what you were looking at.
+was designed, and that is what you were looking at.
 
 There is now zero `prefers-color-scheme` anywhere in the project (verified
 against the built CSS, not just the source), `color-scheme: light` is declared
@@ -32,106 +32,125 @@ is one colour on every device.
 
 | Role | Face | Foundry | Licence |
 | --- | --- | --- | --- |
-| Display | **Instrument Serif** | Instrument | OFL 1.1 |
-| Text | **Geist** | Vercel | OFL 1.1 |
-| Data | **Geist Mono** | Vercel | OFL 1.1 |
+| Display | **Bricolage Grotesque** (variable) | Mathieu Triay | OFL 1.1 |
+| Text | **DM Sans** (variable) | Colophon Foundry | OFL 1.1 |
+| Data | **DM Mono** | Colophon Foundry | OFL 1.1 |
 
-Two families. Geist Mono is a cut of Geist, drawn on the same skeleton, so
-tabular data costs no second family — the same argument the previous build made
-for IBM Plex, and still the right one.
+**Instrument Serif was removed.** It was elegant and it was safe, and safe was
+the complaint: a high-contrast didone reads as tasteful editorial, which is the
+house style of roughly every portfolio built this year.
 
-**Loading.** `next/font/google` fetches the woff2 files at BUILD time and serves
-them from this domain. No font-CDN request in the runtime waterfall, no
-third-party origin in the privacy story. Instrument Serif is loaded at weight
-400 only (it ships one weight); Geist and Geist Mono are variable, so the whole
-range arrives in one file each. Display and text preload; mono does not, because
-it appears below the fold on the pages that use it at all.
-`adjustFontFallback` is on for the serif — it is 129px in places, and an
-unadjusted fallback would shift the layout visibly on a slow connection.
+**Why Bricolage.** It is a genuinely odd face. Uneven weight distribution,
+flat-sided bowls, a squared-off `g`, terminals that stop where you do not
+expect them. It was drawn as a bricolage of grotesque conventions that do not
+normally sit together, and at display size that awkwardness is the point. It is
+also variable across weight, width AND optical size, so one file covers 130px
+headlines and 24px subheads.
 
-**One weight on the display face is a feature.** Instrument Serif has no bold.
-Every display decision on this site is therefore a SCALE decision, which is what
-stops the hierarchy leaning on weight — the reflex that produced the flat page
-you were looking at.
+**The width axis is used, and it is the fun part.** Display type is set narrow
+(`wdth` 88 at hero size, 94 elsewhere) and heavy (700, 800 on the hero). At
+130px a regular weight reads as "large text"; a compressed heavy weight reads
+as a decision, and the narrow width keeps a long headline off a fourth line.
 
-### The scale: ratio 1.5, and where the 6x came from
+**Why DM Sans under it.** Bricolage does all the shouting, so the text face has
+to be quiet and warm without being characterless. Low contrast, generous
+apertures, slightly geometric roundness.
 
-Two tiers, and the split is deliberate.
+All three are OFL 1.1 and self-hosted by `next/font` at build time. No font-CDN
+request at runtime, no third-party origin.
 
-**Display tier — ratio 1.5**, compounding off the 17px body:
+### The scale is unchanged
 
-| Step | Size | Used for |
-| --- | --- | --- |
-| `--display-1` | 25.5px | h3, entry titles, prose subheads |
-| `--display-2` | 38.3px | section titles at their small end |
-| `--display-3` | 57.4px | page titles at their small end |
-| `--display-4` | 86.1px | page titles, case study titles |
-| `--display-5` | **129.1px** | the home hero, and nothing else |
+Ratio 1.5 on the display tier, compounding off the 17px body:
 
-`--display-5 ÷ 17px = 7.59x`. The brief asked for at least 6x.
+| Step | Size |
+| --- | --- |
+| `--display-1` | 25.5px |
+| `--display-2` | 38.3px |
+| `--display-3` | 57.4px |
+| `--display-4` | 86.1px |
+| `--display-5` | **129.1px** (hero only) |
 
-**Text tier — ratio ~1.14**, 11px to 21px. A 1.5 step between a 12px label and
-the next size is 18px, and there is no 18px UI on this site. The steep ratio is
-for display, where it does work; using it for labels would produce a scale with
-holes in it.
-
-**Every fluid role is clamped between two real steps**, so the scale still holds
-at any viewport — the type gets smaller on a phone, it does not fall out of the
-system:
-
-```
---type-hero:    clamp(display-3, 11.2vw, display-5)    57 → 129px
---type-title:   clamp(display-2, 7.6vw,  display-4)    38 →  86px
---type-section: clamp(display-1, 4.4vw,  display-3)    26 →  57px
---type-entry:   clamp(display-1, 3.4vw,  display-2)    26 →  38px
-```
-
-**Leading is set per size, never globally**: `0.9` on the hero, `0.94`–`1.02` on
-display, `1.18` snug, `1.62` on body prose. One global line-height applied from
-an 11px label to a 129px headline is the tell that a type system was never
-designed — at 129px, 1.45 leading opens a hole you could park a car in.
-
-Verified at three viewports with `pnpm check:viewports`: hero renders 57px at
-375, 86px at 768, 129px at 1440, and no page scrolls horizontally at any of
-them.
+7.59x body at the top. Leading is set per size: 0.86 hero, 0.9 display, 1.02
+title, 1.62 body. Verified rendering 57 / 86 / 129px at 375 / 768 / 1440.
 
 ---
 
 ## Colour
 
-Three values. That is the whole palette:
-
 ```
---ground: #faf8f5   warm off-white
---ink:    #111111   near-black
---accent: #c42b12   vermilion
+--ground: #f7f4ed   warmer paper than before, and it shows
+--ink:    #14120f   near-black, warmed to match the ground
+--accent: #e0431a   vermilion, brighter, and off its leash
 ```
 
-Contrast, measured: ink on ground **17.8:1**; accent on ground **5.35:1**; the
-single muted tone (`#686766`) **5.32:1**. All pass AA for normal text.
+The accent was previously rationed to about seven appearances. It is now the
+first thing on the page: a solid `--space-2` bar across the full measure
+directly under the nav, where there used to be a hairline under a field of
+whitespace. It also carries every hanging ordinal, the rule above the lead case
+study, the "What it demonstrates" label, focus rings and hover states.
 
-**There is no grey ramp.** The previous build declared seven tints of ink mixed
-into paper and used them for hierarchy — `--color-text-quiet`,
-`--color-text-meta`, `--color-text-faint` — which is how a layout ends up
-looking like fog. There is now ONE muted tone, used only for genuine metadata.
-`--color-text-quiet` still exists as an alias so components did not all need
-rewriting, and it deliberately resolves to **full ink**: long copy set in grey
-is the most common way a portfolio reads as unfinished.
+Still one accent, still no gradients, no shadows, and `--radius-*` is `0`.
 
-**The accent is rationed.** It appears on: the rule above the home hero, the
-rule above the lead case study, the closing line of /about, focus rings, hover
-states, the `[[NEEDS]]` hazard block, and the word "Shelved". That is the
-complete list. An accent that shows up in every component is decoration; one
-that shows up rarely is a mark.
+---
 
-No gradients, no shadows, no glassmorphism, and `--radius-*` is `0` throughout.
+## No em dashes
+
+Every em dash in the project has been removed: 173 of them across 46 files,
+including source comments and both markdown documents. Verified zero in the
+rendered HTML of every page.
+
+The replacements were made by hand for rendered copy rather than by
+substitution, because an em dash does different work in different sentences. It
+became a colon where it introduced a list ("end to end: interface, backend,
+model pipeline"), a full stop where the clause stood alone ("It was the right
+call. The standalone build launched a day early"), and a comma where it was
+parenthetical. En dashes in numeric ranges ("2025-26", "October 2025 - present")
+are untouched; the instruction was about em dashes.
+
+`portfolio-copy.md` keeps its original wording as the authored record, so the
+case study bodies are no longer byte-identical to it.
+
+---
+
+## The headline is not the copy file's headline
+
+`portfolio-copy.md` opens "Graphic designer who ships software." That was
+replaced on request with:
+
+> I design the thing, then I build the thing.
+
+It is lifted from the author's own About copy, which reads "I design the thing,
+build the thing, and own the parts of it that break." Using their sentence
+rather than writing a new one keeps the voice and keeps it defensible in an
+interview. One line in `app/page.tsx` to swap.
+
+---
+
+## Navigation: five tabs
+
+Applications, Design, Agentic AI, About, Contact.
+
+This departs from `portfolio-copy.md`, which specifies three (Work, About,
+Contact) and argues for keeping it to three. The three-label version named only
+the software half of a claim about being both, which argued against the site on
+every page.
+
+"Work" became **Applications**, and the home section it lands on was renamed to
+match: a tab that says Applications should not scroll to a heading that says
+Selected work.
+
+**Agentic AI is a new route with no copy.** `content/agentic-ai.ts` has an empty
+`body`, so the page renders its heading and a pointer to the "How I worked"
+passage inside the DrawEvolve case study, which is already published, verbatim,
+and about exactly this. Nothing was written for it.
 
 ---
 
 ## Space and composition
 
-**The spacing scale jumps at the top** — `--space-9` is 120px, `--space-10` is
-176px, `--space-11` is 256px — because uniform vertical rhythm was half of why
+**The spacing scale jumps at the top**, `--space-9` is 120px, `--space-10` is
+176px, `--space-11` is 256px, because uniform vertical rhythm was half of why
 the old build read as templated. Components pick a NAMED rhythm rather than a
 number, so the variation survives editing:
 
@@ -154,7 +173,7 @@ slack on both sides past 118rem. Concretely, on the page:
   is pushed to column 4
 - case study prose starts at **column 3**, so the left margin carries the
   structure rather than being dead padding
-- the lead media on a case study is **full bleed**, edge to edge — the only
+- the lead media on a case study is **full bleed**, edge to edge, the only
   element on the site allowed to touch the viewport
 - Selected Work rank 1 mirrors rank 0 (media right, text left) so the three do
   not read as a repeating template
@@ -176,13 +195,13 @@ is gone:
 | The content schema (`zod`) | It threw on a misspelled key, a banned key, a missing tradeoff cost. Editorial discipline enforced by a validator is a build that breaks when you are trying to ship. |
 | `content/order.ts`, `content/sections.ts` | Drift-detection between an order file and the folders on disk. Three case studies do not need a consistency checker. |
 | The gallery content type, `GallerySet`, `Empty` | Superseded by `public/design/<category>/`. |
-| `Argument`, `Diagram`, `Tables` | The five-field "spine" and the AI-shaped structure. No case study used them — the copy is prose. |
+| `Argument`, `Diagram`, `Tables` | The five-field "spine" and the AI-shaped structure. No case study used them, the copy is prose. |
 | Nine of ten redirects | They were guesses at which Adobe Portfolio slug mapped to which medium, pointing at an `/archive` route that no longer exists. A redirect maintained on speculation is worse than a 404: it sends someone confidently to the wrong page. |
 | `playwright-core`, `check:viewports` | A test harness installed on every deploy for a script that never ran there. |
 | `zod` | No longer imported anywhere. |
 
 **What survived: `scripts/check-links.mjs`.** It earns its place because the
-failure it catches is invisible from the rendered page — a relative external
+failure it catches is invisible from the rendered page, a relative external
 href resolves against this domain and 404s while looking exactly like a working
 link. That is the bug the old site shipped on every case study.
 
@@ -194,11 +213,11 @@ only thing that can fail a build.
 
 ## Design work: five real pages
 
-The single `/archive` page was wrong — it buried five bodies of work in one
+The single `/archive` page was wrong, it buried five bodies of work in one
 scroll and framed them as an appendix. Each category now has its own page at
 `/design/<category>`, and `/design` is a landing that presents all five.
 
-Order is Print, Marketing, 3D, Motion, Personal — manual, in
+Order is Print, Marketing, 3D, Motion, Personal, manual, in
 `content/design.ts`, never sorted by the year label.
 
 **The "What it demonstrates" line is rendered as its own labelled block**, with
@@ -217,15 +236,15 @@ dev dependency). That is what buys two things with zero configuration:
 `next/image` gets real width/height so nothing shifts as images load, and the
 grid lays out on **true aspect ratios** instead of forcing a uniform tile.
 
-Spans come from the real proportion — 3 columns for a tall screenshot, 4 for a
-square, 6 for a landscape, 8 for a wide spread, 12 for a panorama — and height
+Spans come from the real proportion, 3 columns for a tall screenshot, 4 for a
+square, 6 for a landscape, 8 for a wide spread, 12 for a panorama, and height
 follows from the ratio. Nothing is cropped or letterboxed, which matters when
 the content is genuinely mixed: catalog spreads, square social posts, phone
 screenshots and 3D renders on one page. `grid-auto-flow: dense` lets a narrow
 image backfill the gap a wide one left.
 
-Alt text is derived from the filename — `03-catalog-spread.jpg` becomes
-"Catalog spread" — and falls back to the category name when the filename
+Alt text is derived from the filename, `03-catalog-spread.jpg` becomes
+"Catalog spread", and falls back to the category name when the filename
 carries nothing (`05.png` → "Print"). It never blocks: a badly-named file still
 renders.
 
@@ -240,7 +259,7 @@ broken image icons, no "coming soon".
 home page is Selected Work (three case studies at descending weight) and then
 Design (five categories, each with its intro, its year, its image count and a
 lead image when the folder has one). The design half is a full section with the
-same heading treatment as the work half — not a single quiet link, which is
+same heading treatment as the work half, not a single quiet link, which is
 what it was.
 
 `Design` is also a fourth nav label. The copy specifies three and says to keep
@@ -256,7 +275,7 @@ than quietly.
 rewritten, paraphrased, expanded or condensed, no new prose was written to fill
 a gap, and the file itself is untouched on disk.
 
-A build-time proof of that is worth having, so here is how to re-run it — it
+A build-time proof of that is worth having, so here is how to re-run it, it
 lifts each case study body out of `content/`, restores the heading levels, and
 asserts the result is a substring of the copy file:
 
@@ -277,12 +296,12 @@ EOF
 
 | Copy | Now lives in |
 | --- | --- |
-| Home opening statement | `app/page.tsx` — headline + subhead |
+| Home opening statement | `app/page.tsx`, headline + subhead |
 | Nav labels | `lib/site.ts` → `nav` (already matched) |
 | Meta description | `lib/site.ts` → `description`; used on every page and both OG cards |
 | 404 | `app/not-found.tsx` |
 | Contact page | `app/contact/page.tsx`, address in `lib/site.ts` |
-| About body | `app/about/page.tsx` — four paragraphs |
+| About body | `app/about/page.tsx`, four paragraphs |
 | Section intros ×6 | `content/sections.ts` → `standfirst` |
 | Case studies ×3 | `content/work/<slug>/index.mdx` |
 | **Subtitle:** / **Role:** / **Status:** / **Timeline:** / **Live:** | frontmatter `deck` / `role` / `state` / `timeline` / `links` |
@@ -292,7 +311,7 @@ EOF
 **1. The case-study spine is now optional.** `constraint`, `attempts`,
 `tradeoff`, `outcome` and `revisit` were required, capped at ~220 characters
 each, and were the mechanism that forced a decision log to exist when this repo
-had no copy. The copy is written as prose under its own headings — "The
+had no copy. The copy is written as prose under its own headings, "The
 premise", "The constraint", "What I built", "The tradeoff I made", "How I
 worked", "Outcome". Restating a three-paragraph section in 220 characters is
 writing new copy, and inventing an `attempts[].failed` for thoosie and Lynk,
@@ -316,7 +335,7 @@ Development".
 
 **4. Heading levels were demoted `###` → `##`.** In the copy file the case
 study sections sit under a `# CASE STUDY N` title; on the page the entry title
-is the `h1`, so its own sections are `h2`. Document structure, not copy — no
+is the `h1`, so its own sections are `h2`. Document structure, not copy, no
 word, no punctuation and no ordering changed.
 
 ### Things the copy does not cover, that a component wanted
@@ -324,7 +343,7 @@ word, no punctuation and no ordering changed.
 None of these render a placeholder. Every one of them is a component that
 correctly renders *nothing* when the value is absent, so the gap is invisible
 to a visitor and one edit away from filled. **One exception, and it is
-visible** — the first row.
+visible**, the first row.
 
 | Gap | Where | What renders now |
 | --- | --- | --- |
@@ -334,13 +353,13 @@ visible** — the first row.
 | Footer "Elsewhere" | `lib/site.ts` → `social` | Whole block omitted rather than showing an empty heading. |
 | /work index standfirst | `app/work/page.tsx` | Omitted. The six section intros do that job. |
 | About rail chips | `app/about/page.tsx` | Deleted. Filling "Building with" / "Designing with" / "Shipped on" would mean mining tool names out of your prose and re-setting them as tags you did not write. |
-| Lynk's year | `content/work/lynk/index.mdx` | Absent — `year` is now optional. The copy gives Lynk no date. |
+| Lynk's year | `content/work/lynk/index.mdx` | Absent, `year` is now optional. The copy gives Lynk no date. |
 | Gallery entries, all six sections | `content/gallery/` | Each section renders its heading and its intro, then stops. The scaffolding note is dev-only. |
 
 **Derived, so I did build it:** per-page titles and OG images from frontmatter;
 `year` on DrawEvolve (`2025–26`, from its **Timeline:** line) and thoosie
 (`2026`, from "Launched August 2026" in its own Outcome copy); `stack` chips on
-DrawEvolve (Swift, Metal, Cloudflare Workers, Supabase — each named in that
+DrawEvolve (Swift, Metal, Cloudflare Workers, Supabase, each named in that
 case study's copy; thoosie and Lynk name none, so theirs are empty).
 
 ### Nothing is unfilled any more
@@ -348,7 +367,7 @@ case study's copy; thoosie and Lynk name none, so theirs are empty).
 Every field above was supplied by the author and filled. `social` is the one
 that stayed empty, and deliberately: no real profile URL was supplied, and a
 guessed GitHub or LinkedIn handle is a link that 404s in front of a hiring
-manager — the exact failure the link check exists to prevent. The footer
+manager, the exact failure the link check exists to prevent. The footer
 "Elsewhere" block and the contact rail render nothing at all while it is empty,
 so there is no placeholder anywhere on the site.
 
@@ -358,29 +377,29 @@ The placeholder guard now reports `Placeholders: none` on a production build.
 
 **The home page does not render spec placeholders.** Everywhere else, a
 declared image with no file renders as a `<Placeholder />` carrying its
-filename, ratio and content spec — that is what makes the site reviewable with
+filename, ratio and content spec, that is what makes the site reviewable with
 zero assets, and it stays. But when thoosie joined Selected Work, its poster
 plate landed on the front door, printing *"what must this image show? /
 01-gameplay-poster.png / ≥2400×1350"* to whoever opened the site.
 
 `SelectedWork` now shows a media slot only when a real file exists and collapses
-to type when it does not. The layout already handled that case — the lead has no
+to type when it does not. The layout already handled that case, the lead has no
 cover today. The spec plate is still on the case study page, where it is a note
 from the author to the author and belongs.
 
 ## Lynk is shelved, structurally
 
-Not a content convention — there is no code path that can render Lynk as
+Not a content convention, there is no code path that can render Lynk as
 active:
 
 - `links: []`. There is no live Lynk URL, and `scripts/check-links.mjs` asserts
   by name that the only two live links on this site are `drawevolve.com` and
   `thoosie.net`.
 - `context: shelved` and `state: Shelved`. `state` is the **Status:** line from
-  the copy, printed verbatim or not at all — the template has no vocabulary of
+  the copy, printed verbatim or not at all, the template has no vocabulary of
   its own to fall back on, so it cannot say "paused", "on hold", "in progress"
   or "upcoming".
-- The old template hard-coded the string `Shelved — capability artifact` for
+- The old template hard-coded the string `Shelved, capability artifact` for
   any `context: shelved` entry. That is invented copy and it is gone.
 - Nothing is date-sorted anywhere, so Lynk cannot drift to the top of a list
   and read as current.
@@ -393,7 +412,7 @@ active:
 ## Video
 
 `content/schema.ts` → `videoSchema`, rendered by `components/ui/Video.tsx`
-(server) and `components/ui/AutoVideo.tsx` (client). Self-hosted mp4 only — no
+(server) and `components/ui/AutoVideo.tsx` (client). Self-hosted mp4 only, no
 embed, no third-party player, no tracking iframe on a site whose argument is
 that you own the stack.
 
@@ -403,9 +422,9 @@ not:
 
 | State | Renders |
 | --- | --- |
-| mp4 present | `<AutoVideo>` — poster, muted, looped, `playsInline`, controls |
+| mp4 present | `<AutoVideo>`, poster, muted, looped, `playsInline`, controls |
 | mp4 missing | the poster frame as a still, through `<Frame>` |
-| poster missing too | the same spec `<Placeholder>` as any other image — **this is the current state** |
+| poster missing too | the same spec `<Placeholder>` as any other image, **this is the current state** |
 
 `poster` is a required full image declaration, not an optional filename. That
 requirement *is* the degradation contract.
@@ -414,7 +433,7 @@ requirement *is* the degradation contract.
 `autoplay` attribute; playback is started from script only when the connection
 is known-good, the viewer has not asked for reduced motion, and the clip is on
 screen. `navigator.connection` is the only "mobile data" signal a browser
-gives and it is Chromium-only — so a missing API, `saveData`, `type:
+gives and it is Chromium-only, so a missing API, `saveData`, `type:
 "cellular"`, or an effective type of 3g or worse all mean *no autoplay*. On an
 unknown connection nothing starts either. Controls are always present, so "did
 not autoplay" is never "cannot play". No client JavaScript ships at all while
@@ -422,7 +441,7 @@ the mp4 is absent.
 
 ---
 
-## Assumptions I made — confirm these
+## Assumptions I made, confirm these
 
 1. **Domain: `trevorriggle.design`.** Used for `metadataBase`, canonical URLs,
    the sitemap and OG image URLs. One edit in `lib/site.ts` if it is wrong.
@@ -433,7 +452,7 @@ the mp4 is absent.
    `lib/fonts/` and pass it to the `fonts` option in `lib/og.tsx`.
 3. **`REQUIRED_LIVE` in `scripts/check-links.mjs` is hard-coded** to
    `https://drawevolve.com` and `https://thoosie.net`. If a project goes away,
-   delete its line there in the same commit — it should take a decision, not a
+   delete its line there in the same commit, it should take a decision, not a
    drift.
 4. **ESLint still cannot lint the `.tsx` files.** `typescript-eslint` throws on
    TypeScript 7, which this repo pins. `pnpm typecheck` and `next build` both
@@ -447,7 +466,7 @@ the mp4 is absent.
 
 Run on a clean `.next`:
 
-- `pnpm typecheck` clean. `pnpm build` exit **0** — 20 prerendered routes, no
+- `pnpm typecheck` clean. `pnpm build` exit **0**, 20 prerendered routes, no
   warnings, and **no build-time content validation left to fail.**
 - `node scripts/check-links.mjs --probe`: both live links **200**, absolute.
 - **Zero** occurrences of `TODO`, `lorem`, `[[NEEDS`, "coming soon" or any

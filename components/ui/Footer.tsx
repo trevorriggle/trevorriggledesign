@@ -34,7 +34,7 @@ export function Footer() {
               <br />
               © {new Date().getFullYear()}
               <br />
-              Set in Instrument Serif &amp; Geist
+              Set in Bricolage Grotesque &amp; DM Sans
             </p>
           </div>
         </div>

@@ -6,7 +6,7 @@ export function Aside({ children }: { children: ReactNode }) {
   return <aside className={styles.aside}>{children}</aside>;
 }
 
-/** Two things side by side — before/after, rejected/shipped. */
+/** Two things side by side, before/after, rejected/shipped. */
 export function Compare({ children }: { children: ReactNode }) {
   return <div className={styles.compare}>{children}</div>;
 }

@@ -1,5 +1,5 @@
 /* ============================================================================
-   TOKENS — the one file.
+   TOKENS, the one file.
    ============================================================================
    Every visual decision resolves to a custom property declared here. Component
    .module.css files reference tokens only: no raw hex, no raw px type size, no
@@ -10,8 +10,8 @@
    THREE THINGS THIS FILE DOES DIFFERENTLY, and they are the whole design:
 
    1. THE SCALE IS STEEP. Display type is a 1.5 modular scale compounding off
-      the body size. The hero lands at 7.6x body. A 1.2 scale — the default
-      almost everything ships with — cannot produce a page where one thing
+      the body size. The hero lands at 7.6x body. A 1.2 scale, the default
+      almost everything ships with, cannot produce a page where one thing
       dominates, because at 1.2 the fifth step is only twice the body and
       everything reads as roughly the same importance.
 
@@ -23,7 +23,7 @@
    ========================================================================= */
 
 :root {
-  /* Committed. Not a preference, not a media query — the page is this colour
+  /* Committed. Not a preference, not a media query, the page is this colour
      everywhere, and the browser chrome is told so in app/layout.tsx. */
   color-scheme: light;
 
@@ -33,9 +33,9 @@
      the [[NEEDS]] hazard block. Nowhere else. An accent that shows up in
      every component is decoration; an accent that shows up twice is a mark.  */
 
-  --ground: #faf8f5;  /* warm off-white — paper, not #fff, not grey-blue */
-  --ink: #111111;     /* near-black */
-  --accent: #c42b12;  /* vermilion — rationed; see DECISIONS.md          */
+  --ground: #f7f4ed;  /* warmer paper than before, and it shows          */
+  --ink: #14120f;     /* near-black, warmed to match the ground           */
+  --accent: #e0431a;  /* vermilion, brighter and used far less sparingly  */
 
   /* The single muted tone. One, not a ramp. */
   --ink-mute: color-mix(in oklab, var(--ink) 58%, var(--ground));
@@ -63,7 +63,10 @@
   --color-rule-faint: var(--ink-rule-faint);
   --color-rule-strong: var(--ink);
   --color-signal: var(--accent);
-  --color-signal-quiet: color-mix(in oklab, var(--accent) 10%, var(--ground));
+  --color-signal-quiet: color-mix(in oklab, var(--accent) 12%, var(--ground));
+  /* A flat block of accent, for the few places something is filled rather
+     than ruled. */
+  --color-signal-solid: var(--accent);
   --color-focus: var(--accent);
 
   /* ---- 2. TYPE ---------------------------------------------------------- */
@@ -80,13 +83,13 @@
      label and the next size up would be 18px, and there is no 18px UI on this
      site. The steep ratio is for display, where it does work.               */
 
-  --text-3xs: 0.6875rem;   /* 11px — the smallest label that stays legible */
-  --text-2xs: 0.75rem;     /* 12px — uppercase labels, ordinals            */
-  --text-xs: 0.8125rem;    /* 13px — captions, chips, placeholder specs    */
-  --text-sm: 0.875rem;     /* 14px — dense metadata, code                  */
-  --text-base: 0.9375rem;  /* 15px — UI baseline                           */
-  --text-md: 1.0625rem;    /* 17px — LONG-FORM BODY. The scale's origin.   */
-  --text-lg: 1.3125rem;    /* 21px — deck, lead paragraph                  */
+  --text-3xs: 0.6875rem;   /* 11px, the smallest label that stays legible */
+  --text-2xs: 0.75rem;     /* 12px, uppercase labels, ordinals            */
+  --text-xs: 0.8125rem;    /* 13px, captions, chips, placeholder specs    */
+  --text-sm: 0.875rem;     /* 14px, dense metadata, code                  */
+  --text-base: 0.9375rem;  /* 15px, UI baseline                           */
+  --text-md: 1.0625rem;    /* 17px, LONG-FORM BODY. The scale's origin.   */
+  --text-lg: 1.3125rem;    /* 21px, deck, lead paragraph                  */
 
   /* -- Display tier -------------------------------------------------------
      Ratio 1.5, compounding off --text-md (17px):
@@ -106,7 +109,7 @@
   --display-5: 8.069rem;
 
   /* Fluid display roles. Every one is clamped between two REAL steps of the
-     scale above, so the scale still holds at any viewport — the type gets
+     scale above, so the scale still holds at any viewport, the type gets
      smaller on a phone, it does not fall out of the system. The vw terms are
      what make the big sizes actually big on a laptop rather than only on a
      30-inch display. */
@@ -120,8 +123,8 @@
      Big type needs less than 1; body needs 1.6. One global line-height is the
      tell that a type system was never actually designed.                    */
 
-  --leading-hero: 0.9;
-  --leading-display: 0.94;
+  --leading-hero: 0.86;
+  --leading-display: 0.9;
   --leading-title: 1.02;
   --leading-snug: 1.18;
   --leading-normal: 1.45;
@@ -129,9 +132,9 @@
 
   /* -- Tracking. Large serif needs negative; small caps need positive. ---- */
 
-  --tracking-hero: -0.035em;
-  --tracking-display: -0.022em;
-  --tracking-tight: -0.014em;
+  --tracking-hero: -0.04em;
+  --tracking-display: -0.03em;
+  --tracking-tight: -0.018em;
   --tracking-normal: 0;
   --tracking-caps: 0.1em;
   --tracking-caps-wide: 0.16em;
@@ -139,7 +142,16 @@
   --weight-regular: 400;
   --weight-medium: 500;
   --weight-semibold: 600;
-  --weight-display: 400;   /* the serif has one weight, on purpose */
+  --weight-bold: 700;
+
+  /* Bricolage is variable across weight AND width, which is the whole reason
+     it is here. Display type runs heavy and slightly narrow: at 130px a
+     regular weight reads as "large text", and a compressed heavy weight reads
+     as a decision. The narrow width is what keeps a long headline from
+     eating four lines. */
+  --weight-display: 700;
+  --width-display: 88;     /* wdth axis, big type   */
+  --width-display-mid: 94; /* wdth axis, mid sizes  */
 
   /* ---- 3. SPACE ---------------------------------------------------------
      Geometric, and it JUMPS at the top. The point of the top three steps
@@ -161,7 +173,7 @@
   --space-11: 16rem;    /* 256px */
 
   /* Named rhythms. Components pick one INTENTIONALLY rather than reaching for
-     a number — that is what makes the varied rhythm survive editing. */
+     a number, that is what makes the varied rhythm survive editing. */
   --rhythm-crowd: var(--space-5);                            /* deliberately tight */
   --rhythm-tight: clamp(var(--space-6), 5vw, var(--space-7));
   --rhythm-normal: clamp(var(--space-7), 8vw, var(--space-9));
@@ -191,15 +203,15 @@
   --grid-gap: clamp(var(--space-4), 2vw, var(--space-6));
   --gutter: clamp(var(--space-5), 5.5vw, var(--space-9));
 
-  --width-page: 90rem;     /* 1440px — outer bound              */
-  --width-prose: 34rem;    /*  544px — narrow measure           */
+  --width-page: 90rem;     /* 1440px, outer bound              */
+  --width-prose: 34rem;    /*  544px, narrow measure           */
   --measure: 62ch;         /* long-form reading measure         */
-  --measure-lead: 24ch;    /* deck / lead — short lines on purpose */
+  --measure-lead: 24ch;    /* deck / lead, short lines on purpose */
 
   --rail: 14rem;
 
   /* ---- 5. RULES ---------------------------------------------------------
-     Hairlines are structure. Radius is zero — nothing here is a rounded card
+     Hairlines are structure. Radius is zero, nothing here is a rounded card
      floating on grey, and there are no shadows anywhere in this project.     */
 
   --radius-none: 0;

@@ -4,7 +4,7 @@
    Composition:
 
    · An opening that is type and nothing else, at hero scale, hanging off the
-     left edge with enormous air under it. No image slot — there is no image
+     left edge with enormous air under it. No image slot, there is no image
      worth putting above a hiring team's first read, and a hero image slot
      would be the largest placeholder on the site.
    · The subhead sits in a NARROW column pushed right and down, so the
@@ -18,8 +18,10 @@
    blocks sit at different distances from what precedes them.
    ========================================================================= */
 
+/* No padding above the rule. It sits directly under the nav, so the page
+   opens on a line of colour rather than on a field of nothing. */
 .masthead {
-  padding-top: clamp(var(--space-7), 11vw, var(--space-10));
+  padding-top: 0;
   padding-bottom: var(--rhythm-loose);
 }
 
@@ -40,18 +42,19 @@
 .headline {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--type-hero);
   line-height: var(--leading-hero);
   letter-spacing: var(--tracking-hero);
   max-width: 15ch;
   text-wrap: balance;
   /* Pull the first line's cap-height flush with the top rule. Optical, not
-     structural — the serif carries visible sidebearing at this size. */
+     structural, the serif carries visible sidebearing at this size. */
   margin-left: -0.045em;
 }
 
 /* Pushed to column 4 and down: the headline hangs left of it, which is the
-   asymmetry the page is built on. A short measure on purpose — 24ch keeps
+   asymmetry the page is built on. A short measure on purpose, 24ch keeps
    this at four or five lines, so it reads as a caption to the headline
    rather than as a second paragraph competing with it. */
 .subheadWrap {
@@ -67,25 +70,27 @@
 }
 
 /* The single accent mark in the masthead, and one of very few on the site. */
+/* A solid bar, not a hairline. It is the first thing on the page and it is
+   the accent's loudest appearance. */
 .rule {
   grid-column: 1 / -1;
-  height: 0;
-  border-top: 1.5px solid var(--color-signal);
+  height: var(--space-2);
+  background: var(--color-signal-solid);
   margin-bottom: var(--space-6);
 }
 
 .vitals { grid-column: 10 / -1; }
 
-/* --- Selected work ------------------------------------------------------- */
+/* --- Applications ------------------------------------------------------- */
 
 /* Crowds the masthead deliberately: the work should begin immediately after
    the opening statement, not after another beat of silence. */
-.selected {
+.applications {
   border-top: var(--rule-heavy);
   padding-top: var(--space-4);
 }
 
-.selectedHead {
+.applicationsHead {
   display: grid;
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
@@ -93,14 +98,14 @@
   margin-bottom: var(--space-8);
 }
 
-.selectedTitle {
+.applicationsTitle {
   grid-column: 1 / 8;
   font-size: var(--type-section);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
 }
 
-.selectedNote {
+.applicationsNote {
   grid-column: 8 / -1;
   font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
@@ -194,6 +199,7 @@
   grid-column: 1 / 4;
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--type-entry);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
@@ -229,9 +235,9 @@
   .subheadWrap { margin-top: 0; }
   .mastheadGrid { row-gap: var(--space-6); }
 
-  .selectedTitle,
-  .selectedNote { grid-column: 1 / -1; }
-  .selectedHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
+  .applicationsTitle,
+  .applicationsNote { grid-column: 1 / -1; }
+  .applicationsHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
 
   .designTitle,
   .designNote { grid-column: 1 / -1; }
@@ -252,8 +258,7 @@
   }
 }
 
-/* 375px. The hero holds its clamp floor rather than collapsing to body size —
-   the whole point of a steep scale is that it survives the phone. */
+/* 375px. The hero holds its clamp floor rather than collapsing to body size, the whole point of a steep scale is that it survives the phone. */
 @media (max-width: 30rem) {
   .headline { max-width: none; }
   .masthead { padding-bottom: var(--rhythm-normal); }

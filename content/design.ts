@@ -1,5 +1,5 @@
 /* ============================================================================
-   DESIGN WORK — the five categories.
+   DESIGN WORK, the five categories.
    ============================================================================
    Order is Print, Marketing, 3D, Motion, Personal. Manual, and never sorted by
    the `years` label, which is display-only.
@@ -11,7 +11,7 @@
      demonstrates  design-work-copy.md → the "What it demonstrates" line.
 
    `body` and `demonstrates` are EMPTY because design-work-copy.md is not in
-   the repository — see DECISIONS.md. Nothing is invented to fill them and
+   the repository, see DECISIONS.md. Nothing is invented to fill them and
    nothing renders in their place: the category pages show their heading, their
    intro and their images. Paste the copy into the two fields and both elements
    appear, with no other edit anywhere.
@@ -46,7 +46,7 @@ export const designCategories: DesignCategory[] = [
     title: "Marketing",
     years: "2022",
     intro:
-      "Campaign work at American Scientific — animated product flyers, web banners, and social assets, produced at volume across hundreds of client accounts.",
+      "Campaign work at American Scientific: animated product flyers, web banners, and social assets, produced at volume across hundreds of client accounts.",
     body: [],
     demonstrates: "",
   },

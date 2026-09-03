@@ -9,7 +9,7 @@ import styles from "./prose.module.css";
  * Compiles an MDX body on the server. No client JS ships for content.
  *
  * Any absolute link written as plain Markdown is routed through ExternalLink,
- * so the target/rel treatment and the external mark are automatic — and a
+ * so the target/rel treatment and the external mark are automatic, and a
  * relative path cannot masquerade as an external link, which is the bug class
  * this whole site is built to prevent.
  */

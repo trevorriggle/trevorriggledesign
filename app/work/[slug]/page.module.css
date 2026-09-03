@@ -1,5 +1,5 @@
 /* ============================================================================
-   CASE STUDY PAGE — Tier 1.
+   CASE STUDY PAGE, Tier 1.
    ============================================================================
    Composition:
 
@@ -56,7 +56,7 @@
 .headMain { grid-column: 1 / 10; }
 .headRail { grid-column: 10 / -1; }
 
-/* 86px at the top of the clamp — 5x body. One step below the home hero, so
+/* 86px at the top of the clamp, 5x body. One step below the home hero, so
    the home page still dominates the site's hierarchy. */
 .title {
   font-size: var(--type-title);
@@ -66,7 +66,7 @@
   margin-left: -0.045em;
 }
 
-/* Pushed right, under the overhanging title. Text face — it is a sentence,
+/* Pushed right, under the overhanging title. Text face, it is a sentence,
    and it has to be read rather than admired. */
 .deck {
   font-size: var(--text-lg);
@@ -77,7 +77,7 @@
   max-width: 32ch;
 }
 
-/* The status chip. No uppercase transform — see the note in the component. */
+/* The status chip. No uppercase transform, see the note in the component. */
 .shelved,
 .state {
   display: inline-block;

@@ -12,7 +12,7 @@
 
 .aside > * + * { margin-top: var(--space-xs); }
 
-/* Two things side by side — rejected vs shipped, before vs after. */
+/* Two things side by side, rejected vs shipped, before vs after. */
 .compare {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));

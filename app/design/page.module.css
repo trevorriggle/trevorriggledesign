@@ -1,5 +1,5 @@
 /* ============================================================================
-   /design — landing
+   /design, landing
    ============================================================================
    Five rows, each a real entry to a real page. Rhythm is looser than the
    old archive: these are destinations, not a contact sheet.
@@ -56,6 +56,7 @@
   grid-column: 1 / 2;
   font-family: var(--font-display);
   font-weight: var(--weight-display);
+  font-variation-settings: \"wdth\" var(--width-display-mid);
   font-size: var(--display-1);
   line-height: 1;
   color: var(--color-text-meta);

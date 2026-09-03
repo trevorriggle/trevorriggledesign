@@ -4,8 +4,8 @@ import type { ImageRef } from "@/content";
 /**
  * <Figure src="02-detail.png" /> in an MDX body.
  *
- * Images are declared once in frontmatter `images[]` — where alt text, aspect
- * ratio and content label are all required and validated — and referenced here
+ * Images are declared once in frontmatter `images[]`, where alt text, aspect
+ * ratio and content label are all required and validated, and referenced here
  * by filename only. One source of truth for image metadata, no way to render
  * an image without alt text, and a typo'd filename is a build error naming the
  * declared alternatives rather than a silent 404.

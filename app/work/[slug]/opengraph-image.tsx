@@ -26,7 +26,7 @@ export default async function Image({
 
   return ogCard({
     ordinal: String(position).padStart(2, "0"),
-    eyebrow: "Selected work",
+    eyebrow: "Applications",
     title: entry.title,
     deck: entry.deck || undefined,
     footer: site.domain,
