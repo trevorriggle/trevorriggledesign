@@ -14,18 +14,34 @@
    scale. At 375 the hero should hold its clamp FLOOR (57px), not shrink to
    nothing.
 
-   Requires a headless browser, which is NOT installed by default — the
-   dependency here is playwright-core, which ships no binaries:
+   OPT-IN. playwright-core is deliberately NOT a dependency of this project —
+   it would be installed on every Vercel build for a script that never runs
+   there. Install it when you want to run this, and remove it after:
 
-       npx playwright install chromium
+       pnpm add -D playwright-core && npx playwright install chromium
        pnpm build && pnpm start &
        node scripts/check-viewports.mjs
+       pnpm remove playwright-core
 
    Set CHROME_PATH if the browser is somewhere non-standard.
    ========================================================================= */
 
-import { chromium } from "playwright-core";
 import fs from "node:fs";
+
+/* Imported dynamically so this file gives a usable instruction instead of an
+   unresolved-module stack trace when the optional dep is absent. */
+let chromium;
+try {
+  ({ chromium } = await import("playwright-core"));
+} catch {
+  console.error(
+    "  playwright-core is not installed (it is deliberately not a dependency\n" +
+      "  of this project — it would be installed on every deploy for a script\n" +
+      "  that never runs there).\n\n" +
+      "      pnpm add -D playwright-core && npx playwright install chromium",
+  );
+  process.exit(2);
+}
 
 const shell =
   process.env.CHROME_PATH ??

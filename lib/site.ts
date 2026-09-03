@@ -30,15 +30,21 @@ export const site = {
   /** portfolio-copy.md → "Contact page", verbatim. */
   email: "trevorriggle@gmail.com",
 
-  /** No copy states this. Empty renders nothing; it is not a placeholder. */
-  availability: "",
+  /** Supplied by the author. Shown on /about, /contact and the home rail. */
+  availability: "Open to design engineering and AI product roles",
 
-  /** No copy states this. Empty renders nothing; it is not a placeholder. */
-  location: "",
+  /** Supplied by the author. */
+  location: "Columbus, Ohio",
 
   /** External profiles. Absolute https URLs only — same rule the content
-   *  schema enforces, for the same reason. The copy names none, so this is
-   *  empty and the "Elsewhere" blocks render nothing rather than a prompt. */
+   *  schema enforces, for the same reason.
+   *
+   *  EMPTY, and deliberately left that way: no real profile URL has been
+   *  supplied for this site, and a guessed GitHub or LinkedIn handle is a
+   *  link that 404s in front of a hiring manager — the exact failure the
+   *  link check exists to prevent. The footer "Elsewhere" block and the
+   *  contact rail render nothing at all while this is empty, so there is no
+   *  placeholder anywhere. Add a line here and both reappear. */
   social: [] as { label: string; href: string }[],
 } as const;
 

@@ -482,7 +482,6 @@ visible** — the first row.
 
 | Gap | Where | What renders now |
 | --- | --- | --- |
-| **Poster alt text + spec** | `content/work/thoosie/index.mdx` → `video.poster` | **`TODO` is visible on the page.** See "Known visible placeholder" below. |
 | Home eyebrow label | `app/page.tsx` | The slot is deleted. The copy has no label line above the headline. |
 | Home / About / Contact rail: "Based", "Focus", "Looking for" | `lib/site.ts` → `location`, `availability` | Rows omitted. Fill either constant and every row reappears. |
 | Footer one-liner | `components/ui/Footer.tsx` | Deleted. The footer is name, domain, year, colophon. |
@@ -498,20 +497,30 @@ visible** — the first row.
 DrawEvolve (Swift, Metal, Cloudflare Workers, Supabase — each named in that
 case study's copy; thoosie and Lynk name none, so theirs are empty).
 
-### Known visible placeholder
+### Nothing is unfilled any more
 
-`content/work/thoosie/index.mdx` declares the gameplay clip's poster frame,
-because the video slot requires one. Neither the file nor its `alt` and `label`
-strings exist, so `/work/thoosie` renders one spec placeholder box printing
-**"TODO — what must this image show?"**, with `alt="TODO"` behind it.
+Every field above was supplied by the author and filled. `social` is the one
+that stayed empty, and deliberately: no real profile URL was supplied, and a
+guessed GitHub or LinkedIn handle is a link that 404s in front of a hiring
+manager — the exact failure the link check exists to prevent. The footer
+"Elsewhere" block and the contact rail render nothing at all while it is empty,
+so there is no placeholder anywhere on the site.
 
-That is the only placeholder text reachable in the production build. Three ways
-to clear it, in order of preference: save the poster at
-`public/media/thoosie/01-gameplay-poster.png`; or write the two strings; or
-delete the `video:` block, which removes the slot entirely. I did not write
-them, because alt text is content.
+The placeholder guard now reports `Placeholders: none` on a production build.
 
----
+### One design rule that came out of this
+
+**The home page does not render spec placeholders.** Everywhere else, a
+declared image with no file renders as a `<Placeholder />` carrying its
+filename, ratio and content spec — that is what makes the site reviewable with
+zero assets, and it stays. But when thoosie joined Selected Work, its poster
+plate landed on the front door, printing *"what must this image show? /
+01-gameplay-poster.png / ≥2400×1350"* to whoever opened the site.
+
+`SelectedWork` now shows a media slot only when a real file exists and collapses
+to type when it does not. The layout already handled that case — the lead has no
+cover today. The spec plate is still on the case study page, where it is a note
+from the author to the author and belongs.
 
 ## Lynk is shelved, structurally
 
@@ -623,68 +632,62 @@ the mp4 is absent.
 
 1. **Domain: `trevorriggle.design`.** Used for `metadataBase`, canonical URLs,
    the sitemap and OG image URLs. One edit in `lib/site.ts` if it is wrong.
-   Still the highest-consequence unconfirmed value in the repo.
-2. **The three case studies are `status: published`.** They have real copy now,
-   so they render in production. The gallery sections have no entries at all.
-3. **Legacy redirects are partly guesses.** `/social-media` → Marketing,
-   `/spreads` → Print and `/illlustrations` → Personal Works come from you.
-   `/illustrations`, `/motion` and `/3d` were added on the assumption they
-   exist. `/work#full-stack` no longer resolves to a section — nothing
-   redirected there, so nothing broke, but the section id is gone.
-4. **OG cards render in the fallback sans, not Fraunces.** `next/og`
+   The last unconfirmed value in the repo.
+2. **OG cards render in the fallback sans, not Instrument Serif.** `next/og`
    rasterises with satori, which needs a raw `ttf`/`otf` buffer and cannot read
    the `woff2` files `next/font` produces. To upgrade: drop a `.ttf` into
    `lib/fonts/` and pass it to the `fonts` option in `lib/og.tsx`.
-5. **The home page features the top 3** entries of the running order
-   (`HOME_FEATURED_COUNT` in `content/sections.ts`), which is now exactly the
-   three case studies.
-6. **`REQUIRED_LIVE` in `scripts/check-links.mjs` is hard-coded** to
-   `https://drawevolve.com` and `https://thoosie.net`. Validating the links
-   that happen to be present cannot catch a live link that has gone *missing*,
-   which is the failure you described. If a project genuinely goes away, delete
-   its line there in the same commit — it should take a decision, not a drift.
-7. **ESLint still cannot lint the `.tsx` files.** `typescript-eslint` throws on
+3. **`REQUIRED_LIVE` in `scripts/check-links.mjs` is hard-coded** to
+   `https://drawevolve.com` and `https://thoosie.net`. If a project goes away,
+   delete its line there in the same commit — it should take a decision, not a
+   drift.
+4. **ESLint still cannot lint the `.tsx` files.** `typescript-eslint` throws on
    TypeScript 7, which this repo pins. `pnpm typecheck` and `next build` both
-   type-check the whole project. Unchanged from before; the fix is still one
-   line in `package.json` plus the config in `eslint.config.mjs`.
+   type-check the whole project.
+5. **`playwright-core` is deliberately NOT a dependency.** It would be
+   installed on every deploy for `scripts/check-viewports.mjs`, which never runs
+   there. The script tells you how to install it when you want to run it, and
+   exits 2 rather than throwing when it is absent.
 
 ## Verified, not assumed
 
-Run against the current tree, on a clean `.next`:
+Run against the current tree, `.next` removed first:
 
-- `pnpm typecheck` clean. Production build clean — 15 routes, no warnings.
-- **The guard was demonstrated in all three modes**: production fails and lists
-  both TODOs with file and line; `VERCEL_ENV=preview` warns and exits 0;
-  `ALLOW_PLACEHOLDERS=1` warns loudly and exits 0.
-- **All ten redirects verified returning 308** to the right destination,
-  anchors included, against a real server. Every anchor target confirmed
-  present in the built HTML.
-- All seven routes return 200, `/no-such-page` returns 404.
-- `node scripts/check-links.mjs --probe`: both live links **200**, both
-  absolute. Every `href` in the built HTML is absolute-https, `mailto:`, rooted
-  or a fragment.
-- **`pnpm check:viewports` passes at 375 / 768 / 1440**: no horizontal overflow
-  on any route at any width, and the hero measures 57 / 86 / 129px — it holds
-  its clamp floor on a phone rather than collapsing to body size.
-- **Zero `prefers-color-scheme` rules in the built CSS**, not just the source.
+- `pnpm typecheck` clean.
+- **`pnpm build` passes with NO escape hatch and NO environment variable.**
+  `Placeholders: none. (env: production)`. 15 routes, no warnings.
+- `node scripts/check-links.mjs --probe`: `https://drawevolve.com` **200**,
+  `https://thoosie.net` **200**, both absolute, both `rel="noopener noreferrer"`.
+- **All ten redirects verified 308** to the right destination against a real
+  server, anchors included — `/abbott` now lands on `/archive#3d-graphics`.
+  Every anchor target confirmed present in the built HTML.
+- All seven routes return 200; an unknown path returns 404.
+- **Zero occurrences of `TODO`, `lorem`, `[[NEEDS` or any placeholder spec text
+  in the built HTML of any page.**
+- `pnpm check:viewports` at 375 / 768 / 1440: no horizontal overflow on any
+  route at any width; hero measures 57 / 86 / 129px, holding its clamp floor on
+  a phone rather than collapsing to body size.
+- Zero `prefers-color-scheme` rules in the built CSS.
+- `pnpm install --frozen-lockfile` clean after removing `playwright-core`.
 - Case study bodies verified verbatim against `portfolio-copy.md`.
-- Lynk's page carries no external link and no status word but "Shelved".
-- thoosie's page ships no `<video>` element and no client JS for one — it
-  degrades to the poster slot as designed.
+- Lynk carries no external link and no status word but "Shelved".
+- thoosie ships no `<video>` element and no client JS for one — it degrades to
+  the poster slot as designed.
 
 ### Fixed after looking at the rendered pages
 
-Four things only a screenshot catches, all found and fixed in this pass:
+Five things only a screenshot or a real build catches:
 
 1. The footer colophon still read "Set in Fraunces & IBM Plex" after the font
    swap.
 2. The case study rail printed a **Status** row carrying the same sentence as
    the status chip two inches above it.
-3. `MetaLinks` stacked three labels on one link — a "Links" group heading, a
-   "LIVE" eyebrow, and a link labelled "Live".
+3. `MetaLinks` stacked three labels on one link — a "Links" heading, a "LIVE"
+   eyebrow, and a link labelled "Live".
 4. **The Selected Work hierarchy read backwards.** DrawEvolve has no cover file
    and thoosie has a declared poster, so rank 1's placeholder was the largest
-   object on the page — measured 736×414 against a 465px-tall lead block. Rank
-   1's media slot is now capped at five columns and the lead took the accent
-   rule and a display-face deck. Re-measured: lead title 86px against thoosie's
-   38px.
+   object on the page — 736×414 against a 465px lead block. Rank 1's media slot
+   is capped at five columns and the lead took the accent rule and a
+   display-face deck. Lead title is now 86px against thoosie's 38px.
+5. **The home page was printing an image spec plate on the front door.** See
+   "One design rule that came out of this" above.

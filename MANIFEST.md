@@ -22,7 +22,7 @@ actually needs. Smaller means visible softness on a 2× display.
 
 | Save as | Aspect | Minimum size | Slot | Must show |
 | --- | --- | --- | --- | --- |
-| `public/media/thoosie/01-gameplay-poster.png` | 16:9 | 2400×1350 | video poster | TODO — what must this image show? |
+| `public/media/thoosie/01-gameplay-poster.png` | 16:9 | 2400×1350 | video poster | Gameplay — drawing a coaster and riding it |
 
 ---
 
@@ -94,7 +94,7 @@ _No sets in the repository yet._
 
 | Save as | Aspect | Minimum size | Slot | Must show |
 | --- | --- | --- | --- | --- |
-| `public/media/thoosie/01-gameplay-poster.png` | 16:9 | 2400×1350 | video poster | TODO — what must this image show? |
+| `public/media/thoosie/01-gameplay-poster.png` | 16:9 | 2400×1350 | video poster | Gameplay — drawing a coaster and riding it |
 
 ---
 

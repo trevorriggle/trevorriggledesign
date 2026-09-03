@@ -14,7 +14,7 @@ pnpm install
 pnpm dev            # http://localhost:3000 — drafts visible
 pnpm build          # prebuild: [[NEEDS]] check, link check, MANIFEST.md
 pnpm check:placeholders  # [[NEEDS]] + TODO scan; fails a production build
-pnpm check:viewports     # 375/768/1440 overflow + type-scale check (needs a browser)
+pnpm check:viewports     # 375/768/1440 overflow + type-scale check (opt-in, see script)
 pnpm verify         # both checks + typecheck + build
 pnpm check:links    # probe external links over the network (reports only)
 ```

@@ -52,11 +52,9 @@ const nextConfig: NextConfig = {
       { source: "/motion", destination: "/archive#motion-graphics", permanent: true },
       { source: "/3d", destination: "/archive#3d-graphics", permanent: true },
 
-      /* /abbott is a client name, not a medium, so which archive section it
-         belongs to is not derivable from anything in the repo. It lands on the
-         top of /archive rather than guessing an anchor and sending someone to
-         the wrong section. Add the anchor when you confirm it. */
-      { source: "/abbott", destination: "/archive", permanent: true },
+      /* /abbott is a client name rather than a medium. Confirmed by the
+         author: the work is 3D product visualization. */
+      { source: "/abbott", destination: "/archive#3d-graphics", permanent: true },
     ];
   },
 };
