@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/ui/Container";
 import { Frame } from "@/components/ui/Frame";
 import { VideoSlot } from "@/components/ui/Video";
+import { Gallery } from "@/components/ui/Gallery";
 import { Pager } from "@/components/ui/Pager";
 import { MetaRail, Meta, MetaChips, MetaLinks } from "@/components/ui/MetaRail";
 import { MdxBody } from "@/components/mdx/MdxBody";
@@ -71,6 +74,38 @@ export default async function CaseStudyPage({
 
         <div className={styles.headGrid}>
           <div className={styles.headMain}>
+            {/* THE MARK OPENS THE ENTRY. Above the title, on the content
+                column's own axis, cropped to the mark's declared content
+                bounds so all three read at the same optical weight whatever
+                canvas they were exported on.
+
+                `alt=""` and no role: the <h1> directly beneath already reads
+                the entry's name, and a mark that announces the same word
+                twice is worse than a decorative one. */}
+            {entry.logo?.exists && (
+              <span
+                className={styles.logo}
+                /* The box takes the logo's DECLARED aspect, which is the
+                   mark's content bounds. Inline because it is per-entry data,
+                   not a design token. */
+                style={
+                  {
+                    "--logo-aspect": `${entry.logo.width} / ${entry.logo.height}`,
+                  } as CSSProperties
+                }
+              >
+                <Image
+                  src={entry.logo.url}
+                  alt=""
+                  fill
+                  sizes="(max-width: 62rem) 70vw, 26rem"
+                  priority
+                  unoptimized={entry.logo.unoptimized}
+                  className={styles.logoImage}
+                />
+              </span>
+            )}
+
             <h1 className={styles.title}>{entry.title}</h1>
             {entry.deck && <p className={styles.deck}>{entry.deck}</p>}
 
@@ -143,36 +178,19 @@ export default async function CaseStudyPage({
       {/* THE PLATES, AS A GALLERY. They used to be a vertical stack that
           alternated between an indented measure and a pull past the right
           gutter, so a run of four screenshots was four screens of scrolling
-          and no two of them were comparable. As a snap track they are one
-          object: a filmstrip at a single height that a visitor moves through
-          sideways, which is how a set of screenshots from one app actually
-          wants to be read.
+          and no two of them were comparable. As a strip they are one object:
+          plates at a single height that a visitor moves through sideways,
+          which is how a set of screenshots from one app wants to be read.
 
-          NO JS. Native `overflow-x` plus `scroll-snap-type`, so trackpad,
-          touch and the keyboard all work with nothing hydrated. The track is
-          focusable and labelled so keyboard users can reach and arrow through
-          it, and `data-lenis-prevent` keeps the smooth-scroll wrapper from
-          swallowing a horizontal gesture that belongs to this element. */}
+          <Gallery> owns the mechanics: derived plate widths, native snap
+          scrolling that works unhydrated, mouse drag, and no scrollbar. */}
       {plates.length > 0 && (
         <Container as="section" className={styles.block}>
           <Reveal>
-            <ul
-              className={styles.gallery}
-              tabIndex={0}
-              role="group"
-              aria-label={`${entry.title}, ${plates.length} plates`}
-              data-lenis-prevent
-            >
-              {plates.map((image, i) => (
-                <li key={image.src} className={styles.plate}>
-                  <Frame
-                    image={image}
-                    ordinal={String(i + 1).padStart(2, "0")}
-                    sizes="(max-width: 62rem) 88vw, 46rem"
-                  />
-                </li>
-              ))}
-            </ul>
+            <Gallery
+              images={plates}
+              label={`${entry.title}, ${plates.length} plates`}
+            />
           </Reveal>
         </Container>
       )}

@@ -1,0 +1,146 @@
+/* ============================================================================
+   GALLERY
+   ============================================================================
+   ONE HEIGHT, DERIVED WIDTHS. `--plate-h` is the only size decision on this
+   component. Every plate is that tall and `height * its own ratio` wide, with
+   the ratio handed in per plate from the image's declared aspect. That is what
+   makes a strip of mixed portrait and landscape screenshots sit level without
+   cropping any of them, and it is what makes the snap offsets exact: the
+   browser knows every plate's width before it lays anything out.
+
+   What this replaced measured nothing and asked for `width: 100%` inside a
+   content-sized flex item, which is circular. See the note in Gallery.tsx.
+   ========================================================================= */
+
+.track {
+  --plate-h: min(56vh, 32rem);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: start;
+  gap: var(--grid-gap);
+
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* The strip owns horizontal gestures and the page keeps vertical ones. On
+     touch this is what preserves the vertical page swipe over the gallery. */
+  touch-action: pan-y;
+  /* A horizontal overscroll stops here instead of turning into a browser
+     back-navigation gesture, which is the single most annoying way to lose
+     your place in a strip like this. */
+  overscroll-behavior-x: contain;
+
+  scroll-snap-type: x proximity;
+  /* Keyboard arrows and any programmatic scroll glide. Turned off while
+     dragging, below, where the finger is already providing the motion. */
+  scroll-behavior: smooth;
+
+  /* NO SCROLLBAR. A horizontal bar under a strip of plates is the ugliest
+     element on a page like this, and the overflow is already legible from the
+     composition: the last plate is cut by the container edge, which says
+     "there is more" better than a widget does. */
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.track::-webkit-scrollbar { display: none; }
+
+/* `proximity`, NOT `mandatory`. Mandatory snapping refuses to let the strip
+   rest between plates, so it fights a visitor scanning rather than stepping,
+   and on a narrow window it can trap a plate wider than the viewport.
+
+   DURING A DRAG, SNAP IS OFF ENTIRELY, and this is the difference between
+   the strip feeling solid and feeling like it is arguing with you: with snap
+   live, every pixel of a drag is contested by the browser trying to settle on
+   a plate, which is exactly the clunk. It comes back on release and the
+   browser animates to the nearest plate itself. `scroll-behavior: auto` for
+   the same reason: smooth scrolling plus direct `scrollLeft` writes is a
+   fight between an animation and a value being set 120 times a second. */
+.track.dragging {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  scroll-behavior: auto;
+  user-select: none;
+}
+
+.plate {
+  flex: none;
+  scroll-snap-align: center;
+  width: calc(var(--plate-h) * var(--plate-ratio, 1));
+  /* A very wide panorama must not run past the viewport, and the height comes
+     down with it so the proportion survives. */
+  max-width: 82vw;
+}
+
+.figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* The frame. Hairline plus the sunk ground, the same containment every other
+   picture on the site gets, so a screenshot on white does not dissolve into
+   the page. `aspect-ratio` here rather than a height, so `max-width` on the
+   plate can shrink the box and keep the proportion. */
+.media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: var(--plate-ratio, 1);
+  overflow: hidden;
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+}
+
+.image {
+  /* The box IS the picture's proportion, so cover crops nothing. It is here
+     rather than `contain` only so a rounding difference cannot leave a hairline
+     of ground showing inside the frame. */
+  object-fit: cover;
+  object-position: center;
+}
+
+.caption {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+  padding-top: var(--space-xs);
+  border-top: var(--rule-faint);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  color: var(--color-text-meta);
+  text-wrap: pretty;
+}
+
+/* Hanging mono ordinal, so the strip reads as a numbered plate series. */
+.ordinal {
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+  padding-top: 0.15em;
+}
+
+/* A visible ring on the track when it takes focus, so "this scrolls" is
+   discoverable rather than implied. `:focus-visible` only: clicking a plate
+   must not ring the whole strip. */
+.track:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+@media (max-width: 62rem) {
+  .track { --plate-h: min(58vh, 26rem); }
+  .plate { max-width: 86vw; }
+}
+
+/* Smooth scrolling is motion the visitor did not ask for. The snap still
+   works; it just lands immediately. */
+@media (prefers-reduced-motion: reduce) {
+  .track { scroll-behavior: auto; }
+}

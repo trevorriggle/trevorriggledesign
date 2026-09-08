@@ -15,6 +15,17 @@ role:
 context: shelved
 state: Shelved
 
+# ---- Identity ------------------------------------------------------------
+# The repo's existing wordmark, kept rather than replaced. The upload at the
+# repo root (`lynk-logo.png`) is the same artwork at 146x70; this is the same
+# mark at 839x269, transparent, which is 5.7x the resolution and the only one
+# of the two that can carry a head at this size.
+logo:
+  src: logo.png
+  alt: ""
+  aspect: "839:269"
+  minWidth: 839
+
 # ---- Media ---------------------------------------------------------------
 # The workspace as it actually ran, in guest mode, with the model switcher
 # open on Claude / OpenAI / Gemini / Grok. It is evidence the thing worked
@@ -22,18 +33,26 @@ state: Shelved
 # an idea. Absent this file the slot renders nothing at all.
 # The file in the source drop is a JPEG, 1615x896, which is exactly the
 # aspect and minWidth declared below. The extension follows the file.
+# THE BROWSING THUMBNAIL. No new thumbnail was supplied for this entry, so it
+# reuses the workspace shot the card was already showing. Declared rather than
+# left to fall back, so the card's picture is a stated decision and does not
+# silently change if `cover` ever does.
+thumb:
+  src: 01-multi-model-workspace.jpg
+  alt: "The Lynk workspace in guest mode, with the model switcher open on Claude, OpenAI, Gemini and Grok"
+  aspect: "1615:896"
+  minWidth: 1615
+
 cover:
   src: 01-multi-model-workspace.jpg
   alt: "The Lynk workspace in guest mode: a chat answering which model it is running, with the model switcher open on Claude, OpenAI, Gemini and Grok, and a Session Insights rail on the right"
   aspect: "1615:896"
   minWidth: 1615
 
-# The wordmark, the only other asset in the drop for this entry.
-images:
-  - src: 01.png
-    alt: "The Lynk wordmark: a circular mark of two interlocking links beside the word Lynk, in teal"
-    aspect: "839:269"
-    minWidth: 839
+# NO PLATES. The wordmark was the only other asset in the drop for this entry
+# and it moved to `logo` above, where it renders in the head. An empty array
+# renders no gallery at all rather than a one-item one.
+images: []
 
 # NO LIVE LINK. There is no live Lynk URL. This array stays empty; the rail
 # renders nothing rather than an empty "Links" label.

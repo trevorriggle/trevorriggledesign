@@ -11,7 +11,7 @@
      site. Nothing here touches the viewport edge.
    · The prose starts at the content column's own left edge and is bounded by
      the reading measure.
-   · Plates are a horizontal snap gallery, framed, at one shared height.
+   · Plates are a horizontal snap strip. See components/ui/Gallery.
 
    WHAT CHANGED. This page was drawn for a left-pinned container: the title
    capped at 12ch inside a 9-column main so the rail sat 3 narrow columns away
@@ -65,6 +65,56 @@
 
 .headMain { grid-column: 1 / 9; }
 .headRail { grid-column: 9 / -1; }
+
+/* --- The mark ------------------------------------------------------------
+   THE ENTRY'S IDENTITY, opening its page above the title.
+
+   SIZED BY THE BOX, CROPPED TO THE MARK. The box takes its aspect from the
+   logo's declared `aspect` in frontmatter, which is the mark's CONTENT bounds
+   rather than the file's canvas, and the image covers it. That is what lets
+   three logos exported at three different paddings, a 1129x372 tight PNG, an
+   839x269 tight PNG and a 1600x1200 padded JPEG, all render at the same
+   optical weight without per-entry CSS.
+
+   `mix-blend-mode: multiply` IS THE WHOLE TRICK, and it is why no logo needs
+   an alpha channel to sit on this page. On a light ground, multiply makes
+   white disappear and leaves ink and colour alone, so a wordmark exported flat
+   onto white drops its background and reads as if it were cut out. Transparent
+   PNGs are unaffected by it, so one rule covers both kinds of file.
+
+   `isolation: isolate` PLUS AN EXPLICIT GROUND, and the two go together or
+   neither works. Isolating gives the blend a predictable backdrop instead of
+   whatever ancestor surface happens to be behind it. But an isolated group
+   with no background of its own has a TRANSPARENT backdrop, and multiplying
+   against transparency is a no-op: the white would come straight through and
+   the whole treatment would silently do nothing. Painting the page ground
+   inside the group is what the mark multiplies onto. The box is invisible
+   because that ground is the same colour as the page. */
+
+.logo {
+  position: relative;
+  display: block;
+  width: clamp(11rem, 22vw, 17rem);
+  aspect-ratio: var(--logo-aspect, 3 / 1);
+  isolation: isolate;
+  background: var(--color-bg);
+  margin-bottom: var(--space-6);
+}
+
+/* `cover`, NOT `contain`, and this is the part that does the work. With
+   contain, a 1600x1200 padded export dropped into a 1600:700 box fits by
+   height and keeps every pixel of its white margin, so the mark still renders
+   at about half the size of a tight one. With cover it fills the box's width
+   and the surplus height, which is exactly the padding, is cropped away.
+
+   For an already-tight file the declared aspect equals the file's own, so
+   cover and contain are identical and nothing is cropped. One rule, both
+   kinds of export. */
+.logoImage {
+  object-fit: cover;
+  object-position: center;
+  mix-blend-mode: multiply;
+}
 
 /* 86px at the top of the clamp, 5x body. One step below the home hero, so
    the home page still dominates the site's hierarchy.
@@ -148,61 +198,6 @@
   border-top: var(--rule-heavy);
   padding-top: var(--space-3);
   margin-bottom: var(--space-7);
-}
-
-/* --- Plates, as a horizontal snap gallery ---------------------------------
-   ONE OBJECT INSTEAD OF FOUR SCREENS. This was a vertical stack alternating
-   between an indented measure and a pull past the right gutter: a run of four
-   iPad screenshots was four full screens of scrolling, and because the two
-   measures differed no two plates were comparable to each other. A set of
-   screenshots from one app is a filmstrip, and reads as one.
-
-   IT NEEDS NO JAVASCRIPT. `overflow-x` plus `scroll-snap-type: x proximity`
-   is native: trackpad and touch drag it, the snap catches each plate, and the
-   track being focusable means the keyboard arrows it. Nothing here waits on
-   hydration, and the reveal around it in page.tsx is the only motion involved.
-
-   `proximity`, not `mandatory`. With mandatory snapping the browser refuses to
-   rest between plates, which fights a visitor who is scanning rather than
-   stepping, and on a narrow window it can trap a plate that is wider than the
-   viewport.
-
-   `--frame-cap` lowers <Frame>'s own 78vh ceiling for the plates only, so the
-   mixed portrait and landscape plates in this set stand at ONE height and the
-   track reads as a strip rather than as a skyline. */
-
-.gallery {
-  --frame-cap: 58vh;
-
-  list-style: none;
-  margin: 0;
-  padding: 0 0 var(--space-4);
-  display: flex;
-  flex-direction: row;
-  gap: var(--grid-gap);
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  /* The gutter is the container's, so the first plate lands on the content
-     axis and the last one can still reach the left edge of the track. */
-  scroll-padding-left: 0;
-}
-
-.plate {
-  flex: none;
-  scroll-snap-align: start;
-  /* Sized by the picture, not by a column: each plate is as wide as its own
-     proportion at the shared height, which is what keeps a portrait plate
-     narrow and a wide spread wide inside one strip. */
-  max-width: 88vw;
-}
-
-/* A visible ring on the track itself when it takes focus, so "this scrolls"
-   is discoverable rather than implied. `:focus-visible` only: clicking a
-   plate must not ring the whole strip. */
-.gallery:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 4px;
 }
 
 @media (max-width: 62rem) {

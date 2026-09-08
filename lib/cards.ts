@@ -43,9 +43,15 @@ function fromDesignItem(item: DesignItem | null) {
 /**
  * An application's card.
  *
- * The thumbnail is the entry's own lead: a video's poster frame if it has one,
- * otherwise the declared cover. Both are already the image the case study
- * chose to lead with, so there is no second choice to make here.
+ * `thumb` FIRST, and that is the whole change here. This used to read the
+ * entry's lead, a video's poster frame or the declared cover, on the reasoning
+ * that the case study had already chosen its best picture. It had, but for a
+ * different job: the lead is chosen to prove the deck at full size, and at
+ * 380px in a 4:3 box a portrait iPad grab loses the panel that made it worth
+ * leading with, and a 16:9 action still loses its subject to the crop.
+ *
+ * `thumb` is a picture composed for THIS size. The old chain stays behind it,
+ * so an entry with no thumbnail cards up exactly as it did before.
  */
 export function caseStudyCards(entries: CaseStudy[]): CardData[] {
   return entries.map((entry) => ({
@@ -54,7 +60,10 @@ export function caseStudyCards(entries: CaseStudy[]): CardData[] {
     description: entry.deck || undefined,
     meta: entry.state || undefined,
     thumb:
-      fromImageRef(entry.video?.poster) ?? fromImageRef(entry.cover) ?? null,
+      fromImageRef(entry.thumb) ??
+      fromImageRef(entry.video?.poster) ??
+      fromImageRef(entry.cover) ??
+      null,
   }));
 }
 

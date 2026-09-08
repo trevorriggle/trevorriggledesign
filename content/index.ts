@@ -20,6 +20,12 @@ import matter from "gray-matter";
    NO DATES. `year` and `timeline` are deliberately not read out of frontmatter
    and not part of this type, so no template can render one by accident. The
    site does not date its work. See DECISIONS.md.
+
+   THREE MEDIA FIELDS, THREE JOBS, and they are not interchangeable:
+   `logo` is identity and opens the entry's page, `cover` is the evidence that
+   leads it, `thumb` is the composed 4:3 picture the browsing grid shows. They
+   used to be one field doing all three, which is why a portrait screenshot
+   was being cropped to a landscape card and a wordmark had nowhere to go.
    ========================================================================= */
 
 const ROOT = process.cwd();
@@ -69,7 +75,33 @@ export type CaseStudy = {
   stack: string[];
   links: LinkRef[];
   video: VideoRef | null;
+  /**
+   * The identity mark, and the first thing on the entry's own page.
+   *
+   * SEPARATE FROM `cover` ON PURPOSE. `cover` is evidence: a screenshot of
+   * the thing running. A logo is not evidence and must never stand in for it,
+   * so it has its own field and its own slot in the head rather than
+   * overwriting the lead media.
+   *
+   * `alt` is empty by convention: the <h1> beside it already names the entry,
+   * and a mark that announces the same word twice is worse than a decorative
+   * one. Its `aspect` is declared to the mark's CONTENT bounds, not the
+   * file's canvas, so a logo exported onto a padded square crops back to the
+   * wordmark instead of rendering at a third the size of the others.
+   */
+  logo: ImageRef | null;
   cover: ImageRef | null;
+  /**
+   * The browsing-tier thumbnail, used by the preview card.
+   *
+   * ALSO SEPARATE FROM `cover`. The card used to fall back to the cover, which
+   * meant the same 2064x2752 iPad screenshot was doing two different jobs: a
+   * 4:3 crop in a grid and a height-capped portrait on the detail page. A
+   * thumbnail is a composed 4:3 picture chosen to be legible at ~380px; a
+   * cover is the picture that proves the deck. When this is absent the card
+   * falls back exactly as it did before.
+   */
+  thumb: ImageRef | null;
   images: ImageRef[];
   body: string;
 };
@@ -174,7 +206,9 @@ function load(): CaseStudy[] {
       stack: strArray(d.stack),
       links: toLinks(d.links),
       video: toVideo(d.video, slug),
+      logo: toImage(d.logo, slug),
       cover: toImage(d.cover, slug),
+      thumb: toImage(d.thumb, slug),
       images: (Array.isArray(d.images) ? d.images : [])
         .map((img) => toImage(img, slug))
         .filter((i): i is ImageRef => i !== null),

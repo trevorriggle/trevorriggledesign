@@ -13,6 +13,24 @@ role:
 context: self-initiated
 state: Shipped to TestFlight; approved for external testing
 
+# ---- Identity ------------------------------------------------------------
+# THE LOGO OPENS THE PAGE. It is the mark, not evidence, so it has its own
+# field and its own slot in the head and it does NOT displace the cover below.
+#
+# This is the repo's existing wordmark file, kept rather than replaced. The
+# upload at the repo root (`drawevolve logo.jpg`) is the same artwork on a
+# 1600x1200 white canvas; this is the same mark tight-cropped at 1129x372 with
+# real transparency, which is strictly better on this ground: no white
+# rectangle sitting a shade brighter than the page, and no dead margin.
+#
+# `alt` is empty deliberately. The <h1> next to it already reads "DrawEvolve"
+# and a mark that announces the same word twice is worse than a decorative one.
+logo:
+  src: logo.png
+  alt: ""
+  aspect: "1129:372"
+  minWidth: 1129
+
 # ---- Media ---------------------------------------------------------------
 # The app itself, mid-critique. This is the one picture that proves the deck's
 # claim: the AI panel is open beside a real drawing and it is coaching rather
@@ -23,6 +41,18 @@ state: Shipped to TestFlight; approved for external testing
 # used to carry. The file is the strongest of the five: the finished colour
 # portrait with the AI Feedback panel open on it, Quick Take, What's Working
 # and a Focus Area, which is the frame that proves the deck.
+# THE BROWSING THUMBNAIL, and the only thing the preview card shows. Composed
+# for the 4:3 card at ~380px: the app in context on a desk, which survives
+# being 380px wide in a way a cropped portrait screenshot does not. The card
+# used to fall back to `cover`, so the same 2064x2752 portrait grab was being
+# centre-cropped to a landscape box and losing the AI panel that is the point
+# of it.
+thumb:
+  src: thumbnail.jpg
+  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a colour portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
+  aspect: "4:3"
+  minWidth: 1600
+
 cover:
   src: 02.jpg
   alt: "DrawEvolve on an iPad: a finished colour portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
@@ -45,8 +75,11 @@ links:
 # ---- Plates --------------------------------------------------------------
 # The rest of the drop, in the order the critique loop actually runs: the
 # static critique (the cover), then Eve picking it up in conversation, then
-# the composition tools, then the attention overlay on the canvas. The
-# wordmark sits last because it is identity, not evidence.
+# the composition tools, then the attention overlay on the canvas.
+#
+# THE WORDMARK IS NO LONGER IN HERE. It moved to `logo` above, which renders it
+# in the head. It used to sit last in this run with a note that it was identity
+# rather than evidence, which was the right observation and the wrong slot.
 images:
   - src: 03.jpg
     alt: "Eve, DrawEvolve's conversational layer, opened over the critique: the question 'How would I improve this based on the feedback?' answered with a construction pass to run on a new layer, ball plus jaw wedge plus neck cylinder, and a 'Show Eve my canvas' button"
@@ -64,10 +97,6 @@ images:
     alt: "The attention overlay drawn on the canvas: four numbered dashed regions over the finished portrait showing where the model estimates the eye lands, with the artist's own marked focal point on the near eye"
     aspect: "2064:2752"
     minWidth: 2064
-  - src: 01.png
-    alt: "The DrawEvolve wordmark: 'Draw' in a script face with an arrow running off it into 'EVOLVE' in heavy caps"
-    aspect: "1129:372"
-    minWidth: 1129
 
 # Named in the copy above. Metadata chips, never a section.
 stack: [Swift, Metal, Cloudflare Workers, Supabase]

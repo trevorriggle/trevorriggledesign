@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Card.module.css";
@@ -32,6 +33,15 @@ import styles from "./Card.module.css";
    no small hit area on a title, and the image carries `alt=""` because the
    title inside the same link is already the accessible name. A second name
    there would just be announced twice.
+
+   `index` DRIVES THE ENTRANCE, and it is the only reason the component knows
+   its own position. The grid's cards fade up in sequence on load, staggered
+   off `--i` in CSS rather than through a framer reveal, because the first row
+   of a card grid is ABOVE THE FOLD on both `/applications` and `/design`: a
+   framer reveal would ship it at `opacity: 0` in the server HTML, make the
+   first card's `priority` image pointless, and hand the page's LCP to a JS
+   chunk. Keyframes run on first paint with nothing hydrated. Same reasoning,
+   and the same technique, as the home statement.
    ========================================================================= */
 
 export type CardData = {
@@ -59,13 +69,19 @@ const CARD_SIZES =
 export function Card({
   card,
   priority = false,
+  index = 0,
 }: {
   card: CardData;
   /** LCP hint for the first card or two of a page's lead grid. */
   priority?: boolean;
+  /** Position in its grid. Drives the CSS entrance stagger, nothing else. */
+  index?: number;
 }) {
   return (
-    <li className={styles.cell}>
+    <li
+      className={styles.cell}
+      style={{ "--i": index } as CSSProperties}
+    >
       <Link href={card.href} className={styles.card}>
         {card.thumb && (
           <span className={styles.media}>
@@ -119,7 +135,12 @@ export function CardGrid({
   return (
     <ul className={styles.grid} aria-label={label}>
       {cards.map((card, i) => (
-        <Card key={card.href} card={card} priority={priorityFirst && i === 0} />
+        <Card
+          key={card.href}
+          card={card}
+          priority={priorityFirst && i === 0}
+          index={i}
+        />
       ))}
     </ul>
   );

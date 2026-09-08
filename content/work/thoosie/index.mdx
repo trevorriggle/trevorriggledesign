@@ -10,6 +10,26 @@ role:
 context: self-initiated
 state: Live
 
+# ---- Identity ------------------------------------------------------------
+# The mark, in the head. The clip below still leads the page: a logo is
+# identity and never stands in for the thing running.
+#
+# ASPECT IS THE MARK'S CONTENT BOUNDS, NOT THE FILE'S. The upload is a
+# 1600x1200 canvas with the wordmark sitting in a band across the middle and
+# white above and below it. Declared at 4:3 the mark would render at about a
+# third the size of DrawEvolve's and Lynk's tight-cropped files. 1600:700 is
+# the band, and the head crops to it, so all three marks carry the same
+# optical weight.
+#
+# The white ground is handled in CSS, not here: the head multiplies the mark
+# onto the page so a white-backed export drops out instead of sitting as a
+# bright rectangle. See app/work/[slug]/page.module.css.
+logo:
+  src: logo.jpg
+  alt: ""
+  aspect: "1600:700"
+  minWidth: 1600
+
 # ---- Media ---------------------------------------------------------------
 # The clip leads. It renders above everything else on the page, and while the
 # mp4 is absent this slot renders `poster` as a still, same box, same
@@ -20,6 +40,15 @@ state: Live
 # still swaps for the moving picture. It is what a visitor sees whenever
 # autoplay is refused, which is most of them, since AutoVideo fails closed on
 # any connection it cannot read.
+# THE BROWSING THUMBNAIL. Composed for the 4:3 card: the editor on a desktop
+# in a real room. The card used to use the clip's poster frame, which is a
+# 16:9 action still and lost its own subject to the 4:3 crop.
+thumb:
+  src: thumbnail.jpg
+  alt: "thoosie open in a browser on a desktop monitor on a wooden desk, a finished coaster drawn across the canvas with the element palette down the left and the live ride telemetry panel at the top right"
+  aspect: "4:3"
+  minWidth: 1600
+
 video:
   src: thoosiecoaster.mp4
   poster:

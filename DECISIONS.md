@@ -251,7 +251,28 @@ nothing on it was big enough to stop a scroll.
 
 ---
 
-## The home page has five tiers, not two
+## The home page has three tiers
+
+**The applications band is gone.** The page carried the statement, an
+"Applications" heading, DrawEvolve as a large feature, thoosie and Lynk as
+preview cards, and then the doors. Those three boxes were the entire contents
+of `/applications`, one click away and reachable from a door sitting directly
+beneath them: the page was showing the same set twice and the doors were
+competing with a copy of what they open. Browsing lives on `/applications` and
+`/design`. This page is the statement, the clip, and four ways in.
+
+**The scroll cue is gone**, on request. The travelling hairline under the
+paragraph is out of the build, along with the only looping animation the site
+had.
+
+**The statement is now "Graphic Designer & Developer"**, author-supplied, and
+it supersedes `portfolio-copy.md`'s "Graphic designer who ships software." The
+copy doc has not been rewritten, so the two disagree; the page is the
+authority. It still runs at `--type-statement` and still reveals word by word.
+
+---
+
+## Superseded: the home page had five tiers
 
 The page was a 2x2 of tiles and then three equal preview cards. Both tiers sat
 within about one step of each other (tile titles at `--type-entry`, 25.5px at
@@ -302,6 +323,133 @@ strongest of the five" and "the one picture that proves the deck's claim", it
 is the frame with the AI Feedback panel open over a finished drawing, and
 featuring one entry with another entry's asset would break the link between
 the picture and the title beside it.
+
+---
+
+## Three media fields, three jobs
+
+`content/index.ts` used to read one image per entry and use it everywhere.
+There are now three, and they are not interchangeable:
+
+| field | job | where it renders |
+|---|---|---|
+| `logo` | identity | the entry's own page, above the title |
+| `cover` | the evidence that proves the deck | the lead media |
+| `thumb` | a picture composed for a 380px 4:3 box | the preview card |
+
+**The card reads `thumb` first.** It used to take the entry's lead: a video's
+poster or the cover, on the reasoning that the case study had already picked
+its best picture. It had, but for a different job. A 2064x2752 iPad grab
+centre-cropped to a landscape card loses the AI panel that made it worth
+leading with, and a 16:9 action still loses its subject. The old chain stays
+behind `thumb`, so an entry without one cards up exactly as before.
+
+**The logo never displaces the cover.** A logo is identity, not evidence, so it
+got its own field and its own slot rather than overwriting the lead. On
+thoosie the clip still leads the page.
+
+### The uploads, and which ones were used
+
+Two of the five uploaded files were **not** used, because the repo already had
+the same artwork in a better form:
+
+- `drawevolve logo.jpg` — the same wordmark on a 1600x1200 white canvas. The
+  repo's existing file is the same mark tight-cropped at 1129x372 with real
+  transparency. Kept as `logo.png`.
+- `lynk-logo.png` — 146x70. The repo's existing wordmark is the same mark at
+  839x269, 5.7x the resolution, and the only one of the two that can carry a
+  head at this size. Kept as `logo.png`.
+
+Both uploads are still sitting in the repo root and can be deleted.
+
+### Logos of three different paddings, at one optical weight
+
+`aspect` on a logo is declared to the **mark's content bounds, not the file's
+canvas**, and the head crops to it. thoosie's export is a 1600x1200 canvas with
+the wordmark in a band across the middle, so it is declared `1600:700`; the
+other two are tight and declared at their true size. The box takes that aspect
+and the image **covers** it, so the padded export's white margin is cropped
+away and a tight one is untouched. One rule, no per-entry CSS.
+
+**`mix-blend-mode: multiply` means no logo needs an alpha channel.** On a light
+ground, multiply drops white and leaves ink and colour alone, so a wordmark
+exported flat onto white reads as if it were cut out; transparent PNGs are
+unaffected, so the same rule covers both kinds of file.
+
+It requires `isolation: isolate` **and an explicit background**, and the two go
+together or neither works: an isolated group with no background of its own has
+a transparent backdrop, and multiplying against transparency is a no-op — the
+white would come straight through and the treatment would silently do nothing.
+The group paints the page ground, which is what the mark multiplies onto.
+
+---
+
+## The card hover has a signature move
+
+On hover and on `:focus-visible`, **a second hairline offsets out from behind
+the crop, in accent, down and to the right**. It is a register shift, what
+happens when a plate prints twice slightly out of alignment, and it is built
+from the only two materials this site has: a hairline and the one accent.
+
+It lives on `.card::before` rather than inside the crop, because the crop is
+`overflow: hidden` — that is what contains the image scale — and would clip it.
+It matches the crop's box with no magic number: same width, same
+`aspect-ratio: 4 / 3`, pinned to the top, so it stays aligned at every
+breakpoint. `z-index: 0` against the crop's `1` puts it behind the picture,
+which is what makes it read as a second impression rather than a box drawn on
+top of one.
+
+Alongside it: the picture scales to 1.06 over **420ms**, not the 180ms
+everything else uses, because the picture is the largest thing moving and a big
+element travelling fast reads as a jolt. The badge and the rules stay quick, so
+the hover still lands immediately and only the image takes its time. The title
+slides 0.3rem toward its arrow.
+
+**The card grid also has an entrance**: cards fade up staggered off `--i`, set
+per cell by the component. In CSS, not framer, because the first row is above
+the fold on both `/applications` and `/design` — a framer reveal would ship it
+at `opacity: 0` in the server HTML, hand the page's LCP to a JS chunk, and
+leave the first card's `priority` image waiting behind hydration for nothing.
+
+---
+
+## The plate gallery was broken, and why
+
+`components/ui/Gallery.tsx`. The strip was `<Frame>` in a flex row, and that
+could not work: `Frame` sets `width: 100%` on the figure, and inside a
+`flex: none` track item with no definite width that resolves against a parent
+whose width is being derived from its own content. Circular, so the item widths
+came out browser-dependent, plates fell over each other and the snap landed on
+the wrong offsets.
+
+**The fix is to derive the width instead of asking for it.** The track has one
+height and each plate is `height * its own ratio` wide, with the ratio passed
+in per plate from the declared aspect. Nothing measures anything, mixed
+portrait and landscape plates sit level at true proportion, and the snap
+offsets are exact.
+
+**No scrollbar.** `scrollbar-width: none` plus the WebKit pseudo-element. What
+replaces it as the "there is more" signal is the composition: the last plate is
+cut by the container edge.
+
+**Snap is off during a drag**, and this is the difference between solid and
+clunky. With snap live, every pixel of a drag is contested by the browser
+trying to settle on a plate — that is the clunk. It returns on release and the
+browser animates to the nearest plate itself. `scroll-behavior` goes to `auto`
+for the same reason: smooth scrolling plus direct `scrollLeft` writes is an
+animation fighting a value set 120 times a second.
+
+`proximity`, not `mandatory`: mandatory refuses to let the strip rest between
+plates, which fights a visitor scanning rather than stepping.
+
+**Mouse only for the drag.** `pointerType === "mouse"` gates it; touch already
+has real OS momentum scrolling, and hijacking it would cost the vertical page
+swipe. `touch-action: pan-y` keeps that swipe. `overscroll-behavior-x: contain`
+stops a horizontal overscroll turning into a browser back-navigation.
+
+It still works with no JavaScript: the markup is server-rendered and the
+scrolling is native, so trackpad, touch and the arrow keys work unhydrated.
+The drag is an enhancement, not the mechanism.
 
 ---
 
