@@ -1,19 +1,26 @@
 /* ============================================================================
    CASE STUDY PAGE, Tier 1.
    ============================================================================
-   Composition:
+   Composition, inside the centred container:
 
-   · A title at --type-title (86px) hanging at the left edge, with the deck
-     pushed right into a narrow column beneath it. Same asymmetry as the home
-     masthead, one scale step down, so the two pages read as one system.
-   · The lead media runs FULL BLEED, past the container on both sides. It is
-     the only element on the site allowed to touch the viewport edge.
-   · The prose sits at column 3, so the left margin carries the section marks
-     rather than being dead space.
-   · Plates alternate between the inset measure and a right bleed, so a run of
-     images does not read as a uniform stack.
+   · The head is a REAL TWO-COLUMN GRID: title + deck + status in the content
+     column, and the CONTEXT / STACK / LINKS rail beside it at 4 of 12, with a
+     rule down the shared edge that runs the FULL HEIGHT of the head. The two
+     columns are one object.
+   · The lead media is CONTAINED and framed, like every other image on the
+     site. Nothing here touches the viewport edge.
+   · The prose starts at the content column's own left edge and is bounded by
+     the reading measure.
+   · Plates are a horizontal snap gallery, framed, at one shared height.
 
-   Rhythm is uneven on purpose: the head crowds the breadcrumb, the media
+   WHAT CHANGED. This page was drawn for a left-pinned container: the title
+   capped at 12ch inside a 9-column main so the rail sat 3 narrow columns away
+   across a gap of nothing, the deck and status indented 16.6667%, the prose
+   pushed to column 3, and plates alternating between an indent and a pull past
+   the right gutter. Centred, all of that read as content hugging the left with
+   a dead band on the right and a meta panel floating in it. See DECISIONS.md.
+
+   Rhythm is still uneven on purpose: the head crowds the breadcrumb, the media
    crowds the head, and the body then gets real air.
    ========================================================================= */
 
@@ -50,31 +57,36 @@
   grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
   column-gap: var(--grid-gap);
   row-gap: var(--space-6);
-  align-items: start;
+  /* stretch, NOT start: this is what makes the rail's left rule run the whole
+     height of the head so the panel reads as attached to the title beside it
+     rather than as a floating block. */
+  align-items: stretch;
 }
 
-.headMain { grid-column: 1 / 10; }
-.headRail { grid-column: 10 / -1; }
+.headMain { grid-column: 1 / 9; }
+.headRail { grid-column: 9 / -1; }
 
 /* 86px at the top of the clamp, 5x body. One step below the home hero, so
-   the home page still dominates the site's hierarchy. */
+   the home page still dominates the site's hierarchy.
+
+   The 12ch cap is gone. At 12ch a one-word title like "thoosie" occupied
+   about a third of its own column and left the rail beside it with nothing to
+   sit against. Only the optical left correction stays. */
 .title {
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
-  max-width: 12ch;
   margin-left: -0.045em;
 }
 
-/* Pushed right, under the overhanging title. Text face, it is a sentence,
-   and it has to be read rather than admired. */
+/* On the content column's own axis, directly under the title. Text face, it
+   is a sentence, and it has to be read rather than admired. */
 .deck {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
   color: var(--color-text);
   margin-top: var(--space-6);
-  margin-left: 16.6667%;
-  max-width: 32ch;
+  max-width: 46ch;
 }
 
 /* The status chip. No uppercase transform, see the note in the component. */
@@ -85,7 +97,6 @@
   letter-spacing: var(--tracking-normal);
   padding: var(--space-1) var(--space-3);
   margin-top: var(--space-6);
-  margin-left: 16.6667%;
 }
 
 .shelved {
@@ -98,6 +109,15 @@
   border: var(--rule);
 }
 
+/* --- Lead media -----------------------------------------------------------
+   Contained, and given real air on both sides of it. It used to crowd the
+   head at zero margin because it was bleeding to the viewport and needed no
+   separation from anything. */
+
+.lead {
+  margin-top: var(--rhythm-tight);
+}
+
 /* --- Body ----------------------------------------------------------------- */
 
 .body {
@@ -106,13 +126,16 @@
   column-gap: var(--grid-gap);
 }
 
-/* Column 3. The indent is the composition. */
+/* The content column, bounded by the reading measure rather than by an
+   indent. 8 of 12 with a 62ch cap lands the body at a real measure and keeps
+   its left edge on the same axis as the title above it. */
 .prose,
 .argument {
-  grid-column: 3 / 10;
+  grid-column: 1 / 9;
+  max-width: var(--measure);
 }
 
-.systems { grid-column: 3 / -1; }
+.systems { grid-column: 1 / -1; }
 
 .block { margin-top: var(--rhythm-normal); }
 
@@ -127,47 +150,70 @@
   margin-bottom: var(--space-7);
 }
 
-/* --- Plates ---------------------------------------------------------------
-   Alternating measures. A run of identically-sized images is the single
-   easiest way for a case study to read as a template. */
+/* --- Plates, as a horizontal snap gallery ---------------------------------
+   ONE OBJECT INSTEAD OF FOUR SCREENS. This was a vertical stack alternating
+   between an indented measure and a pull past the right gutter: a run of four
+   iPad screenshots was four full screens of scrolling, and because the two
+   measures differed no two plates were comparable to each other. A set of
+   screenshots from one app is a filmstrip, and reads as one.
 
-.plateStack {
+   IT NEEDS NO JAVASCRIPT. `overflow-x` plus `scroll-snap-type: x proximity`
+   is native: trackpad and touch drag it, the snap catches each plate, and the
+   track being focusable means the keyboard arrows it. Nothing here waits on
+   hydration, and the reveal around it in page.tsx is the only motion involved.
+
+   `proximity`, not `mandatory`. With mandatory snapping the browser refuses to
+   rest between plates, which fights a visitor who is scanning rather than
+   stepping, and on a narrow window it can trap a plate that is wider than the
+   viewport.
+
+   `--frame-cap` lowers <Frame>'s own 78vh ceiling for the plates only, so the
+   mixed portrait and landscape plates in this set stand at ONE height and the
+   track reads as a strip rather than as a skyline. */
+
+.gallery {
+  --frame-cap: 58vh;
+
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 0 var(--space-4);
   display: flex;
-  flex-direction: column;
-  gap: var(--rhythm-tight);
+  flex-direction: row;
+  gap: var(--grid-gap);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  /* The gutter is the container's, so the first plate lands on the content
+     axis and the last one can still reach the left edge of the track. */
+  scroll-padding-left: 0;
 }
 
-.plateInset {
-  width: 100%;
-  max-width: var(--width-prose);
-  margin-left: 16.6667%;
+.plate {
+  flex: none;
+  scroll-snap-align: start;
+  /* Sized by the picture, not by a column: each plate is as wide as its own
+     proportion at the shared height, which is what keeps a portrait plate
+     narrow and a wide spread wide inside one strip. */
+  max-width: 88vw;
 }
 
-.plateWide {
-  width: 100%;
-  margin-right: calc(var(--gutter) * -1);
+/* A visible ring on the track itself when it takes focus, so "this scrolls"
+   is discoverable rather than implied. `:focus-visible` only: clicking a
+   plate must not ring the whole strip. */
+.gallery:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
 }
 
-/* Every second inset plate sits at the left edge instead of indented, so the
-   column shifts down the page rather than holding one axis. */
-.plateInset:nth-child(even) { margin-left: 0; }
+@media (max-width: 62rem) {
+  .gallery { --frame-cap: 62vh; }
+}
 
 @media (max-width: 62rem) {
   .headMain,
   .headRail { grid-column: 1 / -1; }
 
-  .deck,
-  .shelved,
-  .state { margin-left: 0; }
-
   .prose,
   .argument,
   .systems { grid-column: 1 / -1; }
-
-  .plateInset { margin-left: 0; max-width: none; }
-  .plateWide { margin-right: 0; }
-  .title { max-width: none; }
 }

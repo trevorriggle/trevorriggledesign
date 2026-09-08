@@ -205,17 +205,15 @@ looked at any of it, which is the opposite of what an archive is for.
 
 ---
 
-## The masthead is gone
+## The masthead came back, as one sentence
 
-There is no masthead. The home page is a 2x2 of four tiles and nothing else,
-so the accent bar, the headline, the subhead and the vitals rail are all out of
-the build. What this section used to record, the three elements sharing a left
-axis at 79 / 73 / 79px and the optical pull on the headline, describes a page
-that no longer exists.
+The home page opens on the statement again. It is not the old masthead: there
+is no accent bar and no vitals rail, and the tile grid is still four doors.
+What returned is the opening statement and its supporting paragraph, and
+nothing else.
 
-The accent has not lost its loudest appearance to nothing in particular: it now
-carries the tile titles on hover and the focus ring, and the solid bar is
-simply not on the page any more.
+The accent still carries hover and the focus ring; the solid bar is still not
+on the page.
 
 ---
 
@@ -233,10 +231,196 @@ Systems section intro, verbatim:
 > Products I designed and built end to end.
 
 **It was removed on request when the home page became a tile grid**, not
-because anything was wrong with it. It was written as the site's opening
-statement, not as an introduction to three case studies, so it did not travel
-to `/applications` with the set it used to sit above. It is not parked anywhere
-in the build. Put it back by adding it above the grid in `app/page.tsx`.
+because anything was wrong with it, and it is **back on request**, restored
+above the grid in `app/page.tsx` exactly as the note here said to do it.
+
+What went back is `portfolio-copy.md` → "Home — opening statement", both
+paragraphs, verbatim: "Graphic designer who ships software." as the page's
+`<h1>`, and the four-years-of-catalogs paragraph under it. This is the
+author's original opening line, not the "Products I designed and built end to
+end" replacement recorded above, because the request named it. The
+visually-hidden `<h1>` the tile page carried is gone rather than duplicated.
+
+**It runs at `--type-statement`, the only role on the site pointing at d5**
+(129.1px, 7.6x long-form body). The one-step-down pass recorded in
+`tokens.css` still holds for every other role, so the largest type anywhere
+else on the site is `--type-title` at 57.4px and the statement outranks it by
+2.25x. That gap is the whole point of restoring it: the previous page ran tile
+titles at 25.5px against card titles at 21px, roughly one step apart, so
+nothing on it was big enough to stop a scroll.
+
+---
+
+## The home page has five tiers, not two
+
+The page was a 2x2 of tiles and then three equal preview cards. Both tiers sat
+within about one step of each other (tile titles at `--type-entry`, 25.5px at
+the top of its clamp, card titles at `--text-lg`, 21px), so there was no first
+moment: nothing on the page was bigger than anything else, and the three
+applications were flatly interchangeable.
+
+The order now, each tier visibly a different weight:
+
+| | | |
+|---|---|---|
+| 1 | the statement | 129px, revealed word by word, alone on the first screen |
+| 2 | the clip | thoosie's footage, full bleed, 21:9, closing the hero |
+| 3 | DrawEvolve, featured | cover at 6 of 12 columns, text beside it |
+| 4 | thoosie and Lynk | ordinary preview cards, unchanged |
+| 5 | the four doors | the 2x2, moved to the bottom |
+
+**The clip band is the one full-bleed element on the site**, and it belongs to
+the hero rather than opening a section of its own, which is why DrawEvolve
+below it is still the first piece of WORK a visitor meets. It is cropped to
+21:9 and capped at 62vh: the file is 1920x1080, so at 100vw on a 1440 window
+its natural height is 810px and it would otherwise be a whole screen sitting
+between the statement and the work. It renders through the existing
+`<AutoVideo>`, so it inherits that component's autoplay policy unchanged.
+
+**The 2x2 moved to the bottom because it is navigation** and it was standing
+where the work should have been. The tiles are otherwise untouched: same four
+doors, same source, same derived counts. The Agentic AI tile is one of them and
+its content did not change.
+
+**The feature is a different composition, not a bigger card.** A preview card
+is a 4:3 crop with its text stacked under it; the feature is a 3:4 crop at 6
+columns with the deck and status set beside it, bottom-aligned. Three identical
+cards at three different widths would still read as one tier. The crop is 3:4
+because every application cover in content is a 2064x2752 iPad screenshot, so
+the box is the asset's own shape rather than a guess at it, and `max-height:
+40rem` keeps it to about one screen on a laptop.
+
+**It is the running order's first entry, not a hardcoded slug.** `app/page.tsx`
+destructures `caseStudyCards(getSelected())`, so whatever sits first in
+`SELECTED` gets the feature treatment and the deck, status and thumbnail come
+from the same mapper the grid below uses. There is no second copy of the
+running order on the page.
+
+**DrawEvolve's own cover leads it, not thoosie's clip.** The brief allowed
+either. `content/work/drawevolve/index.mdx` already calls `02.jpg` "the
+strongest of the five" and "the one picture that proves the deck's claim", it
+is the frame with the AI Feedback panel open over a finished drawing, and
+featuring one entry with another entry's asset would break the link between
+the picture and the title beside it.
+
+---
+
+## Motion: framer-motion and Lenis, and where each one is not used
+
+Added on request. `framer-motion` for component animation, `lenis` for smooth
+scroll, and one reusable reveal rather than `whileInView` copy-pasted per
+component.
+
+**`components/motion/Reveal.tsx` is the only scroll-triggered pattern.** Fade
+plus a 16px rise, once, fired 12% before the block reaches the fold. Every
+reveal on every page is this component with a `delay`, so the vocabulary
+cannot drift.
+
+**Four to five moments per page, not fifteen.** Home: the statement's word
+reveal, the clip band, the section head, the feature, the card grid, the
+doors. Case study: the prose, the plate gallery, the pager. The head of a case
+study does not animate at all.
+
+### Three things deliberately do NOT use framer
+
+**The home statement animates in CSS.** It is the page's LCP text. Framer
+renders `initial` into the server HTML, so a framer reveal would ship the
+site's largest paint at `opacity: 0` and make it wait for a JS chunk. The
+keyframes in `page.module.css` run on first paint with nothing hydrated.
+Below-the-fold blocks use framer, where a hydration wait costs nothing because
+nobody has scrolled to them.
+
+**Nothing above the fold reveals.** Same reason. The case study head, its
+title, deck, status and meta rail are static, and the lead cover keeps
+`priority` so it stays the LCP candidate rather than becoming a reveal.
+
+**The plate gallery needs no JS.** Native `overflow-x` plus `scroll-snap-type:
+x proximity`. Trackpad, touch and the keyboard all work unhydrated. It carries
+`tabindex="0"`, a `role="group"` and a label so the keyboard can reach it, and
+`data-lenis-prevent` so the smooth-scroll wrapper does not swallow a
+horizontal gesture that belongs to the track.
+
+`proximity` and not `mandatory`: mandatory snapping refuses to rest between
+plates, which fights a visitor scanning rather than stepping, and on a narrow
+window it can trap a plate wider than the viewport.
+
+### Reduced motion
+
+**Lenis is never constructed.** Not slowed, not shortened. Smooth scroll
+affects every interaction rather than one block and cannot be avoided by not
+scrolling, so under the preference the page keeps the browser's native
+scrolling with nothing intercepting the wheel. The media query is watched
+live, so flipping the OS setting does not need a reload.
+
+**`Reveal` renders a plain element** with no variants, no initial state and no
+observer, rather than a 0ms animation, which would still ship an invisible
+starting state.
+
+**The global reset is not sufficient and this is the subtle one.**
+`reset.css` forces `animation-duration: 0.01ms` but does not touch
+`animation-delay`. The statement's words are staggered BY delay, so under the
+global rule alone the last word would sit invisible for 360ms and then snap
+in: a flash of missing heading caused by the accessibility rule itself.
+`page.module.css` cancels the animation outright. The looping cue is removed
+rather than run fast.
+
+### Load
+
+Nothing blocks perceived load. Every page is complete server-rendered HTML and
+the motion layer only re-animates what is already there. `@media (scripting:
+none)` in `global.css` forces every `[data-reveal]` block visible when there
+is no JS at all, since framer's `initial` would otherwise leave them hidden
+with no runtime to reveal them.
+
+**Measured cost, this build:** framer-motion 25.1 KB gz, Lenis 14.3 KB gz,
+**39.4 KB gz added** on top of a ~170 KB gz React 19 + Next 16 baseline that
+was already shipping. framer is imported as `m` + `LazyMotion` with
+`domAnimation` rather than the full `motion` component, which is 25.1 KB gz
+instead of 38.0: `domAnimation` carries `InViewFeature`, the thing that
+actually implements `whileInView`, and leaves out drag, layout projection and
+pan, none of which this site uses. `strict` on the provider makes that
+permanent by throwing if anyone imports the full `motion` later.
+
+### The scroll cue has no words
+
+A "scroll to explore" label would be copy that is not in
+`portfolio-copy.md`. The cue is a hairline travelling down its own track,
+`aria-hidden`, and it is the only looping animation on the site: its job is to
+still be saying "there is more below" thirty seconds after the page settled.
+
+---
+
+## Hover: one idiom, everywhere
+
+Every clickable card and tile on the site does the same things on hover and on
+`:focus-visible`: the picture scales to 1.04 **inside a crop that does not
+move**, an accent arrow badge is revealed in the crop's corner, the crop's
+hairline goes to full ink, and the title takes the accent. `--duration-base`,
+180ms.
+
+**The affordance is a badge, not a scrim.** A translucent panel washed over the
+crop with the title repeated on it is the reflex, and it is wrong here twice
+over: the title and the deck are already set below the crop in full ink, so the
+overlay would restate them, and a scrim would be the only place on the site
+where ink sits at partial opacity, which the type system bans outright.
+
+**It is not a custom cursor.** Replacing the pointer reimplements the one piece
+of UI the visitor's OS owns, does nothing on touch, and cannot be driven by
+focus, so keyboard users would get none of it. The badge is `aria-hidden`: the
+title inside the same link is already the accessible name.
+
+Still no radius, no shadow, and no lift of the card itself. The scale is on the
+image inside `overflow: hidden`, so nothing reflows and no neighbour moves; the
+card's box is identical hovered or not.
+
+Declared in `Card.module.css` (Applications, Design, and the groups inside a
+category, since all three use the one card) and matched by the home feature and
+the four tiles in `app/page.module.css`.
+
+**Under `prefers-reduced-motion` the transform is dropped, not sped up.** The
+global reset in `reset.css` collapses `transition-duration` to 0.01ms, which
+would make a scale snap instantly rather than not happen. The colour signals
+stay: they are not motion.
 
 ---
 
@@ -279,18 +463,61 @@ Selected Work block crowds up against it with a heavy rule and 16px of padding,
 the archive sections sit at `tight`, and the third case study crowds the second
 so it reads as a footnote rather than a third equal item.
 
-**Nothing is centred.** `Container` sets `margin-inline: 0` and only takes the
-slack on both sides past 118rem. Concretely, on the page:
+**Everything is centred. This reversed.** `Container` sets `margin-inline:
+auto` at every viewport. What this section used to say, in full, was "Nothing
+is centred: `Container` sets `margin-inline: 0` and only takes the slack on
+both sides past 118rem", with the left-hang treated as the site's signature.
 
-- the home hero hangs at the left edge and **overhangs** its own subhead, which
-  is pushed to column 4
-- case study prose starts at **column 3**, so the left margin carries the
-  structure rather than being dead padding
-- the lead media on a case study is **full bleed**, edge to edge, the only
-  element on the site allowed to touch the viewport
-- Selected Work rank 1 mirrors rank 0 (media right, text left) so the three do
-  not read as a repeating template
-- plates alternate between an indented measure and a right bleed
+**Why it reversed.** It did not read as an asymmetry, it read as a broken
+wrapper. Between the 90rem cap and the 118rem breakpoint every page on the
+site pinned itself to the left gutter and collected 100% of the leftover
+viewport as one dead band on the right: about 160px at 1600, about 450px at
+1920, on every page, at the window sizes most people actually use. The
+metadata rail was supposed to make that margin feel occupied and instead
+became the thing stranded in it, a 3-column panel with nothing on either side
+of it. An asymmetry a viewer reads as a bug is not doing the job it was
+chosen for.
+
+Everything drawn to depend on it came out with it, because centred, each one
+was an unexplained indent or an overflow rather than a composition:
+
+- the 16.6667% indents on the case study deck and status, the category prose
+  and its "demonstrates" block, and the contact lead
+- the column-3 and column-4 starts on case study prose, the category intro,
+  the About prose column and the /design landing copy
+- the negative-gutter pulls: `grid.bleedRight` / `bleedLeft` and the case
+  study's `plateWide`, which now stop at the container's edge
+- the case study lead media's **full bleed**. It was the one element allowed
+  to touch the viewport; on a centred page it was simply the only thing wider
+  than the content it belonged to, so it is contained and framed like every
+  other picture on the site.
+
+**Content and rail are 8 + 4 of 12, everywhere.** Declared in
+`grid.module.css` as `.main` / `.rail` and matched by the case study head,
+About, Contact and the 404. The rail was 3 columns, too narrow to set a term
+over its value without wrapping every line, which is most of why it read as
+orphaned. The case study head also runs `align-items: stretch`, so the rule
+down the shared edge spans the full height of the head and the two columns
+read as one object.
+
+**Body copy is bounded by a measure, not by an indent.** `max-width:
+var(--measure)` (62ch) on a column that starts at the content's own left
+edge, rather than a 7-column span pushed in from column 3.
+
+**Images are framed.** `--rule` hairline plus `--color-bg-sunk` on the picture
+itself in `Frame`, `DesignGrid` and `Video`, matching the hairline the preview
+card already had on its crop. The border is on the image and not on the figure
+deliberately: the figure is the full content column and the picture inside it
+is usually narrower, so a border on the figure would matte a portrait
+screenshot with 600px of ground beside it. Much of the design archive is print
+and social work exported on white, which without an edge sat on the page
+ground as an unbounded pale shape.
+
+**One page was left out on request:** `/agentic-ai`, which is being overhauled
+separately. It still carries `.lead { grid-column: 3 / 11 }` and a
+`grid-column: 4 / 7` in its related block, so it is the only route still
+holding the old left-hang and should get the same treatment when it is
+rebuilt.
 
 ---
 

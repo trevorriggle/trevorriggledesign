@@ -82,6 +82,13 @@ export function Card({
               unoptimized={card.thumb.unoptimized}
               className={styles.image}
             />
+
+            {/* The hover affordance, revealed over the crop. A glyph, not
+                copy, and `aria-hidden` because the title inside this same
+                link is already the accessible name. */}
+            <span className={styles.cursor} aria-hidden="true">
+              &rarr;
+            </span>
           </span>
         )}
 

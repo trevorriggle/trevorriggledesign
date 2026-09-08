@@ -3,8 +3,13 @@
    ============================================================================
    Copy first at real reading size, then the grid full width. The category page
    is deliberately built like the case study pages rather than like a gallery:
-   same head composition, same indent, same rhythm. That is the argument, this
-   is work with reasoning behind it, not a contact sheet.
+   same head composition, same content column, same rhythm. That is the
+   argument, this is work with reasoning behind it, not a contact sheet.
+
+   The intro used to start at column 3 and the prose and the "demonstrates"
+   block carried a 16.6667% indent, drawn for a left-pinned container. Centred,
+   all three sat in from the content's own left edge for no reason. They are on
+   the content column now, bounded by the reading measure.
    ========================================================================= */
 
 .head {
@@ -46,10 +51,9 @@
   margin-left: -0.045em;
 }
 
-/* The intro sits under the overhanging title, pushed right, same asymmetry
-   as the home masthead and the case study head. */
+/* The intro sits under the title, on the same left axis as it. */
 .intro {
-  grid-column: 3 / 10;
+  grid-column: 1 / 9;
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
   color: var(--color-text);
@@ -61,7 +65,6 @@
 .bodyBlock { margin-top: var(--rhythm-tight); }
 
 .prose {
-  margin-left: 16.6667%;
   max-width: var(--measure);
   font-size: var(--text-md);
   line-height: var(--leading-body);
@@ -78,7 +81,6 @@
 .demonstratesBlock { margin-top: var(--rhythm-tight); }
 
 .demonstrates {
-  margin-left: 16.6667%;
   max-width: var(--measure);
   border-top: 1.5px solid var(--color-signal);
   padding-top: var(--space-4);
@@ -97,7 +99,7 @@
 .demonstratesText {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
+  font-variation-settings: "wdth" var(--width-display-mid);
   font-size: var(--display-1);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
@@ -143,7 +145,7 @@
 .pagerTitle {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
+  font-variation-settings: "wdth" var(--width-display-mid);
   font-size: var(--display-1);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
@@ -155,6 +157,4 @@
 @media (max-width: 62rem) {
   .title,
   .intro { grid-column: 1 / -1; }
-  .prose,
-  .demonstrates { margin-left: 0; }
 }

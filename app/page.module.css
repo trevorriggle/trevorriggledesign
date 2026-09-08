@@ -1,122 +1,188 @@
 /* ============================================================================
-   HOME, a 2x2 and nothing else.
+   HOME
    ============================================================================
-   The whole page is four cells. There is no masthead, no hero, no subhead and
-   no vitals rail: all of that went with the Applications section when it moved
-   to its own route.
+   Four tiers, deliberately unequal, top to bottom:
 
-   THE CELLS ARE DEFINED BY RULES, NOT BY BOXES. Structural hairlines between
-   the four cells give the grid its shape whether or not any thumbnail exists
-   yet. That is the difference between composition and a placeholder: a rule is
-   a real element of this design system, a grey rectangle at 4:3 is a hole with
-   a colour in it.
+     1  .hero          the statement at 129px, revealed word by word
+     2  .band          thoosie's clip, full bleed, closing the first screen
+     3  .feature       DrawEvolve, its own composition, near full width
+     4  .rest          thoosie and Lynk as ordinary preview cards
+     5  .doors         the 2x2 index
+
+   WHAT THIS REPLACED. The page opened on the 2x2 and then three equal cards.
+   The tiles' titles ran at --type-entry (25.5px at the top of its clamp) and
+   the card titles at --text-lg (21px), so the two tiers were within about one
+   step of each other and the page had no first moment at all: there was
+   nothing to stop on, because nothing was bigger than anything else.
+
+   THE HIERARCHY IS SIZE, which is the one lever this type scale is built for:
+   129px statement, 38px section heading, 25.5px feature title, 21px card
+   title, 12px meta. Five clearly separated tiers, no opacity, no colour doing
+   hierarchy's job.
    ========================================================================= */
 
-.home {
-  padding-top: var(--rhythm-tight);
-  padding-bottom: var(--rhythm-normal);
+/* --- 1. The statement ----------------------------------------------------
+   The first screen, and almost nothing else on it. The hero no longer carries
+   `rhythm-loose` beneath it: the clip band closes the first screen now and the
+   air belongs between the BAND and the work, which is where it moved to on
+   `.applications`. */
+
+.hero {
+  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-bottom: var(--rhythm-tight);
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  /* The outer edge of the 2x2. The inner hairlines come from the cells. */
-  border-top: var(--rule);
-  border-left: var(--rule);
+/* d5, 129.1px at the ceiling. The only element on the site at this step.
+   `--leading-hero` (0.86) and `--tracking-hero` (-0.04em) exist for exactly
+   this role and were unreferenced while the statement was out of the build;
+   at 129px, ordinary leading opens a hole between the two lines and ordinary
+   tracking leaves the words visibly loose.
+
+   `--width-display` (wdth 88), not the mid width: the narrow axis is what
+   keeps a nine-word sentence at this size from eating four lines. The
+   negative left margin is the optical correction for the "G", so the letter's
+   left edge lands on the container's axis rather than its side bearing. */
+.statement {
+  font-size: var(--type-statement);
+  line-height: var(--leading-hero);
+  letter-spacing: var(--tracking-hero);
+  font-variation-settings: "wdth" var(--width-display);
+  max-width: 22ch;
+  margin-left: -0.045em;
+  text-wrap: balance;
 }
 
-.cell {
-  border-right: var(--rule);
-  border-bottom: var(--rule);
-  min-width: 0;
-}
+/* --- The word reveal ------------------------------------------------------
+   CSS KEYFRAMES, NOT FRAMER, and the reason is load, not taste. This is the
+   page's LCP text: a framer reveal would ship it at `opacity: 0` in the server
+   HTML and make the site's largest paint wait on a JS chunk. Keyframes run on
+   first paint with no JS at all.
 
-.tile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  height: 100%;
-  padding: var(--space-5);
-  text-decoration: none;
-  /* Holds the 2x2 as a square-ish composition while the tiles are text only.
-     Once every cell carries an image the media box drives the height and this
-     floor stops mattering. */
-  min-height: 16rem;
-  transition: background-color var(--duration-fast) var(--ease-out);
-}
+   THE MASK IS WHAT MAKES IT A REVEAL rather than a fade. Each word sits in an
+   inline-block span with `overflow: hidden` and rises into it from below, so
+   the word appears from behind an invisible line instead of materialising in
+   place. `--i`, set per word in the markup, staggers them.
 
-.tile:hover { background: var(--color-bg-sunk); }
-.tile:hover .title { color: var(--color-signal); }
+   THE PADDING IS NOT DECORATION. At `--leading-hero` (0.86) the line box is
+   SHORTER than the type, so a mask clipped to it would cut the descenders off
+   "Graphic" and "designer" permanently, hover or not. The mask is padded below
+   and pulled back up by the same amount, which gives the descenders somewhere
+   to live without changing where the line sits. */
 
-/* FIXED CROP, same rule as the preview cards. A tile's thumbnail used to
-   render at its own proportion, so applications.png at 874x629 and design.png
-   at 3840x1589 gave their two cells visibly different heights. The box is 4:3
-   for every tile now and the image covers it.
-
-   This only applies when a file exists. A tile with no image still renders no
-   media element at all, because a grey 4:3 rectangle is a hole with a colour
-   in it, which is the rule this page was built on. */
-.media {
-  position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
+.mask {
+  display: inline-block;
   overflow: hidden;
-  background: var(--color-bg-sunk);
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
 }
 
-.image {
+.word {
+  display: inline-block;
+  animation: rise 0.9s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 90ms);
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.9em);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* The supporting paragraph. Text face at lead size on a short measure: it is
+   a sentence to be read, and it must not compete with the statement, so it
+   sits four steps down the scale rather than one. */
+.heroSub {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 54ch;
+  margin-top: var(--space-7);
+}
+
+/* --- The scroll cue ------------------------------------------------------
+   NON-TEXTUAL, deliberately. A "scroll to explore" label would be copy that
+   does not exist in portfolio-copy.md. This is a hairline travelling down its
+   own track: the track is the full height at rule tint, the line is a short
+   ink segment that runs the length of it and restarts.
+
+   It is the ONE looping animation on the site. Everything else fires once.
+   A loop is legitimate here because the cue's whole job is to still be saying
+   "there is more below" thirty seconds after the page settled. */
+
+.cue {
+  display: block;
+  position: relative;
+  width: var(--hairline);
+  height: var(--space-8);
+  margin-top: var(--rhythm-tight);
+  background: var(--color-rule);
+  overflow: hidden;
+}
+
+.cueLine {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 40%;
+  background: var(--color-text);
+  animation: cue 2.4s var(--ease-out) infinite;
+}
+
+@keyframes cue {
+  0%   { transform: translateY(-100%); }
+  /* Holds at the bottom for the back half of the cycle, so it reads as a
+     repeating gesture rather than as a shuttle running up and down. */
+  55%  { transform: translateY(250%); }
+  100% { transform: translateY(250%); }
+}
+
+/* --- 2. The clip band ----------------------------------------------------
+   THE ONE FULL-BLEED ELEMENT ON THE SITE. Everything else, on every page, is
+   contained and framed; this is the hero's own visual and the exception is
+   the point of it.
+
+   CROPPED TO A BAND, not shown at 16:9. The clip is 1920x1080, so at 100vw on
+   a 1440 window its natural height is 810px and it would be a whole screen of
+   its own between the statement and the work. The band is 21:9 with the video
+   covering it, which is a crop of real footage rather than a letterboxed
+   rectangle, and it is bounded by `62vh` so it can never fill the window.
+
+   The element selector reaches into <AutoVideo>'s own class, which is the
+   narrow exception to this file only styling its own module: the component is
+   shared with the case study pages and must keep `contain` there, where
+   proportion is the whole point. Here, and only here, it covers. */
+
+.band {
+  margin-top: var(--rhythm-tight);
+}
+
+.band video,
+.band img {
   display: block;
   width: 100%;
   height: 100%;
+  aspect-ratio: 21 / 9;
+  max-height: 62vh;
   object-fit: cover;
   object-position: center;
+  /* No hairline: a border on a full-bleed element draws a line down the
+     viewport edge, which is the one place a rule cannot mean anything. */
+  border: 0;
 }
 
-/* Pushed to the bottom of the cell, so the four titles sit on one line
-   across the grid whether or not the tiles above them are the same height. */
-.label {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: auto;
-}
+/* --- The applications band -----------------------------------------------
+   `rhythm-loose` above it, the largest rhythm on the site: this is the gap
+   the hero used to own, and it is what makes the section read as being
+   revealed under the clip rather than stacked against it. */
 
-.title {
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: "wdth" var(--width-display-mid);
-  font-size: var(--type-entry);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-display);
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.meta {
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-  font-variant-numeric: tabular-nums;
-}
-
-/* One column on a phone. Two 50vw tiles side by side put the titles at a
-   measure nothing can read. */
-@media (max-width: 48rem) {
-  .grid { grid-template-columns: minmax(0, 1fr); }
-  .tile { min-height: 11rem; }
-}
-
-/* --- The applications strip ----------------------------------------------
-   Three preview cards under the 2x2. The doors above are navigation; this is
-   the work itself, at the same card treatment /applications and /design use,
-   so the browsing tier looks identical wherever a visitor meets it. */
 .applications {
+  padding-top: var(--rhythm-loose);
   padding-bottom: var(--rhythm-normal);
 }
 
@@ -152,4 +218,323 @@
   text-transform: uppercase;
   color: var(--color-text-faint);
   font-variant-numeric: tabular-nums;
+}
+
+/* --- 2. The feature -------------------------------------------------------
+   A DIFFERENT OBJECT, not a bigger card. The preview card is a 4:3 crop with
+   its text stacked underneath; this is a portrait crop at 6 of 12 columns
+   with the text set beside it, bottom-aligned to the picture. Same content,
+   different composition, which is what actually breaks the flatness: three
+   identical cards at three different widths would still read as one tier.
+
+   Sized off the asset. Every application cover in content is a 2064x2752
+   iPad screenshot, so the box is 3:4 and the crop is the picture, not a
+   guess at it. `max-height` bounds it to roughly one screen on a laptop:
+   without it, 6 columns of a 1440 container is ~580px wide and therefore
+   ~773px tall, which is a feature that no longer fits above the fold. */
+
+.feature {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: end;
+  text-decoration: none;
+  color: inherit;
+}
+
+.featureMedia {
+  position: relative;
+  grid-column: 1 / 7;
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  max-height: 40rem;
+  overflow: hidden;
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.featureImage {
+  object-fit: cover;
+  object-position: center;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+/* CURSOR FEEDBACK, revealed on hover. A glyph, not copy: an arrow badge in
+   the crop's corner that fades and slides in, so the picture itself says it
+   is a destination. `aria-hidden` in the markup, because the link already has
+   an accessible name from the title inside it and an arrow is not one.
+
+   Not a custom cursor. Replacing the pointer means reimplementing the one
+   piece of UI the visitor's OS owns, it breaks on touch, and it cannot be
+   focus-driven, so keyboard users get nothing from it. */
+.featureCursor {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--space-7);
+  height: var(--space-7);
+  background: var(--color-signal-solid);
+  color: var(--color-text-invert);
+  font-size: var(--text-lg);
+  line-height: 1;
+  opacity: 0;
+  transform: translate(12%, 12%);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.feature:hover .featureCursor,
+.feature:focus-visible .featureCursor {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Columns 8-12. The gap at column 7 is the only asymmetry left in this
+   composition and it is doing real work: it separates the picture from its
+   own caption instead of letting the text sit against the frame. */
+.featureText {
+  grid-column: 8 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding-bottom: var(--space-5);
+}
+
+/* d1, 25.5px. Above the 21px card titles below it and well below the 38px
+   section heading above it, so the feature lands between the two tiers
+   rather than joining either. */
+.featureTitle {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--display-1);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+/* The entry's own deck, verbatim, at lead size. Not clamped: at this width
+   it is one or two lines and there is nothing to truncate. */
+.featureDeck {
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  max-width: 30ch;
+}
+
+.featureMeta {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+/* Same hover the preview cards run, at the same speed: the picture scales
+   inside a crop that does not move, the hairline goes to ink, the title takes
+   the signal colour. One vocabulary across every clickable thing on the
+   site. */
+.feature:hover .featureImage,
+.feature:focus-visible .featureImage {
+  opacity: 0.92;
+  transform: scale(1.04);
+}
+
+.feature:hover .featureMedia,
+.feature:focus-visible .featureMedia {
+  border-color: var(--color-rule-strong);
+}
+
+.feature:hover .featureTitle,
+.feature:focus-visible .featureTitle { color: var(--color-signal); }
+
+/* --- 3. The rest of the running order ------------------------------------
+   Real separation from the feature. `rhythm-normal` here rather than
+   `rhythm-tight`: the feature has to finish before the grid starts, or the
+   two tiers run together and the feature stops being one. */
+
+.rest {
+  margin-top: var(--rhythm-normal);
+}
+
+/* --- 4. The doors ---------------------------------------------------------
+   The 2x2, moved from the top of the page to the bottom. It is navigation,
+   and at the top it was standing where the work should have been.
+
+   THE CELLS ARE DEFINED BY RULES, NOT BY BOXES. Structural hairlines between
+   the four cells give the grid its shape whether or not any thumbnail exists
+   yet. A rule is a real element of this design system; a grey rectangle at
+   4:3 is a hole with a colour in it. */
+
+.doors {
+  padding-top: var(--rhythm-normal);
+  padding-bottom: var(--rhythm-normal);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  /* The outer edge of the 2x2. The inner hairlines come from the cells. */
+  border-top: var(--rule);
+  border-left: var(--rule);
+}
+
+.cell {
+  border-right: var(--rule);
+  border-bottom: var(--rule);
+  min-width: 0;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100%;
+  padding: var(--space-5);
+  text-decoration: none;
+  /* Holds the 2x2 as a square-ish composition while the tiles are text only.
+     Once every cell carries an image the media box drives the height and this
+     floor stops mattering. */
+  min-height: 16rem;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.tile:hover,
+.tile:focus-visible { background: var(--color-bg-sunk); }
+
+.tile:hover .title,
+.tile:focus-visible .title { color: var(--color-signal); }
+
+/* FIXED CROP, same rule as the preview cards. A tile's thumbnail used to
+   render at its own proportion, so applications.png at 874x629 and design.png
+   at 3840x1589 gave their two cells visibly different heights. The box is 4:3
+   for every tile now and the image covers it.
+
+   This only applies when a file exists. A tile with no image still renders no
+   media element at all, because a grey 4:3 rectangle is a hole with a colour
+   in it, which is the rule this page was built on. */
+.media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-bg-sunk);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+/* The category tiles get the same hover as the project cards. Consistency is
+   the requirement here: a visitor should not have to learn two idioms for
+   "this is clickable" on one page. */
+.tile:hover .image,
+.tile:focus-visible .image {
+  opacity: 0.92;
+  transform: scale(1.04);
+}
+
+/* Pushed to the bottom of the cell, so the four titles sit on one line
+   across the grid whether or not the tiles above them are the same height. */
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-entry);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-display);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.meta {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Collapse -------------------------------------------------------------
+   The feature stacks: picture, then text under it. It keeps its own crop and
+   its own type sizes, so it is still visibly the featured entry rather than
+   collapsing into a card. */
+
+@media (max-width: 62rem) {
+  .featureMedia {
+    grid-column: 1 / -1;
+    max-height: 34rem;
+  }
+
+  .featureText {
+    grid-column: 1 / -1;
+    padding-bottom: 0;
+    padding-top: var(--space-5);
+  }
+
+  .statement { max-width: none; }
+}
+
+/* One column on a phone. Two 50vw tiles side by side put the titles at a
+   measure nothing can read. */
+@media (max-width: 48rem) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .tile { min-height: 11rem; }
+}
+
+/* --- Reduced motion ------------------------------------------------------
+   THE GLOBAL RESET IS NOT ENOUGH HERE, and this is the subtle one. reset.css
+   forces `animation-duration: 0.01ms`, but it does NOT touch
+   `animation-delay`. The statement's words are staggered by delay, so under
+   the global reset alone the last word would sit invisible for 360ms and then
+   snap in: a flash of missing heading, caused by the accessibility rule. Both
+   the animation and its delay are cancelled outright.
+
+   The looping cue stops entirely rather than running fast, and the hover
+   transforms are dropped rather than snapped, for the same reason. The colour
+   and opacity signals stay: they are not motion. */
+@media (prefers-reduced-motion: reduce) {
+  .word {
+    animation: none;
+    animation-delay: 0s;
+    opacity: 1;
+    transform: none;
+  }
+
+  .cue { display: none; }
+
+  .feature:hover .featureImage,
+  .feature:focus-visible .featureImage,
+  .tile:hover .image,
+  .tile:focus-visible .image { transform: none; }
+
+  .feature:hover .featureCursor,
+  .feature:focus-visible .featureCursor { transform: none; }
 }

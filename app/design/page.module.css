@@ -26,8 +26,10 @@
   margin-left: -0.045em;
 }
 
+/* On the title's own left axis. This used to start at column 4, which with a
+   centred container read as an arbitrary indent rather than an asymmetry. */
 .landing {
-  grid-column: 4 / 11;
+  grid-column: 1 / 9;
 }
 
 .landingPara {

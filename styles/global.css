@@ -1,3 +1,44 @@
 @import "./tokens.css";
 @import "./reset.css";
 @import "./typography.css";
+
+/* ============================================================================
+   MOTION SURFACE
+   ============================================================================
+   Two things the motion layer needs from the document, and nothing else.
+   ========================================================================= */
+
+/* Lenis. It sets these classes on <html> itself once it boots; without them
+   the browser's own smooth-scroll fights the library for the same wheel event.
+   Declared here rather than imported from the package so the page ships one
+   stylesheet and these three rules are visible to anyone reading the CSS. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* THE SAFETY NET. Framer renders a reveal's `initial` state into the server
+   HTML, so a revealed block ships at opacity 0 and it is the motion runtime
+   that brings it back. With no scripting there is no runtime and the content
+   would never arrive, so it is forced visible here.
+
+   Nothing above the fold depends on this: the home statement animates in CSS,
+   which needs no JS at all. This covers the blocks below it. */
+@media (scripting: none) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

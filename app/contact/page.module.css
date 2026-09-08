@@ -20,8 +20,10 @@
   align-items: start;
 }
 
-.main { grid-column: 1 / 10; }
-.rail { grid-column: 10 / -1; }
+/* 8 + 4 of 12, the site's content/rail proportion. The rail used to take the
+   last 3 columns, which was too narrow to set a term over its value. */
+.main { grid-column: 1 / 9; }
+.rail { grid-column: 9 / -1; }
 
 .title {
   font-size: var(--type-section);
@@ -35,7 +37,6 @@
   color: var(--color-text);
   max-width: 40ch;
   margin-top: var(--space-6);
-  margin-left: 16.6667%;
 }
 
 /* The address, at title scale. It wraps on a phone rather than shrinking,
@@ -44,7 +45,7 @@
   display: block;
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
+  font-variation-settings: "wdth" var(--width-display-mid);
   font-size: clamp(var(--display-1), 5.6vw, var(--display-3));
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
@@ -58,6 +59,5 @@
 @media (max-width: 62rem) {
   .main,
   .rail { grid-column: 1 / -1; }
-  .lead { margin-left: 0; }
   .address { margin-top: var(--space-7); }
 }

@@ -4,10 +4,12 @@
    Four paragraphs of continuous prose, no headings, exactly as written.
 
    The composition does the work the missing subheads would otherwise do: the
-   title hangs at the left edge at title scale, the lead paragraph is set at
-   lead size and indented to column 3, and the remaining three run at body
-   size on a narrower measure further right. The column steps inward as the
-   argument narrows.
+   title sits at title scale, the lead paragraph is set at lead size on a short
+   measure, and the remaining three run at body size on the reading measure.
+   Hierarchy is type size, not indentation.
+
+   The prose column used to start at column 3, drawn for a left-pinned
+   container. Centred, that was a band of dead padding beside the copy.
    ========================================================================= */
 
 .head {
@@ -31,8 +33,8 @@
   padding-bottom: var(--rhythm-normal);
 }
 
-.main { grid-column: 3 / 10; }
-.rail { grid-column: 10 / -1; }
+.main { grid-column: 1 / 9; }
+.rail { grid-column: 9 / -1; }
 
 /* The lead: bigger, full ink, short measure. The one paragraph a hiring team
    reads if they read only one. */
@@ -40,7 +42,7 @@
   font-size: var(--display-1);
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
+  font-variation-settings: "wdth" var(--width-display-mid);
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
   color: var(--color-text);

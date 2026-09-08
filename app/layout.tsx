@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Nav } from "@/components/ui/Nav";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { Footer } from "@/components/ui/Footer";
 import { fontVariables } from "./fonts";
 import { site } from "@/lib/site";
@@ -42,6 +43,8 @@ export default function RootLayout({
         <a href="#main" className="visually-hidden skip-link">
           Skip to content
         </a>
+        {/* Renders nothing. Never constructed under reduced motion. */}
+        <SmoothScroll />
         <Nav />
         <main id="main">{children}</main>
         <Footer />

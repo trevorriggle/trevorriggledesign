@@ -8,6 +8,7 @@ import { VideoSlot } from "@/components/ui/Video";
 import { Pager } from "@/components/ui/Pager";
 import { MetaRail, Meta, MetaChips, MetaLinks } from "@/components/ui/MetaRail";
 import { MdxBody } from "@/components/mdx/MdxBody";
+import { Reveal } from "@/components/motion/Reveal";
 
 import { SELECTED, getSelected, getCaseStudy, getNeighbours } from "@/content";
 import grid from "@/components/ui/grid.module.css";
@@ -97,20 +98,26 @@ export default async function CaseStudyPage({
         </div>
       </Container>
 
-      {/* Full bleed. The only element on the site that touches the viewport. */}
+      {/* CONTAINED, not full bleed. This clip used to run edge to edge as the
+          one element on the site allowed to touch the viewport; on a centred
+          page that made it the only thing wider than the content it belongs
+          to. It sits on the content grid now, framed like every other piece
+          of media here. */}
       {entry.video && (
-        <Container width="full">
-          <VideoSlot video={entry.video} sizes="100vw" />
+        <Container className={styles.lead}>
+          <VideoSlot
+            video={entry.video}
+            sizes="(max-width: 62rem) 100vw, 84rem"
+          />
         </Container>
       )}
 
-      {/* NOT full bleed, unlike the clip above it. Every cover in content is
-          now a portrait screenshot, and a portrait lead at 100vw is the
-          giant-image problem in its purest form: 100vw wide by 133vw tall.
-          In the container, height-capped by Frame, it comes out near 585px
-          wide and reads as a picture of an app rather than as wallpaper. */}
+      {/* Every cover in content is a portrait screenshot, and a portrait lead
+          at full width is the giant-image problem in its purest form. In the
+          container, height-capped by Frame, it comes out near 585px wide and
+          reads as a picture of an app rather than as wallpaper. */}
       {entry.cover?.exists && (
-        <Container>
+        <Container className={styles.lead}>
           <Frame
             image={entry.cover}
             sizes="(max-width: 62rem) 100vw, 40rem"
@@ -121,7 +128,7 @@ export default async function CaseStudyPage({
 
       {entry.body && (
         <Container as="section" className={styles.block}>
-          <div className={styles.body}>
+          <Reveal className={styles.body}>
             <div className={styles.prose}>
               <MdxBody
                 source={entry.body}
@@ -129,35 +136,51 @@ export default async function CaseStudyPage({
                 entryPath={`content/work/${entry.slug}/index.mdx`}
               />
             </div>
-          </div>
+          </Reveal>
         </Container>
       )}
 
+      {/* THE PLATES, AS A GALLERY. They used to be a vertical stack that
+          alternated between an indented measure and a pull past the right
+          gutter, so a run of four screenshots was four screens of scrolling
+          and no two of them were comparable. As a snap track they are one
+          object: a filmstrip at a single height that a visitor moves through
+          sideways, which is how a set of screenshots from one app actually
+          wants to be read.
+
+          NO JS. Native `overflow-x` plus `scroll-snap-type`, so trackpad,
+          touch and the keyboard all work with nothing hydrated. The track is
+          focusable and labelled so keyboard users can reach and arrow through
+          it, and `data-lenis-prevent` keeps the smooth-scroll wrapper from
+          swallowing a horizontal gesture that belongs to this element. */}
       {plates.length > 0 && (
         <Container as="section" className={styles.block}>
-          <ul className={styles.plateStack}>
-            {plates.map((image, i) => (
-              <li
-                key={image.src}
-                className={image.bleed ? styles.plateWide : styles.plateInset}
-              >
-                <Frame
-                  image={image}
-                  ordinal={String(i + 1).padStart(2, "0")}
-                  sizes={
-                    image.bleed
-                      ? "(max-width: 62rem) 100vw, 84rem"
-                      : "(max-width: 62rem) 100vw, 38rem"
-                  }
-                />
-              </li>
-            ))}
-          </ul>
+          <Reveal>
+            <ul
+              className={styles.gallery}
+              tabIndex={0}
+              role="group"
+              aria-label={`${entry.title}, ${plates.length} plates`}
+              data-lenis-prevent
+            >
+              {plates.map((image, i) => (
+                <li key={image.src} className={styles.plate}>
+                  <Frame
+                    image={image}
+                    ordinal={String(i + 1).padStart(2, "0")}
+                    sizes="(max-width: 62rem) 88vw, 46rem"
+                  />
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </Container>
       )}
 
       <Container>
-        <Pager prev={prev} next={next} />
+        <Reveal>
+          <Pager prev={prev} next={next} />
+        </Reveal>
       </Container>
     </>
   );

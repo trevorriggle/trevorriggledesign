@@ -12,10 +12,38 @@
    Without the second, a grid row's cards end up different heights and the
    whole point of carding the content is lost.
 
-   No radius, no shadow, no lift on hover. The site's rules are hairlines and
-   sharp corners (--radius-* are all 0), and a card that grows a drop shadow
-   here would be the only such object on the site. Hover moves the title to
-   the signal colour and lifts the image a touch in brightness, nothing else.
+   HOVER. No radius, no shadow, no lift of the card itself. The site's rules
+   are hairlines and sharp corners (--radius-* are all 0), and a card that grew
+   a drop shadow here would be the only such object on the site.
+
+   What hover does instead, on every card at every level of the site:
+
+     · the thumbnail scales inside its fixed crop, so the picture moves and
+       the crop does not
+     · an accent affordance is revealed in the crop's corner
+     · the crop's hairline goes to full ink
+     · the title takes the signal colour
+
+   Fast, one step, and it reads as the picture being alive rather than as the
+   card jumping. `--duration-base` is 180ms.
+
+   THE AFFORDANCE IS A BADGE, NOT A SCRIM. A translucent panel washed over the
+   crop with the title repeated on top of it is the reflex here, and it is
+   wrong for this site twice over: the title and the deck are already set
+   below the crop in full ink, so the overlay would be duplicating them, and a
+   scrim is the only place on the site where ink would sit at partial opacity,
+   which the type system explicitly bans. The badge adds an affordance instead
+   of restating content.
+
+   NOT A CUSTOM CURSOR. Replacing the pointer reimplements the one piece of UI
+   the visitor's OS owns, it does nothing on touch, and it cannot be driven by
+   focus, so keyboard users get none of it.
+
+   The scale is on the IMAGE and the crop keeps `overflow: hidden`, which is
+   what makes this safe: nothing reflows, no neighbour moves, and the card's
+   own box is identical hovered or not. Under `prefers-reduced-motion` the
+   transform is dropped entirely rather than snapped, since the global reset
+   only collapses the duration.
    ========================================================================= */
 
 .grid {
@@ -39,7 +67,8 @@
 
 /* --- The crop ------------------------------------------------------------
    The fixed box. `position: relative` because next/image `fill` needs a
-   positioned parent, and `overflow: hidden` because cover overflows it. */
+   positioned parent, and `overflow: hidden` because cover overflows it, and
+   because it is what contains the hover scale. */
 .media {
   position: relative;
   display: block;
@@ -48,15 +77,54 @@
   overflow: hidden;
   background: var(--color-bg-sunk);
   border: var(--rule);
+  transition: border-color var(--duration-fast) var(--ease-out);
 }
 
 .image {
   object-fit: cover;
   object-position: center;
-  transition: opacity var(--duration-base) var(--ease-out);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
 }
 
-.card:hover .image { opacity: 0.88; }
+/* Keyed off the link, so keyboard focus gets the same signal as the mouse. */
+.card:hover .image,
+.card:focus-visible .image {
+  opacity: 0.92;
+  transform: scale(1.04);
+}
+
+.card:hover .media,
+.card:focus-visible .media { border-color: var(--color-rule-strong); }
+
+/* The revealed affordance. Sits above the image, inside the crop's
+   `overflow: hidden`, so it is clipped with everything else. */
+.cursor {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: var(--space-6);
+  height: var(--space-6);
+  background: var(--color-signal-solid);
+  color: var(--color-text-invert);
+  font-size: var(--text-base);
+  line-height: 1;
+  opacity: 0;
+  transform: translate(15%, 15%);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.card:hover .cursor,
+.card:focus-visible .cursor {
+  opacity: 1;
+  transform: translate(0, 0);
+}
 
 /* --- The text ------------------------------------------------------------
    min-height holds the row even, calculated for a title plus two lines of
@@ -79,7 +147,8 @@
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.card:hover .title { color: var(--color-signal); }
+.card:hover .title,
+.card:focus-visible .title { color: var(--color-signal); }
 
 /* Clamped rather than truncated at a character count: the copy in the source
    is verbatim and stays that way, this only bounds how much of it the
@@ -115,4 +184,18 @@
     gap: var(--space-6);
   }
   .text { min-height: 0; }
+}
+
+/* The transform is dropped, not just sped up: the global reset in reset.css
+   collapses transition-duration, which would make a scale snap instantly
+   rather than not happen. The colour signals stay, they are not motion. */
+@media (prefers-reduced-motion: reduce) {
+  .card:hover .image,
+  .card:focus-visible .image { transform: none; }
+
+  /* The badge still appears, it just does not travel. It is an affordance,
+     and withholding it would cost information rather than motion. */
+  .cursor { transform: none; }
+  .card:hover .cursor,
+  .card:focus-visible .cursor { transform: none; }
 }

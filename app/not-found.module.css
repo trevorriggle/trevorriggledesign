@@ -11,8 +11,8 @@
   align-items: start;
 }
 
-.main { grid-column: 1 / 7; }
-.rail { grid-column: 8 / -1; }
+.main { grid-column: 1 / 9; }
+.rail { grid-column: 9 / -1; }
 
 .title {
   font-size: var(--type-title);

@@ -23,7 +23,7 @@
 .name {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
+  font-variation-settings: "wdth" var(--width-display-mid);
   font-size: var(--type-section);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);

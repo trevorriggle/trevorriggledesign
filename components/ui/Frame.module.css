@@ -23,14 +23,27 @@
    point of it. Cropping to a uniform box is the preview card's job, one level
    up. And not `contain` inside a full-width box either, which would matte a
    portrait with 600px of ground on one side. Mixed aspect ratios are
-   preserved exactly. See DECISIONS.md on the gallery grid. */
+   preserved exactly. See DECISIONS.md on the gallery grid.
+
+   FRAMED. The hairline and the sunk ground are on the IMAGE, not on the
+   figure, because the figure is the full content column and the picture
+   inside it is usually narrower: a border on the figure would matte a
+   portrait screenshot with 600px of ground beside it, which is exactly what
+   the note above rejects. On the image the frame hugs the actual picture, so
+   a screenshot with a white or transparent background stops dissolving into
+   the page ground and reads as a contained object. Same hairline the preview
+   card already puts on its crop. */
 .image {
   display: block;
   width: auto;
   height: auto;
   max-width: 100%;
-  max-height: 78vh;
+  /* 78vh unless a container lowers it. The plate gallery does, so a filmstrip
+     of mixed portrait and landscape plates reads at one height instead of
+     each item standing at its own. Nothing else overrides it. */
+  max-height: var(--frame-cap, 78vh);
   background-color: var(--color-bg-sunk);
+  border: var(--rule);
 }
 
 .caption {

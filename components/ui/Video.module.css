@@ -1,16 +1,19 @@
 .slot { margin: 0; }
 
 /* Capped like every other piece of media on the site. The clip is 16:9 and
-   full bleed, so on a short wide window its natural height ran past the fold;
-   82vh bounds it and the element's own `object-fit: contain` default keeps the
-   frame intact rather than cropping it. */
+   contained, and 82vh bounds it on a short wide window; the element's own
+   `object-fit: contain` default keeps the frame intact rather than cropping.
+
+   Framed at the same hairline weight as <Frame> and the preview card, not the
+   faint rule it used to carry: the clip is no longer bleeding past the
+   container, so its edge is now a real edge and reads as one. */
 .video {
   display: block;
   width: 100%;
   height: auto;
   max-height: 82vh;
   background: var(--color-bg-sunk);
-  border: var(--rule-faint);
+  border: var(--rule);
 }
 
 .caption {

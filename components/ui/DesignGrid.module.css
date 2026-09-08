@@ -11,11 +11,15 @@
 
 .item { min-width: 0; }
 
+/* Framed, same hairline as <Frame> and the preview card. Much of this archive
+   is print work and social posts exported on white, which without an edge sat
+   on the page ground as an unbounded pale shape. */
 .image {
   display: block;
   width: 100%;
   height: auto;
   background: var(--color-bg-sunk);
+  border: var(--rule);
 }
 
 /* Spans by proportion class. */

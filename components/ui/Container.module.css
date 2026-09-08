@@ -1,28 +1,32 @@
 /* Horizontal measure and gutters. The only element allowed to own page-edge
    padding, so the gutter is defined in exactly one place.
 
-   NOT CENTRED. `margin-inline: 0` is deliberate and load-bearing: the page
-   hangs off the left edge and the slack collects on the right, which is what
-   makes the metadata rail feel like a margin rather than a sidebar. */
+   CENTRED. `margin-inline: auto` is the site's container discipline: the page
+   holds a real max-width and the leftover viewport is split evenly on both
+   sides, at every viewport, not only past some breakpoint.
+
+   THIS USED TO BE `margin-inline: 0`, deliberately, with centring deferred
+   until 118rem. That left-weighted the entire site: between the 90rem cap and
+   that breakpoint EVERY page pinned itself to the left gutter and collected
+   all of the slack as a single dead band on the right, up to ~450px of it on a
+   1920px window. It read as a broken wrapper rather than as a decision, which
+   is the whole reason it is gone. Every asymmetric left-hang that depended on
+   it (the 16.6667% indents, the column-3 starts, the negative-gutter bleeds)
+   came out with it. See DECISIONS.md. */
 
 .container {
   width: 100%;
-  margin-inline: 0;
+  margin-inline: auto;
   padding-inline: var(--gutter);
   max-width: var(--width-page);
-}
-
-/* Past the max width the page stops growing. It stays left-weighted up to a
-   very wide viewport, then finally takes the slack on both sides, beyond
-   ~1900px a hard-left page reads as broken rather than as a decision. */
-@media (min-width: 118rem) {
-  .container { margin-inline: 0 auto; }
 }
 
 .page { max-width: var(--width-page); }
 .prose { max-width: calc(var(--measure) + var(--gutter) * 2); }
 
-/* Edge to edge, no gutter. For full-bleed bands. */
+/* Edge to edge, no gutter. Used by exactly one element on the site, the home
+   page's clip band, which is the hero's own visual. Every other piece of media
+   on every page is contained and framed. */
 .full {
   max-width: none;
   padding-inline: 0;
