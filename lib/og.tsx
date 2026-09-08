@@ -4,25 +4,34 @@ import { ImageResponse } from "next/og";
    OG IMAGES
    ============================================================================
    Composed rather than templated: the ruled frame, the hanging ordinal, the
-   left-weighted type and the single vermilion mark are the same devices the
+   left-weighted type and the single accent mark are the same devices the
    site uses, so a shared link reads as this site before anyone clicks it.
 
-   Type note: these render in the renderer's default sans, not Instrument
-   Serif. next/og
+   Type note: these render in the renderer's default sans, not Archivo. next/og
    rasterises with satori, which cannot consume the woff2 files next/font
    produces, it needs a raw ttf/otf buffer. Rather than fetch a font over the
    network during a build, the cards lean on structure and scale. To upgrade
    later: drop a .ttf into lib/fonts/ and pass it via the `fonts` option below.
+
+   Colour note: satori cannot read CSS custom properties either, so the five
+   constants below are a HAND COPY of styles/tokens.css and the only place on
+   this site where a colour is written twice. They had drifted, the paper was
+   #faf8f5 against a #f7f4ed ground and the ink and accent did not match
+   anything, so a shared card was a slightly different site to the one it
+   linked to. They are now exact: PAPER/INK/SIGNAL are the three source
+   tokens, and RULE/MUTED are the oklab color-mix results computed at the
+   values tokens.css uses (20% and 58% ink into ground). Re-derive them if
+   the three ever change again.
    ========================================================================= */
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
 
-const PAPER = "#faf8f5";
-const INK = "#111111";
-const SIGNAL = "#c42b12";
-const RULE = "#c5c4c1";
-const MUTED = "#686766";
+const PAPER = "#f4f4f2";
+const INK = "#111214";
+const SIGNAL = "#1b4dd8";
+const RULE = "#c0c1c0";
+const MUTED = "#666667";
 
 export function ogCard({
   ordinal,

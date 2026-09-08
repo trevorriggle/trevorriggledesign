@@ -69,7 +69,7 @@ roundness.
 All three are OFL 1.1 and self-hosted by `next/font` at build time. No font-CDN
 request at runtime, no third-party origin.
 
-### The scale is unchanged
+### The steps are unchanged. The headings came down one.
 
 Ratio 1.5 on the display tier, compounding off the 17px body:
 
@@ -78,29 +78,80 @@ Ratio 1.5 on the display tier, compounding off the 17px body:
 | `--display-1` | 25.5px |
 | `--display-2` | 38.3px |
 | `--display-3` | 57.4px |
-| `--display-4` | 86.1px |
-| `--display-5` | **129.1px** (hero only) |
+| `--display-4` | **86.1px** (hero only) |
+| `--display-5` | 129.1px, no longer referenced by any role |
 
-7.59x body at the top. Leading is set per size: 0.86 hero, 0.9 display, 1.02
-title, 1.62 body. Verified rendering 57 / 86 / 129px at 375 / 768 / 1440.
+Every display role was re-pointed one rung down: hero `d5` to `d4`, title `d4`
+to `d3`, section `d3` to `d2`, entry `d2` to `d1`. The vw coefficients were
+divided by the same 1.5, so each role still reaches its ceiling at the same
+viewport it did before. The type is smaller; the fluid behaviour is identical.
+
+**The 6x brief no longer holds, and that was the trade.** The hero was 129.1px,
+7.59x long-form body. It is now 86.1px, **5.06x**, under the 6x the brief asked
+for. It is still by a wide margin the largest thing on any page and the
+internal order of the scale is intact, but the headline no longer dominates the
+way the original brief specified. Repoint `--type-hero` at `--display-5` to
+undo it; nothing else needs touching.
+
+`--display-5` is kept in the file. The scale is the system, not the list of
+what currently references it.
+
+Two floors are deliberately not display steps: `--type-section` and
+`--type-entry` clamp their low end at `--text-lg` (21px) rather than one step
+below `d1`, which would be 17px, the body size. A section heading that renders
+at exactly body size on a phone is not a heading.
+
+Leading is set per size: 0.86 hero, 0.9 display, 1.02 title, 1.62 body.
 
 ---
 
 ## Colour
 
 ```
---ground: #f7f4ed   warmer paper than before, and it shows
---ink:    #14120f   near-black, warmed to match the ground
---accent: #e0431a   vermilion, brighter, and off its leash
+--ground: #f4f4f2   cool off-white, very slightly green of neutral
+--ink:    #111214   true near-black, a hair blue
+--accent: #1b4dd8   electric blue
 ```
 
-The accent was previously rationed to about seven appearances. It is now the
-first thing on the page: a solid `--space-2` bar across the full measure
-directly under the nav, where there used to be a hairline under a field of
-whitespace. It also carries every hanging ordinal, the rule above the lead case
-study, the "What it demonstrates" label, focus rings and hover states.
+**The warmth is gone.** The cream ground and the warmed near-black were chosen
+for Instrument Serif and then kept through Bricolage. Archivo is a neo-grotesque
+with no warmth to answer, and the cream under it read as a leftover rather than
+a decision. The accent moved with it: on a cool ground the vermilion was the
+only warm thing on the page and it fought everything else.
+
+Every other colour derives from those three by `color-mix` in oklab. Changing
+the three retheres the site, which is what this file has always claimed and is
+now actually true end to end.
+
+Measured against the ground, all AA-normal:
+
+| | ratio |
+| --- | --- |
+| ink on ground | 17.02:1 |
+| accent on ground | 6.15:1 |
+| `--ink-mute` metadata on ground | 5.21:1 |
+
+The accent on ink is only 2.77:1, which does not pass, but nothing puts it
+there: `.on-ink :focus-visible` already switches the ring to `--color-text-invert`
+and the skip link is the only inverted surface.
+
+The accent is the first thing on the page: a solid `--space-2` bar across the
+full measure directly under the nav. It also carries every hanging ordinal, the
+"What it demonstrates" label, the `Shelved` status word, focus rings and hover
+states. It no longer carries a rule above the lead case study, because there is
+no lead case study any more.
 
 Still one accent, still no gradients, no shadows, and `--radius-*` is `0`.
+
+### One colour is written twice, and only one
+
+`lib/og.tsx` hand-copies five values, because satori cannot read CSS custom
+properties. They had **drifted**: paper was `#faf8f5` against a `#f7f4ed`
+ground, and the ink and accent matched nothing, so a shared OG card was a
+slightly different site to the one it linked to. They are now exact, with
+`RULE` and `MUTED` computed from the same oklab mixes `tokens.css` uses.
+`app/layout.tsx` `themeColor` had drifted the same way and now matches the
+ground.
 
 ---
 

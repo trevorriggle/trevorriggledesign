@@ -27,9 +27,9 @@
 
 /* The mark is the supplied logo lockup, replacing the typeset wordmark that
    used to sit here. It is a two-line lockup (TREVOR RIGGLE over DESIGN) at
-   564x150, so it needs roughly half again the height of the 21px single line
-   it replaced before the second line stays legible. Height is the knob;
-   width follows the intrinsic ratio. */
+   564x150. Height is the knob; width follows the intrinsic ratio. At 48px the
+   second line clears the 21px the typeset wordmark used to occupy by more
+   than double, which is the point: it reads as a mark, not a byline. */
 .mark {
   display: flex;
   align-items: center;
@@ -39,7 +39,7 @@
 
 .markImage {
   display: block;
-  height: 2rem;      /* 32px -> ~120px wide at the 3.76:1 lockup ratio */
+  height: 3rem;      /* 48px -> ~180px wide at the 3.76:1 lockup ratio */
   width: auto;
 }
 

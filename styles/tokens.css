@@ -31,11 +31,21 @@
      One ink. One ground. One accent. That is the entire palette, and the
      accent is rationed: it appears on the hero rule, on hover/focus, and on
      the [[NEEDS]] hazard block. Nowhere else. An accent that shows up in
-     every component is decoration; an accent that shows up twice is a mark.  */
+     every component is decoration; an accent that shows up twice is a mark.
 
-  --ground: #f7f4ed;  /* warmer paper than before, and it shows          */
-  --ink: #14120f;     /* near-black, warmed to match the ground           */
-  --accent: #e0431a;  /* vermilion, brighter and used far less sparingly  */
+     THE WARMTH IS GONE. The cream ground and the warmed near-black were
+     chosen for Instrument Serif, and then kept through Bricolage. Archivo is
+     a neo-grotesque with no warmth to answer, and cream under it read as a
+     leftover rather than a decision. Ground and ink are now neutral, and the
+     accent is a blue rather than a vermilion: on a cool ground the orange was
+     the only warm thing left on the page and it fought everything.
+
+     Every other value in this section derives from these three by color-mix.
+     Change these three and the site is retheming itself.                    */
+
+  --ground: #f4f4f2;  /* cool off-white, very slightly green of neutral  */
+  --ink: #111214;     /* true near-black, a hair blue                     */
+  --accent: #1b4dd8;  /* electric blue. 6.15:1 on the ground, AA normal   */
 
   /* The single muted tone. One, not a ramp. */
   --ink-mute: color-mix(in oklab, var(--ink) 58%, var(--ground));
@@ -92,15 +102,28 @@
   --text-lg: 1.3125rem;    /* 21px, deck, lead paragraph                  */
 
   /* -- Display tier -------------------------------------------------------
-     Ratio 1.5, compounding off --text-md (17px):
+     Ratio 1.5, compounding off --text-md (17px). THE STEPS ARE UNCHANGED,
+     what changed is which step each role points at, see below.
 
-       d1  25.5px   1.5^1     h3, entry-row titles
-       d2  38.3px   1.5^2     h2, section titles at their small end
-       d3  57.4px   1.5^3     interior page titles at their small end
-       d4  86.1px   1.5^4     interior page titles, case study titles
-       d5  129.1px  1.5^5     the hero, and nothing else
+       d1  25.5px   1.5^1     entry-row titles at their large end
+       d2  38.3px   1.5^2     the hero at its small end, section titles large
+       d3  57.4px   1.5^3     page titles at their large end
+       d4  86.1px   1.5^4     the hero, and nothing else
+       d5  129.1px  1.5^5     NO LONGER USED by any role. Kept because the
+                              step is real and the scale is the system, not
+                              the list of what currently references it.
 
-     d5 / body = 7.59x. The brief asked for at least 6x.                     */
+     HEADINGS CAME DOWN ONE FULL STEP. Every display role was re-pointed at
+     the next rung down: hero d5 -> d4, title d4 -> d3, section d3 -> d2,
+     entry d2 -> d1. The vw coefficients were divided by the same 1.5, so the
+     viewport at which each role reaches its ceiling is exactly where it was.
+     The type is smaller; the fluid behaviour is untouched.
+
+     THE 6x BRIEF NO LONGER HOLDS, and that was the explicit trade. The hero
+     was 129.1px, 7.59x long-form body. It is now 86.1px, 5.06x. The brief
+     asked for at least 6x and this is under it. The hero is still by a wide
+     margin the largest thing on any page, and nothing else moved, so the
+     internal order of the scale is intact.                                  */
 
   --display-1: 1.594rem;
   --display-2: 2.391rem;
@@ -108,16 +131,20 @@
   --display-4: 5.379rem;
   --display-5: 8.069rem;
 
-  /* Fluid display roles. Every one is clamped between two REAL steps of the
-     scale above, so the scale still holds at any viewport, the type gets
-     smaller on a phone, it does not fall out of the system. The vw terms are
-     what make the big sizes actually big on a laptop rather than only on a
-     30-inch display. */
+  /* Fluid display roles, each clamped between two real steps, so the scale
+     holds at any viewport: the type gets smaller on a phone, it does not fall
+     out of the system.
 
-  --type-hero: clamp(var(--display-3), 11.2vw, var(--display-5));
-  --type-title: clamp(var(--display-2), 7.6vw, var(--display-4));
-  --type-section: clamp(var(--display-1), 4.4vw, var(--display-3));
-  --type-entry: clamp(var(--display-1), 3.4vw, var(--display-2));
+     TWO FLOORS ARE NOT A DISPLAY STEP. `section` and `entry` floor at
+     --text-lg (21px) rather than one step below d1, which would have been
+     17px, the long-form body size. A section heading that renders at exactly
+     body size on a phone is not a heading. 21px is the nearest real step of
+     the text tier and keeps both above the paragraphs they head.            */
+
+  --type-hero: clamp(var(--display-2), 7.47vw, var(--display-4));
+  --type-title: clamp(var(--display-1), 5.07vw, var(--display-3));
+  --type-section: clamp(var(--text-lg), 2.93vw, var(--display-2));
+  --type-entry: clamp(var(--text-lg), 2.27vw, var(--display-1));
 
   /* -- Leading, set per size, never globally ------------------------------
      Big type needs less than 1; body needs 1.6. One global line-height is the

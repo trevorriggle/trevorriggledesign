@@ -78,7 +78,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* The one place a status word appears on the home page. Vermilion is spent
+/* The one place a status word appears on the home page. The accent is spent
    here because "Shelved" is a claim the copy makes deliberately. */
 .state { color: var(--color-signal); }
 

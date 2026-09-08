@@ -91,7 +91,7 @@ p { text-wrap: pretty; }
 /* ---- Links ---------------------------------------------------------------
    The underline stays on, it is the accessible affordance and an editorial
    one. The accent is reserved for the hovered/focused state, so a page full
-   of links is not a page full of vermilion.                                */
+   of links is not a page full of accent blue.                              */
 
 a {
   color: inherit;

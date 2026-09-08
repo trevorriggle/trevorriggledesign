@@ -20,7 +20,7 @@ export function Nav() {
             alt=""
             className={styles.markImage}
             priority
-            sizes="120px"
+            sizes="180px"
           />
         </Link>
 

@@ -27,7 +27,7 @@ export const viewport: Viewport = {
   /* ONE colour, unconditionally. There is no dark scheme on this site, it
      was removed, not disabled, so there is no media-query branch here either.
      The browser chrome matches the page ground on every device. */
-  themeColor: "#faf8f5",
+  themeColor: "#f4f4f2",
   colorScheme: "light",
 };
 
