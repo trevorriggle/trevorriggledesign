@@ -275,14 +275,38 @@ only thing that can fail a build.
 
 ---
 
-## Design work: five real pages
+## Design work: three real pages
 
-The single `/archive` page was wrong, it buried five bodies of work in one
-scroll and framed them as an appendix. Each category now has its own page at
-`/design/<category>`, and `/design` is a landing that presents all five.
+The single `/archive` page was wrong, it buried the design work in one scroll
+and framed it as an appendix. Each body of work now has its own page at
+`/design/<category>`, and `/design` is a landing that presents all three.
 
-Order is Print, Marketing, 3D, Motion, Personal, manual, in
+Order is American Scientific, Taranto's, Personal Works, manual, in
 `content/design.ts`, never sorted by the year label.
+
+### Sorted by client, not by medium
+
+This section was five categories by MEDIUM: Print, Marketing, 3D, Motion,
+Personal. That axis sorts the work by the tool used to make it, which answers
+"can he use After Effects". Sorting by who it was for answers "what did he own,
+and for how long", which is the question the work is evidence for. The print,
+marketing, 3D and motion pieces made at American Scientific were one sustained
+body of work and now sit in one place instead of being split four ways by
+software.
+
+`/design/print`, `/design/marketing`, `/design/3d` and `/design/motion` are
+retired. Their image folders held no files, only the generated README, so
+nothing moved and nothing was lost. **No redirects were added**, on the same
+reasoning as the retired Adobe Portfolio map in `next.config.ts`: three of the
+four old paths map cleanly onto American Scientific, but `/design/personal` is
+unchanged and a redirect map that is right three times out of four is worse
+than a 404 that hands over the section index. Add them if those URLs were ever
+published.
+
+American Scientific and Taranto's carry **no copy at all** — `intro`, `body`
+and `demonstrates` are empty, and every one of those fields renders nothing
+rather than a placeholder. Their pages are a heading and, once files land, a
+grid. Personal Works keeps the intro already written for it.
 
 **The "What it demonstrates" line is rendered as its own labelled block**, with
 the accent rule, above the images and separate from the intro. It is doing a
@@ -320,8 +344,8 @@ broken image icons, no "coming soon".
 ## The home page is two halves
 
 "Designer who ships software" only holds if both halves are on the page. The
-home page is Selected Work (three case studies at descending weight) and then
-Design (five categories, each with its intro, its year, its image count and a
+home page is Applications (three case studies at equal weight) and then
+Design (three categories, each with its intro, its image count and a
 lead image when the folder has one). The design half is a full section with the
 same heading treatment as the work half, not a single quiet link, which is
 what it was.
@@ -451,6 +475,34 @@ to type when it does not. The layout already handled that case, the lead has no
 cover today. The spec plate is still on the case study page, where it is a note
 from the author to the author and belongs.
 
+## Applications: one treatment, three times
+
+Selected Work used to render three ranks at three sizes: DrawEvolve at
+`--type-title` with full-bleed media, thoosie at `--type-entry` with media at
+two-thirds, Lynk as a bare ruled line with no media at all. The descending
+rhythm carried most of the hierarchy, and the argument for it was that Lynk
+being lightest was editorially correct because it is shelved.
+
+That argument is retired. Three shipped applications are three shipped
+applications, and setting one of them a third the size of another argues they
+are not comparable pieces of work. Every entry now uses one template — media
+above at full width, title at `--type-entry`, deck at `--text-md`, metadata —
+ruled top and bottom with symmetrical `padding-block`, so no entry crowds its
+neighbour.
+
+Order is the only remaining signal, which is why `SELECTED` in
+`content/index.ts` is manual and the page states "Manual running order".
+DrawEvolve, thoosie, Lynk.
+
+The one thing that still varies by position is `priority` on the first entry's
+image. That is a largest-contentful-paint loading hint, not a visual weight,
+and it is invisible in the layout.
+
+Lynk still reads as shelved — see below — but it does so through its `state`
+word and its copy, not by being small.
+
+---
+
 ## Lynk is shelved, structurally
 
 Not a content convention, there is no code path that can render Lynk as
@@ -535,21 +587,26 @@ Run on a clean `.next`:
 - `node scripts/check-links.mjs --probe`: both live links **200**, absolute.
 - **Zero** occurrences of `TODO`, `lorem`, `[[NEEDS`, "coming soon" or any
   placeholder text in the built HTML of any page.
-- **All five design category pages render their heading and their intro with an
-  empty folder**, and no grid element at all.
-- The folder convention tested end to end: five PNGs of ratios 3.08 / 0.77 /
-  1.00 / 2.10 / 1.50 dropped into `public/design/print/` produced five grid
-  items in filename order at spans 12 / 4 / 4 / 8 / 6, with alt text derived
-  from each filename and `05.png` correctly falling back to "Print". Files then
-  removed; the page returned to copy-only.
-- 375px: no horizontal overflow on `/`, `/design`, `/design/print`,
-  `/design/motion`, `/work/drawevolve`, `/about` or `/contact`.
+- **All three design category pages render with an empty folder**, and no grid
+  element at all. American Scientific and Taranto's have no copy either, so
+  those two render a heading and the pager and nothing between them — no empty
+  `<p>` in the built HTML, checked.
+- The folder convention was tested end to end when this section was five
+  categories by medium: five PNGs of ratios 3.08 / 0.77 / 1.00 / 2.10 / 1.50
+  dropped into what was then `public/design/print/` produced five grid items in
+  filename order at spans 12 / 4 / 4 / 8 / 6, with alt text derived from each
+  filename and `05.png` correctly falling back to the category title. Files
+  removed afterwards. That folder is retired, but the convention it exercised
+  is unchanged and still reads `public/design/<category>/`.
+- 375px: no horizontal overflow on `/`, `/design`, `/work/drawevolve`,
+  `/about` or `/contact`. **Not re-checked** against the retired category
+  routes, which no longer exist, or against the three that replaced them.
 - Case study bodies still verbatim against `portfolio-copy.md`.
 - Lynk carries no external link and no status word but "Shelved".
 
 ### Known gap
 
 `design-work-copy.md` **is not in the repository.** `content/design.ts` has
-`body: []` and `demonstrates: ""` on all five categories, and `designLanding.body`
-is empty. Nothing was invented to fill them and nothing renders in their place.
+`body: []` and `demonstrates: ""` on all three categories, `intro: ""` on
+American Scientific and Taranto's, and `designLanding.body` is empty. Nothing was invented to fill them and nothing renders in their place.
 Paste the copy into those fields and the elements appear with no other edit.

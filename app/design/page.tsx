@@ -14,10 +14,11 @@ export const metadata: Metadata = {
 };
 
 /* ============================================================================
-   /design, the five categories.
+   /design, the three bodies of work.
    ============================================================================
-   Order: Print, Marketing, 3D, Motion, Personal. Manual, from
-   content/design.ts. No dates anywhere.
+   Order: American Scientific, Taranto's, Personal Works. Manual, from
+   content/design.ts. Sorted by client rather than by medium. No dates
+   anywhere.
 
    Each row is a real entry to a real page, not a thumbnail strip: the title at
    display scale, the category's own intro, and, when files exist in its
@@ -62,7 +63,9 @@ export default function DesignPage() {
                   {category.title}
                 </Link>
               </h2>
-              <p className={styles.rowIntro}>{category.intro}</p>
+              {category.intro && (
+                <p className={styles.rowIntro}>{category.intro}</p>
+              )}
               {category.demonstrates && (
                 <p className={styles.demonstrates}>
                   <span className={styles.demonstratesTerm}>

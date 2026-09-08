@@ -3,7 +3,7 @@
 Portfolio. Next.js App Router, TypeScript, MDX content in-repo, no CMS,
 deployed on Vercel.
 
-Two halves: three case studies under `/work/`, five bodies of design work
+Two halves: three case studies under `/work/`, three bodies of design work
 under `/design/`. **[DECISIONS.md](DECISIONS.md)** carries the reasoning, type
 scale, palette, grid, and what was deliberately torn out.
 
@@ -20,7 +20,7 @@ pnpm check:links    # probe external links over the network
 ```
 content/
   index.ts         reads the three case studies. Tolerant, never throws.
-  design.ts        the five design categories, their order and their copy
+  design.ts        the three design categories, their order and their copy
   work/<slug>/     drawevolve, thoosie, lynk
 public/design/<category>/   design images, drop files in, that is the config
 public/media/<slug>/        case study images
@@ -33,11 +33,11 @@ scripts/check-links.mjs     the one build-time check
 ## Routes
 
 ```
-/                  home, hero, three case studies, five design categories
+/                  home, hero, three applications, three design categories
 /work/drawevolve   ┐
 /work/thoosie      ├ selected work
 /work/lynk         ┘
-/design            the five categories
+/design            the three bodies of work
 /design/print      ┐
 /design/marketing  │
 /design/3d         ├ a page per body of work

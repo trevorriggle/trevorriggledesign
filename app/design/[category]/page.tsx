@@ -72,7 +72,7 @@ export default async function DesignCategoryPage({
 
         <div className={styles.headGrid}>
           <h1 className={styles.title}>{found.title}</h1>
-          <p className={styles.intro}>{found.intro}</p>
+          {found.intro && <p className={styles.intro}>{found.intro}</p>}
         </div>
       </Container>
 

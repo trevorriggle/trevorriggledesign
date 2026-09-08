@@ -1,7 +1,15 @@
 /* ============================================================================
-   DESIGN WORK, the five categories.
+   DESIGN WORK, three bodies of work.
    ============================================================================
-   Order is Print, Marketing, 3D, Motion, Personal. Manual, and hardcoded.
+   Order is American Scientific, Taranto's, Personal Works. Manual, hardcoded.
+
+   THE ORGANISING AXIS CHANGED. This used to be five categories by MEDIUM,
+   Print, Marketing, 3D, Motion, Personal, which sorted the work by the tool
+   used to make it. It is now sorted by WHO IT WAS FOR. A medium split answers
+   "can he use After Effects"; a client split answers "what did he own, and for
+   how long", which is the question the work is actually evidence for. Print,
+   marketing, 3D and motion pieces made at American Scientific now sit in one
+   place, as the single sustained body of work they were.
 
    NO DATES. Categories carry no year. A design archive stamped 2021 tells a
    reader the work is old before they have looked at it, which is the opposite
@@ -13,18 +21,21 @@
      body          design-work-copy.md → the per-category copy.
      demonstrates  design-work-copy.md → the "What it demonstrates" line.
 
-   `body` and `demonstrates` are EMPTY because design-work-copy.md is not in
-   the repository, see DECISIONS.md. Nothing is invented to fill them and
-   nothing renders in their place: the category pages show their heading, their
-   intro and their images. Paste the copy into the two fields and both elements
-   appear, with no other edit anywhere.
+   The two client categories have EMPTY copy in all three fields, because no
+   copy has been written for this grouping yet and nothing here is invented.
+   Every field renders nothing when empty: those pages show their heading and
+   their images and no gap where a sentence should be. Paste the copy in and
+   the elements appear, with no other edit anywhere.
+
+   Personal Works keeps its intro, which was already written for exactly this
+   category and survives the reorganisation unchanged.
    ========================================================================= */
 
 export type DesignCategory = {
   /** URL segment: /design/<slug>, and the image folder public/design/<slug>/ */
   slug: string;
   title: string;
-  /** Verbatim from portfolio-copy.md. */
+  /** Verbatim from portfolio-copy.md. Empty renders nothing. */
   intro: string;
   /** Paragraphs, verbatim from design-work-copy.md. Empty renders nothing. */
   body: string[];
@@ -34,34 +45,16 @@ export type DesignCategory = {
 
 export const designCategories: DesignCategory[] = [
   {
-    slug: "print",
-    title: "Print",
-    intro:
-      "Catalog spreads and print layout. Long documents, tight grids, and the kind of typographic discipline that only shows up when it's missing.",
+    slug: "american-scientific",
+    title: "American Scientific",
+    intro: "",
     body: [],
     demonstrates: "",
   },
   {
-    slug: "marketing",
-    title: "Marketing",
-    intro:
-      "Campaign work at American Scientific: animated product flyers, web banners, and social assets, produced at volume across hundreds of client accounts.",
-    body: [],
-    demonstrates: "",
-  },
-  {
-    slug: "3d",
-    title: "3D Graphics",
-    intro:
-      "Product visualization and 3D work. Modeling, lighting, and render passes for commercial use.",
-    body: [],
-    demonstrates: "",
-  },
-  {
-    slug: "motion",
-    title: "Motion Graphics",
-    intro:
-      "Animation and motion work. Titles, product motion, and short-form pieces.",
+    slug: "tarantos",
+    title: "Taranto's",
+    intro: "",
     body: [],
     demonstrates: "",
   },
@@ -79,7 +72,7 @@ export const designCategories: DesignCategory[] = [
  * The /design landing copy, from design-work-copy.md → "section landing copy".
  *
  * Empty for the same reason as the fields above. The landing page renders its
- * heading and the five categories without it.
+ * heading and the three categories without it.
  */
 export const designLanding: { body: string[] } = { body: [] };
 

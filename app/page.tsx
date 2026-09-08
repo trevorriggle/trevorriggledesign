@@ -18,11 +18,12 @@ import styles from "./page.module.css";
    on the site by a wide margin, so "designer who ships software" lands before
    anything is clicked.
 
-   Below it, the three Selected Work pieces at DESCENDING visual weight:
-   DrawEvolve dominates, thoosie is second, Lynk is third and lightest. The
-   hierarchy is size and space only. There are no "featured" / "secondary"
-   labels anywhere, because a label that tells you what to look at is what you
-   write when the layout does not.
+   Below it, the three applications at EQUAL visual weight, in manual running
+   order: DrawEvolve, thoosie, Lynk. They used to descend in size, which
+   ranked them; three shipped products do not need ranking, and the order
+   already carries the sequence. There are no "featured" / "secondary" labels
+   anywhere, because a label that tells you what to look at is what you write
+   when the layout does not.
 
    Then one quiet line to the archive. It is not competing for attention, and
    it is the second click that reaches every remaining piece of work.
@@ -86,7 +87,7 @@ export default function HomePage() {
               Design
             </Link>
           </h2>
-          <p className={styles.designNote}>Five bodies of work</p>
+          <p className={styles.designNote}>Three bodies of work</p>
         </div>
 
         <ul className={styles.categories}>
@@ -118,7 +119,11 @@ export default function HomePage() {
                   )}
 
                   <span className={styles.categoryTitle}>{category.title}</span>
-                  <span className={styles.categoryIntro}>{category.intro}</span>
+                  {category.intro && (
+                    <span className={styles.categoryIntro}>
+                      {category.intro}
+                    </span>
+                  )}
                   <span className={styles.categoryMeta}>
                     {images.length > 0 && (
                       <span>
