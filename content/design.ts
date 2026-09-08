@@ -76,6 +76,54 @@ export const designCategories: DesignCategory[] = [
  */
 export const designLanding: { body: string[] } = { body: [] };
 
+/* ============================================================================
+   THUMBNAILS, the one place a card's picture is chosen.
+   ============================================================================
+   Keyed by "<category>" for a category card and "<category>/<group>" for a
+   group card. The value is a path inside that folder.
+
+   WHY THIS EXISTS. Without it a card shows the first file in the folder, and
+   the first file is whatever sorted first, not the strongest piece. Every
+   entry below was picked by looking at the images: a card has to read at
+   roughly 380x285, so a wide banner cropped to a landscape card loses its
+   ends, a dense infographic turns into texture, and a tall poster keeps only
+   a band out of its middle. What survives that crop is a single subject with
+   contrast, or a mockup shot at an angle.
+
+   To override one, change the path. Nothing else needs editing, and a path
+   that matches no file on disk falls back to the first item rather than
+   blanking the card.
+   ========================================================================= */
+
+export const designThumbs: Record<string, string> = {
+  /* The flyer mockup. The most legible "this is print work" frame in the
+     archive, and it survives the card crop because the piece is shot at an
+     angle against flat ground. */
+  "american-scientific": "02-print/01.jpg",
+  /* Old elephant seal beside the new am-sci wordmark: the rebrand IS the
+     before and after, so the only frame that shows the work is this one. */
+  "american-scientific/rebrand": "01.png",
+  "american-scientific/print": "01.jpg",
+  /* Phone mockups with a post open. Reads as social at any size. */
+  "american-scientific/social-media": "02.jpg",
+  /* The logo build. Square, so it crops cleanly, and 6.7 MB rather than the
+     55 MB and 33 MB clips beside it, which matters on a browsing page. */
+  "american-scientific/motion-graphics": "02.gif",
+
+  /* The menu trifold. Centre of the spread is the branded cover panel, which
+     is exactly what a landscape crop keeps. */
+  tarantos: "02.jpg",
+
+  /* The reaper. 1920x1440 is already the card's ratio, and it is one
+     high-contrast subject rather than a page of small marks. */
+  personal: "03-drawings/01.jpg",
+  /* Citrus Splash lettering: heavy, two colours, legible at any size. */
+  "personal/misc-art": "01.png",
+  "personal/comics": "03.jpg",
+  "personal/drawings": "01.jpg",
+  "personal/motion-graphics": "01.gif",
+};
+
 export function getCategory(slug: string): DesignCategory | undefined {
   return designCategories.find((c) => c.slug === slug);
 }

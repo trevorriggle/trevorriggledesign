@@ -25,15 +25,28 @@
    TWO DESTINATIONS, TWO NAMING RULES, because the two halves of the site read
    a folder differently:
 
-     public/design/<slug>/   THE FILENAME IS THE ORDER. lib/design-images.ts
-                             sorts the folder by filename and derives alt text
-                             from it. Subsection order therefore has to become
-                             a numeric prefix, so files land as NN.<ext> on one
-                             counter that runs through the subsections in rank
-                             order. Numbers only: alt text then falls back to
-                             the category name, which is the documented
-                             behaviour, instead of a UUID being read out to a
-                             screen reader. The copy pass renames them.
+     public/design/<slug>/   THE PATH IS THE ORDER. A subsection becomes a
+                             REAL DIRECTORY, numerically prefixed:
+
+                               public/design/american-scientific/
+                                 01-rebrand/01.png 02.png
+                                 02-print/01.jpg .. 05.jpg
+                                 03-social-media/...
+                                 04-motion-graphics/...
+
+                             The prefix is the group's rank, the rest is its
+                             slug, and lib/design-images.ts strips the prefix
+                             for the title and the URL. Same rule one level
+                             down: files are NN.<ext>, numbered per group.
+
+                             Numbers only, no descriptive stems: alt text
+                             falls back to the group name, which is the
+                             documented behaviour, instead of a UUID being
+                             read out to a screen reader.
+
+                             A category whose source folder has no
+                             subsections keeps its files directly in the
+                             category folder, and its own page is the gallery.
 
      public/media/<slug>/    THE FRONTMATTER IS THE ORDER. Filenames are only
                              referenced by content/work/<slug>/index.mdx, so
@@ -201,6 +214,17 @@ function resolveSlug(name, kind, titles) {
  * is that shape, so the slot stays empty rather than being filled by whatever
  * sorted first.
  */
+/**
+ * Files the drop must NOT overwrite, because what ships was derived from the
+ * master rather than copied from it.
+ *
+ * thoosiecoaster.mp4 is the one: the master is 101.7 MB at 20.9 Mbps, over
+ * GitHub's 100 MB limit and far past what a web hero should cost. What ships
+ * is the same 1226 frames re-encoded to 14.3 MB. Re-running this script must
+ * leave that alone; delete the shipped file first if you want the master back.
+ */
+const DERIVED = new Set(["thoosiecoaster.mp4"]);
+
 const DECLARED = {
   "thoosiecoaster.mp4": "thoosiecoaster.mp4",
   "3e5b5372-5ea3-4fbd-9a24-ba37fd104573_rw_1920.jpg":
@@ -256,42 +280,66 @@ function importSection(sectionDir, kind, titles) {
 
     const destDir = path.join(ROOT, "public", kind, slug);
     const subs = listDirs(group.path);
-    /* Files sitting directly in the group folder come before its subsections. */
-    const buckets = [
-      { label: "(root)", files: listMedia(group.path), dir: group.path },
-      ...subs.map((s) => ({
-        label: s.dirName,
-        files: listMedia(s.path),
-        dir: s.path,
-      })),
-    ];
+    const rootFiles = listMedia(group.path);
 
-    let n = 0;
-    for (const bucket of buckets) {
-      for (const file of bucket.files) {
-        /* A declared file still consumes its number, so the files around it
-           keep the positions filename order gave them. */
-        n += 1;
-        const declared = DECLARED[file];
-        if (declared) {
-          planFile(path.join(bucket.dir, file), destDir, declared);
-          continue;
-        }
-        const ext = path.extname(file).toLowerCase();
-        planFile(
-          path.join(bucket.dir, file),
+    if (kind === "design" && subs.length > 0) {
+      /* SUBSECTIONS BECOME DIRECTORIES, rank in the prefix, numbering
+         restarting inside each. Loose files in the category folder keep
+         sitting at its root, where they read as ungrouped pieces. */
+      subs.forEach((sub, i) => {
+        const groupDir = path.join(
           destDir,
-          `${String(n).padStart(2, "0")}${ext}`,
+          `${String(i + 1).padStart(2, "0")}-${norm(sub.name)}`,
         );
+        listMedia(sub.path).forEach((file, j) => {
+          planFile(
+            path.join(sub.path, file),
+            groupDir,
+            `${String(j + 1).padStart(2, "0")}${path.extname(file).toLowerCase()}`,
+          );
+        });
+      });
+      rootFiles.forEach((file, j) => {
+        planFile(
+          path.join(group.path, file),
+          destDir,
+          `${String(j + 1).padStart(2, "0")}${path.extname(file).toLowerCase()}`,
+        );
+      });
+    } else {
+      /* Flat: media entries, and design categories with no subsections. */
+      const buckets = [
+        { files: rootFiles, dir: group.path },
+        ...subs.map((s) => ({ files: listMedia(s.path), dir: s.path })),
+      ];
+
+      let n = 0;
+      for (const bucket of buckets) {
+        for (const file of bucket.files) {
+          /* A declared file still consumes its number, so the files around it
+             keep the positions filename order gave them. */
+          n += 1;
+          const declared = DECLARED[file];
+          if (declared) {
+            planFile(path.join(bucket.dir, file), destDir, declared);
+            continue;
+          }
+          const ext = path.extname(file).toLowerCase();
+          planFile(
+            path.join(bucket.dir, file),
+            destDir,
+            `${String(n).padStart(2, "0")}${ext}`,
+          );
+        }
       }
     }
 
     /* Any non-media file in the drop is named, not silently dropped. */
-    for (const bucket of buckets) {
-      for (const e of fs.readdirSync(bucket.dir, { withFileTypes: true })) {
+    for (const dir of [group.path, ...subs.map((s) => s.path)]) {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
         if (!e.isFile()) continue;
         if (IMAGE_EXT.test(e.name) || VIDEO_EXT.test(e.name)) continue;
-        skipped.push(path.relative(SRC_ROOT, path.join(bucket.dir, e.name)));
+        skipped.push(path.relative(SRC_ROOT, path.join(dir, e.name)));
       }
     }
   }
@@ -347,8 +395,13 @@ for (const e of fs.readdirSync(SRC_ROOT, { withFileTypes: true })) {
 /* -------------------------------------------------------------------------- */
 
 const counts = new Map();
+const preserved = [];
 for (const { srcPath, destDir, destName } of plan) {
   const rel = path.relative(ROOT, path.join(destDir, destName));
+  if (DERIVED.has(destName) && fs.existsSync(path.join(destDir, destName))) {
+    preserved.push(rel);
+    continue;
+  }
   if (!DRY) {
     fs.mkdirSync(destDir, { recursive: true });
     fs.copyFileSync(srcPath, path.join(destDir, destName));
@@ -381,6 +434,10 @@ for (const [kind, order] of Object.entries(sections)) {
   console.log(`${kind.padEnd(8)} ${order.join(", ")}`);
 }
 
+if (preserved.length) {
+  console.log("\n=== derived, left in place (master NOT copied over) ===");
+  for (const f of preserved) console.log(f);
+}
 if (unmapped.length) {
   console.log("\n=== UNMAPPED, copied nowhere ===");
   for (const u of unmapped) {

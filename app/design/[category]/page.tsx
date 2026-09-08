@@ -8,7 +8,12 @@ import {
   getCategory,
   categoryNeighbours,
 } from "@/content/design";
-import { getDesignImages } from "@/lib/design-images";
+import {
+  getDesignGroups,
+  getUngroupedImages,
+} from "@/lib/design-images";
+import { designGroupCards } from "@/lib/cards";
+import { CardGrid } from "@/components/ui/Card";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -47,8 +52,24 @@ export async function generateMetadata({
    doing a specific job: telling a technical reader who cannot evaluate design
    on its own terms what this work is evidence OF.
 
-   Images come from public/design/<category>/. An empty folder renders the copy
-   and no grid, no placeholder boxes, no broken images, no "coming soon".
+   TWO SHAPES, DECIDED BY THE FOLDER.
+
+   A category with GROUP DIRECTORIES (American Scientific: rebrand, print,
+   social media, motion graphics; Personal Works: misc art, comics, drawings,
+   motion graphics) is a BROWSING page. It renders one preview card per group
+   and the group page is where the pieces are. This is the fix for what these
+   pages were: a flat wall of images, every one at its own ratio-derived span,
+   which is a dump of assets rather than something anyone can browse.
+
+   A category with NO group directories (Taranto's, three pieces) is its own
+   DETAIL page and renders the gallery directly. Splitting three pieces into
+   sub-groups would be structure invented to satisfy a pattern.
+
+   A category can hold both: loose files at its root render as a gallery under
+   the group cards.
+
+   An empty folder renders the copy and no grid, no placeholder boxes, no
+   broken images, no "coming soon".
    ========================================================================= */
 
 export default async function DesignCategoryPage({
@@ -60,7 +81,8 @@ export default async function DesignCategoryPage({
   const found = getCategory(category);
   if (!found) notFound();
 
-  const images = getDesignImages(found.slug, found.title);
+  const groups = getDesignGroups(found.slug, found.title);
+  const loose = getUngroupedImages(found.slug, found.title);
   const { prev, next } = categoryNeighbours(found.slug);
 
   return (
@@ -95,9 +117,19 @@ export default async function DesignCategoryPage({
         </Container>
       )}
 
-      {images.length > 0 && (
+      {groups.length > 0 && (
         <Container as="section" className={styles.gridBlock}>
-          <DesignGrid images={images} priorityFirst />
+          <CardGrid
+            cards={designGroupCards(found.slug, found.title)}
+            priorityFirst
+            label={`${found.title}, groups of work`}
+          />
+        </Container>
+      )}
+
+      {loose.length > 0 && (
+        <Container as="section" className={styles.gridBlock}>
+          <DesignGrid images={loose} priorityFirst={groups.length === 0} />
         </Container>
       )}
 

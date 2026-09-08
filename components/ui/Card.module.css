@@ -1,0 +1,118 @@
+/* ============================================================================
+   PREVIEW CARD
+   ============================================================================
+   Consistent size across the grid is a hard requirement, not a preference, so
+   two things are pinned:
+
+     · the thumbnail box is `aspect-ratio: 4 / 3`, always, and the image is
+       `object-fit: cover` inside it
+     · the text block has a `min-height`, so a card with a two-line
+       description is exactly as tall as one with none
+
+   Without the second, a grid row's cards end up different heights and the
+   whole point of carding the content is lost.
+
+   No radius, no shadow, no lift on hover. The site's rules are hairlines and
+   sharp corners (--radius-* are all 0), and a card that grows a drop shadow
+   here would be the only such object on the site. Hover moves the title to
+   the signal colour and lifts the image a touch in brightness, nothing else.
+   ========================================================================= */
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--rhythm-tight) var(--grid-gap);
+}
+
+.cell { min-width: 0; }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* --- The crop ------------------------------------------------------------
+   The fixed box. `position: relative` because next/image `fill` needs a
+   positioned parent, and `overflow: hidden` because cover overflows it. */
+.media {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+}
+
+.image {
+  object-fit: cover;
+  object-position: center;
+  transition: opacity var(--duration-base) var(--ease-out);
+}
+
+.card:hover .image { opacity: 0.88; }
+
+/* --- The text ------------------------------------------------------------
+   min-height holds the row even, calculated for a title plus two lines of
+   description plus a meta line. */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 7.5rem;
+  padding-top: var(--space-4);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--text-lg);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.card:hover .title { color: var(--color-signal); }
+
+/* Clamped rather than truncated at a character count: the copy in the source
+   is verbatim and stays that way, this only bounds how much of it the
+   BROWSING tier shows. The full text is on the detail page. */
+.description {
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  color: var(--color-text-meta);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+}
+
+.meta {
+  margin-top: auto;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 62rem) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 34rem) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-6);
+  }
+  .text { min-height: 0; }
+}

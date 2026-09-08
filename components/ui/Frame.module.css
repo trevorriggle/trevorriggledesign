@@ -7,11 +7,29 @@
   margin: 0;
 }
 
+/* BOUNDED BY BOTH AXES, and cropped by neither.
+   ============================================================================
+   `width: auto` with a cap on each axis, rather than `width: 100%`, because
+   these images are wildly mixed and the binding constraint differs per image:
+   a 2400x993 print spread is width-bound and fills its column, a 2064x2752
+   iPad screenshot is HEIGHT-bound and comes out around 585px wide.
+
+   The height cap is the fix for the lead media. `width: 100%` in a full-width
+   container put that same portrait screenshot on screen at roughly 1200x1600,
+   which is the single biggest reason the site read as giant. Nothing here may
+   exceed 78vh, so no one image is ever taller than the window.
+
+   Not `object-fit: cover`: this is the DETAIL tier and proportion is the whole
+   point of it. Cropping to a uniform box is the preview card's job, one level
+   up. And not `contain` inside a full-width box either, which would matte a
+   portrait with 600px of ground on one side. Mixed aspect ratios are
+   preserved exactly. See DECISIONS.md on the gallery grid. */
 .image {
-  width: 100%;
+  display: block;
+  width: auto;
   height: auto;
-  /* Mixed aspect ratios are preserved. Nothing here is cropped to a uniform
-     tile, see DECISIONS.md on the gallery grid. */
+  max-width: 100%;
+  max-height: 78vh;
   background-color: var(--color-bg-sunk);
 }
 

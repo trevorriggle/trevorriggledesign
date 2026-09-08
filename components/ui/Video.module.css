@@ -1,9 +1,14 @@
 .slot { margin: 0; }
 
+/* Capped like every other piece of media on the site. The clip is 16:9 and
+   full bleed, so on a short wide window its natural height ran past the fold;
+   82vh bounds it and the element's own `object-fit: contain` default keeps the
+   frame intact rather than cropping it. */
 .video {
   display: block;
   width: 100%;
   height: auto;
+  max-height: 82vh;
   background: var(--color-bg-sunk);
   border: var(--rule-faint);
 }

@@ -104,11 +104,16 @@ export default async function CaseStudyPage({
         </Container>
       )}
 
+      {/* NOT full bleed, unlike the clip above it. Every cover in content is
+          now a portrait screenshot, and a portrait lead at 100vw is the
+          giant-image problem in its purest form: 100vw wide by 133vw tall.
+          In the container, height-capped by Frame, it comes out near 585px
+          wide and reads as a picture of an app rather than as wallpaper. */}
       {entry.cover?.exists && (
-        <Container width="full">
+        <Container>
           <Frame
             image={entry.cover}
-            sizes="100vw"
+            sizes="(max-width: 62rem) 100vw, 40rem"
             priority={!entry.video}
           />
         </Container>

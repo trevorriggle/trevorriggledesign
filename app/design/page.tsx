@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
-import { designCategories, designLanding } from "@/content/design";
-import { getDesignImages } from "@/lib/design-images";
+import { CardGrid } from "@/components/ui/Card";
+import { designLanding } from "@/content/design";
+import { designCategoryCards } from "@/lib/cards";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -20,17 +19,18 @@ export const metadata: Metadata = {
    content/design.ts. Sorted by client rather than by medium. No dates
    anywhere.
 
-   Each row is a real entry to a real page, not a thumbnail strip: the title at
-   display scale, the category's own intro, and, when files exist in its
-   folder, the first image as a lead. A category with an empty folder renders
-   its copy and no image, which is the correct empty state.
+   THREE PREVIEW CARDS, one shape. This used to be three editorial rows, each
+   with a lead image rendered at that image's own proportion beside the copy,
+   so the three rows never matched each other and a tall lead made its row
+   twice the height of the others. The cards are 4:3 every time and the
+   category page is the detail view.
+
+   A category with an empty folder cards up with no image rather than a grey
+   box, same standing rule as everywhere else.
    ========================================================================= */
 
 export default function DesignPage() {
-  const rows = designCategories.map((category) => ({
-    category,
-    lead: getDesignImages(category.slug, category.title)[0] ?? null,
-  }));
+  const cards = designCategoryCards();
 
   return (
     <>
@@ -51,53 +51,7 @@ export default function DesignPage() {
       </Container>
 
       <Container as="section" className={styles.list}>
-        {rows.map(({ category, lead }, i) => (
-          <article key={category.slug} className={styles.row}>
-            <p className={styles.ordinal} aria-hidden="true">
-              {String(i + 1).padStart(2, "0")}
-            </p>
-
-            <div className={styles.rowText}>
-              <h2 className={styles.rowTitle}>
-                <Link href={`/design/${category.slug}`} className={styles.rowLink}>
-                  {category.title}
-                </Link>
-              </h2>
-              {category.intro && (
-                <p className={styles.rowIntro}>{category.intro}</p>
-              )}
-              {category.demonstrates && (
-                <p className={styles.demonstrates}>
-                  <span className={styles.demonstratesTerm}>
-                    What it demonstrates
-                  </span>
-                  <span>{category.demonstrates}</span>
-                </p>
-              )}
-            </div>
-
-            {lead && (
-              <Link
-                href={`/design/${category.slug}`}
-                className={styles.rowMedia}
-                tabIndex={-1}
-                aria-hidden="true"
-              >
-                <Image
-                  src={lead.still}
-                  alt=""
-                  width={lead.width}
-                  height={lead.height}
-                  sizes="(max-width: 62rem) 100vw, 32rem"
-                  loading={i === 0 ? "eager" : "lazy"}
-                  /* A GIF lead is served as itself. See lib/design-images. */
-                  unoptimized={lead.passthrough}
-                  className={styles.rowImage}
-                />
-              </Link>
-            )}
-          </article>
-        ))}
+        <CardGrid cards={cards} priorityFirst label="Bodies of design work" />
       </Container>
     </>
   );

@@ -1,7 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
+import { CardGrid } from "@/components/ui/Card";
 import { getHomeTiles } from "@/lib/home-tiles";
+import { caseStudyCards } from "@/lib/cards";
+import { getSelected } from "@/content";
 import styles from "./page.module.css";
 
 /* ============================================================================
@@ -22,43 +25,67 @@ import styles from "./page.module.css";
    file renders its title on the flat ground and the grid hairlines carry the
    composition, because a 2x2 of grey placeholder rectangles is the one thing
    this page must not be.
+
+   AND THEN THE THREE APPLICATIONS, as preview cards. The doors are still the
+   page's structure and they are still four; this is the work itself, carded
+   exactly as /applications and /design card theirs, so the browsing tier is
+   one recognisable object wherever a visitor first meets it. Both tiers of
+   thumbnail on this page are a fixed 4:3 crop, so nothing here renders at its
+   own proportion or anywhere near native size.
    ========================================================================= */
 
 export default function HomePage() {
   const tiles = getHomeTiles();
 
   return (
-    <Container as="section" className={styles.home}>
-      <h1 className="visually-hidden">Trevor Riggle, design and software</h1>
+    <>
+      <Container as="section" className={styles.home}>
+        <h1 className="visually-hidden">Trevor Riggle, design and software</h1>
 
-      <ul className={styles.grid}>
-        {tiles.map((tile, i) => (
-          <li key={tile.slug} className={styles.cell}>
-            <Link href={tile.href} className={styles.tile}>
-              {tile.image && (
-                <span className={styles.media}>
-                  <Image
-                    src={tile.image.url}
-                    alt=""
-                    width={tile.image.width}
-                    height={tile.image.height}
-                    sizes="(max-width: 48rem) 100vw, 50vw"
-                    priority={i < 2}
-                    /* An animated tile thumbnail stays animated. */
-                    unoptimized={tile.image.unoptimized}
-                    className={styles.image}
-                  />
+        <ul className={styles.grid}>
+          {tiles.map((tile, i) => (
+            <li key={tile.slug} className={styles.cell}>
+              <Link href={tile.href} className={styles.tile}>
+                {tile.image && (
+                  <span className={styles.media}>
+                    <Image
+                      src={tile.image.url}
+                      alt=""
+                      width={tile.image.width}
+                      height={tile.image.height}
+                      sizes="(max-width: 48rem) 100vw, 50vw"
+                      priority={i < 2}
+                      /* An animated tile thumbnail stays animated. */
+                      unoptimized={tile.image.unoptimized}
+                      className={styles.image}
+                    />
+                  </span>
+                )}
+
+                <span className={styles.label}>
+                  <span className={styles.title}>{tile.title}</span>
+                  {tile.meta && (
+                    <span className={styles.meta}>{tile.meta}</span>
+                  )}
                 </span>
-              )}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Container>
 
-              <span className={styles.label}>
-                <span className={styles.title}>{tile.title}</span>
-                {tile.meta && <span className={styles.meta}>{tile.meta}</span>}
-              </span>
+      <Container as="section" className={styles.applications}>
+        <div className={styles.sectionHead}>
+          <h2 className={styles.sectionTitle}>
+            <Link href="/applications" className={styles.sectionLink}>
+              Applications
             </Link>
-          </li>
-        ))}
-      </ul>
-    </Container>
+          </h2>
+          <p className={styles.sectionMeta}>Manual running order</p>
+        </div>
+
+        <CardGrid cards={caseStudyCards(getSelected())} label="Applications" />
+      </Container>
+    </>
   );
 }

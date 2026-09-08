@@ -1,14 +1,25 @@
 import fs from "node:fs";
 import path from "node:path";
 import { imageSize } from "image-size";
+import { designThumbs } from "@/content/design";
 
 /* ============================================================================
-   DESIGN MEDIA, a folder is still the config.
+   DESIGN MEDIA, a folder is still the config, and now a folder is a GROUP.
    ============================================================================
-   Drop a file into public/design/<category>/ and it appears on that category's
-   page, sorted by filename. No manifest, no registry, no per-image frontmatter
-   and no import to add. That is the entire system, and it now covers motion as
-   well as stills.
+   Two levels, both read straight off disk:
+
+     public/design/<category>/NN.<ext>              an ungrouped piece
+     public/design/<category>/NN-<group>/NN.<ext>    a piece inside a group
+
+   THE NUMERIC PREFIX IS THE ORDER, at both levels. "02-print" is the second
+   group and its slug is `print`; the prefix never reaches a title or a URL.
+   A category with no group directories is a flat gallery and its own page is
+   the detail view, which is the right shape for a body of work small enough
+   that splitting it would be pretend structure.
+
+   TITLES ARE DERIVED FROM THE DIRECTORY NAME, "03-social-media" -> "Social
+   Media". Nothing is written here. The drop's own folder names are the source,
+   which is why they survive the import unaltered apart from casing.
 
    MOTION IS TWO FORMATS, AND THE FORMAT ON DISK IS THE FORMAT THAT SHIPS.
 
@@ -22,22 +33,22 @@ import { imageSize } from "image-size";
 
    A .mp4 is a VIDEO, and only a file that is already an .mp4 is one. Nothing
    in this repo transcodes: there is no sharp, no ffmpeg step, no build hook
-   that rewrites a file in public/. The earlier archive shipped MP4s that were
-   converted by hand, outside the build, from GIF masters. That conversion is
-   no longer the rule. See DECISIONS.md.
+   that rewrites a file in public/. See DECISIONS.md.
 
    THE PAIRING RULE. A video is `<name>.mp4` plus a poster image at the SAME
    STEM, `<name>.jpg`. The poster is what renders before playback and what any
    caller uses when it needs a still. A poster is never listed as a work of its
-   own: it is claimed by its video and drops out of the still list, so
-   `10-banner.mp4` + `10-banner.jpg` is ONE item in the grid, not two.
+   own: it is claimed by its video and drops out of the still list.
 
    Dimensions come from the file header at build time, the poster's header in
    the video case, so next/image and the <video> box both get real width and
    height and nothing shifts as the page loads.
 
-   Alt text is derived from the filename, "03-catalog-spread.jpg" becomes
-   "Catalog spread", and falls back to the category name. It never blocks.
+   THUMBNAILS. Every card needs one representative still, and the default is
+   the first item, which is the first file of the first group. That default is
+   frequently wrong: the first file is whatever sorted first, not the strongest
+   piece. `designThumbs` in content/design.ts overrides it by path, and that
+   map is the only place a thumbnail choice is recorded.
 
    An empty or absent folder returns an empty array. Callers render their copy
    and no grid.
@@ -55,6 +66,9 @@ const PASSTHROUGH_EXT = /\.(gif|svg)$/i;
 const VIDEO_EXT = /\.(mp4|webm)$/i;
 /** Extensions tried, in order, when looking for a video's poster. */
 const POSTER_EXT = ["jpg", "jpeg", "png", "webp", "avif"];
+
+/** "02-print" -> { order: 2, slug: "print" }. An unprefixed name sorts last. */
+const GROUP_DIR = /^(\d{1,3})-(.+)$/;
 
 export type DesignItem = {
   kind: "image" | "video";
@@ -80,12 +94,24 @@ export type DesignItem = {
   passthrough: boolean;
 };
 
+export type DesignGroup = {
+  /** URL segment: /design/<category>/<slug>. Prefix stripped. */
+  slug: string;
+  /** Derived from the directory name. "03-social-media" -> "Social Media". */
+  title: string;
+  order: number;
+  href: string;
+  items: DesignItem[];
+  /** The card image. `designThumbs` first, else the first item. */
+  thumb: DesignItem | null;
+};
+
 /**
  * Filename → alt text.
  *
  * Strips the extension, a leading sort prefix ("03-", "02_"), then turns
  * separators into spaces. Returns "" when nothing meaningful survives, so the
- * caller can fall back to the category name.
+ * caller can fall back to the group or category name.
  */
 function altFromFilename(file: string): string {
   const base = file
@@ -101,6 +127,15 @@ function altFromFilename(file: string): string {
   return base.charAt(0).toUpperCase() + base.slice(1);
 }
 
+/** "social-media" -> "Social Media". Derivation, never authored copy. */
+function titleFromSlug(slug: string): string {
+  return slug
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
 function measure(file: string): { width: number; height: number } {
   try {
     const dims = imageSize(fs.readFileSync(file));
@@ -114,16 +149,26 @@ function measure(file: string): { width: number; height: number } {
   return { width: 1600, height: 1067 };
 }
 
-export function getDesignImages(
-  category: string,
-  categoryTitle: string,
-): DesignItem[] {
-  const dir = path.join(process.cwd(), "public", "design", category);
-  if (!fs.existsSync(dir)) return [];
+/** The comparator every level sorts with, so import order == page order. */
+const byName = (a: string, b: string) =>
+  a.localeCompare(b, "en", { numeric: true });
 
+/**
+ * Every item in one directory, non-recursive.
+ *
+ * `urlBase` is what the filenames hang off, and `altFallback` is the name used
+ * when a filename carries no words, which is every file the importer wrote.
+ */
+function itemsIn(
+  dir: string,
+  urlBase: string,
+  altFallback: string,
+): DesignItem[] {
   let files: string[];
   try {
-    files = fs.readdirSync(dir);
+    files = fs.readdirSync(dir, { withFileTypes: true })
+      .filter((e) => e.isFile())
+      .map((e) => e.name);
   } catch {
     return [];
   }
@@ -147,8 +192,8 @@ export function getDesignImages(
   const items: DesignItem[] = [];
 
   for (const file of files) {
-    const url = `/design/${category}/${file}`;
-    const alt = altFromFilename(file) || categoryTitle;
+    const url = `${urlBase}/${file}`;
+    const alt = altFromFilename(file) || altFallback;
 
     if (VIDEO_EXT.test(file)) {
       const stem = file.replace(VIDEO_EXT, "");
@@ -162,7 +207,7 @@ export function getDesignImages(
       if (!posterFile) continue;
 
       const { width, height } = measure(path.join(dir, posterFile));
-      const poster = `/design/${category}/${posterFile}`;
+      const poster = `${urlBase}/${posterFile}`;
       items.push({
         kind: "video",
         src: url,
@@ -194,14 +239,129 @@ export function getDesignImages(
     });
   }
 
-  items.sort((a, b) =>
-    a.src.localeCompare(b.src, "en", { numeric: true }),
-  );
-
+  items.sort((a, b) => byName(a.src, b.src));
   return items;
 }
 
-/** How many pieces a category has, for the landing page. Pairs count once. */
+function categoryDir(category: string): string {
+  return path.join(process.cwd(), "public", "design", category);
+}
+
+/**
+ * The group directories of a category, in prefix order.
+ *
+ * Returns [] for a flat category, which is how every caller tells the two
+ * shapes apart.
+ */
+export function getDesignGroups(
+  category: string,
+  categoryTitle: string,
+): DesignGroup[] {
+  const dir = categoryDir(category);
+  if (!fs.existsSync(dir)) return [];
+
+  let dirs: string[];
+  try {
+    dirs = fs
+      .readdirSync(dir, { withFileTypes: true })
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name);
+  } catch {
+    return [];
+  }
+
+  const groups = dirs.map((name) => {
+    const m = GROUP_DIR.exec(name);
+    const slug = m ? m[2] : name;
+    const order = m ? Number(m[1]) : Number.MAX_SAFE_INTEGER;
+    const title = titleFromSlug(slug);
+    const items = itemsIn(
+      path.join(dir, name),
+      `/design/${category}/${name}`,
+      title || categoryTitle,
+    );
+
+    return {
+      slug,
+      title,
+      order,
+      href: `/design/${category}/${slug}`,
+      items,
+      thumb: pickThumb(items, designThumbs[`${category}/${slug}`]),
+    };
+  });
+
+  /* A group with no readable media is not a group. It would card up as an
+     empty box linking to an empty page. */
+  return groups
+    .filter((g) => g.items.length > 0)
+    .sort((a, b) => a.order - b.order || byName(a.slug, b.slug));
+}
+
+/** One group by slug, prefix-insensitive, or null. */
+export function getDesignGroup(
+  category: string,
+  categoryTitle: string,
+  slug: string,
+): DesignGroup | null {
+  return (
+    getDesignGroups(category, categoryTitle).find((g) => g.slug === slug) ??
+    null
+  );
+}
+
+/** Items sitting directly in the category folder, ungrouped. */
+export function getUngroupedImages(
+  category: string,
+  categoryTitle: string,
+): DesignItem[] {
+  const dir = categoryDir(category);
+  if (!fs.existsSync(dir)) return [];
+  return itemsIn(dir, `/design/${category}`, categoryTitle);
+}
+
+/**
+ * Every image in a category, groups flattened in order, for counts and for the
+ * flat gallery a grouped category never renders.
+ */
+export function getDesignImages(
+  category: string,
+  categoryTitle: string,
+): DesignItem[] {
+  return [
+    ...getUngroupedImages(category, categoryTitle),
+    ...getDesignGroups(category, categoryTitle).flatMap((g) => g.items),
+  ];
+}
+
+/**
+ * `designThumbs` wins, then the first item.
+ *
+ * An override that matches nothing on disk falls through to the default
+ * rather than blanking the card: a stale path in that map is a typo, not a
+ * reason for a page to lose its thumbnail.
+ */
+function pickThumb(
+  items: DesignItem[],
+  override: string | undefined,
+): DesignItem | null {
+  if (override) {
+    const found = items.find((i) => i.still.endsWith(`/${override}`));
+    if (found) return found;
+  }
+  return items[0] ?? null;
+}
+
+/** The card image for a whole category. Looks through its groups. */
+export function getCategoryThumb(
+  category: string,
+  categoryTitle: string,
+): DesignItem | null {
+  const all = getDesignImages(category, categoryTitle);
+  return pickThumb(all, designThumbs[category]);
+}
+
+/** How many pieces a category has. Pairs count once. */
 export function countDesignImages(category: string): number {
   return getDesignImages(category, category).length;
 }

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getSelected } from "@/content";
 import { designCategories } from "@/content/design";
+import { getDesignGroups } from "@/lib/design-images";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -27,5 +28,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...routes, ...studies, ...design];
+  /* The group detail pages, one per public/design/<category>/NN-<group>/.
+     Derived from the folders, like the routes themselves, so adding a group
+     directory puts it in the sitemap with no edit here. Ranked below their
+     category: a group page carries pieces, the category page carries the
+     writing. */
+  const groups = designCategories.flatMap((category) =>
+    getDesignGroups(category.slug, category.title).map((group) => ({
+      url: `${site.url}/design/${category.slug}/${group.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  );
+
+  return [...routes, ...studies, ...design, ...groups];
 }
