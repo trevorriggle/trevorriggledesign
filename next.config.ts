@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
   },
 
   /* One redirect. /work was this site's own previous index route and is the
-     only old path with a certain destination.
+     only old path with a certain destination. It pointed at `/` while the
+     home page WAS the list of applications; now that home is a 2x2 of four
+     doors, the honest destination is /applications, which is the page /work
+     actually was.
 
      The Adobe Portfolio category redirects are gone. They were guesses at
      which old slug mapped to which medium, they pointed at an /archive route
@@ -18,7 +21,7 @@ const nextConfig: NextConfig = {
      hands over the site index, which is the honest answer for a URL nobody
      can confirm ever existed. */
   async redirects() {
-    return [{ source: "/work", destination: "/", permanent: true }];
+    return [{ source: "/work", destination: "/applications", permanent: true }];
   },
 };
 

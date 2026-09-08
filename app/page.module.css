@@ -1,227 +1,88 @@
 /* ============================================================================
-   HOME
+   HOME, a 2x2 and nothing else.
    ============================================================================
-   Composition:
+   The whole page is four cells. There is no masthead, no hero, no subhead and
+   no vitals rail: all of that went with the Applications section when it moved
+   to its own route.
 
-   · An opening that is type and nothing else, at hero scale, hanging off the
-     left edge with enormous air under it. No image slot, there is no image
-     worth putting above a hiring team's first read, and a hero image slot
-     would be the largest placeholder on the site.
-   · The subhead sits in a NARROW column pushed right and down, so the
-     headline overhangs it. That offset is the whole masthead composition:
-     two blocks on different axes, not a stack on one centre line.
-   · Then the running order, crowded tight so it reads as an index.
-   · Then the section index, with the most air on the page above it.
-
-   Rhythm, deliberately unequal: the masthead gets `--rhythm-loose` under it,
-   the index gets `--rhythm-crowd` between its own rows, and the two big
-   blocks sit at different distances from what precedes them.
+   THE CELLS ARE DEFINED BY RULES, NOT BY BOXES. Structural hairlines between
+   the four cells give the grid its shape whether or not any thumbnail exists
+   yet. That is the difference between composition and a placeholder: a rule is
+   a real element of this design system, a grey rectangle at 4:3 is a hole with
+   a colour in it.
    ========================================================================= */
 
-/* No padding above the rule. It sits directly under the nav, so the page
-   opens on a line of colour rather than on a field of nothing. */
-.masthead {
-  padding-top: 0;
-  padding-bottom: var(--rhythm-loose);
-}
-
-.mastheadGrid {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  row-gap: var(--space-7);
-  align-items: start;
-}
-
-/* Spans 11 of 12 and overhangs the subhead below it. */
-.statement { grid-column: 1 / 12; }
-
-/* The one place on the site set at hero scale: 129px at the top of the clamp,
-   7.6x the body size. Leading below 1 so the lines lock into a single block
-   of texture instead of reading as three separate sentences. */
-.headline {
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
-  font-size: var(--type-hero);
-  line-height: var(--leading-hero);
-  letter-spacing: var(--tracking-hero);
-  max-width: 15ch;
-  text-wrap: balance;
-  /* Pull the first line's cap-height flush with the top rule. Optical, not
-     structural, the serif carries visible sidebearing at this size. */
-  margin-left: -0.045em;
-}
-
-/* Flush left, on the same axis as the accent bar and the headline above it.
-
-   It used to start at column 4 with a 24ch measure, which put its left edge on
-   no axis the page uses and its right edge nowhere near the metadata rail: a
-   block of text floating in the middle of the masthead. Column 1 with a real
-   measure is the fix. The asymmetry is still there, it is just carried by the
-   rail sitting right rather than by an arbitrary indent. */
-.subheadWrap {
-  grid-column: 1 / 7;
-  margin-top: var(--space-7);
-}
-
-.subhead {
-  font-size: var(--text-lg);
-  line-height: var(--leading-snug);
-  color: var(--color-text);
-  max-width: 42ch;
-}
-
-/* The single accent mark in the masthead, and one of very few on the site. */
-/* A solid bar, not a hairline. It is the first thing on the page and it is
-   the accent's loudest appearance. */
-.rule {
-  grid-column: 1 / -1;
-  height: var(--space-2);
-  background: var(--color-signal-solid);
-  margin-bottom: var(--space-6);
-}
-
-.vitals { grid-column: 10 / -1; }
-
-/* --- Applications ------------------------------------------------------- */
-
-/* Crowds the masthead deliberately: the work should begin immediately after
-   the opening statement, not after another beat of silence. */
-.applications {
-  border-top: var(--rule-heavy);
-  padding-top: var(--space-4);
-}
-
-.applicationsHead {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  align-items: baseline;
-  margin-bottom: var(--space-8);
-}
-
-.applicationsTitle {
-  grid-column: 1 / 8;
-  font-size: var(--type-section);
-  line-height: var(--leading-display);
-  letter-spacing: var(--tracking-display);
-}
-
-.applicationsNote {
-  grid-column: 8 / -1;
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-}
-
-/* --- Design: the second half, and it is a half --------------------------- */
-
-.design {
-  border-top: var(--rule-heavy);
-  padding-top: var(--space-4);
-  margin-top: var(--rhythm-loose);
+.home {
+  padding-top: var(--rhythm-tight);
   padding-bottom: var(--rhythm-normal);
 }
 
-.designHead {
+.grid {
   display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  align-items: baseline;
-  margin-bottom: var(--space-8);
-}
-
-.designTitle {
-  grid-column: 1 / 8;
-  font-size: var(--type-section);
-  line-height: var(--leading-display);
-  letter-spacing: var(--tracking-display);
-}
-
-.designTitleLink {
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.designTitleLink:hover { color: var(--color-signal); }
-
-.designNote {
-  grid-column: 8 / -1;
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-}
-
-.categories {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
   list-style: none;
   margin: 0;
   padding: 0;
+  /* The outer edge of the 2x2. The inner hairlines come from the cells. */
+  border-top: var(--rule);
+  border-left: var(--rule);
 }
 
-.category { border-top: var(--rule); }
-.category:last-child { border-bottom: var(--rule); }
+.cell {
+  border-right: var(--rule);
+  border-bottom: var(--rule);
+  min-width: 0;
+}
 
-.categoryLink {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  align-items: baseline;
-  padding-block: var(--space-6);
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  height: 100%;
+  padding: var(--space-5);
   text-decoration: none;
-  color: inherit;
+  /* Holds the 2x2 as a square-ish composition while the tiles are text only.
+     Once every cell carries an image the media box drives the height and this
+     floor stops mattering. */
+  min-height: 16rem;
   transition: background-color var(--duration-fast) var(--ease-out);
 }
 
-.categoryLink:hover { background: var(--color-bg-sunk); }
-.categoryLink:hover .categoryTitle { color: var(--color-signal); }
+.tile:hover { background: var(--color-bg-sunk); }
+.tile:hover .title { color: var(--color-signal); }
 
-/* The lead thumbnail. Present only when the folder has files; when it is
-   absent the title simply starts at column 1 and the row closes up. */
-.categoryMedia {
-  grid-column: 1 / 4;
+.media {
   display: block;
-  align-self: start;
+  overflow: hidden;
 }
 
-.categoryImage {
+.image {
   display: block;
   width: 100%;
   height: auto;
-  background: var(--color-bg-sunk);
 }
 
-.categoryMedia + .categoryTitle { grid-column: 4 / 7; }
-.categoryMedia ~ .categoryIntro { grid-column: 7 / 11; }
+/* Pushed to the bottom of the cell, so the four titles sit on one line
+   across the grid whether or not the tiles above them are the same height. */
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: auto;
+}
 
-.categoryTitle {
-  grid-column: 1 / 4;
+.title {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
+  font-variation-settings: "wdth" var(--width-display-mid);
   font-size: var(--type-entry);
-  line-height: var(--leading-title);
+  line-height: var(--leading-snug);
   letter-spacing: var(--tracking-display);
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.categoryIntro {
-  grid-column: 4 / 11;
-  font-size: var(--text-base);
-  line-height: var(--leading-snug);
-  color: var(--color-text);
-  max-width: 52ch;
-}
-
-.categoryMeta {
-  grid-column: 11 / -1;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
+.meta {
   font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-caps);
@@ -230,39 +91,9 @@
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 62rem) {
-  .statement,
-  .subheadWrap,
-  .vitals { grid-column: 1 / -1; }
-
-  .subheadWrap { margin-top: 0; }
-  .mastheadGrid { row-gap: var(--space-6); }
-
-  .applicationsTitle,
-  .applicationsNote { grid-column: 1 / -1; }
-  .applicationsHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
-
-  .designTitle,
-  .designNote { grid-column: 1 / -1; }
-  .designHead { row-gap: var(--space-3); margin-bottom: var(--space-6); }
-
-  .categoryMedia,
-  .categoryTitle,
-  .categoryIntro,
-  .categoryMeta { grid-column: 1 / -1; }
-  .categoryMedia + .categoryTitle { grid-column: 1 / -1; }
-  .categoryMedia ~ .categoryIntro { grid-column: 1 / -1; }
-  .categoryMedia { margin-bottom: var(--space-4); }
-  .categoryIntro { margin-top: var(--space-3); }
-  .categoryMeta {
-    flex-direction: row;
-    gap: var(--space-4);
-    margin-top: var(--space-3);
-  }
-}
-
-/* 375px. The hero holds its clamp floor rather than collapsing to body size, the whole point of a steep scale is that it survives the phone. */
-@media (max-width: 30rem) {
-  .headline { max-width: none; }
-  .masthead { padding-bottom: var(--rhythm-normal); }
+/* One column on a phone. Two 50vw tiles side by side put the titles at a
+   measure nothing can read. */
+@media (max-width: 48rem) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .tile { min-height: 11rem; }
 }

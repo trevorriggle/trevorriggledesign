@@ -205,40 +205,38 @@ looked at any of it, which is the opposite of what an archive is for.
 
 ---
 
-## The masthead
+## The masthead is gone
 
-Three things sit on one axis at the left edge: the accent bar, the headline and
-the subhead. Measured in the browser at 1440px they land at 79 / 73 / 79px, the
-headline three pixels proud because of a `-0.02em` optical pull that
-compensates for glyph sidebearing at 129px.
+There is no masthead. The home page is a 2x2 of four tiles and nothing else,
+so the accent bar, the headline, the subhead and the vitals rail are all out of
+the build. What this section used to record, the three elements sharing a left
+axis at 79 / 73 / 79px and the optical pull on the headline, describes a page
+that no longer exists.
 
-**The subhead used to start at column 4** with a 24ch measure, which put its
-left edge on no axis the page used and its right edge nowhere near the metadata
-rail: a block of text floating in the middle of the masthead. It is now flush
-left on a 42ch measure. The asymmetry is still there, carried by the rail
-sitting right rather than by an arbitrary indent.
-
-**There is no padding above the accent bar.** It sits directly under the nav,
-so the page opens on a band of colour rather than on a field of nothing.
+The accent has not lost its loudest appearance to nothing in particular: it now
+carries the tile titles on hover and the focus ring, and the solid bar is
+simply not on the page any more.
 
 ---
 
-## The headline is not the copy file's headline
+## The headline is gone too, and it was the author's own sentence
 
-`portfolio-copy.md` opens "Graphic designer who ships software." It has been
-replaced twice, both times on request.
+Recorded because it took two attempts to land and should not be re-derived from
+scratch if a hero ever comes back.
 
-The first replacement was built from the About copy's "I design the thing,
-build the thing" and was rejected as a slogan, which it was: the construction
-is a rhetorical tic, and it reads as branding rather than as a claim.
-
-The headline now is the opening line of the AI Systems section intro,
-verbatim:
+`portfolio-copy.md` opens "Graphic designer who ships software." That was
+replaced twice, both times on request. The first replacement was built from the
+About copy's "I design the thing, build the thing" and was rejected as a
+slogan, which it was. The version that stood was the opening line of the AI
+Systems section intro, verbatim:
 
 > Products I designed and built end to end.
 
-It is a statement of fact in the same register as the rest of the site, and it
-is the author's own sentence. One line in `app/page.tsx` to swap.
+**It was removed on request when the home page became a tile grid**, not
+because anything was wrong with it. It was written as the site's opening
+statement, not as an introduction to three case studies, so it did not travel
+to `/applications` with the set it used to sit above. It is not parked anywhere
+in the build. Put it back by adding it above the grid in `app/page.tsx`.
 
 ---
 
@@ -392,14 +390,44 @@ broken image icons, no "coming soon".
 
 ---
 
-## The home page is two halves
+## The home page is four doors
 
-"Designer who ships software" only holds if both halves are on the page. The
-home page is Applications (three case studies at equal weight) and then
-Design (three categories, each with its intro, its image count and a
-lead image when the folder has one). The design half is a full section with the
-same heading treatment as the work half, not a single quiet link, which is
-what it was.
+It used to be two halves on one scroll: Applications (the three case studies)
+and then Design (the categories), under the hero, with the nav's Applications
+tab pointing at the `#applications` fragment. **The home page was the
+Applications page**, which is why that tab scrolled you down it.
+
+It is now a 2x2 grid of four tiles, and nothing else: Applications, Design,
+Agentic AI, About. Each is one link wrapping its thumbnail and its title, so
+the whole cell is the target. Contact is not a tile; it is a utility, in the
+nav and the footer, not somewhere anyone browses into.
+
+Applications moved to its own route at `/applications` and every nav label now
+resolves to a real page. Two links that pointed at the old fragment came with
+it: the case study breadcrumb and the 404's "Back to the work". The `/work`
+redirect in `next.config.ts` was aimed at `/`, which was correct only while
+home *was* the list of applications; it now points at `/applications`, the page
+`/work` actually was.
+
+### The tiles carry no invented copy
+
+Each tile is a title plus a **derived count**: "3 applications" from the length
+of `SELECTED`, "3 bodies of work" from the length of `designCategories`.
+Neither is a sentence anyone has to keep true by hand. Agentic AI and About
+have nothing to count and carry nothing; no blurb was written to fill the gap.
+
+### Thumbnails are drop-in, and there is no placeholder box
+
+`public/home/<slug>.<ext>`, the same "a folder is the config" rule `/design`
+runs on. Drop `design.jpg` in and the Design tile grows an image; dimensions
+are read from the file header at build time so nothing shifts as tiles load.
+
+**No image files exist yet.** A tile without one renders its title and count on
+the flat ground, and the grid's own hairlines carry the composition. It does
+not render a grey rectangle at the image's aspect ratio: this site has a
+standing rule against placeholder boxes, and a 2x2 of empty rectangles would be
+the largest possible violation of it. `.tile` holds a `min-height` so the grid
+still reads as a composition while the cells are text only.
 
 `Design` is also a fourth nav label. The copy specifies three and says to keep
 it to three; a nav that names only the software half argues against the site's

@@ -57,9 +57,14 @@ export const site = {
 
    "Applications" is the three shipped products. "Agentic AI" is its own
    section rather than a subsection of them, because the multi-agent build
-   process is a separate competence from the products it produced. */
+   process is a separate competence from the products it produced.
+
+   Applications points at /applications, a real route. It used to be the
+   fragment /#applications, because the home page WAS the applications page.
+   Home is now a 2x2 of four doors and every nav label resolves to its own
+   page, so no tab scrolls you down someone else's. */
 export const nav = [
-  { label: "Applications", href: "/#applications" },
+  { label: "Applications", href: "/applications" },
   { label: "Design", href: "/design" },
   { label: "Agentic AI", href: "/agentic-ai" },
   { label: "About", href: "/about" },

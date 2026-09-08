@@ -3,9 +3,10 @@
 Portfolio. Next.js App Router, TypeScript, MDX content in-repo, no CMS,
 deployed on Vercel.
 
-Two halves: three case studies under `/work/`, three bodies of design work
-under `/design/`. **[DECISIONS.md](DECISIONS.md)** carries the reasoning, type
-scale, palette, grid, and what was deliberately torn out.
+Home is a 2x2 of four doors: Applications, Design, Agentic AI, About. Three
+case studies live under `/work/`, three bodies of design work under `/design/`.
+**[DECISIONS.md](DECISIONS.md)** carries the reasoning, type scale, palette,
+grid, and what was deliberately torn out.
 
 ```bash
 pnpm install
@@ -23,27 +24,31 @@ content/
   design.ts        the three design categories, their order and their copy
   work/<slug>/     drawevolve, thoosie, lynk
 public/design/<category>/   design images, drop files in, that is the config
+public/home/<slug>.<ext>    the four home tile thumbnails, same rule
 public/media/<slug>/        case study images
 styles/tokens.css           every colour, type size, space and grid value
 lib/site.ts                 name, domain, email, nav
 lib/design-images.ts        reads the design folders at build time
+lib/home-tiles.ts           the four home tiles and their thumbnails
 scripts/check-links.mjs     the one build-time check
 ```
 
 ## Routes
 
 ```
-/                  home, hero, three applications, three design categories
-/work/drawevolve   ┐
-/work/thoosie      ├ selected work
-/work/lynk         ┘
-/design            the three bodies of work
-/design/print      ┐
-/design/marketing  │
-/design/3d         ├ a page per body of work
-/design/motion     │
-/design/personal   ┘
-/about  /contact   404
+/                          home, a 2x2 of four tiles and nothing else
+/applications              the three shipped products, equal weight
+/work/drawevolve           ┐
+/work/thoosie              ├ a page per application
+/work/lynk                 ┘
+/design                    the three bodies of work
+/design/american-scientific ┐
+/design/tarantos            ├ a page per body of work
+/design/personal            ┘
+/agentic-ai                its own section
+/about  /contact           404
+
+/work redirects to /applications, permanent.
 ```
 
 ## Adding design work
@@ -62,9 +67,17 @@ operation, no manifest, no registry, no per-image config, no code edit.
 
 ## Adding design copy
 
-`content/design.ts`. Each category has `intro` (already filled, from
-`portfolio-copy.md`), `body` and `demonstrates`. An empty `body` or
-`demonstrates` renders nothing at all, fill either and the element appears.
+`content/design.ts`. Each category has `intro`, `body` and `demonstrates`, and
+every one of them renders nothing at all when empty. Only Personal Works has
+an `intro`; American Scientific and Taranto's have no copy yet. Fill a field
+and its element appears, with no other edit.
+
+## Adding home tile thumbnails
+
+Drop a file at `public/home/<slug>.<ext>`, where slug is `applications`,
+`design`, `agentic-ai` or `about`. Any of png/jpg/jpeg/webp/avif/gif/svg,
+landscape, at least 1200px on the long edge. A tile with no file renders its
+title and count only, with no placeholder box.
 
 ## What fails the build
 

@@ -1,0 +1,47 @@
+/* ============================================================================
+   /applications
+   ============================================================================
+   A page heading and the set. The heading takes --type-title, the interior
+   page-title role, rather than the --type-section it used as a section inside
+   the home page: it is a page now, not a band on someone else's page.
+   ========================================================================= */
+
+.head {
+  padding-top: var(--rhythm-tight);
+  padding-bottom: var(--rhythm-tight);
+}
+
+.headGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  align-items: baseline;
+}
+
+.title {
+  grid-column: 1 / 9;
+  font-size: var(--type-title);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-display);
+}
+
+/* The running order is the only hierarchy left in the set below, so saying so
+   is load-bearing rather than decorative. */
+.note {
+  grid-column: 9 / -1;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.list {
+  padding-bottom: var(--rhythm-normal);
+}
+
+@media (max-width: 62rem) {
+  .title,
+  .note { grid-column: 1 / -1; }
+  .headGrid { row-gap: var(--space-3); }
+}

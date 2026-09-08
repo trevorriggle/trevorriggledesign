@@ -22,7 +22,7 @@ export default function NotFound() {
           <h1 className={styles.title}>Nothing here.</h1>
           <p className={styles.lead}>
             Which is at least honest.{" "}
-            <Link href="/#applications">Back to the work →</Link>
+            <Link href="/applications">Back to the work →</Link>
           </p>
         </div>
 

@@ -1,143 +1,62 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
-import { SelectedWork } from "@/components/ui/SelectedWork";
-import { MetaRail, Meta } from "@/components/ui/MetaRail";
-import { getSelected } from "@/content";
-import { designCategories } from "@/content/design";
-import { getDesignImages } from "@/lib/design-images";
-import { site } from "@/lib/site";
-import grid from "@/components/ui/grid.module.css";
+import { getHomeTiles } from "@/lib/home-tiles";
 import styles from "./page.module.css";
 
 /* ============================================================================
    HOME
    ============================================================================
-   The first screen states the through-line, not a list of projects. The hero
-   is the opening statement from portfolio-copy.md at 129px, the largest type
-   on the site by a wide margin, so "designer who ships software" lands before
-   anything is clicked.
+   Four tiles in a 2x2, and nothing else on the page.
 
-   Below it, the three applications at EQUAL visual weight, in manual running
-   order: DrawEvolve, thoosie, Lynk. They used to descend in size, which
-   ranked them; three shipped products do not need ranking, and the order
-   already carries the sequence. There are no "featured" / "secondary" labels
-   anywhere, because a label that tells you what to look at is what you write
-   when the layout does not.
+   WHAT THIS REPLACED. The home page used to BE the Applications page: a 129px
+   hero statement, then the three case studies, then the design categories, all
+   on one scroll. Applications now has its own route at /applications, which is
+   where the nav points, and the hero statement is gone.
 
-   Then one quiet line to the archive. It is not competing for attention, and
-   it is the second click that reaches every remaining piece of work.
+   No hero, no statement, no rail. The page is a set of doors. Every tile is
+   one link wrapping its image and its title, so the whole cell is the target
+   rather than a small hit area on the text.
+
+   Tiles and their thumbnails come from lib/home-tiles.ts. A tile with no image
+   file renders its title on the flat ground and the grid hairlines carry the
+   composition, because a 2x2 of grey placeholder rectangles is the one thing
+   this page must not be.
    ========================================================================= */
 
 export default function HomePage() {
-  const selected = getSelected();
-  const hasVitals = Boolean(site.availability || site.location);
+  const tiles = getHomeTiles();
 
   return (
-    <>
-      <Container as="section" className={styles.masthead}>
-        <div className={styles.mastheadGrid}>
-          <div className={styles.rule} aria-hidden="true" />
+    <Container as="section" className={styles.home}>
+      <h1 className="visually-hidden">Trevor Riggle, design and software</h1>
 
-          <div className={styles.statement}>
-            <h1 className={styles.headline}>
-              Products I designed and built end to end.
-            </h1>
-          </div>
+      <ul className={styles.grid}>
+        {tiles.map((tile, i) => (
+          <li key={tile.slug} className={styles.cell}>
+            <Link href={tile.href} className={styles.tile}>
+              {tile.image && (
+                <span className={styles.media}>
+                  <Image
+                    src={tile.image.url}
+                    alt=""
+                    width={tile.image.width}
+                    height={tile.image.height}
+                    sizes="(max-width: 48rem) 100vw, 50vw"
+                    priority={i < 2}
+                    className={styles.image}
+                  />
+                </span>
+              )}
 
-          <div className={styles.subheadWrap}>
-            <p className={styles.subhead}>
-              I spent four years making catalogs and marketing for hundreds of
-              clients, then learned to build the products instead of decorating
-              them. Now I design and ship AI tools end to end: interface,
-              backend, model pipeline, and the parts nobody wants to own.
-            </p>
-          </div>
-
-          {hasVitals && (
-            <div className={`${styles.vitals} ${grid.railRuled}`}>
-              <MetaRail>
-                <Meta term="Focus" value={site.availability} />
-                <Meta term="Based" value={site.location} />
-              </MetaRail>
-            </div>
-          )}
-        </div>
-      </Container>
-
-      <Container as="section" id="applications" className={styles.applications}>
-        <div className={styles.applicationsHead}>
-          <h2 className={styles.applicationsTitle}>Applications</h2>
-          {/* "not date-sorted" went with the dates. Nothing on this site
-              carries a date any more, so the claim had nothing to contrast
-              against. */}
-          <p className={styles.applicationsNote}>Manual running order</p>
-        </div>
-
-        <SelectedWork entries={selected} />
-      </Container>
-
-      {/* The second half of the argument. "Designer who ships software" only
-          holds if both halves are on the page, this is not an appendix and it
-          is not a single quiet link. */}
-      <Container as="section" id="design" className={styles.design}>
-        <div className={styles.designHead}>
-          <h2 className={styles.designTitle}>
-            <Link href="/design" className={styles.designTitleLink}>
-              Design
+              <span className={styles.label}>
+                <span className={styles.title}>{tile.title}</span>
+                {tile.meta && <span className={styles.meta}>{tile.meta}</span>}
+              </span>
             </Link>
-          </h2>
-          <p className={styles.designNote}>Three bodies of work</p>
-        </div>
-
-        <ul className={styles.categories}>
-          {designCategories.map((category) => {
-            const images = getDesignImages(category.slug, category.title);
-            const lead = images[0];
-
-            return (
-              <li key={category.slug} className={styles.category}>
-                <Link
-                  href={`/design/${category.slug}`}
-                  className={styles.categoryLink}
-                >
-                  {/* The lead image, when the folder has one. Decorative here:
-                      the link is already named by the title beside it, so a
-                      second description would just be read out twice. */}
-                  {lead && (
-                    <span className={styles.categoryMedia}>
-                      <Image
-                        src={lead.src}
-                        alt=""
-                        width={lead.width}
-                        height={lead.height}
-                        sizes="(max-width: 62rem) 100vw, 22rem"
-                        loading="lazy"
-                        className={styles.categoryImage}
-                      />
-                    </span>
-                  )}
-
-                  <span className={styles.categoryTitle}>{category.title}</span>
-                  {category.intro && (
-                    <span className={styles.categoryIntro}>
-                      {category.intro}
-                    </span>
-                  )}
-                  <span className={styles.categoryMeta}>
-                    {images.length > 0 && (
-                      <span>
-                        {images.length} image{images.length === 1 ? "" : "s"}
-                      </span>
-                    )}
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </Container>
-
-    </>
+          </li>
+        ))}
+      </ul>
+    </Container>
   );
 }

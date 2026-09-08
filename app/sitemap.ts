@@ -4,7 +4,7 @@ import { designCategories } from "@/content/design";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = ["", "/design", "/agentic-ai", "/about", "/contact"].map((path) => ({
+  const routes = ["", "/applications", "/design", "/agentic-ai", "/about", "/contact"].map((path) => ({
     url: `${site.url}${path}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
