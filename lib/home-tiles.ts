@@ -41,6 +41,8 @@ export type TileImage = {
   url: string;
   width: number;
   height: number;
+  /** GIF or SVG: served as the file itself, no optimiser. */
+  unoptimized: boolean;
 };
 
 export type HomeTile = {
@@ -73,7 +75,12 @@ function findImage(slug: string): TileImage | null {
          build failure, same contract as lib/design-images.ts. */
     }
 
-    return { url: `/home/${slug}.${ext}`, width, height };
+    return {
+      url: `/home/${slug}.${ext}`,
+      width,
+      height,
+      unoptimized: ext === "gif" || ext === "svg",
+    };
   }
 
   return null;

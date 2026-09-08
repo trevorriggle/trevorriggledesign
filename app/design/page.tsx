@@ -90,6 +90,8 @@ export default function DesignPage() {
                   height={lead.height}
                   sizes="(max-width: 62rem) 100vw, 32rem"
                   loading={i === 0 ? "eager" : "lazy"}
+                  /* A GIF lead is served as itself. See lib/design-images. */
+                  unoptimized={lead.passthrough}
                   className={styles.rowImage}
                 />
               </Link>

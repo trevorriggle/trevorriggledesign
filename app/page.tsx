@@ -44,6 +44,8 @@ export default function HomePage() {
                     height={tile.image.height}
                     sizes="(max-width: 48rem) 100vw, 50vw"
                     priority={i < 2}
+                    /* An animated tile thumbnail stays animated. */
+                    unoptimized={tile.image.unoptimized}
                     className={styles.image}
                   />
                 </span>

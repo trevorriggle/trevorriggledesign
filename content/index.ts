@@ -36,6 +36,14 @@ export type ImageRef = {
   height: number;
   url: string;
   exists: boolean;
+  /**
+   * Serve the file byte-for-byte, no optimiser. Derived from the extension,
+   * never declared: true for .gif and .svg. An animated GIF in a case study
+   * has to stay animated, and the only way to guarantee that is to keep the
+   * optimiser away from it. Same flag, same reason, as `passthrough` in
+   * lib/design-images.ts.
+   */
+  unoptimized: boolean;
   caption?: string;
   bleed?: boolean;
 };
@@ -97,6 +105,7 @@ function toImage(v: unknown, slug: string): ImageRef | null {
     height: Math.round(width / ratioOf(aspect)),
     url: `/media/${slug}/${src}`,
     exists: fs.existsSync(path.join(ROOT, "public", "media", slug, src)),
+    unoptimized: /\.(gif|svg)$/i.test(src),
     bleed: o.bleed === true,
   };
   const caption = str(o.caption);

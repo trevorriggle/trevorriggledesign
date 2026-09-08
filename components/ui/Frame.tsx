@@ -41,6 +41,9 @@ export function Frame({
         priority={priority}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
+        /* .gif and .svg only. Straight from /media/, no /_next/image, so an
+           animated GIF cannot come back as its own first frame. */
+        unoptimized={image.unoptimized}
         className={styles.image}
       />
 

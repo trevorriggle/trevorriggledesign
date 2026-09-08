@@ -10,12 +10,21 @@ import { imageSize } from "image-size";
    and no import to add. That is the entire system, and it now covers motion as
    well as stills.
 
-   VIDEO, AND WHY IT IS HERE. Several pieces in this archive are animated:
-   product web banners, animated social posts, a logo build. They arrived as
-   GIFs totalling 112 MB, one of them 47.8 MB on its own. next/image does not
-   optimise animated GIFs, it passes them through untouched, so those files
-   would have shipped at full size to every visitor. They are now h264 MP4 at
-   8 MB for the set, a 93% reduction, with the animation intact.
+   MOTION IS TWO FORMATS, AND THE FORMAT ON DISK IS THE FORMAT THAT SHIPS.
+
+   A .gif is an IMAGE here, and it is served byte-for-byte: `passthrough` is
+   set on it and the caller puts that on next/image's `unoptimized`, so the
+   file goes out at its own URL, not through /_next/image, and no optimiser,
+   resize or format negotiation ever touches it. An animated GIF that went
+   through the optimiser could come back as a still first frame; nothing in
+   this pipeline gives it the chance. Same flag for SVG, which next/image
+   already exempts by extension, made explicit here so both live in one place.
+
+   A .mp4 is a VIDEO, and only a file that is already an .mp4 is one. Nothing
+   in this repo transcodes: there is no sharp, no ffmpeg step, no build hook
+   that rewrites a file in public/. The earlier archive shipped MP4s that were
+   converted by hand, outside the build, from GIF masters. That conversion is
+   no longer the rule. See DECISIONS.md.
 
    THE PAIRING RULE. A video is `<name>.mp4` plus a poster image at the SAME
    STEM, `<name>.jpg`. The poster is what renders before playback and what any
@@ -35,6 +44,14 @@ import { imageSize } from "image-size";
    ========================================================================= */
 
 const IMAGE_EXT = /\.(png|jpe?g|webp|avif|gif|svg)$/i;
+/**
+ * Formats served byte-for-byte, never through the image optimiser.
+ *
+ * GIF because an animated one must stay animated, and SVG because it is
+ * vector and resizing is meaningless. Both are a `unoptimized` on the
+ * <Image> at the other end.
+ */
+const PASSTHROUGH_EXT = /\.(gif|svg)$/i;
 const VIDEO_EXT = /\.(mp4|webm)$/i;
 /** Extensions tried, in order, when looking for a video's poster. */
 const POSTER_EXT = ["jpg", "jpeg", "png", "webp", "avif"];
@@ -55,6 +72,12 @@ export type DesignItem = {
   width: number;
   height: number;
   ratio: number;
+  /**
+   * Serve `still` exactly as it sits on disk, no optimiser. True for GIF and
+   * SVG. Videos carry `false`: their poster is a still JPG/PNG and optimising
+   * it is both safe and worth doing.
+   */
+  passthrough: boolean;
 };
 
 /**
@@ -149,6 +172,8 @@ export function getDesignImages(
         width,
         height,
         ratio: width / height,
+        /* A poster is one of POSTER_EXT, never a GIF or an SVG. */
+        passthrough: false,
       });
       continue;
     }
@@ -165,6 +190,7 @@ export function getDesignImages(
       width,
       height,
       ratio: width / height,
+      passthrough: PASSTHROUGH_EXT.test(file),
     });
   }
 

@@ -23,8 +23,13 @@ import styles from "./DesignGrid.module.css";
    a still and take the same span, because an animated 1500x627 banner is the
    same shape as a static one and should not be given its own special row.
 
-   They render through <AutoVideo>, which already carries the rules this site
-   wants: muted, looping, no controls, paused until the clip is actually on
+   ANIMATED GIFS ARE STILLS AS FAR AS THIS GRID IS CONCERNED. They lay out on
+   their own proportion like any image and render through <Image> with
+   `unoptimized`, which serves the file itself and never the optimiser's idea
+   of it. A GIF that arrived as a GIF leaves as a GIF, animation intact.
+
+   The .mp4 pieces render through <AutoVideo>, which already carries the rules
+   this site wants: muted, looping, no controls, paused until the clip is actually on
    screen, and never autoplayed at all for a visitor who has asked for reduced
    motion or is on a metered connection. Those visitors get the poster frame,
    which is a real picture of the work rather than a dead rectangle.
@@ -84,6 +89,10 @@ export function DesignGrid({
               priority={priorityFirst && i === 0}
               loading={priorityFirst && i === 0 ? "eager" : "lazy"}
               decoding="async"
+              /* GIF and SVG go out byte-for-byte, straight from /design/,
+                 never through /_next/image. An animated GIF stays animated
+                 because the optimiser is never given the file. */
+              unoptimized={item.passthrough}
               className={styles.image}
             />
           )}

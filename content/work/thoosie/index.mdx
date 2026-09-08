@@ -14,9 +14,13 @@ state: Live
 # The clip leads. It renders above everything else on the page, and while the
 # mp4 is absent this slot renders `poster` as a still, same box, same
 # position, no broken element and no client JavaScript. Drop the file in at
-# public/media/thoosie/01-gameplay.mp4 and it takes over with no edit here.
+# public/media/thoosie/thoosiecoaster.mp4 and it takes over with no edit here.
+#
+# The hero clip is thoosiecoaster.mp4, the filename it carries in the source
+# drop. The poster below keeps the stem it is declared with; if the still that
+# arrives with the clip is named differently, this one line is the only edit.
 video:
-  src: 01-gameplay.mp4
+  src: thoosiecoaster.mp4
   poster:
     src: 01-gameplay-poster.png
     alt: "Thoosie's track editor mid-ride, with the coaster cresting a hill and the live G-force and airtime readouts visible"

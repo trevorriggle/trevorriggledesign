@@ -378,17 +378,29 @@ clip is on screen, and does not autoplay at all for a visitor who has asked for
 reduced motion or is on a metered connection. Those visitors see the poster,
 which is a real picture of the work.
 
-### 112 MB of GIFs became 8 MB of MP4
+### GIFs stay GIFs, and the format on disk is the format that ships
 
-The American Scientific archive is partly animated: web banners, animated
-social posts, a logo build. They arrived as GIFs totalling **112.5 MB**, one of
-them **47.8 MB by itself**. `next/image` does not optimise animated GIFs, it
-passes them through untouched, so every one of those bytes would have shipped
-to every visitor, on a page a recruiter might open on a phone.
+**Reversed.** The animated pieces in the American Scientific archive, web
+banners, animated social posts, a logo build, were once transcoded by hand to
+h264 MP4 (112.5 MB of GIF down to 8.0 MB) and shipped as video. They are now
+imported as the GIFs they are, from a source drop that was downsized at the
+source, and the transcode is no longer part of the pipeline.
 
-Transcoded to h264 MP4 at CRF 26: **8.0 MB for the set, a 93% reduction**, with
-the animation intact and a poster frame extracted from frame one. No GIF ships.
-The masters are untouched in the ignored source folder.
+The rule, in one line: **a `.gif` ships as a `.gif`, a `.mp4` ships as a
+`.mp4`, and nothing converts either one.** There is no sharp, no ffmpeg, no
+build hook that rewrites a file under `public/`.
+
+Enforcement is one derived flag, not a convention anybody has to remember.
+`passthrough` in `lib/design-images.ts` and `unoptimized` on `ImageRef` in
+`content/index.ts` are set from the extension, `.gif` and `.svg`, and land on
+`next/image`'s `unoptimized` at every call site: the design grid, the design
+landing lead, the home tiles and `<Frame>`. Those files are served from their
+own URL under `/design/` or `/media/` and never through `/_next/image`, so the
+optimiser is never handed an animated file and cannot hand back a still.
+
+`next/image` would have left an animated source in its original format anyway.
+The flag is there because "would have" is not a guarantee worth a silently
+de-animated banner, and because it also skips a pointless round trip.
 
 Dimensions are read from the file header at build time (`image-size`, one small
 dev dependency). That is what buys two things with zero configuration:
