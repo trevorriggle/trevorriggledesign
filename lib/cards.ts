@@ -1,4 +1,4 @@
-import type { CardData } from "@/components/ui/Card";
+import type { IndexEntry } from "@/components/ui/IndexList";
 import type { CaseStudy, ImageRef } from "@/content";
 import { designCategories } from "@/content/design";
 import {
@@ -10,11 +10,15 @@ import {
 } from "@/lib/design-images";
 
 /* ============================================================================
-   CARD DATA, one mapper per kind of thing that gets a card.
+   INDEX DATA, one mapper per kind of thing that gets a row.
    ============================================================================
-   The card component knows nothing about case studies or design folders. It
-   takes a href, a title, one line, a derived meta string and a thumbnail, and
-   these three functions are the only places that shape is assembled.
+   <IndexList> knows nothing about case studies or design folders. It takes a
+   href, a title, one line, a derived meta string and a picture, and these
+   three functions are the only places that shape is assembled.
+
+   DIMENSIONS TRAVEL WITH THE PICTURE. The browse tier renders each preview at
+   its OWN proportion rather than cropping everything to one box, so it needs
+   the real width and height, not just a URL.
 
    COPY IS PASSED THROUGH, NEVER COMPOSED. `description` is an existing field
    verbatim, the deck for an application and the intro for a design category,
@@ -30,20 +34,30 @@ function plural(n: number, one: string, many: string): string {
 
 function fromImageRef(image: ImageRef | null | undefined) {
   if (!image?.exists) return null;
-  return { url: image.url, unoptimized: image.unoptimized };
+  return {
+    url: image.url,
+    width: image.width,
+    height: image.height,
+    unoptimized: image.unoptimized,
+  };
 }
 
 function fromDesignItem(item: DesignItem | null) {
   if (!item) return null;
   /* `still` not `src`: a video's still is its poster, which is the only thing
      that can go in an <Image>. */
-  return { url: item.still, unoptimized: item.passthrough };
+  return {
+    url: item.still,
+    width: item.width,
+    height: item.height,
+    unoptimized: item.passthrough,
+  };
 }
 
 /**
- * An application's card.
+ * An application's row.
  *
- * `thumb` FIRST, and that is the whole change here. This used to read the
+ * `thumb` FIRST. This used to read the
  * entry's lead, a video's poster frame or the declared cover, on the reasoning
  * that the case study had already chosen its best picture. It had, but for a
  * different job: the lead is chosen to prove the deck at full size, and at
@@ -53,13 +67,13 @@ function fromDesignItem(item: DesignItem | null) {
  * `thumb` is a picture composed for THIS size. The old chain stays behind it,
  * so an entry with no thumbnail cards up exactly as it did before.
  */
-export function caseStudyCards(entries: CaseStudy[]): CardData[] {
+export function caseStudyRows(entries: CaseStudy[]): IndexEntry[] {
   return entries.map((entry) => ({
     href: entry.href,
     title: entry.title,
     description: entry.deck || undefined,
     meta: entry.state || undefined,
-    thumb:
+    preview:
       fromImageRef(entry.thumb) ??
       fromImageRef(entry.video?.poster) ??
       fromImageRef(entry.cover) ??
@@ -68,7 +82,7 @@ export function caseStudyCards(entries: CaseStudy[]): CardData[] {
 }
 
 /** A body of design work. Count comes off the folder, groups included. */
-export function designCategoryCards(): CardData[] {
+export function designCategoryRows(): IndexEntry[] {
   return designCategories.map((category) => {
     const count = getDesignImages(category.slug, category.title).length;
     return {
@@ -76,7 +90,7 @@ export function designCategoryCards(): CardData[] {
       title: category.title,
       description: category.intro || undefined,
       meta: count > 0 ? plural(count, "piece", "pieces") : undefined,
-      thumb: fromDesignItem(getCategoryThumb(category.slug, category.title)),
+      preview: fromDesignItem(getCategoryThumb(category.slug, category.title)),
     };
   });
 }
@@ -85,16 +99,16 @@ export function designCategoryCards(): CardData[] {
  * The groups inside one category.
  *
  * No description: a group has no written copy anywhere in content, and one is
- * not invented for it. The card is its name, its count and its picture.
+ * not invented for it. The row is its name, its count and its picture.
  */
-export function designGroupCards(
+export function designGroupRows(
   category: string,
   categoryTitle: string,
-): CardData[] {
+): IndexEntry[] {
   return getDesignGroups(category, categoryTitle).map((group: DesignGroup) => ({
     href: group.href,
     title: group.title,
     meta: plural(group.items.length, "piece", "pieces"),
-    thumb: fromDesignItem(group.thumb),
+    preview: fromDesignItem(group.thumb),
   }));
 }

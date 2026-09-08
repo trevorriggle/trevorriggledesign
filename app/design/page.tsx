@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { CardGrid } from "@/components/ui/Card";
+import { IndexList } from "@/components/ui/IndexList";
 import { designLanding } from "@/content/design";
-import { designCategoryCards } from "@/lib/cards";
+import { designCategoryRows } from "@/lib/cards";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -19,18 +19,17 @@ export const metadata: Metadata = {
    content/design.ts. Sorted by client rather than by medium. No dates
    anywhere.
 
-   THREE PREVIEW CARDS, one shape. This used to be three editorial rows, each
-   with a lead image rendered at that image's own proportion beside the copy,
-   so the three rows never matched each other and a tall lead made its row
-   twice the height of the others. The cards are 4:3 every time and the
-   category page is the detail view.
+   AN INDEX, the same browse tier /applications uses. This has been three
+   editorial rows with mismatched lead images, then three 4:3 preview cards.
+   It is now a ruled list of names with each category's picture held under the
+   pointer at its own proportion.
 
-   A category with an empty folder cards up with no image rather than a grey
+   A category with an empty folder gets a row and no picture rather than a grey
    box, same standing rule as everywhere else.
    ========================================================================= */
 
 export default function DesignPage() {
-  const cards = designCategoryCards();
+  const rows = designCategoryRows();
 
   return (
     <>
@@ -51,11 +50,10 @@ export default function DesignPage() {
       </Container>
 
       <Container as="section" className={styles.list}>
-        <CardGrid
-          cards={cards}
-          priorityFirst
+        <IndexList
+          entries={rows}
           label="Bodies of design work"
-          size="lead"
+          priorityFirst
         />
       </Container>
     </>

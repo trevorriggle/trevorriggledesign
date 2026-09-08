@@ -400,157 +400,99 @@ The group paints the page ground, which is what the mark multiplies onto.
 
 ---
 
-## The card hover, and the two grid densities
+## The browse tier is an index, and the preview card is deleted
 
-### The hover is the interaction, not a state change
+`components/ui/IndexList.tsx`. Every page whose job is "here is a set of things
+to look at" — `/applications`, `/design`, and a category's groups — is now a
+ruled list of NAMES at 38-57px, with each entry's picture held under the
+pointer. `Card.tsx`, `Card.module.css` and `CardMedia.tsx` are out of the
+build.
 
-Four layers, on hover and on `:focus-visible` alike:
+### Why the card grid was the wrong shape, not the wrong finish
 
-**1. A pointer-anchored magnify.** `components/ui/CardMedia.tsx` publishes the
-pointer's position over the crop as two unitless custom properties, `--mx` and
-`--my`, and the stylesheet feeds them straight into `transform-origin`. The
-picture therefore scales toward **where you are pointing**, so moving across a
-thumbnail pans the image under the cursor. That is the difference between a
-hover state and something you can play with: the card behaves like a loupe held
-over the work.
+It got two hover passes. The first added an image scale, an offset accent rule
+and an arrow badge. The second replaced that with a pointer-anchored magnify,
+registration marks drawn as eight background gradients, and a chip tracking the
+cursor. Both were rejected, and both were polish on a format that was never
+going to be the answer:
 
-The values are unitless because the stylesheet multiplies them by `100%` — the
-same two numbers work at any card size and nothing is recomputed when the grid
-changes density.
+- **A grid of equal boxes says every item is equivalent.** It flattens a
+  shipped iOS app, a live web toy and a shelved product into three tiles.
+- **A 4:3 crop throws away the one thing each picture had to say.** Every asset
+  arrived pre-flattened: a 2064x2752 iPad grab, a 16:9 clip still and a
+  1615x896 workspace shot all came out as the same rectangle.
+- **It ignored the single most distinctive thing this site owns.** The type
+  scale is a 1.5 ratio that exists, in its own words, "so one thing can
+  dominate". A card title ran at 21px. The scale goes to 129px.
 
-`transform-origin` is **transitioned too**, at 200ms. Left alone it jumps to
-each pointer sample and the image visibly stutters as it tracks; eased, the
-picture glides. Deliberately faster than the 420ms scale so tracking still
-feels attached to the hand.
+The lesson worth keeping: **when two rounds of hover work in a row do not
+land, the interaction is not the problem.** Adding a fourth layer to a card
+would have failed a third time.
 
-**2. Registration marks** snap in at the four corners, just outside the frame.
-Crop marks are the print production mark for "this is the trim of the plate",
-which is the most on-brand way this site has of saying "this opens". They are
-**eight background gradients on one element**, so four corners cost no extra
-DOM, and they are positioned by a negative `inset` rather than a width plus an
-aspect ratio, so the box is exactly `--mark-gap` larger than the frame on all
-four sides at any card size and can never drift out of register.
+### What the index does instead
 
-They live **outside** the crop, as a sibling, because the crop is
-`overflow: hidden` — that is what contains the magnify — and would clip them.
-This is also why `.frame` exists as a separate element from `.crop`.
+**The type is the page.** Names at `--type-title`, topping out at 57.4px:
+2.7x a card title, and the largest type anywhere on the site except the home
+statement. Ordinals hang in the left margin, the deck sits under the name, the
+status is pinned right. It reads as a table of contents.
 
-They replaced the offset second rule recorded here previously, which was the
-same register-shift idea done more quietly and read as a near-miss rather than
-a decision.
+**The pictures are not in the layout.** Each row owns a preview panel, and
+`pointermove` on the list writes two pixel values, `--px`/`--py`, that CSS
+positions all of them from. So the picture that shows is whichever row is
+hovered, it appears where the pointer already is, and it renders **at its own
+proportion** — nothing is cropped to a box, which is the thing the 4:3 card was
+destroying. The panel is up to 26rem wide, larger than any card thumbnail was.
 
-**3. An accent chip follows the cursor** across the crop, carrying the arrow. A
-square, not a disc: `--radius-*` are all 0 and a circle would be the only round
-corner in the build.
+**One preview element per row, not one shared element whose `src` swaps.** That
+swap is what causes the flash of the previous project's image in most versions
+of this effect. Nothing is measured per row and no React state changes on move.
 
-`left`/`top` are **not** transitioned, deliberately. A follower that eases
-toward the pointer lags the hand and reads as broken rather than smooth;
-tracking 1:1 is what makes it feel attached. Only the reveal is animated.
+**`:has()` does the de-emphasis.** While one row is hovered, every other row's
+name drops to the single muted tone, in CSS, with no state and no JS. This is
+the one place that tone earns its keep as emphasis rather than as metadata:
+not a grey ramp, one step down, on the rows you are not looking at, for as long
+as you are not looking at them.
 
-**It is still not a custom cursor.** The OS pointer is never replaced or
-hidden, so the visitor's own cursor settings are never overridden, touch is
-unaffected, and keyboard focus gets the chip resting in the centre.
+**The panel hangs below the cursor and is clamped to the list.** Two bugs
+avoided: centred vertically at `-50%`, the panel's top half went through the
+page heading and off the top of the window on the first row; and an absolutely
+positioned panel hanging past the page's left edge adds horizontal overflow to
+the whole document, so a scrollbar appeared on the body every time the first
+column was hovered. `translate(-50%, -22%)` and a `clamp()` on `left` that
+never lets it get closer to an edge than half its own width.
 
-**4.** The crop's hairline goes to full ink and the title slides toward its
-arrow and takes the accent.
+**The rotation is deliberate and it is the only one on the site.** `-2.5deg`.
+Legitimate here precisely because the panel is not in the layout: it is a loose
+print held over it, not an element on the grid.
 
-**The magnify is slow, 420ms, where the marks and chip are quick.** The picture
-is the largest thing moving and a big element travelling fast reads as a jolt.
-The fast layers make the hover land immediately; only the image takes its time.
+### Where it degrades, and where it doesn't
 
-### It degrades to nothing
+**No pointer, no floating panel.** All of it is inside
+`@media (hover: hover) and (pointer: fine)`. On a touch screen the previews lay
+out inline under each name at full width instead, because a hover-only reveal
+on a phone is a picture nobody ever sees.
 
-The markup is server-rendered and every custom property has a `0.5` fallback,
-so before hydration, with no JS, and on touch the card keeps its full hover:
-the magnify simply centres and the chip rests in the middle. `pointerType`
-gates the tracking to a mouse, because a touch "hover" is a tap on its way to a
-navigation and would fire a magnify on the way off the page.
+**It is a list before it is anything else.** Server-rendered `<ol>` of `<li>`
+of `<a>`, in running order, with the ordinal, name, deck and status all in the
+markup as text. The panel is decoration on top: `alt=""` because the name is in
+the same link, `aria-hidden` on the ordinal because the list numbers itself.
 
-**The rect is cached on `pointerenter`, not read per move.**
-`getBoundingClientRect` forces a layout flush, and doing that on every
-`pointermove` across a grid of cards is the difference between this being free
-and this being why a page stutters. The rect cannot change mid-hover without a
-scroll or resize, and either ends with a fresh `pointerenter`.
+**Under reduced motion the panel still appears and still follows.** That is the
+interface, not an embellishment, and withholding it would leave a visitor with
+no way to see the work. What goes is the travel, the scale-in and the rotation.
 
-### Under reduced motion
+**The rect is cached on `pointerenter`**, not read per move.
+`getBoundingClientRect` forces a layout flush and doing it per `pointermove` is
+the difference between free and janky.
 
-No magnify at all, and `transform-origin` is pinned back to `center` so a stale
-pointer value cannot leave the picture off-centre. Panning an image under the
-cursor is exactly the continuous motion the preference asks not to have. The
-chip stops following and parks in the corner. The marks still **appear**, they
-just do not spring: they are the affordance, and withholding them would cost
-information rather than motion.
+### One thing that came out of it
 
-### Two grid densities
+`lib/cards.ts` now carries **real width and height** with every picture, not
+just a URL, because the browse tier renders at true proportion. The mappers are
+`caseStudyRows`, `designCategoryRows` and `designGroupRows`.
 
-| | columns | card | box | used on |
-|---|---|---|---|---|
-| `.lead` | 2 | ~600px | ~450px | `/applications`, `/design` |
-| `.grid` | 3 | ~380px | ~285px | groups inside a category |
-
-`/applications` and `/design` have one job each and three items on them; at
-3-up a card was 380px wide and its crop 285px tall, which is a contact sheet,
-not a portfolio. The 3-up grid stays for the directories deeper in, where a
-category's groups can run to eight or nine and 2-up would turn an index into a
-scroll. This is a deliberate exception to "the card is the same shape at every
-level": the shape is identical, the density is not.
-
-**The second column hangs lower.** `.lead .cell:nth-child(even)` takes a
-`--space-9` top margin. A 2-up grid of three items leaves one card alone on the
-second row and squared off that reads as a layout that ran out of content; the
-drop gives the set a diagonal rhythm, and the odd one out lands under a
-deliberate gap rather than beside a hole. It is `margin-top` and **not**
-`transform`, because the entrance keyframes own the transform and a static
-offset there would be wiped the moment the animation resolved.
-
-The `sizes` hint is per density (`44rem` vs `30rem`) or the browser fetches the
-wrong file for the box it is painting.
-
-**The card grid also has an entrance**: cards fade up staggered off `--i`, set
-per cell by the component. In CSS, not framer, because the first row is above
-the fold on both pages — a framer reveal would ship it at `opacity: 0` in the
-server HTML, hand the page's LCP to a JS chunk, and leave the first card's
-`priority` image waiting behind hydration for nothing.
-
----
-
-## The plate gallery was broken, and why
-
-`components/ui/Gallery.tsx`. The strip was `<Frame>` in a flex row, and that
-could not work: `Frame` sets `width: 100%` on the figure, and inside a
-`flex: none` track item with no definite width that resolves against a parent
-whose width is being derived from its own content. Circular, so the item widths
-came out browser-dependent, plates fell over each other and the snap landed on
-the wrong offsets.
-
-**The fix is to derive the width instead of asking for it.** The track has one
-height and each plate is `height * its own ratio` wide, with the ratio passed
-in per plate from the declared aspect. Nothing measures anything, mixed
-portrait and landscape plates sit level at true proportion, and the snap
-offsets are exact.
-
-**No scrollbar.** `scrollbar-width: none` plus the WebKit pseudo-element. What
-replaces it as the "there is more" signal is the composition: the last plate is
-cut by the container edge.
-
-**Snap is off during a drag**, and this is the difference between solid and
-clunky. With snap live, every pixel of a drag is contested by the browser
-trying to settle on a plate — that is the clunk. It returns on release and the
-browser animates to the nearest plate itself. `scroll-behavior` goes to `auto`
-for the same reason: smooth scrolling plus direct `scrollLeft` writes is an
-animation fighting a value set 120 times a second.
-
-`proximity`, not `mandatory`: mandatory refuses to let the strip rest between
-plates, which fights a visitor scanning rather than stepping.
-
-**Mouse only for the drag.** `pointerType === "mouse"` gates it; touch already
-has real OS momentum scrolling, and hijacking it would cost the vertical page
-swipe. `touch-action: pan-y` keeps that swipe. `overscroll-behavior-x: contain`
-stops a horizontal overscroll turning into a browser back-navigation.
-
-It still works with no JavaScript: the markup is server-rendered and the
-scrolling is native, so trackpad, touch and the arrow keys work unhydrated.
-The drag is an enhancement, not the mechanism.
+`DesignGrid` is untouched: a category's actual artwork is not a browse tier and
+a dense archive grid is genuinely the right read for it.
 
 ---
 

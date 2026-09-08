@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { CardGrid } from "@/components/ui/Card";
-import { caseStudyCards } from "@/lib/cards";
+import { IndexList } from "@/components/ui/IndexList";
+import { caseStudyRows } from "@/lib/cards";
 import { getSelected } from "@/content";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
@@ -27,11 +27,12 @@ export const metadata: Metadata = {
    opening line, not as an introduction to three case studies, and it is out
    of the build entirely rather than parked somewhere it does not belong.
 
-   THIS IS THE BROWSING TIER. It used to stack each entry's media at full
-   grid width, which put a 2064x2752 iPad screenshot on screen at about
-   1200x1600 and made one entry a whole screenful. It is now three preview
-   cards on one 4:3 crop, and /work/<slug> is where the media renders at its
-   own proportion. Nothing on this page is shown at native size.
+   THIS IS THE BROWSING TIER, and it is an INDEX now. It has been three
+   things: full-width stacked media (one entry was a screenful), then three
+   4:3 preview cards (which flattened the set into equal tiles and threw away
+   every asset's real shape). It is now a ruled list of names at 57px with each
+   entry's picture held under the pointer, at its own proportion. See
+   components/ui/IndexList.
    ========================================================================= */
 
 export default function ApplicationsPage() {
@@ -47,11 +48,10 @@ export default function ApplicationsPage() {
       </Container>
 
       <Container as="section" className={styles.list}>
-        <CardGrid
-          cards={caseStudyCards(selected)}
-          priorityFirst
+        <IndexList
+          entries={caseStudyRows(selected)}
           label="Applications"
-          size="lead"
+          priorityFirst
         />
       </Container>
     </>

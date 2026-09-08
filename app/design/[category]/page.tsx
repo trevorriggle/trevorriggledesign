@@ -12,8 +12,8 @@ import {
   getDesignGroups,
   getUngroupedImages,
 } from "@/lib/design-images";
-import { designGroupCards } from "@/lib/cards";
-import { CardGrid } from "@/components/ui/Card";
+import { designGroupRows } from "@/lib/cards";
+import { IndexList } from "@/components/ui/IndexList";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -119,8 +119,8 @@ export default async function DesignCategoryPage({
 
       {groups.length > 0 && (
         <Container as="section" className={styles.gridBlock}>
-          <CardGrid
-            cards={designGroupCards(found.slug, found.title)}
+          <IndexList
+            entries={designGroupRows(found.slug, found.title)}
             priorityFirst
             label={`${found.title}, groups of work`}
           />
