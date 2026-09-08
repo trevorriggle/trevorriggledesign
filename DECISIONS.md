@@ -400,32 +400,117 @@ The group paints the page ground, which is what the mark multiplies onto.
 
 ---
 
-## The card hover has a signature move
+## The card hover, and the two grid densities
 
-On hover and on `:focus-visible`, **a second hairline offsets out from behind
-the crop, in accent, down and to the right**. It is a register shift, what
-happens when a plate prints twice slightly out of alignment, and it is built
-from the only two materials this site has: a hairline and the one accent.
+### The hover is the interaction, not a state change
 
-It lives on `.card::before` rather than inside the crop, because the crop is
-`overflow: hidden` — that is what contains the image scale — and would clip it.
-It matches the crop's box with no magic number: same width, same
-`aspect-ratio: 4 / 3`, pinned to the top, so it stays aligned at every
-breakpoint. `z-index: 0` against the crop's `1` puts it behind the picture,
-which is what makes it read as a second impression rather than a box drawn on
-top of one.
+Four layers, on hover and on `:focus-visible` alike:
 
-Alongside it: the picture scales to 1.06 over **420ms**, not the 180ms
-everything else uses, because the picture is the largest thing moving and a big
-element travelling fast reads as a jolt. The badge and the rules stay quick, so
-the hover still lands immediately and only the image takes its time. The title
-slides 0.3rem toward its arrow.
+**1. A pointer-anchored magnify.** `components/ui/CardMedia.tsx` publishes the
+pointer's position over the crop as two unitless custom properties, `--mx` and
+`--my`, and the stylesheet feeds them straight into `transform-origin`. The
+picture therefore scales toward **where you are pointing**, so moving across a
+thumbnail pans the image under the cursor. That is the difference between a
+hover state and something you can play with: the card behaves like a loupe held
+over the work.
+
+The values are unitless because the stylesheet multiplies them by `100%` — the
+same two numbers work at any card size and nothing is recomputed when the grid
+changes density.
+
+`transform-origin` is **transitioned too**, at 200ms. Left alone it jumps to
+each pointer sample and the image visibly stutters as it tracks; eased, the
+picture glides. Deliberately faster than the 420ms scale so tracking still
+feels attached to the hand.
+
+**2. Registration marks** snap in at the four corners, just outside the frame.
+Crop marks are the print production mark for "this is the trim of the plate",
+which is the most on-brand way this site has of saying "this opens". They are
+**eight background gradients on one element**, so four corners cost no extra
+DOM, and they are positioned by a negative `inset` rather than a width plus an
+aspect ratio, so the box is exactly `--mark-gap` larger than the frame on all
+four sides at any card size and can never drift out of register.
+
+They live **outside** the crop, as a sibling, because the crop is
+`overflow: hidden` — that is what contains the magnify — and would clip them.
+This is also why `.frame` exists as a separate element from `.crop`.
+
+They replaced the offset second rule recorded here previously, which was the
+same register-shift idea done more quietly and read as a near-miss rather than
+a decision.
+
+**3. An accent chip follows the cursor** across the crop, carrying the arrow. A
+square, not a disc: `--radius-*` are all 0 and a circle would be the only round
+corner in the build.
+
+`left`/`top` are **not** transitioned, deliberately. A follower that eases
+toward the pointer lags the hand and reads as broken rather than smooth;
+tracking 1:1 is what makes it feel attached. Only the reveal is animated.
+
+**It is still not a custom cursor.** The OS pointer is never replaced or
+hidden, so the visitor's own cursor settings are never overridden, touch is
+unaffected, and keyboard focus gets the chip resting in the centre.
+
+**4.** The crop's hairline goes to full ink and the title slides toward its
+arrow and takes the accent.
+
+**The magnify is slow, 420ms, where the marks and chip are quick.** The picture
+is the largest thing moving and a big element travelling fast reads as a jolt.
+The fast layers make the hover land immediately; only the image takes its time.
+
+### It degrades to nothing
+
+The markup is server-rendered and every custom property has a `0.5` fallback,
+so before hydration, with no JS, and on touch the card keeps its full hover:
+the magnify simply centres and the chip rests in the middle. `pointerType`
+gates the tracking to a mouse, because a touch "hover" is a tap on its way to a
+navigation and would fire a magnify on the way off the page.
+
+**The rect is cached on `pointerenter`, not read per move.**
+`getBoundingClientRect` forces a layout flush, and doing that on every
+`pointermove` across a grid of cards is the difference between this being free
+and this being why a page stutters. The rect cannot change mid-hover without a
+scroll or resize, and either ends with a fresh `pointerenter`.
+
+### Under reduced motion
+
+No magnify at all, and `transform-origin` is pinned back to `center` so a stale
+pointer value cannot leave the picture off-centre. Panning an image under the
+cursor is exactly the continuous motion the preference asks not to have. The
+chip stops following and parks in the corner. The marks still **appear**, they
+just do not spring: they are the affordance, and withholding them would cost
+information rather than motion.
+
+### Two grid densities
+
+| | columns | card | box | used on |
+|---|---|---|---|---|
+| `.lead` | 2 | ~600px | ~450px | `/applications`, `/design` |
+| `.grid` | 3 | ~380px | ~285px | groups inside a category |
+
+`/applications` and `/design` have one job each and three items on them; at
+3-up a card was 380px wide and its crop 285px tall, which is a contact sheet,
+not a portfolio. The 3-up grid stays for the directories deeper in, where a
+category's groups can run to eight or nine and 2-up would turn an index into a
+scroll. This is a deliberate exception to "the card is the same shape at every
+level": the shape is identical, the density is not.
+
+**The second column hangs lower.** `.lead .cell:nth-child(even)` takes a
+`--space-9` top margin. A 2-up grid of three items leaves one card alone on the
+second row and squared off that reads as a layout that ran out of content; the
+drop gives the set a diagonal rhythm, and the odd one out lands under a
+deliberate gap rather than beside a hole. It is `margin-top` and **not**
+`transform`, because the entrance keyframes own the transform and a static
+offset there would be wiped the moment the animation resolved.
+
+The `sizes` hint is per density (`44rem` vs `30rem`) or the browser fetches the
+wrong file for the box it is painting.
 
 **The card grid also has an entrance**: cards fade up staggered off `--i`, set
 per cell by the component. In CSS, not framer, because the first row is above
-the fold on both `/applications` and `/design` — a framer reveal would ship it
-at `opacity: 0` in the server HTML, hand the page's LCP to a JS chunk, and
-leave the first card's `priority` image waiting behind hydration for nothing.
+the fold on both pages — a framer reveal would ship it at `opacity: 0` in the
+server HTML, hand the page's LCP to a JS chunk, and leave the first card's
+`priority` image waiting behind hydration for nothing.
 
 ---
 

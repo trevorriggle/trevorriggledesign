@@ -12,46 +12,61 @@
    Without the second, a grid row's cards end up different heights and the
    whole point of carding the content is lost.
 
-   HOVER. No radius, no shadow, no lift of the card itself. The site's rules
-   are hairlines and sharp corners (--radius-* are all 0), and a card that grew
-   a drop shadow here would be the only such object on the site.
+   HOVER, AND IT IS THE MAIN EVENT ON THIS COMPONENT. Still no radius, no
+   shadow and no lift: the site's materials are hairlines, sharp corners and
+   one accent, and a card that grew a drop shadow would be the only such object
+   on it. Four things happen instead, and three of them are new.
 
-   What hover does instead, on every card at every level of the site:
+     1. A POINTER-ANCHORED MAGNIFY. `transform-origin` comes from --mx/--my,
+        published by <CardMedia>, so the picture scales toward WHERE YOU ARE
+        POINTING rather than toward the middle of the box. Moving across a
+        thumbnail pans the image under the cursor. That is the difference
+        between a hover state and something you can actually play with: the
+        card behaves like a loupe held over the work.
 
-     · the thumbnail scales inside its fixed crop, so the picture moves and
-       the crop does not
-     · A SECOND RULE OFFSETS OUT from behind the crop, in accent, down and to
-       the right. This is the signature move and it is the reason the hover
-       does not read as generic: it is a register shift, the thing that
-       happens when a plate prints twice slightly out of alignment, and it is
-       built out of the only two materials this site has, a hairline and the
-       one accent colour. No shadow, no lift, no radius, nothing borrowed
-       from a card UI kit.
-     · an accent affordance is revealed in the crop's corner
-     · the crop's hairline goes to full ink
-     · the title slides a few pixels toward its arrow and takes the accent
+     2. REGISTRATION MARKS snap in at the four corners, just outside the frame.
+        Crop marks are the print production mark for "this is the trim of the
+        plate", which is the most on-brand possible way for a graphic
+        designer's site to say "this is a thing you can open". Drawn as eight
+        background gradients on one element, so four corners cost no extra DOM.
+        They replaced an offset second rule, which was the same register-shift
+        idea done more quietly and read as a near-miss rather than a decision.
 
-   Fast, one step, and it reads as the picture being alive rather than as the
-   card jumping. `--duration-base` is 180ms.
+     3. AN ACCENT CHIP FOLLOWS THE CURSOR across the crop, carrying the arrow.
+        A square, not a disc: `--radius-*` are all 0 on this site and a circle
+        here would be the only round corner in the build. It is not a custom
+        cursor. The OS pointer is never replaced or hidden, so nothing about
+        the visitor's own cursor settings is overridden, touch is unaffected,
+        and keyboard focus still gets the chip, resting in the centre.
 
-   THE AFFORDANCE IS A BADGE, NOT A SCRIM. A translucent panel washed over the
-   crop with the title repeated on top of it is the reflex here, and it is
-   wrong for this site twice over: the title and the deck are already set
-   below the crop in full ink, so the overlay would be duplicating them, and a
-   scrim is the only place on the site where ink would sit at partial opacity,
-   which the type system explicitly bans. The badge adds an affordance instead
-   of restating content.
+     4. The crop's hairline goes to full ink and the title slides toward its
+        arrow and takes the accent.
 
-   NOT A CUSTOM CURSOR. Replacing the pointer reimplements the one piece of UI
-   the visitor's OS owns, it does nothing on touch, and it cannot be driven by
-   focus, so keyboard users get none of it.
+   THE MAGNIFY IS SLOW ON PURPOSE, 420ms, where the marks and the chip are
+   quick. The picture is the largest thing moving and a big element travelling
+   fast reads as a jolt; the fast layers make the hover land immediately, and
+   only the image takes its time.
 
-   The scale is on the IMAGE and the crop keeps `overflow: hidden`, which is
-   what makes this safe: nothing reflows, no neighbour moves, and the card's
-   own box is identical hovered or not. Under `prefers-reduced-motion` the
-   transform is dropped entirely rather than snapped, since the global reset
-   only collapses the duration.
+   THE CROP IS `overflow: hidden` AND THAT IS LOAD-BEARING TWICE: it contains
+   the magnify, so no neighbour ever moves, and it is the reason the marks have
+   to live outside it as a sibling rather than inside as a child.
+
+   `index` DRIVES THE ENTRANCE, and it is the only reason a card knows its own
+   position. The grid fades up in sequence on load, staggered off `--i` in CSS
+   rather than through a framer reveal, because the first row is ABOVE THE FOLD
+   on both /applications and /design: a framer reveal would ship it at
+   `opacity: 0` in the server HTML, make the first card's `priority` image
+   pointless, and hand the page's LCP to a JS chunk. Keyframes run on first
+   paint with nothing hydrated. Same reasoning as the home statement.
    ========================================================================= */
+
+/* --- The grids -----------------------------------------------------------
+   TWO DENSITIES. `.grid` is 3-up, for the directories deeper in the site where
+   a category's groups can run to eight or nine. `.lead` is 2-up and is what
+   /applications and /design use, because those pages have one job each and
+   three items on them: at 3-up a card was ~380px wide and its 4:3 box ~285px
+   tall, which is a contact sheet, not a portfolio. At 2-up the same card is
+   ~600px wide and the box ~450px tall. */
 
 .grid {
   list-style: none;
@@ -60,6 +75,30 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--rhythm-tight) var(--grid-gap);
+  align-items: start;
+}
+
+.lead {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--rhythm-normal);
+}
+
+/* THE SECOND COLUMN HANGS LOWER. A 2-up grid of three items leaves one card
+   alone on the second row, and squared off that reads as a layout that ran out
+   of content. Dropping the even cards gives the set a diagonal rhythm instead,
+   the odd one out lands under a deliberate gap rather than beside a hole, and
+   the page stops looking like a table.
+
+   `margin-top`, NOT `transform`: the entrance keyframes below own the
+   transform, and a static offset there would be overwritten the moment the
+   animation resolved. */
+.lead .cell:nth-child(even) {
+  margin-top: var(--space-9);
+}
+
+@media (max-width: 62rem) {
+  .lead .cell:nth-child(even) { margin-top: 0; }
 }
 
 /* --- The entrance --------------------------------------------------------
@@ -102,105 +141,157 @@
   color: inherit;
 }
 
-/* THE OFFSET RULE. It has to live out here on the card rather than inside the
-   crop, because the crop is `overflow: hidden` (that is what contains the
-   image scale) and would clip it away.
+/* --- The frame ----------------------------------------------------------
+   Holds the 4:3 proportion and gives the marks something to hang off. It is
+   NOT the clipping box: that is `.crop` inside it, which is what lets the
+   marks sit outside the picture while staying aligned to it.
 
-   It matches the crop's box WITHOUT knowing a single pixel: same width, same
-   `aspect-ratio: 4 / 3`, pinned to the top. So it stays aligned at every
-   breakpoint and never needs a magic number.
+   `--mark-gap` is the only geometry the marks need, and it lives here so the
+   frame and the marks cannot disagree about it. */
+.frame {
+  --mark-gap: 0.5rem;
 
-   `z-index: 0` against the crop's `z-index: 1` puts it BEHIND the picture,
-   which is what makes it read as a second impression of the same plate rather
-   than as a box drawn on top of one. */
-.card::before {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  border: var(--hairline) solid var(--color-signal);
-  opacity: 0;
-  transform: translate(0, 0);
-  pointer-events: none;
-  transition:
-    opacity var(--duration-base) var(--ease-out),
-    transform 320ms var(--ease-out);
-}
-
-.card:hover::before,
-.card:focus-visible::before {
-  opacity: 1;
-  transform: translate(0.55rem, 0.55rem);
-}
-
-/* --- The crop ------------------------------------------------------------
-   The fixed box. `position: relative` because next/image `fill` needs a
-   positioned parent, and `overflow: hidden` because cover overflows it, and
-   because it is what contains the hover scale. */
-.media {
   position: relative;
-  /* Above the offset rule, so the rule sits behind the picture. */
-  z-index: 1;
   display: block;
   width: 100%;
   aspect-ratio: 4 / 3;
+}
+
+/* The fixed crop. `position: relative` because next/image `fill` needs a
+   positioned parent, and `overflow: hidden` because cover overflows it and
+   because it is what contains the magnify. */
+.crop {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: var(--color-bg-sunk);
   border: var(--rule);
   transition: border-color var(--duration-fast) var(--ease-out);
 }
 
-/* 420ms on the scale, not the 180ms everything else uses. The picture is the
-   largest thing moving and a big element travelling fast reads as a jolt;
-   the badge and the rules stay quick, so the hover still lands immediately
-   and it is only the image that takes its time. */
+/* --- The registration marks --------------------------------------------
+   Eight gradients, four corners, one element. Each corner is two bars, a
+   horizontal and a vertical, painted as a solid-colour gradient and placed at
+   that corner with `background-position`. No pseudo-elements to run out of and
+   no extra span per corner.
+
+   A NEGATIVE INSET, not a width plus an aspect ratio: this box is exactly
+   `--mark-gap` larger than the frame on all four sides, whatever size the card
+   is, so the marks never drift out of register with the picture. */
+.marks {
+  position: absolute;
+  inset: calc(var(--mark-gap) * -1);
+  pointer-events: none;
+
+  --mark-len: 0.85rem;
+  --mark-w: var(--hairline);
+
+  background-image:
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal)),
+    linear-gradient(var(--color-signal), var(--color-signal));
+  background-size:
+    var(--mark-len) var(--mark-w), var(--mark-w) var(--mark-len),
+    var(--mark-len) var(--mark-w), var(--mark-w) var(--mark-len),
+    var(--mark-len) var(--mark-w), var(--mark-w) var(--mark-len),
+    var(--mark-len) var(--mark-w), var(--mark-w) var(--mark-len);
+  background-position:
+    left top, left top,
+    right top, right top,
+    left bottom, left bottom,
+    right bottom, right bottom;
+  background-repeat: no-repeat;
+
+  opacity: 0;
+  /* Sprung in from just inside the frame, so they read as snapping OUT to the
+     trim rather than fading up in place. */
+  transform: scale(0.94);
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform 260ms var(--ease-out);
+}
+
+.card:hover .marks,
+.card:focus-visible .marks {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* THE MAGNIFY. `transform-origin` is driven by the pointer, so the scale
+   happens toward the cursor and moving across the card pans the picture. The
+   0.5 fallbacks are what make this degrade to an ordinary centred zoom before
+   hydration, without JS, and on touch.
+
+   THE ORIGIN IS TRANSITIONED TOO, at 200ms. Left un-transitioned it jumps to
+   each new pointer sample and the image visibly stutters as it tracks; eased,
+   the picture glides under the cursor. It is deliberately faster than the
+   scale so tracking still feels attached to the hand.
+
+   420ms on the scale, not the 180ms everything else uses: the picture is the
+   largest thing moving and a big element travelling fast reads as a jolt. The
+   marks and the chip stay quick, so the hover lands immediately and only the
+   image takes its time. */
 .image {
   object-fit: cover;
   object-position: center;
+  transform-origin: calc(var(--mx, 0.5) * 100%) calc(var(--my, 0.5) * 100%);
   transition:
     opacity var(--duration-base) var(--ease-out),
-    transform 420ms var(--ease-out);
+    transform 420ms var(--ease-out),
+    transform-origin 200ms var(--ease-out);
 }
 
 /* Keyed off the link, so keyboard focus gets the same signal as the mouse. */
 .card:hover .image,
 .card:focus-visible .image {
   opacity: 0.94;
-  transform: scale(1.06);
+  transform: scale(1.09);
 }
 
-.card:hover .media,
-.card:focus-visible .media { border-color: var(--color-rule-strong); }
+.card:hover .crop,
+.card:focus-visible .crop { border-color: var(--color-rule-strong); }
 
-/* The revealed affordance. Sits above the image, inside the crop's
-   `overflow: hidden`, so it is clipped with everything else. */
+/* THE CHIP THAT FOLLOWS THE CURSOR. Positioned from --mx/--my and centred on
+   that point by the -50% translate. Above the image, inside the crop's
+   `overflow: hidden`, so it is clipped at the frame like everything else.
+
+   `left`/`top` ARE NOT TRANSITIONED, deliberately. A follower that eases
+   toward the pointer lags behind the hand and feels broken rather than smooth;
+   tracking 1:1 is what makes it feel attached. Only the reveal, the opacity
+   and the scale, is animated. That also keeps the un-transitioned layout
+   writes cheap: one absolutely positioned element, no siblings affected.
+
+   With no pointer, so before hydration and for a keyboard user, --mx/--my fall
+   back to 0.5 and the chip simply rests in the centre of the crop. */
 .cursor {
   position: absolute;
-  right: 0;
-  bottom: 0;
   z-index: 1;
+  left: calc(var(--mx, 0.5) * 100%);
+  top: calc(var(--my, 0.5) * 100%);
   display: grid;
   place-items: center;
-  width: var(--space-6);
-  height: var(--space-6);
+  width: var(--space-7);
+  height: var(--space-7);
   background: var(--color-signal-solid);
   color: var(--color-text-invert);
-  font-size: var(--text-base);
+  font-size: var(--text-lg);
   line-height: 1;
   opacity: 0;
-  transform: translate(15%, 15%);
+  transform: translate(-50%, -50%) scale(0.55);
   transition:
-    opacity var(--duration-base) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
     transform var(--duration-base) var(--ease-out);
 }
 
 .card:hover .cursor,
 .card:focus-visible .cursor {
   opacity: 1;
-  transform: translate(0, 0);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 /* --- The text ------------------------------------------------------------
@@ -256,28 +347,34 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The 3-up grid steps down to 2. `.lead` is already 2-up and stays there, so
+   it is deliberately not in this rule: dropping it to one column here would
+   make its cards wider on a tablet than on a desktop. */
 @media (max-width: 62rem) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .lead { row-gap: var(--rhythm-tight); }
 }
 
+/* One column for both, and the marks tuck in: at phone width the frame is
+   nearly the full gutter-to-gutter measure and marks hung 0.5rem outside it
+   would sit on the page edge. */
 @media (max-width: 34rem) {
-  .grid {
+  .grid,
+  .lead {
     grid-template-columns: minmax(0, 1fr);
     gap: var(--space-6);
   }
+  .frame { --mark-gap: 0.25rem; }
   .text { min-height: 0; }
 }
 
-/* The transform is dropped, not just sped up: the global reset in reset.css
-   collapses transition-duration, which would make a scale snap instantly
-   rather than not happen. The colour signals stay, they are not motion. */
 /* The transforms are dropped, not just sped up: the global reset in reset.css
    collapses transition-duration and animation-duration but does NOT touch
    animation-delay, so the entrance would otherwise hold each card invisible
    for its stagger and then snap it in. Cancelled outright.
 
-   The colour signals stay, and so does the offset rule's opacity: they are
-   not motion. The rule simply appears in place instead of travelling. */
+   The colour and opacity signals stay: they are not motion. The marks still
+   appear, they just do not spring. */
 @media (prefers-reduced-motion: reduce) {
   .cell {
     animation: none;
@@ -286,19 +383,36 @@
     transform: none;
   }
 
+  /* NO MAGNIFY AT ALL, and the origin is pinned back to the centre so a
+     stale pointer value cannot leave the picture off-centre. Panning an image
+     under the cursor is exactly the kind of continuous motion the preference
+     is asking not to have. */
   .card:hover .image,
-  .card:focus-visible .image { transform: none; }
+  .card:focus-visible .image {
+    transform: none;
+    transform-origin: center;
+  }
 
   .card:hover .title,
   .card:focus-visible .title { transform: none; }
 
-  .card::before { transform: none; }
-  .card:hover::before,
-  .card:focus-visible::before { transform: none; }
+  /* The marks still appear, they just do not spring. They are the affordance,
+     and withholding them would cost information rather than motion. */
+  .marks { transform: none; }
+  .card:hover .marks,
+  .card:focus-visible .marks { transform: none; }
 
-  /* The badge still appears, it just does not travel. It is an affordance,
-     and withholding it would cost information rather than motion. */
-  .cursor { transform: none; }
+  /* The chip stops following and parks in the corner, out of the way. A
+     square tracking the pointer across a picture is the most restless thing
+     on the page. */
+  .cursor {
+    left: auto;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    transform: none;
+  }
+
   .card:hover .cursor,
   .card:focus-visible .cursor { transform: none; }
 }

@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { CardMedia } from "./CardMedia";
 import styles from "./Card.module.css";
 
 /* ============================================================================
@@ -58,24 +59,30 @@ export type CardData = {
   } | null;
 };
 
-/**
- * A 3-up grid at full width, so a card lands near 380px wide and the 4:3 box
- * near 285px tall. That size is what the thumbnail picks in
- * content/design.ts were judged against.
- */
-const CARD_SIZES =
-  "(max-width: 34rem) 100vw, (max-width: 62rem) 50vw, 30rem";
+/** Two densities, and the `sizes` hint has to match or the browser fetches
+ *  the wrong file. `lead` is the 2-up grid on /applications and /design, where
+ *  a card lands near 600px wide and the 4:3 box near 450px tall. `index` is
+ *  the 3-up grid used deeper in, near 380px wide. */
+export type CardSize = "lead" | "index";
+
+const CARD_SIZES: Record<CardSize, string> = {
+  lead: "(max-width: 34rem) 100vw, (max-width: 62rem) 50vw, 44rem",
+  index: "(max-width: 34rem) 100vw, (max-width: 62rem) 50vw, 30rem",
+};
 
 export function Card({
   card,
   priority = false,
   index = 0,
+  size = "index",
 }: {
   card: CardData;
   /** LCP hint for the first card or two of a page's lead grid. */
   priority?: boolean;
   /** Position in its grid. Drives the CSS entrance stagger, nothing else. */
   index?: number;
+  /** Which grid density this card is in. Picks the `sizes` hint. */
+  size?: CardSize;
 }) {
   return (
     <li
@@ -84,12 +91,12 @@ export function Card({
     >
       <Link href={card.href} className={styles.card}>
         {card.thumb && (
-          <span className={styles.media}>
+          <CardMedia>
             <Image
               src={card.thumb.url}
               alt=""
               fill
-              sizes={CARD_SIZES}
+              sizes={CARD_SIZES[size]}
               priority={priority}
               loading={priority ? "eager" : "lazy"}
               decoding="async"
@@ -97,15 +104,18 @@ export function Card({
                  /design/, never through /_next/image. */
               unoptimized={card.thumb.unoptimized}
               className={styles.image}
+              /* The magnify is a drag target otherwise, and dragging a
+                 thumbnail off a card is nobody's intention. */
+              draggable={false}
             />
 
-            {/* The hover affordance, revealed over the crop. A glyph, not
+            {/* The chip that follows the cursor across the crop. A glyph, not
                 copy, and `aria-hidden` because the title inside this same
                 link is already the accessible name. */}
             <span className={styles.cursor} aria-hidden="true">
               &rarr;
             </span>
-          </span>
+          </CardMedia>
         )}
 
         <span className={styles.text}>
@@ -125,21 +135,33 @@ export function CardGrid({
   /** Marks the first card as the LCP candidate. Only a page's lead grid. */
   priorityFirst = false,
   label,
+  size = "index",
 }: {
   cards: CardData[];
   priorityFirst?: boolean;
   label?: string;
+  /**
+   * `lead` is 2-up and large, for a page whose whole job is this set:
+   * /applications and /design. `index` is 3-up, for the denser grids deeper
+   * in, where a category's groups can run to eight or nine and 2-up would
+   * turn a directory into a scroll.
+   */
+  size?: CardSize;
 }) {
   if (cards.length === 0) return null;
 
   return (
-    <ul className={styles.grid} aria-label={label}>
+    <ul
+      className={`${styles.grid} ${size === "lead" ? styles.lead : ""}`}
+      aria-label={label}
+    >
       {cards.map((card, i) => (
         <Card
           key={card.href}
           card={card}
           priority={priorityFirst && i === 0}
           index={i}
+          size={size}
         />
       ))}
     </ul>

@@ -51,7 +51,12 @@ export default function DesignPage() {
       </Container>
 
       <Container as="section" className={styles.list}>
-        <CardGrid cards={cards} priorityFirst label="Bodies of design work" />
+        <CardGrid
+          cards={cards}
+          priorityFirst
+          label="Bodies of design work"
+          size="lead"
+        />
       </Container>
     </>
   );

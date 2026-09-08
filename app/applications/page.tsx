@@ -51,6 +51,7 @@ export default function ApplicationsPage() {
           cards={caseStudyCards(selected)}
           priorityFirst
           label="Applications"
+          size="lead"
         />
       </Container>
     </>
