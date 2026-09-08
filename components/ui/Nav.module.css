@@ -11,7 +11,10 @@
 
 .inner {
   display: flex;
-  align-items: baseline;
+  /* Was `baseline`, which was correct while the mark was a single line of
+     type. The mark is now a two-line logo lockup with no baseline worth
+     aligning to, so the row centres instead. */
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-3) var(--space-5);
   padding-block: var(--space-3);
@@ -22,21 +25,28 @@
   flex-wrap: wrap;
 }
 
-/* The wordmark takes the display serif, small. At this size it reads as a
-   masthead byline rather than as a logo, which is what a type-led site
-   wants, and it introduces the display face before the hero does. */
+/* The mark is the supplied logo lockup, replacing the typeset wordmark that
+   used to sit here. It is a two-line lockup (TREVOR RIGGLE over DESIGN) at
+   564x150, so it needs roughly half again the height of the 21px single line
+   it replaced before the second line stays legible. Height is the knob;
+   width follows the intrinsic ratio. */
 .mark {
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: \"wdth\" var(--width-display-mid);
-  font-size: var(--text-lg);
-  letter-spacing: var(--tracking-tight);
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  white-space: nowrap;
-  line-height: 1;
+  transition: opacity var(--duration-fast) var(--ease-out);
 }
 
-.mark:hover { color: var(--color-signal); }
+.markImage {
+  display: block;
+  height: 2rem;      /* 32px -> ~120px wide at the 3.76:1 lockup ratio */
+  width: auto;
+}
+
+/* The old mark turned accent on hover. An <img> cannot take `color`, so the
+   affordance is carried by opacity instead: the link still answers the
+   pointer, and the logo is not recoloured. */
+.mark:hover { opacity: 0.68; }
 
 .links {
   display: flex;

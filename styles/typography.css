@@ -3,7 +3,7 @@
    ============================================================================
    Role assignment, stated once and enforced everywhere:
 
-     display  Bricolage Grotesque  page titles, section titles, entry titles,
+     display  Archivo              page titles, section titles, entry titles,
                                    the hero, and big hanging numerals
      text     DM Sans              body, decks, UI, links, every sentence
      mono     DM Mono              DATA ONLY: filenames, pixel dimensions,
@@ -74,9 +74,9 @@ h3 {
   letter-spacing: var(--tracking-tight);
 }
 
-/* h4+ drop out of the display face into the text face. At that size the serif
-   reads as noise rather than voice, and a third typographic voice on one page
-   is a ransom note. */
+/* h4+ drop out of the display face into the text face. At that size the
+   display face reads as noise rather than voice, and a third typographic
+   voice on one page is a ransom note. */
 h4, h5, h6 {
   font-family: var(--font-text);
   font-size: var(--text-base);

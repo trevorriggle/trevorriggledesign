@@ -32,7 +32,7 @@ export function Footer() {
             <p className={styles.metaLine}>
               {site.domain}
               <br />
-              Set in Bricolage Grotesque &amp; DM Sans
+              Set in Archivo &amp; DM Sans
             </p>
           </div>
         </div>

@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Container } from "./Container";
 import { site, nav } from "@/lib/site";
+import logo from "@/public/trevor-riggle-design.png";
 import styles from "./Nav.module.css";
 
 export function Nav() {
@@ -12,8 +14,14 @@ export function Nav() {
   return (
     <header className={styles.nav}>
       <Container className={styles.inner}>
-        <Link href="/" className={styles.mark}>
-          {site.name}
+        <Link href="/" className={styles.mark} aria-label={`${site.name}, home`}>
+          <Image
+            src={logo}
+            alt=""
+            className={styles.markImage}
+            priority
+            sizes="120px"
+          />
         </Link>
 
         <nav aria-label="Primary">

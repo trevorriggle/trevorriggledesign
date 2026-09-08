@@ -71,8 +71,8 @@
 
   /* ---- 2. TYPE ---------------------------------------------------------- */
 
-  --font-display: var(--font-display-face), "Iowan Old Style", Palatino,
-    Georgia, serif;
+  --font-display: var(--font-display-face), "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
   --font-text: var(--font-text-face), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Helvetica, sans-serif;
   --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, "SF Mono",
@@ -144,11 +144,12 @@
   --weight-semibold: 600;
   --weight-bold: 700;
 
-  /* Bricolage is variable across weight AND width, which is the whole reason
-     it is here. Display type runs heavy and slightly narrow: at 130px a
-     regular weight reads as "large text", and a compressed heavy weight reads
-     as a decision. The narrow width is what keeps a long headline from
-     eating four lines. */
+  /* Archivo is variable across weight AND width, which is the whole reason
+     it is here rather than Inter. Display type runs heavy and slightly
+     narrow: at 130px a regular weight reads as "large text", and a compressed
+     heavy weight reads as a decision. The narrow width is what keeps a long
+     headline from eating four lines. Both values sit inside Archivo's wdth
+     range of 62-125. */
   --weight-display: 700;
   --width-display: 88;     /* wdth axis, big type   */
   --width-display-mid: 94; /* wdth axis, mid sizes  */

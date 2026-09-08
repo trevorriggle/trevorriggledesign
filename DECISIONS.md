@@ -32,29 +32,39 @@ is one colour on every device.
 
 | Role | Face | Foundry | Licence |
 | --- | --- | --- | --- |
-| Display | **Bricolage Grotesque** (variable) | Mathieu Triay | OFL 1.1 |
+| Display | **Archivo** (variable) | Omnibus-Type | OFL 1.1 |
 | Text | **DM Sans** (variable) | Colophon Foundry | OFL 1.1 |
 | Data | **DM Mono** | Colophon Foundry | OFL 1.1 |
 
-**Instrument Serif was removed.** It was elegant and it was safe, and safe was
-the complaint: a high-contrast didone reads as tasteful editorial, which is the
-house style of roughly every portfolio built this year.
+**Instrument Serif was removed first.** It was elegant and it was safe, and
+safe was the complaint: a high-contrast didone reads as tasteful editorial,
+which is the house style of roughly every portfolio built this year.
 
-**Why Bricolage.** It is a genuinely odd face. Uneven weight distribution,
-flat-sided bowls, a squared-off `g`, terminals that stop where you do not
-expect them. It was drawn as a bricolage of grotesque conventions that do not
-normally sit together, and at display size that awkwardness is the point. It is
-also variable across weight, width AND optical size, so one file covers 130px
-headlines and 24px subheads.
+**Bricolage Grotesque replaced it, and was removed in turn.** It was a
+genuinely odd face — uneven weight distribution, flat-sided bowls, a
+squared-off `g`, terminals stopping where you do not expect them — and the
+oddness was the problem. A display face that draws attention to its own
+drawing competes with the work it is introducing.
 
-**The width axis is used, and it is the fun part.** Display type is set narrow
-(`wdth` 88 at hero size, 94 elsewhere) and heavy (700, 800 on the hero). At
-130px a regular weight reads as "large text"; a compressed heavy weight reads
-as a decision, and the narrow width keeps a long headline off a fourth line.
+**Why Archivo.** A neo-grotesque in the American gothic line: even weight
+distribution, closed apertures, no ornament. At 129px it reads as a shape
+rather than as a personality, which is what a page title should do — frame the
+work, not perform beside it.
 
-**Why DM Sans under it.** Bricolage does all the shouting, so the text face has
-to be quiet and warm without being characterless. Low contrast, generous
-apertures, slightly geometric roundness.
+**The width axis survived the swap, and that is why Archivo specifically.**
+Archivo is variable across weight (100-900) *and* width (62-125), which is
+rare in this category; Inter and most neo-grotesques have no width axis at
+all. Display type stays narrow (`wdth` 88 at hero size, 94 elsewhere) and
+heavy (700). At 130px a regular weight reads as "large text"; a compressed
+heavy weight reads as a decision, and the narrow width keeps a long headline
+off a fourth line. The size and spacing scale did not change.
+
+Bricolage's `opsz` axis has no Archivo equivalent and was dropped. Its effect
+was subtle and the size ramp already does that job explicitly.
+
+**Why DM Sans under it.** Archivo is cool and engineered, so the text face
+carries the warmth: low contrast, generous apertures, slightly geometric
+roundness.
 
 All three are OFL 1.1 and self-hosted by `next/font` at build time. No font-CDN
 request at runtime, no third-party origin.

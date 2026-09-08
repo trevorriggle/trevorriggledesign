@@ -1,41 +1,47 @@
 /* ============================================================================
    FONTS
    ============================================================================
-   Instrument Serif is gone. It was elegant and it was safe, and "safe" is the
-   complaint: a high-contrast didone reads as tasteful editorial, which is the
-   house style of roughly every portfolio built this year.
-
-     Bricolage Grotesque   display   Mathieu Triay, OFL 1.1
-     DM Sans               text      Colophon Foundry for Google, OFL 1.1
-     DM Mono               data      same superfamily, so no extra family slot
-
-   WHY BRICOLAGE. It is a genuinely odd face: deliberately uneven weight
+   Bricolage Grotesque is gone. It was a deliberately odd face — uneven weight
    distribution, flat-sided bowls, a squared-off `g`, terminals that stop where
-   you do not expect them. It was drawn as a "bricolage" of grotesque
-   conventions that do not normally sit together, and at display size that
-   awkwardness is the whole point. It is also fully variable across weight,
-   width AND optical size, so one file gives the range this site needs to be
-   loud at 130px and still legible at 24px.
+   you do not expect them — and that oddness turned out to be the complaint. A
+   display face that draws attention to its own drawing competes with the work
+   it is supposed to be introducing.
 
-   The width axis is the fun part and it is used: headings compress slightly as
-   they get bigger, which is what stops a huge line from reading as merely
-   "large text".
+     Archivo    display   Omnibus-Type, OFL 1.1
+     DM Sans    text      Colophon Foundry for Google, OFL 1.1
+     DM Mono    data      same superfamily, so no extra family slot
 
-   WHY DM SANS UNDER IT. Bricolage is doing all the shouting, so the text face
-   has to be quiet and warm without being characterless. DM Sans has low
-   contrast, generous apertures and slightly geometric roundness that keeps the
-   page friendly rather than corporate.
+   WHY ARCHIVO. It is a neo-grotesque in the American gothic line: even weight
+   distribution, closed apertures, no ornament and no jokes. At 129px it reads
+   as a shape rather than as a personality, which is the correct behaviour for
+   a headline on a portfolio — the page title should frame the work, not
+   perform next to it.
+
+   The practical reason it wins over the other neo-grotesques is the axis set.
+   Archivo is variable across BOTH weight (100–900) and width (62–125), which
+   is rare in this category — Inter, Helvetica Now and friends have no width
+   axis at all. This site's headings compress as they get bigger, and that
+   behaviour is expressed as `wdth` in the type tokens. Archivo keeps it
+   working with no changes to the scale.
+
+   Bricolage's `opsz` axis has no equivalent here and is simply dropped; its
+   effect was subtle and the size ramp already does that job explicitly.
+
+   WHY DM SANS UNDER IT. Unchanged, and it matters more now. Archivo is cool
+   and engineered, so the text face carries the warmth: DM Sans has low
+   contrast, generous apertures and a slightly geometric roundness that keeps
+   the page friendly rather than clinical.
 
    All three are OFL 1.1 and self-hosted by next/font at build time. No
    font-CDN request at runtime, no third-party origin.
    ========================================================================= */
 
-import { Bricolage_Grotesque, DM_Sans, DM_Mono } from "next/font/google";
+import { Archivo, DM_Sans, DM_Mono } from "next/font/google";
 
-/** Display. Variable across wght, wdth and opsz. */
-export const bricolage = Bricolage_Grotesque({
+/** Display. Variable across wght (100–900) and wdth (62–125). */
+export const archivo = Archivo({
   subsets: ["latin"],
-  axes: ["opsz", "wdth"],
+  axes: ["wdth"],
   variable: "--font-display-face",
   display: "swap",
   preload: true,
@@ -62,7 +68,7 @@ export const dmMono = DM_Mono({
 
 /** Joined onto <html> in app/layout.tsx. */
 export const fontVariables = [
-  bricolage.variable,
+  archivo.variable,
   dmSans.variable,
   dmMono.variable,
 ].join(" ");
