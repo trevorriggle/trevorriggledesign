@@ -84,7 +84,7 @@ export default function DesignPage() {
                 aria-hidden="true"
               >
                 <Image
-                  src={lead.src}
+                  src={lead.still}
                   alt=""
                   width={lead.width}
                   height={lead.height}

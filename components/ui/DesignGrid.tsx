@@ -1,5 +1,6 @@
 import Image from "next/image";
-import type { DesignImage } from "@/lib/design-images";
+import type { DesignItem } from "@/lib/design-images";
+import { AutoVideo } from "./AutoVideo";
 import styles from "./DesignGrid.module.css";
 
 /* ============================================================================
@@ -16,6 +17,17 @@ import styles from "./DesignGrid.module.css";
 
    `grid-auto-flow: dense` lets a narrow image backfill the gap a wide one
    left, so the page stays tight without anything being resized to fit.
+
+   MOTION SITS IN THE SAME GRID. Several pieces in this archive are animated
+   banners and social posts. They lay out on their true proportion exactly like
+   a still and take the same span, because an animated 1500x627 banner is the
+   same shape as a static one and should not be given its own special row.
+
+   They render through <AutoVideo>, which already carries the rules this site
+   wants: muted, looping, no controls, paused until the clip is actually on
+   screen, and never autoplayed at all for a visitor who has asked for reduced
+   motion or is on a metered connection. Those visitors get the poster frame,
+   which is a real picture of the work rather than a dead rectangle.
 
    An empty array renders nothing at all, no placeholder boxes, no "coming
    soon". The page is its copy until there are files in the folder.
@@ -42,29 +54,39 @@ export function DesignGrid({
   /** Mark the first image as the LCP candidate. Only on a page's lead grid. */
   priorityFirst = false,
 }: {
-  images: DesignImage[];
+  images: DesignItem[];
   priorityFirst?: boolean;
 }) {
   if (images.length === 0) return null;
 
   return (
     <ul className={styles.grid}>
-      {images.map((image, i) => (
+      {images.map((item, i) => (
         <li
-          key={image.src}
-          className={[styles.item, spanClass(image.ratio)].join(" ")}
+          key={item.src}
+          className={[styles.item, spanClass(item.ratio)].join(" ")}
         >
-          <Image
-            src={image.src}
-            alt={image.alt}
-            width={image.width}
-            height={image.height}
-            sizes={sizesFor(image.ratio)}
-            priority={priorityFirst && i === 0}
-            loading={priorityFirst && i === 0 ? "eager" : "lazy"}
-            decoding="async"
-            className={styles.image}
-          />
+          {item.kind === "video" && item.poster ? (
+            <AutoVideo
+              src={item.src}
+              poster={item.poster}
+              width={item.width}
+              height={item.height}
+              label={item.alt}
+            />
+          ) : (
+            <Image
+              src={item.src}
+              alt={item.alt}
+              width={item.width}
+              height={item.height}
+              sizes={sizesFor(item.ratio)}
+              priority={priorityFirst && i === 0}
+              loading={priorityFirst && i === 0 ? "eager" : "lazy"}
+              decoding="async"
+              className={styles.image}
+            />
+          )}
         </li>
       ))}
     </ul>

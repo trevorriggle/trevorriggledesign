@@ -57,6 +57,10 @@ Drop image files into `public/design/<category>/`. That is the whole
 operation, no manifest, no registry, no per-image config, no code edit.
 
 - They appear on that category's page, sorted by filename.
+- **Animations**: drop `<name>.mp4` plus a poster at the same stem,
+  `<name>.jpg`. The pair renders as one autoplaying, muted, looping item, and
+  falls back to the poster for reduced-motion or metered connections. Transcode
+  GIFs first, `next/image` does not optimise them and they ship at full size.
 - Dimensions are read from the file at build time, so the grid lays out on
   true aspect ratios and nothing shifts as images load.
 - Alt text is derived from the filename: `03-catalog-spread.jpg` becomes

@@ -368,6 +368,28 @@ terms what this work is evidence *of*. Folding it into the prose would waste it.
 page, sorted by filename. No manifest, no registry, no per-image frontmatter,
 no import.
 
+**It covers motion now too.** A video is `<name>.mp4` plus a poster at the same
+stem, `<name>.jpg`. The poster renders before playback, is what any caller uses
+when it needs a still, and is never listed as a work of its own: it is claimed
+by its video, so a pair is ONE grid item, not two. Clips lay out on their true
+proportion and take the same span a still of that shape would, and render
+through `<AutoVideo>`, which is muted, looping, control-free, paused until the
+clip is on screen, and does not autoplay at all for a visitor who has asked for
+reduced motion or is on a metered connection. Those visitors see the poster,
+which is a real picture of the work.
+
+### 112 MB of GIFs became 8 MB of MP4
+
+The American Scientific archive is partly animated: web banners, animated
+social posts, a logo build. They arrived as GIFs totalling **112.5 MB**, one of
+them **47.8 MB by itself**. `next/image` does not optimise animated GIFs, it
+passes them through untouched, so every one of those bytes would have shipped
+to every visitor, on a page a recruiter might open on a phone.
+
+Transcoded to h264 MP4 at CRF 26: **8.0 MB for the set, a 93% reduction**, with
+the animation intact and a poster frame extracted from frame one. No GIF ships.
+The masters are untouched in the ignored source folder.
+
 Dimensions are read from the file header at build time (`image-size`, one small
 dev dependency). That is what buys two things with zero configuration:
 `next/image` gets real width/height so nothing shifts as images load, and the

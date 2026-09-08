@@ -16,3 +16,8 @@ next-env.d.ts
 
 # Restore list for the [[NEEDS]] copy cut to unblock a deploy. Local only.
 PENDING-COPY.md
+
+# Source drop for portfolio assets. The originals live here; the versions that
+# ship were copied into public/ and the animated GIFs were transcoded to MP4.
+# 130 MB of masters does not belong in the repo.
+/Portfolio Images/
