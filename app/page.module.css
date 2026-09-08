@@ -92,17 +92,6 @@
   }
 }
 
-/* The supporting paragraph. Text face at lead size on a short measure: it is
-   a sentence to be read, and it must not compete with the statement, so it
-   sits four steps down the scale rather than one. */
-.heroSub {
-  font-size: var(--text-lg);
-  line-height: var(--leading-snug);
-  color: var(--color-text);
-  max-width: 54ch;
-  margin-top: var(--space-7);
-}
-
 /* --- 2. The clip band ----------------------------------------------------
    THE ONE FULL-BLEED ELEMENT ON THE SITE. Everything else, on every page, is
    contained and framed; this is the hero's own visual and the exception is

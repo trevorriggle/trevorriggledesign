@@ -13,9 +13,15 @@ import styles from "./page.module.css";
    ============================================================================
    Three things, in this order, and nothing else:
 
-     1  the statement   129px, revealed word by word, alone on the first screen
+     1  the statement   129px, revealed word by word, and ON ITS OWN
      2  the clip        thoosie's footage, full bleed, closing the hero
      3  the four doors  Applications, Design, Agentic AI, About
+
+   THE STATEMENT HAS NO SUPPORTING PARAGRAPH. It used to carry the second half
+   of `portfolio-copy.md`'s opening block, the four-years-of-catalogs sentence,
+   set at lead size beneath it. That is out of the build on request. The first
+   screen is the statement and the clip, and the About page is where the longer
+   version of that sentence already lives.
 
    THE APPLICATIONS BAND IS GONE. This page used to carry the statement, then
    an "Applications" heading, then DrawEvolve as a large feature, then thoosie
@@ -73,13 +79,6 @@ export default function HomePage() {
             </Fragment>
           ))}
         </h1>
-
-        <p className={styles.heroSub}>
-          I spent four years making catalogs and marketing for hundreds of
-          clients, then learned to build the products instead of decorating
-          them. Now I design and ship AI tools end to end &mdash; interface,
-          backend, model pipeline, and the parts nobody wants to own.
-        </p>
       </Container>
 
       {/* THE HERO'S OWN VISUAL, and the one full-bleed element on the site.

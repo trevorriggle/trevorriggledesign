@@ -234,12 +234,23 @@ Systems section intro, verbatim:
 because anything was wrong with it, and it is **back on request**, restored
 above the grid in `app/page.tsx` exactly as the note here said to do it.
 
-What went back is `portfolio-copy.md` → "Home — opening statement", both
-paragraphs, verbatim: "Graphic designer who ships software." as the page's
-`<h1>`, and the four-years-of-catalogs paragraph under it. This is the
-author's original opening line, not the "Products I designed and built end to
-end" replacement recorded above, because the request named it. The
-visually-hidden `<h1>` the tile page carried is gone rather than duplicated.
+What went back was `portfolio-copy.md` → "Home — opening statement", both
+paragraphs verbatim: the opening line as the page's `<h1>` and the
+four-years-of-catalogs paragraph under it. The visually-hidden `<h1>` the tile
+page carried is gone rather than duplicated.
+
+**Neither of those two strings is on the page now.** Both were superseded on
+request, separately:
+
+- the `<h1>` is **"Graphic Designer & Developer"**, author-supplied, which
+  replaced "Graphic designer who ships software." That is the third time this
+  line has been rewritten and the second time on request. `portfolio-copy.md`
+  has not been updated to match, so the doc and the page disagree; **the page
+  is the authority.**
+- the supporting paragraph is **out of the build entirely.** The statement
+  stands alone above the clip. The longer version of that same biography is
+  already on `/about`, verbatim, where a visitor who wants it will look, and
+  the first screen's job is the statement and the footage.
 
 **It runs at `--type-statement`, the only role on the site pointing at d5**
 (129.1px, 7.6x long-form body). The one-step-down pass recorded in
@@ -269,6 +280,11 @@ had.
 it supersedes `portfolio-copy.md`'s "Graphic designer who ships software." The
 copy doc has not been rewritten, so the two disagree; the page is the
 authority. It still runs at `--type-statement` and still reveals word by word.
+
+**And it stands alone.** The supporting paragraph beneath it, the
+four-years-of-catalogs sentence, is out of the build on request. The first
+screen is the statement and the clip. That biography is still on `/about`,
+verbatim, which is where anyone who wants it will look.
 
 ---
 
