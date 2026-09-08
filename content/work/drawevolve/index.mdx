@@ -23,12 +23,9 @@ state: Shipped to TestFlight; approved for external testing
 # used to carry. The file is the strongest of the five: the finished colour
 # portrait with the AI Feedback panel open on it, Quick Take, What's Working
 # and a Focus Area, which is the frame that proves the deck.
-#
-# THE ALT BELOW STILL DESCRIBES THE OLD PICTURE and is the one thing here
-# waiting on the copy pass. See the note in the report.
 cover:
   src: 02.jpg
-  alt: "DrawEvolve running on an iPad: a cartoon character sketch on the canvas with the AI Feedback panel open beside it, giving an overview and a what's-working breakdown"
+  alt: "DrawEvolve on an iPad: a finished colour portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
   aspect: "2064:2752"
   minWidth: 2064
 
@@ -44,6 +41,33 @@ links:
   - label: Live
     href: https://drawevolve.com
     kind: live
+
+# ---- Plates --------------------------------------------------------------
+# The rest of the drop, in the order the critique loop actually runs: the
+# static critique (the cover), then Eve picking it up in conversation, then
+# the composition tools, then the attention overlay on the canvas. The
+# wordmark sits last because it is identity, not evidence.
+images:
+  - src: 03.jpg
+    alt: "Eve, DrawEvolve's conversational layer, opened over the critique: the question 'How would I improve this based on the feedback?' answered with a construction pass to run on a new layer, ball plus jaw wedge plus neck cylinder, and a 'Show Eve my canvas' button"
+    aspect: "2064:2752"
+    minWidth: 2064
+  - src: 04.jpg
+    alt: "The same Eve conversation further on, with the canvas attached to the turn and the question 'What is the one part that I should really focus on in here?' answered with a single priority, the eye line wrapping around the head"
+    aspect: "2064:2752"
+    minWidth: 2064
+  - src: 05.jpg
+    alt: "DrawEvolve's Composition panel: a top attention region at 59% confidence from an on-device vision model, an intended focal point marked at 55% across and 32% down, and a prompt to ask Eve why the eye goes there"
+    aspect: "2064:2752"
+    minWidth: 2064
+  - src: 06.jpg
+    alt: "The attention overlay drawn on the canvas: four numbered dashed regions over the finished portrait showing where the model estimates the eye lands, with the artist's own marked focal point on the near eye"
+    aspect: "2064:2752"
+    minWidth: 2064
+  - src: 01.png
+    alt: "The DrawEvolve wordmark: 'Draw' in a script face with an arrow running off it into 'EVOLVE' in heavy caps"
+    aspect: "1129:372"
+    minWidth: 1129
 
 # Named in the copy above. Metadata chips, never a section.
 stack: [Swift, Metal, Cloudflare Workers, Supabase]
