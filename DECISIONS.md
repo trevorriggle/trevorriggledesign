@@ -21,6 +21,34 @@ section below and believes something the code stopped doing.
 | [The steps are unchanged. The headings came down one.](#the-steps-are-unchanged-the-headings-came-down-one) | The whole of it. | Reversed. The vw coefficients were multiplied by 1.5 to match, so each role reaches its ceiling at the same viewport it did before. |
 | [Space and composition](#space-and-composition) | Rhythms up to 256px. | Every rhythm came down by roughly half. Ceilings are 36 / 56 / 120 where they were 56 / 120 / 256. The brief: the old spacing "reads empty rather than composed". |
 
+**Superseded by Phase 2 (the browse tier).**
+
+| Section | What it says | What is true now |
+| --- | --- | --- |
+| [The browse tier is an index, and the preview card is deleted](#the-browse-tier-is-an-index-and-the-preview-card-is-deleted) | Names at display scale, pictures held under the pointer. | `<IndexList>` is deleted. `<WorkIndex>` puts the ordinal, name, deck AND picture in the layout, on every device, server-rendered, with no client JavaScript at all. |
+| [Hover: one idiom, everywhere](#hover-one-idiom-everywhere) | Hover reveals the work. | Hover reveals nothing. It moves an arrow, tints a title and lifts a picture by 1.2%, all of which can be deleted without changing what the page communicates. That is the test the old idiom failed. |
+
+The reason is the audience, not taste. Most readers are on a phone, and a
+meaningful number arrive after a final-round interview while deciding whether
+to argue for the candidate in a debrief. A browse tier whose pictures need a
+mouse shows that reader a list of four words. The old component did have a
+touch fallback, so phones were not literally broken, but it meant the design
+was maintained twice and the version the author looked at while building was
+the gated one. That is how a gate survives review.
+
+Every derived meta string went with it: the status badges ("Shipped to
+TestFlight; approved for external testing", "Shelved") and the folder counts
+("16 pieces", "3 pieces", "3 applications"). The facts survive where they are
+load-bearing and stronger: DrawEvolve's body states the TestFlight outcome
+under its own Outcome heading, with the detail a chip cannot carry, and Lynk's
+deck names the shelving in the sentence that introduces it.
+
+**Kept, and not a chip:** the `Stack` row in a case study's metadata rail
+("Swift, Metal, Cloudflare Workers, Supabase"). The brief's cull named status
+badges and count labels. Stack is evidence a technical reader wants, it is a
+rail row rather than a badge, and deleting it would lose information rather
+than noise. Flagged rather than assumed.
+
 **Still true, and load-bearing.** [There is no dark mode](#there-is-no-dark-mode),
 [No em dashes](#no-em-dashes), [No dates, anywhere](#no-dates-anywhere), and
 the folder-is-the-config contract on the design side.

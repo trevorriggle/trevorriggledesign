@@ -1,8 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { imageSize } from "image-size";
-import { SELECTED } from "@/content";
-import { designCategories } from "@/content/design";
 
 /* ============================================================================
    HOME TILES, the 2x2.
@@ -23,16 +21,21 @@ import { designCategories } from "@/content/design";
    Dimensions are read from the file header at build time so next/image gets
    real width and height and nothing shifts as the tiles load.
 
-   UNTIL A FILE LANDS the tile renders its title and its count on the flat
-   ground, with the grid's own hairlines defining the cell. It does NOT render
+   UNTIL A FILE LANDS the tile renders its title on the flat ground, with the
+   grid's own hairlines defining the cell. It does NOT render
    a grey box at the image's aspect ratio. This site has a standing rule
    against placeholder boxes, and a 2x2 of empty rectangles is the largest
    possible violation of it.
 
-   THE COUNTS ARE DERIVED, NEVER WRITTEN. Applications counts the entries in
-   SELECTED, Design counts the categories. Neither is a sentence somebody has
-   to keep true by hand. Agentic AI and About carry no count, and no invented
-   blurb stands in for one.
+   THE COUNTS ARE GONE. Each tile used to carry a derived string under its
+   title: "3 applications", "3 bodies of work". They were honest and they were
+   maintenance-free, and they were still the wrong thing to put on a door,
+   because a count is a statement about how MUCH there is, and the number is
+   small. "3 applications" answers a question nobody asked on the way in and
+   answers it discouragingly. The tile is its name and its picture.
+
+   Removed as part of the site-wide chip cull, which also took the status
+   badges off the browse tier. See lib/cards.ts.
    ========================================================================= */
 
 const EXTENSIONS = ["png", "jpg", "jpeg", "webp", "avif", "gif", "svg"];
@@ -49,8 +52,6 @@ export type HomeTile = {
   slug: string;
   title: string;
   href: string;
-  /** A derived count, or "" when the section has nothing to count. */
-  meta: string;
   image: TileImage | null;
 };
 
@@ -86,36 +87,12 @@ function findImage(slug: string): TileImage | null {
   return null;
 }
 
-function plural(n: number, one: string, many: string): string {
-  return `${n} ${n === 1 ? one : many}`;
-}
-
 export function getHomeTiles(): HomeTile[] {
   const tiles: Omit<HomeTile, "image">[] = [
-    {
-      slug: "applications",
-      title: "Applications",
-      href: "/applications",
-      meta: plural(SELECTED.length, "application", "applications"),
-    },
-    {
-      slug: "design",
-      title: "Design",
-      href: "/design",
-      meta: plural(designCategories.length, "body of work", "bodies of work"),
-    },
-    {
-      slug: "agentic-ai",
-      title: "Agentic AI",
-      href: "/agentic-ai",
-      meta: "",
-    },
-    {
-      slug: "about",
-      title: "About",
-      href: "/about",
-      meta: "",
-    },
+    { slug: "applications", title: "Applications", href: "/applications" },
+    { slug: "design", title: "Design", href: "/design" },
+    { slug: "agentic-ai", title: "Agentic AI", href: "/agentic-ai" },
+    { slug: "about", title: "About", href: "/about" },
   ];
 
   return tiles.map((tile) => ({ ...tile, image: findImage(tile.slug) }));

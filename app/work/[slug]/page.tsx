@@ -109,17 +109,10 @@ export default async function CaseStudyPage({
             <h1 className={styles.title}>{entry.title}</h1>
             {entry.deck && <p className={styles.deck}>{entry.deck}</p>}
 
-            {/* The Status line, verbatim or not at all. No template branch can
-                render a shelved project as active. */}
-            {entry.state && (
-              <p
-                className={
-                  entry.context === "shelved" ? styles.shelved : styles.state
-                }
-              >
-                {entry.state}
-              </p>
-            )}
+            {/* NO STATUS CHIP. `entry.state` is still read from frontmatter
+                and still shown in the rail as Context, but it no longer gets
+                a bordered pill of its own under the deck. See the note in
+                page.module.css for why the prose carries it better. */}
           </div>
 
           <div className={`${styles.headRail} ${grid.railRuled}`}>

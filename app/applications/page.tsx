@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { IndexList } from "@/components/ui/IndexList";
+import { WorkIndex } from "@/components/ui/WorkIndex";
 import { caseStudyRows } from "@/lib/cards";
 import { getSelected } from "@/content";
 import { site } from "@/lib/site";
@@ -27,12 +27,18 @@ export const metadata: Metadata = {
    opening line, not as an introduction to three case studies, and it is out
    of the build entirely rather than parked somewhere it does not belong.
 
-   THIS IS THE BROWSING TIER, and it is an INDEX now. It has been three
-   things: full-width stacked media (one entry was a screenful), then three
-   4:3 preview cards (which flattened the set into equal tiles and threw away
-   every asset's real shape). It is now a ruled list of names at 57px with each
-   entry's picture held under the pointer, at its own proportion. See
-   components/ui/IndexList.
+   THIS IS THE BROWSING TIER. It has been four things: full-width stacked
+   media (one entry was a screenful), then three 4:3 preview cards (which
+   flattened the set into equal tiles), then a ruled list of names with each
+   picture held under the POINTER, which meant the work was invisible until
+   somebody moved a mouse. It is now a numbered ruled list where every entry
+   shows its picture on load, on every device, with no JavaScript. See
+   components/ui/WorkIndex.
+
+   THE "MANUAL RUNNING ORDER" NOTE IS GONE. It sat beside the page title and
+   it was a note about the CMS, addressed to whoever maintains the site,
+   printed on the page a hiring manager reads. That the order is deliberate is
+   worth knowing; it is not worth a line of the page to say so.
    ========================================================================= */
 
 export default function ApplicationsPage() {
@@ -43,12 +49,11 @@ export default function ApplicationsPage() {
       <Container as="header" className={styles.head}>
         <div className={styles.headGrid}>
           <h1 className={styles.title}>Applications</h1>
-          <p className={styles.note}>Manual running order</p>
         </div>
       </Container>
 
       <Container as="section" className={styles.list}>
-        <IndexList
+        <WorkIndex
           entries={caseStudyRows(selected)}
           label="Applications"
           priorityFirst

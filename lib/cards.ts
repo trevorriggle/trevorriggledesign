@@ -1,10 +1,9 @@
-import type { IndexEntry } from "@/components/ui/IndexList";
+import type { WorkEntry } from "@/components/ui/WorkIndex";
 import type { CaseStudy, ImageRef } from "@/content";
 import { designCategories } from "@/content/design";
 import {
   getCategoryThumb,
   getDesignGroups,
-  getDesignImages,
   type DesignGroup,
   type DesignItem,
 } from "@/lib/design-images";
@@ -12,9 +11,9 @@ import {
 /* ============================================================================
    INDEX DATA, one mapper per kind of thing that gets a row.
    ============================================================================
-   <IndexList> knows nothing about case studies or design folders. It takes a
-   href, a title, one line, a derived meta string and a picture, and these
-   three functions are the only places that shape is assembled.
+   <WorkIndex> knows nothing about case studies or design folders. It takes a
+   href, a title, one line and a picture, and these three functions are the
+   only places that shape is assembled.
 
    DIMENSIONS TRAVEL WITH THE PICTURE. The browse tier renders each preview at
    its OWN proportion rather than cropping everything to one box, so it needs
@@ -24,13 +23,27 @@ import {
    verbatim, the deck for an application and the intro for a design category,
    and it is empty when that field is empty. Nothing here writes a sentence.
 
-   META IS DERIVED, NEVER WRITTEN. A count off the folder, or the entry's own
-   `state`. Same rule lib/home-tiles.ts already runs on.
-   ========================================================================= */
+   THERE IS NO META FIELD ANY MORE, and its removal is the point rather than
+   a simplification. Every row used to carry one derived string on the right:
+   an entry's `state` ("Shipped to TestFlight; approved for external testing",
+   "Shelved") or a count off the folder ("16 pieces", "3 pieces").
 
-function plural(n: number, one: string, many: string): string {
-  return `${n} ${n === 1 ? one : many}`;
-}
+   The counts were the weaker of the two. "3 pieces" tells a reader that a
+   body of work is small before they have looked at it, which is the opposite
+   of what a browsing page is for, and it made the archive's own shape into
+   the headline fact about it.
+
+   The status badges were worse, because they were doing real work badly. The
+   TestFlight facts are genuine evidence and they belong in a sentence in the
+   case study, where "the third build passed Beta App Review" can be read as
+   an outcome. Set as a chip beside a title, the same words read as a label
+   somebody applied to themselves.
+
+   Both survive where they are load-bearing: DrawEvolve's body already states
+   the TestFlight outcome in its own prose under "Outcome", and Lynk's deck
+   already says "and the decision to stop building it". Nothing was lost by
+   deleting the chips, which is how you know they were chips.
+   ========================================================================= */
 
 function fromImageRef(image: ImageRef | null | undefined) {
   if (!image?.exists) return null;
@@ -67,12 +80,11 @@ function fromDesignItem(item: DesignItem | null) {
  * `thumb` is a picture composed for THIS size. The old chain stays behind it,
  * so an entry with no thumbnail cards up exactly as it did before.
  */
-export function caseStudyRows(entries: CaseStudy[]): IndexEntry[] {
+export function caseStudyRows(entries: CaseStudy[]): WorkEntry[] {
   return entries.map((entry) => ({
     href: entry.href,
     title: entry.title,
     description: entry.deck || undefined,
-    meta: entry.state || undefined,
     preview:
       fromImageRef(entry.thumb) ??
       fromImageRef(entry.video?.poster) ??
@@ -81,34 +93,29 @@ export function caseStudyRows(entries: CaseStudy[]): IndexEntry[] {
   }));
 }
 
-/** A body of design work. Count comes off the folder, groups included. */
-export function designCategoryRows(): IndexEntry[] {
-  return designCategories.map((category) => {
-    const count = getDesignImages(category.slug, category.title).length;
-    return {
-      href: `/design/${category.slug}`,
-      title: category.title,
-      description: category.intro || undefined,
-      meta: count > 0 ? plural(count, "piece", "pieces") : undefined,
-      preview: fromDesignItem(getCategoryThumb(category.slug, category.title)),
-    };
-  });
+/** A body of design work. */
+export function designCategoryRows(): WorkEntry[] {
+  return designCategories.map((category) => ({
+    href: `/design/${category.slug}`,
+    title: category.title,
+    description: category.intro || undefined,
+    preview: fromDesignItem(getCategoryThumb(category.slug, category.title)),
+  }));
 }
 
 /**
  * The groups inside one category.
  *
  * No description: a group has no written copy anywhere in content, and one is
- * not invented for it. The row is its name, its count and its picture.
+ * not invented for it. The row is its name and its picture.
  */
 export function designGroupRows(
   category: string,
   categoryTitle: string,
-): IndexEntry[] {
+): WorkEntry[] {
   return getDesignGroups(category, categoryTitle).map((group: DesignGroup) => ({
     href: group.href,
     title: group.title,
-    meta: plural(group.items.length, "piece", "pieces"),
     preview: fromDesignItem(group.thumb),
   }));
 }

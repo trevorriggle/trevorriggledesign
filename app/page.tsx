@@ -119,9 +119,6 @@ export default function HomePage() {
 
                   <span className={styles.label}>
                     <span className={styles.title}>{tile.title}</span>
-                    {tile.meta && (
-                      <span className={styles.meta}>{tile.meta}</span>
-                    )}
                   </span>
                 </Link>
               </li>

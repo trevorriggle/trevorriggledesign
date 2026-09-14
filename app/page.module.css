@@ -239,11 +239,14 @@
 }
 
 /* Pushed to the bottom of the cell, so the four titles sit on one line
-   across the grid whether or not the tiles above them are the same height. */
+   across the grid whether or not the tiles above them are the same height.
+
+   A single child since the derived count came off the tiles, but it keeps the
+   flex column: `margin-top: auto` is what does the pushing, and it needs a
+   flex parent to push against. */
 .label {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
   margin-top: auto;
 }
 
@@ -255,15 +258,6 @@
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-display);
   transition: color var(--duration-fast) var(--ease-out);
-}
-
-.meta {
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-  font-variant-numeric: tabular-nums;
 }
 
 /* --- Collapse ------------------------------------------------------------- */

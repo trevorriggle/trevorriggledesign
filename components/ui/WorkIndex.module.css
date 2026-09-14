@@ -1,0 +1,206 @@
+/* ============================================================================
+   THE WORK INDEX
+   ============================================================================
+   Numbered rows on hairlines, each showing its picture. See WorkIndex.tsx for
+   why the hover-gated version this replaced was the wrong shape.
+
+   THE ROW IS A GRID, NOT A FLEX LINE, and it is the page's 12 columns rather
+   than a private set: the pictures in this list line up with the section
+   heads above them and the footer below them, which is what makes the grid
+   read as structure instead of as three components that happen to agree.
+   ========================================================================= */
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: var(--rule-heavy);
+}
+
+.row {
+  border-bottom: var(--rule);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: clamp(var(--space-4), 2.2vw, var(--space-6));
+  padding-block: clamp(var(--space-5), 3vw, var(--space-7));
+  text-decoration: none;
+  color: inherit;
+}
+
+/* --- The head: ordinal, name, out ---------------------------------------- */
+
+.head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(var(--space-3), 1.6vw, var(--space-5));
+}
+
+/* Small, beside a title that runs to 57px. The brief's "very big vs very
+   small, little in between" is this pair, and it is the same relationship
+   <SectionHead> sets up. */
+.ordinal {
+  flex: none;
+  font-size: var(--text-lg);
+  transform: translateY(-0.12em);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+}
+
+/* Closes the row on the right, so the line reads ordinal, name, out. A glyph,
+   not copy. */
+.arrow {
+  flex: none;
+  margin-left: auto;
+  font-size: var(--text-lg);
+  color: var(--color-text-meta);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+/* --- The picture, which is the point ------------------------------------- */
+
+.media {
+  grid-column: 1 / 9;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* BOUNDED ON BOTH AXES, CROPPED ON NEITHER. The same rule <Frame> runs on,
+   and for the same reason: these pictures are genuinely mixed, and which axis
+   binds differs per picture. A 2400x993 print spread is width-bound and fills
+   the column; a 2064x2752 iPad screenshot is HEIGHT-bound and comes out near
+   420px wide. Forcing both into one box is what a 4:3 preview card did, and
+   it threw away the one thing a picture of a print spread has to say.
+
+   The height cap is what keeps a browsing page browsable. Without it a
+   portrait screenshot at this column width is over 1000px tall and the index
+   becomes one entry per screen. */
+.image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 52vh;
+  background-color: var(--color-bg-sunk);
+  border: var(--rule);
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+/* --- The deck ------------------------------------------------------------ */
+
+.deck {
+  grid-column: 9 / -1;
+  align-self: start;
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-wrap: pretty;
+  max-width: 34ch;
+}
+
+/* --- Hover and focus, ON TOP OF VISIBLE CONTENT --------------------------
+   Every rule in this block can be deleted without changing what the page
+   communicates, which is the test for whether motion is an enhancement or a
+   gate. Nothing here reveals anything. */
+
+.link:hover .ordinal,
+.link:focus-visible .ordinal {
+  color: var(--color-text);
+}
+
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  color: var(--color-signal);
+  transform: translateX(0.35em);
+}
+
+.link:hover .image,
+.link:focus-visible .image {
+  transform: scale(1.012);
+}
+
+.link:hover .title,
+.link:focus-visible .title {
+  color: var(--color-signal);
+}
+
+/* The focus ring lands on the row rather than on the picture inside it, so a
+   keyboard user sees the whole target they are about to activate. */
+.link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+/* --- Collapse -------------------------------------------------------------
+   One column. The picture goes full width and the deck sits under it, which
+   is the reading order the markup is already in: name, picture, line about it.
+   Nothing is hidden and nothing changes place. */
+
+@media (max-width: 62rem) {
+  .media,
+  .deck {
+    grid-column: 1 / -1;
+  }
+
+  .deck { max-width: none; }
+
+  /* Taller allowance on a phone: the column is the full screen width, so a
+     portrait screenshot capped at 52vh would render tiny. */
+  .image { max-height: 68vh; }
+}
+
+@media (max-width: 34rem) {
+  .head {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .ordinal {
+    /* Takes its own line above the title. At phone width an ordinal plus a
+       gap plus a 38px title is most of the line box before the first word. */
+    flex-basis: 100%;
+    transform: none;
+    font-size: var(--text-base);
+  }
+
+  /* The arrow's auto margin has nothing to push against once the ordinal
+     wraps, so it is pinned to the title's line instead. */
+  .arrow { margin-left: auto; }
+}
+
+/* --- Reduced motion -------------------------------------------------------
+   The transforms go. The colour changes stay: a hover state that does not
+   move is still a hover state, and removing the affordance entirely would
+   make the page worse for somebody who asked for less movement, not better. */
+
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .arrow {
+    transition: none;
+  }
+
+  .link:hover .image,
+  .link:focus-visible .image {
+    transform: none;
+  }
+
+  .link:hover .arrow,
+  .link:focus-visible .arrow {
+    transform: none;
+  }
+}

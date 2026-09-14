@@ -25,23 +25,11 @@
   letter-spacing: var(--tracking-display);
 }
 
-/* The running order is the only hierarchy left in the set below, so saying so
-   is load-bearing rather than decorative. */
-.note {
-  grid-column: 9 / -1;
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-}
-
 .list {
   padding-bottom: var(--rhythm-normal);
 }
 
 @media (max-width: 62rem) {
-  .title,
-  .note { grid-column: 1 / -1; }
+  .title { grid-column: 1 / -1; }
   .headGrid { row-gap: var(--space-3); }
 }

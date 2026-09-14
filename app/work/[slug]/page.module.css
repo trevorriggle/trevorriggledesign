@@ -139,25 +139,16 @@
   max-width: 46ch;
 }
 
-/* The status chip. No uppercase transform, see the note in the component. */
-.shelved,
-.state {
-  display: inline-block;
-  font-size: var(--text-xs);
-  letter-spacing: var(--tracking-normal);
-  padding: var(--space-1) var(--space-3);
-  margin-top: var(--space-6);
-}
+/* THE STATUS CHIP IS GONE, and so are its two variants. It rendered the
+   entry's `state` in a bordered pill under the deck: "Shipped to TestFlight;
+   approved for external testing" on DrawEvolve, "Shelved" on Lynk.
 
-.shelved {
-  color: var(--color-signal);
-  border: var(--hairline) solid var(--color-signal);
-}
-
-.state {
-  color: var(--color-text-meta);
-  border: var(--rule);
-}
+   Both facts survive as prose, which is where they were always stronger.
+   DrawEvolve's body states the TestFlight outcome under its own "Outcome"
+   heading, with the detail a chip cannot carry: three builds, the third
+   passed Beta App Review. Lynk's deck names the shelving in the sentence that
+   introduces it. A fact set in a pill beside a title reads as a label someone
+   applied to themselves; the same fact in a sentence reads as an outcome. */
 
 /* --- Lead media -----------------------------------------------------------
    Contained, and given real air on both sides of it. It used to crowd the

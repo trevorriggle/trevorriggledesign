@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
-import { IndexList } from "@/components/ui/IndexList";
+import { WorkIndex } from "@/components/ui/WorkIndex";
 import { designLanding } from "@/content/design";
 import { designCategoryRows } from "@/lib/cards";
 import { site } from "@/lib/site";
@@ -20,9 +20,9 @@ export const metadata: Metadata = {
    anywhere.
 
    AN INDEX, the same browse tier /applications uses. This has been three
-   editorial rows with mismatched lead images, then three 4:3 preview cards.
-   It is now a ruled list of names with each category's picture held under the
-   pointer at its own proportion.
+   editorial rows with mismatched lead images, then three 4:3 preview cards,
+   then a hover-gated list. Every category's picture is now in the layout, at
+   its own proportion, visible on load. See components/ui/WorkIndex.
 
    A category with an empty folder gets a row and no picture rather than a grey
    box, same standing rule as everywhere else.
@@ -50,7 +50,7 @@ export default function DesignPage() {
       </Container>
 
       <Container as="section" className={styles.list}>
-        <IndexList
+        <WorkIndex
           entries={rows}
           label="Bodies of design work"
           priorityFirst

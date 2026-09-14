@@ -13,7 +13,7 @@ import {
   getUngroupedImages,
 } from "@/lib/design-images";
 import { designGroupRows } from "@/lib/cards";
-import { IndexList } from "@/components/ui/IndexList";
+import { WorkIndex } from "@/components/ui/WorkIndex";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -119,7 +119,7 @@ export default async function DesignCategoryPage({
 
       {groups.length > 0 && (
         <Container as="section" className={styles.gridBlock}>
-          <IndexList
+          <WorkIndex
             entries={designGroupRows(found.slug, found.title)}
             priorityFirst
             label={`${found.title}, groups of work`}
