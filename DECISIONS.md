@@ -43,6 +43,36 @@ load-bearing and stronger: DrawEvolve's body states the TestFlight outcome
 under its own Outcome heading, with the detail a chip cannot carry, and Lynk's
 deck names the shelving in the sentence that introduces it.
 
+**Superseded by Phase 3 (the design pages).**
+
+| Section | What it says | What is true now |
+| --- | --- | --- |
+| [Design work: three real pages](#design-work-three-real-pages) | A category with group folders is a browsing tier; each group is its own route. | A category is ONE page. Each group is an anchored section on it, reached by a sticky subnav. The eight `/design/<category>/<group>` routes are deleted and 308 to their anchors. |
+
+Seeing four print pieces used to be three navigations: land on the category,
+read a list of group names, click one, land on a third page. The work is now
+on screen when the page loads.
+
+**Still true, and extended:** a folder is still the config. Group folders
+decide the sections, and they now also generate the redirect list in
+`next.config.ts`, read off the same directories.
+
+**Taranto's is deliberately unchanged.** No group folders, three pieces, so it
+still renders as a flat gallery with no subnav. A sticky bar with one item in
+it is furniture, and splitting three pieces into sub-groups would be structure
+invented to satisfy a pattern.
+
+**One rule this reverses: placeholder copy now exists.** The standing rule was
+that nothing is invented and an empty field renders nothing, and the build was
+verified to contain zero `TODO`, `lorem` or `[[NEEDS` strings. The brief asked
+for written placeholder copy that can be edited rather than replaced, so there
+is now section copy that is not the author's own. The contract it was written
+under is at the top of `content/design.ts`: no claim that is not visible in the
+folder's own images or already written elsewhere in this repository, no client
+names, dates, volumes, outcomes or metrics. Every block carries
+`placeholder: true`, and the marker renders in development only. The production
+HTML is still verified to contain none of those strings.
+
 **Kept, and not a chip:** the `Stack` row in a case study's metadata rail
 ("Swift, Metal, Cloudflare Workers, Supabase"). The brief's cull named status
 badges and count labels. Stack is evidence a technical reader wants, it is a

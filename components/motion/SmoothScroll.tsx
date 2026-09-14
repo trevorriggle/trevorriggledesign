@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { setLenis } from "@/lib/lenis";
 
 /* ============================================================================
    SMOOTH SCROLL
@@ -27,6 +28,13 @@ import Lenis from "lenis";
    `autoRaf: true` lets Lenis own its own rAF loop rather than this component
    hand-rolling one, which is the only supported way to get the loop torn down
    cleanly on unmount.
+
+   THE INSTANCE IS PUBLISHED TO lib/lenis.ts. Lenis switches off the browser's
+   native smooth scroll, which turns every `<a href="#section">` into an
+   instant jump, so the design subnav has to ask Lenis to do the scrolling
+   instead. Publishing the handle is how it reaches it. The slot is set back
+   to null on teardown and whenever the reduced-motion preference turns Lenis
+   off, so a caller reading it never gets a destroyed instance.
    ========================================================================= */
 
 export function SmoothScroll() {
@@ -38,6 +46,7 @@ export function SmoothScroll() {
       if (query.matches) {
         lenis?.destroy();
         lenis = null;
+        setLenis(null);
         return;
       }
       if (lenis) return;
@@ -52,6 +61,8 @@ export function SmoothScroll() {
         smoothWheel: true,
         syncTouch: false,
       });
+
+      setLenis(lenis);
     }
 
     sync();
@@ -60,6 +71,7 @@ export function SmoothScroll() {
     return () => {
       query.removeEventListener("change", sync);
       lenis?.destroy();
+      setLenis(null);
     };
   }, []);
 

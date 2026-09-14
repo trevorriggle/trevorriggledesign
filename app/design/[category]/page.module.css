@@ -6,7 +6,7 @@
    same head composition, same content column, same rhythm. That is the
    argument, this is work with reasoning behind it, not a contact sheet.
 
-   The intro used to start at column 3 and the prose and the "demonstrates"
+   The intro used to start at column 3 and the prose and the category
    block carried a 16.6667% indent, drawn for a left-pinned container. Centred,
    all three sat in from the content's own left edge for no reason. They are on
    the content column now, bounded by the reading measure.
@@ -73,43 +73,50 @@
 
 .prose p + p { margin-top: var(--space-5); }
 
-/* --- What it demonstrates ------------------------------------------------
-   Its own block, with the accent rule. It is doing real work for a reader who
-   does not know how to evaluate design, and burying it inside the prose would
-   waste it. */
+/* --- A section ------------------------------------------------------------
+   One group of work: numbered head, copy, images. The rhythm between two
+   sections is `normal` rather than `loose`, because on a single page these
+   are movements in one argument rather than separate pages stacked up. */
 
-.demonstratesBlock { margin-top: var(--rhythm-tight); }
+.section {
+  margin-top: var(--rhythm-normal);
+}
 
-.demonstrates {
+.sectionCopy {
+  margin-top: var(--space-6);
+  /* Hangs in the first half of the grid, so the copy reads at a measure and
+     the images below it get the full width. */
   max-width: var(--measure);
-  border-top: 1.5px solid var(--color-signal);
-  padding-top: var(--space-4);
 }
 
-.demonstratesTerm {
-  font-family: var(--font-text);
-  font-size: var(--text-3xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps-wide);
-  text-transform: uppercase;
-  color: var(--color-signal);
-  margin-bottom: var(--space-3);
-}
-
-.demonstratesText {
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: "wdth" var(--width-display-mid);
-  font-size: var(--display-1);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-tight);
+.sectionPara {
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
   color: var(--color-text);
-  max-width: 30ch;
 }
 
-/* --- Grid ---------------------------------------------------------------- */
+.sectionPara + .sectionPara {
+  margin-top: var(--space-5);
+}
 
-.gridBlock { margin-top: var(--rhythm-normal); }
+/* THE SCAFFOLD MARKER, DEVELOPMENT ONLY. Dropped from a production build
+   entirely, see the template. Loud on purpose: it is a note to the author and
+   it must be impossible to mistake for part of the design. */
+.placeholderMark {
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-flare);
+  color: var(--paper);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  line-height: var(--leading-snug);
+}
+
+.sectionGrid {
+  margin-top: var(--rhythm-tight);
+}
 
 /* --- Pager --------------------------------------------------------------- */
 

@@ -1,0 +1,103 @@
+/* The sticky section index. See SubNav.tsx.
+
+   IT STICKS UNDER THE MASTHEAD, NOT OVER IT. The primary nav is
+   `position: sticky; top: 0` at --z-nav. This sits below it in both senses:
+   a lower z-index, and a `top` offset equal to the masthead's height, so the
+   two stack rather than overlap. The offset is a variable because the
+   masthead's height changes at the breakpoint where its tabs wrap. */
+
+.bar {
+  --masthead: 4.5rem;
+
+  position: sticky;
+  top: var(--masthead);
+  z-index: var(--z-subnav);
+
+  background: var(--color-bg);
+  border-top: var(--rule-heavy);
+  border-bottom: var(--rule);
+  /* Opaque, no blur, no translucency. The brief bans frosted surfaces by
+     name, and a bar that content shows through is unreadable over a
+     full-bleed colour band anyway. */
+}
+
+.list {
+  display: flex;
+  gap: clamp(var(--space-4), 2.4vw, var(--space-7));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.item { flex: none; }
+
+.link {
+  display: block;
+  padding-block: var(--space-4);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  text-decoration: none;
+  white-space: nowrap;
+  /* The underline is drawn as an inset shadow rather than a border so the
+     inactive and active states occupy identical space and the row does not
+     shift by 3px as you scroll past a section. */
+  box-shadow: inset 0 -3px 0 0 transparent;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--color-text);
+}
+
+/* Current section. Ochre underline under ink type, the same idiom the
+   masthead uses for the current page, and for the same reason: ochre is
+   2.00:1 on this ground and cannot carry 12px of uppercase text. The colour
+   is in the rule and the legibility is in the label. */
+.current {
+  color: var(--color-text);
+  box-shadow: inset 0 -3px 0 0 var(--color-underline-active);
+}
+
+/* --- Narrow: swipe, do not wrap or collapse -----------------------------
+   Four to six short labels wrap to three ragged rows on a phone and turn a
+   32px bar into a 110px one that eats the top of every section it scrolls
+   over. They scroll sideways instead: one finger, native momentum, no
+   scrollbar, and the bar keeps its height. */
+
+@media (max-width: 46rem) {
+  .bar {
+    /* The masthead stacks its tabs under the wordmark below 46rem, so it is
+       taller here and the offset has to follow it. */
+    --masthead: 6.5rem;
+  }
+
+  .list {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    /* Lenis takes over vertical wheel scrolling for the document; this tells
+       it to keep its hands off a horizontal scroller nested inside it. */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .list::-webkit-scrollbar { display: none; }
+
+  /* The gutter is re-added inside the scroller so the first and last items
+     can reach the page's own margins instead of being clipped at them. */
+  .list {
+    padding-inline: var(--gutter);
+    margin-inline: calc(var(--gutter) * -1);
+  }
+}
+
+@media (max-width: 30rem) {
+  .bar { --masthead: 5.75rem; }
+  .link { font-size: var(--text-3xs); }
+}

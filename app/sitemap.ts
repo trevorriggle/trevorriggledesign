@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getSelected } from "@/content";
 import { designCategories } from "@/content/design";
-import { getDesignGroups } from "@/lib/design-images";
 import { site } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -28,19 +27,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  /* The group detail pages, one per public/design/<category>/NN-<group>/.
-     Derived from the folders, like the routes themselves, so adding a group
-     directory puts it in the sitemap with no edit here. Ranked below their
-     category: a group page carries pieces, the category page carries the
-     writing. */
-  const groups = designCategories.flatMap((category) =>
-    getDesignGroups(category.slug, category.title).map((group) => ({
-      url: `${site.url}/design/${category.slug}/${group.slug}`,
-      lastModified: new Date(),
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
-  );
+  /* NO GROUP ENTRIES. There used to be one per
+     public/design/<category>/NN-<group>/, derived from the folders exactly as
+     the routes were. Those routes are gone: a category is one page now and
+     each group is a section on it.
 
-  return [...routes, ...studies, ...design, ...groups];
+     They are not listed as anchors either. A sitemap enumerates DOCUMENTS,
+     and /design/personal#comics is the same document as /design/personal. A
+     crawler offered both reads it as one page advertised four times, which is
+     the shape of keyword-stuffed boilerplate rather than a site index.
+
+     The old URLs still resolve, via the 308 in next.config.ts, which is what
+     a redirect is for. A sitemap should list where things ARE. */
+
+  return [...routes, ...studies, ...design];
 }
