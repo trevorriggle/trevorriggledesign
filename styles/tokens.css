@@ -108,9 +108,11 @@
        d1  25.5px   1.5^1     entry-row titles at their large end
        d2  38.3px   1.5^2     the hero at its small end, section titles large
        d3  57.4px   1.5^3     page titles at their large end
-       d4  86.1px   1.5^4     the hero, and nothing else
-       d5  129.1px  1.5^5     the home statement, via --type-statement, and
+       d4  86.1px   1.5^4     the home statement, via --type-statement, and
                               nothing else anywhere on the site.
+       d5  129.1px  1.5^5     unused. The statement sat here until the clip
+                              needed the vertical space back; kept as the step
+                              above so the ratio still reads.
 
      HEADINGS CAME DOWN ONE FULL STEP. Every display role was re-pointed at
      the next rung down: hero d5 -> d4, title d4 -> d3, section d3 -> d2,
@@ -140,17 +142,28 @@
      body size on a phone is not a heading. 21px is the nearest real step of
      the text tier and keeps both above the paragraphs they head.            */
 
-  /* THE HOME STATEMENT, and nothing else on the site. This is the one role
-     that points at d5, 129.1px, 7.6x long-form body, which is the step this
-     scale keeps specifically so that one element can dominate a page. The
-     ceiling lands at ~1403px, just inside the 90rem container, so the
-     statement is at full size on any desktop window and steps down from
-     there rather than falling out of the system.
+  /* THE HOME STATEMENT, and nothing else on the site.
 
-     Everything else stayed where the one-step-down pass left it: the largest
-     type anywhere else on the site is --type-title at 57.4px, so the
-     statement outranks it by 2.25x. That gap IS the first moment. */
-  --type-statement: clamp(var(--display-2), 9.2vw, var(--display-5));
+     IT CAME DOWN A STEP, d5 -> d4, 129.1px -> 86.1px, AND THE REASON IS THE
+     CLIP, NOT THE TYPE. Two lines at 129px are ~222px tall, and with the nav,
+     the hero's air and the band's gap above it the clip did not start until
+     ~526px down a 1440px window. On a laptop screen that is a third of the
+     footage below the fold on landing, and the clip is the hero's own visual:
+     it has to be SEEN in the first screen, not scrolled to. At d4 the same two
+     lines are ~148px and the clip lands most of the way inside the fold.
+
+     The vw coefficient was divided by 1.5 with the step, 9.2 -> 6.13, which is
+     the same move the one-step-down pass made on every other display role: the
+     ceiling still lands at ~1403px, just inside the 90rem container, so the
+     statement is at full size on any desktop window and the fluid behaviour is
+     untouched. The floor stays at d2, so phones are unchanged.
+
+     IT IS STILL THE LARGEST THING ON THE SITE. --type-title, at 57.4px, is the
+     next largest type anywhere, so the statement outranks it by 1.5x rather
+     than 2.25x. d5 is now unused, and stays in the scale as the step above.
+     `.statement`'s 22ch cap holds the two-line break at the new size, so the
+     composition is the same shape, smaller. */
+  --type-statement: clamp(var(--display-2), 6.13vw, var(--display-4));
 
   --type-hero: clamp(var(--display-2), 7.47vw, var(--display-4));
   --type-title: clamp(var(--display-1), 5.07vw, var(--display-3));

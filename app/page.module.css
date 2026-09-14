@@ -3,7 +3,7 @@
    ============================================================================
    Three tiers, deliberately unequal, top to bottom:
 
-     1  .hero    the statement at 129px, revealed word by word
+     1  .hero    the statement at 86px, revealed word by word
      2  .band    thoosie's clip, full bleed, closing the first screen
      3  .doors   the 2x2 index
 
@@ -15,31 +15,44 @@
    above the door that opens it.
 
    THE HIERARCHY IS SIZE, which is the one lever this type scale is built for:
-   129px statement, 25.5px tile titles, 12px meta. Three clearly separated
-   tiers, no opacity and no colour doing hierarchy's job.
+   86px statement, 25.5px tile titles, 12px meta. Three clearly separated
+   tiers, no opacity and no colour doing hierarchy's job. The statement came
+   down a step, d5 to d4, so the clip lands inside the first screen; the tiers
+   below it did not move, so the gaps are narrower and the order is the same.
    ========================================================================= */
 
 /* --- 1. The statement ----------------------------------------------------
    The first screen, and almost nothing else on it. The hero carries only
    `rhythm-tight` beneath it: the clip band closes the first screen, so the
    large air belongs under the BAND rather than above it, and it sits on
-   `.doors`. */
+   `.doors`.
+
+   THE TOP AIR IS MEASURED AGAINST THE FOLD, not against the statement. It was
+   9vw to a 120px ceiling, which on a 1440px window put 120px of nothing
+   between a 72px nav and the heading and pushed the clip that much further
+   down. It is 5.5vw to an 80px ceiling now: still the largest opening air on
+   the site, and 40px of it went back to the footage. The floor came down one
+   step with it so a phone, where the fold is tightest, gains the same way. */
 
 .hero {
-  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-top: clamp(var(--space-6), 5.5vw, var(--space-8));
   padding-bottom: var(--rhythm-tight);
 }
 
-/* d5, 129.1px at the ceiling. The only element on the site at this step.
+/* d4, 86.1px at the ceiling. The only element on the site at this step.
    `--leading-hero` (0.86) and `--tracking-hero` (-0.04em) exist for exactly
-   this role and were unreferenced while the statement was out of the build;
-   at 129px, ordinary leading opens a hole between the two lines and ordinary
-   tracking leaves the words visibly loose.
+   this role: at this size ordinary leading opens a hole between the two lines
+   and ordinary tracking leaves the words visibly loose.
 
    `--width-display` (wdth 88), not the mid width: the narrow axis is what
    keeps a nine-word sentence at this size from eating four lines. The
    negative left margin is the optical correction for the "G", so the letter's
-   left edge lands on the container's axis rather than its side bearing. */
+   left edge lands on the container's axis rather than its side bearing.
+
+   THE 22ch CAP IS DOING MORE WORK SINCE THE STEP DOWN. At 129px the sentence
+   could not fit the container on one line whatever the cap said. At 86px it
+   very nearly can, so this is now the only thing holding the two-line break
+   that the composition is built on. It is not a leftover. */
 .statement {
   font-size: var(--type-statement);
   line-height: var(--leading-hero);
@@ -108,8 +121,13 @@
    shared with the case study pages and must keep `contain` there, where
    proportion is the whole point. Here, and only here, it covers. */
 
+/* NO MARGIN OF ITS OWN. The hero's `padding-bottom` is already a
+   `rhythm-tight`, and a second one here stacked into ~112px of white between
+   the statement and the clip, which is a `rhythm-normal` gap arrived at by
+   accident. One tight gap is what the tier was specified as, and the other
+   56px is the clip's. */
 .band {
-  margin-top: var(--rhythm-tight);
+  margin-top: 0;
 }
 
 .band video,
