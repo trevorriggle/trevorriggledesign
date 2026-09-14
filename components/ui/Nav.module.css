@@ -71,10 +71,18 @@
 .link:hover { color: var(--color-signal); }
 
 /* Current page. Marked with a rule as well as colour, so it is never
-   colour-only information. */
+   colour-only information.
+
+   THE UNDERLINE IS OCHRE AND THE LABEL IS INK, which is the brief's "ochre
+   active nav states" built the only way it can be. Ochre type on the paper
+   ground measures 2.00:1 and fails at every size, and a 12px uppercase label
+   is the smallest text on the site, so it is the worst possible place to spend
+   a failing colour. As a 3px underline under full-ink type, the ochre is at
+   full saturation, the label is at 17.30:1, and the mark is louder than the
+   1.5px blue rule it replaces. See the contrast contract in tokens.css. */
 .current {
   color: var(--color-text);
-  box-shadow: inset 0 -1.5px 0 0 var(--color-signal);
+  box-shadow: inset 0 -3px 0 0 var(--color-underline-active);
 }
 
 @media (max-width: 46rem) {

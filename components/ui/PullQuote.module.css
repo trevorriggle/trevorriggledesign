@@ -1,0 +1,42 @@
+/* A pull quote on a colour field. See PullQuote.tsx.
+
+   THE FIELD IS THE COLOUR, THE TYPE IS THE INK. Ochre cannot be a text colour
+   on paper (2.00:1). As a background with ink on it, the same colour is at
+   full strength and the sentence is at 8.67:1. */
+
+.field {
+  background: var(--ground-bg);
+  color: var(--ground-text);
+  padding: clamp(var(--space-5), 4vw, var(--space-7));
+  /* Zero radius, no shadow. A flat rectangle with a hard edge, like every
+     other filled thing on this site. */
+}
+
+.block {
+  margin: 0;
+  /* The browser's default blockquote indent is the one piece of UA styling
+     that would make this look like a forum post. */
+  padding: 0;
+  border: 0;
+}
+
+.text {
+  /* Size, face, leading and tracking all come from the global `.quote`
+     utility in styles/typography.css, which is the only file allowed to
+     assign the serif. Nothing about the face is re-declared here. */
+  max-width: 22ch;
+}
+
+.cite {
+  display: block;
+  margin-top: var(--space-5);
+  /* The attribution reads as metadata against the quote, which is the whole
+     size contrast this direction is built on: 57px next to 12px. */
+  color: var(--ground-mute);
+}
+
+/* A quote is a short line by design. On a phone the 22ch cap is wider than
+   the screen anyway, so it stops doing anything and the padding carries it. */
+@media (max-width: 48rem) {
+  .text { max-width: none; }
+}

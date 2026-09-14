@@ -1,0 +1,43 @@
+/* A full-bleed run of colour. See Band.tsx for what it is for.
+
+   IT BREAKS OUT OF THE CONTAINER RATHER THAN LIVING INSIDE ONE. A band is a
+   direct child of <main>, which is not width-constrained, so it is already
+   edge to edge and needs no negative-margin trick. The measure comes back for
+   its children, from the <Container> inside it.
+
+   NO SHADOW, NO GRADIENT, NO BLUR, NO RADIUS. The brief bans all four by name.
+   A band is a flat rectangle of one colour with a hard edge, which is what
+   makes it read as printed rather than as a card floating on a page. */
+
+.band {
+  position: relative;
+  background: var(--ground-bg);
+  color: var(--ground-text);
+  /* The edge is the whole effect. A band that fades into the page is a
+     gradient hero, which is the thing this direction is defined against. */
+  isolation: isolate;
+}
+
+.inner {
+  position: relative;
+  /* Above the hairline grid overlay, which is decorative and sits at 0. */
+  z-index: 1;
+}
+
+.normal { padding-block: var(--band-pad); }
+.tight { padding-block: var(--band-pad-tight); }
+.none { padding-block: 0; }
+
+/* Two bands of the SAME ground touching would read as one taller band with a
+   double helping of padding in the middle. This collapses that seam, so a
+   run of same-colour sections stays one object. */
+.band + .band[data-ground] { margin-top: 0; }
+
+/* Rules inside a band take the ground's own rule tint, which is a tint of the
+   text colour rather than of the ink. A 16%-of-ink hairline on ultramarine is
+   invisible; 28%-of-paper is a hairline. */
+.band :where(hr) {
+  border: 0;
+  border-top: var(--hairline) solid var(--ground-rule);
+  margin: 0;
+}

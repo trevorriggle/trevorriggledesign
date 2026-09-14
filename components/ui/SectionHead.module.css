@@ -1,0 +1,66 @@
+/* A numbered section opening. See SectionHead.tsx.
+
+   THE HEAVY RULE IS THE SECTION BOUNDARY. It is the loudest structural mark
+   on a paper page and it is reserved for exactly this: the top of a top-level
+   section. Using it anywhere else is what turns a page full of rules into
+   noise rather than structure. */
+
+.head {
+  /* An anchor target under a sticky subnav has to clear it, or clicking a
+     subnav item scrolls the heading underneath the bar that sent you there.
+     Generous, because the subnav's height is fluid. */
+  scroll-margin-top: var(--space-9);
+}
+
+.rule {
+  border-top: 1.5px solid currentColor;
+  /* `currentColor`, not a token, so this works on every ground without the
+     component needing to know which one it is on. Inside a band the text
+     colour is the band's, and so is this. */
+  opacity: 0.85;
+  margin-bottom: var(--space-4);
+}
+
+.row {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(var(--space-3), 1.6vw, var(--space-5));
+}
+
+/* THE ORDINAL IS SMALL, and that is the point. The brief asks for "very big
+   vs very small, little in between": a number set at the same size as the
+   heading is a second heading, and two headings side by side have no order
+   between them. At label size beside a 57px title it reads as an index mark. */
+.number {
+  flex: none;
+  font-size: var(--text-lg);
+  /* Nudged off the baseline so the numeral's flat top aligns with the cap
+     height of the title rather than sitting visually low beside it. */
+  transform: translateY(-0.12em);
+}
+
+.title {
+  /* Inherits h2's size, weight and tracking from typography.css. The only
+     thing set here is the width axis: a section head is short, so it gets the
+     genuinely expanded width that the page title cannot afford. */
+  font-variation-settings: "wdth" var(--width-display-mid);
+}
+
+.intro {
+  margin-top: var(--space-5);
+  /* `.intro` the global utility carries the face, size and measure. This is
+     only the spacing, so the two are not fighting over the same properties. */
+}
+
+@media (max-width: 48rem) {
+  .row {
+    /* The ordinal drops above the title rather than beside it. At a phone
+       width a 21px number plus a gap plus a 38px title is most of the line
+       box before the first word lands. */
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  .number { transform: none; }
+}

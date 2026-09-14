@@ -3,23 +3,33 @@
    ============================================================================
    Every visual decision resolves to a custom property declared here. Component
    .module.css files reference tokens only: no raw hex, no raw px type size, no
-   font stack, no magic number. Retheming this site is editing this file.
+   font stack, no magic number. Retheming this site is editing this file, and
+   that held: this rewrite changed the entire palette and type direction
+   without touching a single component's colour, because there is not one raw
+   hex anywhere outside this file. Verified by grep before the rewrite started.
 
    1 Colour  2 Type  3 Space  4 Grid  5 Rules  6 Motion  7 Z
 
-   THREE THINGS THIS FILE DOES DIFFERENTLY, and they are the whole design:
+   WHAT THIS REWRITE IS FOR. The previous system was one ink, one ground, one
+   rationed accent, a 1.5 display scale pointed one step DOWN from its own
+   ceiling, and rhythms up to 256px. It read as flat, minimal and empty. The
+   brief is contemporary editorial: density, colour used as structure rather
+   than as garnish, and a type scale with a hole in the middle.
 
-   1. THE SCALE IS STEEP. Display type is a 1.5 modular scale compounding off
-      the body size. The hero lands at 7.6x body. A 1.2 scale, the default
-      almost everything ships with, cannot produce a page where one thing
-      dominates, because at 1.2 the fifth step is only twice the body and
-      everything reads as roughly the same importance.
+   FOUR THINGS THIS FILE DOES, AND THEY ARE THE WHOLE DESIGN:
 
-   2. THERE IS NO GREY RAMP. Hierarchy is size and weight, never opacity. This
-      file declares ONE muted tone, used for genuine metadata, and that is all.
-      Six shades of ink-into-paper is how a layout ends up looking like fog.
+   1. COLOUR IS A GROUND, NOT AN ACCENT. There are four grounds a section can
+      sit on, and each one declares what colour text is legal on it. Full-bleed
+      bands of ultramarine are the point, not a highlight on a link.
 
-   3. THERE IS NO DARK MODE. Deleted, not disabled. See DECISIONS.md.
+   2. THE SCALE HAS A HOLE IN IT. Display runs 38px to 129px. Text runs 11px to
+      21px. Almost nothing is allowed to live between 21 and 38, which is what
+      produces "very big next to very small" instead of six sizes of medium.
+
+   3. THERE IS NO GREY RAMP. Hierarchy is size, weight and ground. This file
+      declares ONE muted tone per ground, for genuine metadata, and that is all.
+
+   4. THERE IS NO DARK MODE. The page is Paper everywhere. See DECISIONS.md.
    ========================================================================= */
 
 :root {
@@ -28,56 +38,119 @@
   color-scheme: light;
 
   /* ---- 1. COLOUR --------------------------------------------------------
-     One ink. One ground. One accent. That is the entire palette, and the
-     accent is rationed: it appears on the hero rule, on hover/focus, and on
-     the [[NEEDS]] hazard block. Nowhere else. An accent that shows up in
-     every component is decoration; an accent that shows up twice is a mark.
+     FIVE VALUES. Everything else in this section derives from them. Change
+     these five and the site retheres itself.
 
-     THE WARMTH IS GONE. The cream ground and the warmed near-black were
-     chosen for Instrument Serif, and then kept through Bricolage. Archivo is
-     a neo-grotesque with no warmth to answer, and cream under it read as a
-     leftover rather than a decision. Ground and ink are now neutral, and the
-     accent is a blue rather than a vermilion: on a cool ground the orange was
-     the only warm thing left on the page and it fought everything.
+     Ultramarine  dominant. Full-bleed blocks, not just accents.
+     Ink          text, and the deep ground.
+     Paper        the warm off-white ground. NEVER pure white.
+     Ochre        accent. Fields, rules, active states.
+     Flare        the red, rationed to one or two moments per page.
 
-     Every other value in this section derives from these three by color-mix.
-     Change these three and the site is retheming itself.                    */
+     THE RED IS CALLED FLARE HERE AND "SIGNAL" IN THE BRIEF. The name had to
+     change because `--color-signal` already meant "the workhorse accent" in
+     26 places across the components, and it now resolves to Ultramarine. Two
+     different colours answering to "signal" is how a palette rots. The brief's
+     Signal is `--color-flare`, and the rationing is enforced by it having
+     exactly one semantic role below.                                        */
 
-  --ground: #f4f4f2;  /* cool off-white, very slightly green of neutral  */
-  --ink: #111214;     /* true near-black, a hair blue                     */
-  --accent: #1b4dd8;  /* electric blue. 6.15:1 on the ground, AA normal   */
+  --paper: #f7f4ed;        /* warm off-white ground                          */
+  --ink: #0a0e27;          /* near-black, deeply blue                        */
+  --ultramarine: #1b2ecc;  /* the dominant. 8.28:1 on Paper, AA at any size  */
+  --ochre: #e0a526;        /* 2.00:1 on Paper. A FIELD, NOT A TEXT COLOUR.   */
+  --flare: #ff4d2e;        /* 3.01:1 on Paper. Large display or fills only.  */
 
-  /* The single muted tone. One, not a ramp. */
-  --ink-mute: color-mix(in oklab, var(--ink) 58%, var(--ground));
+  /* -- What may sit on what ----------------------------------------------
+     THIS BLOCK IS THE ACCESSIBILITY CONTRACT AND IT IS NOT DECORATION.
+     Measured contrast, sRGB, computed before these were written:
 
-  /* Rule tints. Structural hairlines, not decoration. */
-  --ink-rule: color-mix(in oklab, var(--ink) 20%, var(--ground));
-  --ink-rule-faint: color-mix(in oklab, var(--ink) 11%, var(--ground));
+                      on Paper   on Ink   on Ultramarine   on Ochre
+       Ink              17.30      n/a         2.09          8.67
+       Paper             n/a      17.30        8.28          1.99
+       Ultramarine       8.28      2.09        n/a           4.15
+       Ochre             2.00      8.67        4.15          n/a
+       Flare             3.01      5.75        2.75          2.30
 
-  /* Semantic. Recolour by repointing these, never by editing the three. */
-  --color-bg: var(--ground);
-  --color-bg-sunk: color-mix(in oklab, var(--ink) 4%, var(--ground));
+     OCHRE CANNOT BE TEXT ON PAPER. At 2.00:1 it fails every threshold at
+     every size. The brief assigned it to pull quotes and active nav states,
+     which are both text on Paper, and that is the one thing it cannot do. It
+     is used here as a FIELD with Ink on top of it, as rules, and as
+     underlines, which keeps it as loud as the brief wants and legible. On the
+     Ink ground it measures 8.67 and IS a text colour, so the deep bands are
+     where ochre type is allowed.
+
+     FLARE at 3.01 on Paper clears AA for large text only (24px+, or 19px
+     bold). It is never body copy. Its licensed uses are a fill, a rule, and
+     display type at --type-title or larger.                                */
+
+  --on-paper: var(--ink);
+  --on-ink: var(--paper);
+  --on-ultramarine: var(--paper);
+  --on-ochre: var(--ink);
+
+  /* The accent that is legal on each ground, for a mark or an active state. */
+  --accent-on-paper: var(--ultramarine);
+  --accent-on-ink: var(--ochre);
+  --accent-on-ultramarine: var(--ochre);  /* large text only, 4.15 */
+  --accent-on-ochre: var(--ink);
+
+  /* -- Muted tones, ONE PER GROUND ----------------------------------------
+     Mixed in sRGB, not oklab, and that is deliberate. oklab produces a nicer
+     perceptual ramp, but the ratios above were measured in sRGB and a token
+     whose job is to clear AA has to be the value that was actually measured.
+     A prettier ramp that might be 4.3:1 is not a trade worth making.
+
+     Paper's mute is 6.92:1, which is AA for body copy at any size. The old
+     system's mute was 58% and this is 70%: on a denser page with more colour
+     competing, a light metadata tone stops being "quiet" and starts being
+     "unreadable".                                                           */
+
+  --ink-mute: color-mix(in srgb, var(--ink) 70%, var(--paper));     /* 6.92 */
+  --paper-mute: color-mix(in srgb, var(--paper) 70%, var(--ink));   /* 8.71 on Ink */
+  --paper-mute-blue: color-mix(in srgb, var(--paper) 82%, var(--ultramarine)); /* 5.99 */
+
+  /* Rule tints. Structure, not decoration, so they stay well under text. */
+  --ink-rule: color-mix(in srgb, var(--ink) 16%, var(--paper));
+  --ink-rule-faint: color-mix(in srgb, var(--ink) 11%, var(--paper));
+  --paper-rule: color-mix(in srgb, var(--paper) 28%, transparent);
+
+  /* -- Semantic. Components reference THESE, never the five above. -------- */
+
+  --color-bg: var(--paper);
+  --color-bg-sunk: color-mix(in srgb, var(--ink) 5%, var(--paper));
   --color-bg-invert: var(--ink);
-  --color-text: var(--ink);
+  --color-text: var(--on-paper);
 
   /* Body prose is FULL INK. `quiet` is an alias kept so components did not
      all need editing, and it deliberately resolves to the same value: long
      copy set in grey is the single most common way a portfolio reads as
      unfinished. Only true metadata is allowed to recede. */
-  --color-text-quiet: var(--ink);
+  --color-text-quiet: var(--color-text);
   --color-text-meta: var(--ink-mute);
   --color-text-faint: var(--ink-mute);
-  --color-text-invert: var(--ground);
+  --color-text-invert: var(--paper);
 
   --color-rule: var(--ink-rule);
   --color-rule-faint: var(--ink-rule-faint);
   --color-rule-strong: var(--ink);
-  --color-signal: var(--accent);
-  --color-signal-quiet: color-mix(in oklab, var(--accent) 12%, var(--ground));
-  /* A flat block of accent, for the few places something is filled rather
-     than ruled. */
-  --color-signal-solid: var(--accent);
-  --color-focus: var(--accent);
+
+  /* THE WORKHORSE ACCENT, and it is Ultramarine. 26 components reference this
+     for hover states, ordinals, marks and focus rings. At 8.28 on Paper it is
+     the only one of the four non-ink colours that can do that job. */
+  --color-signal: var(--ultramarine);
+  --color-signal-quiet: color-mix(in srgb, var(--ultramarine) 10%, var(--paper));
+  --color-signal-solid: var(--ultramarine);
+  --color-focus: var(--ultramarine);
+
+  /* THE RED. One semantic role, which is what rations it: a page may fill
+     something with this, and that is the moment. It is not a text colour and
+     it is not a hover state. */
+  --color-flare: var(--flare);
+
+  /* Ochre's licensed roles, named so a component cannot quietly use it as
+     type. `field` is a background that expects --on-ochre on top of it. */
+  --color-field-accent: var(--ochre);
+  --color-underline-active: var(--ochre);
 
   /* ---- 2. TYPE ---------------------------------------------------------- */
 
@@ -85,46 +158,48 @@
     Arial, sans-serif;
   --font-text: var(--font-text-face), ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Helvetica, sans-serif;
+  /* Pull quotes and section intros ONLY. See styles/typography.css, which is
+     the only file allowed to assign it. */
+  --font-quote: var(--font-quote-face), "Iowan Old Style", Georgia, serif;
   --font-mono: var(--font-mono-face), ui-monospace, SFMono-Regular, "SF Mono",
     Menlo, monospace;
 
   /* -- Text tier ----------------------------------------------------------
-     Ratio ~1.14. Small sizes need fine gradation: a 1.5 step between a 12px
-     label and the next size up would be 18px, and there is no 18px UI on this
-     site. The steep ratio is for display, where it does work.               */
+     Ratio ~1.14, and it STOPS AT 21px. Small sizes need fine gradation: a 1.5
+     step between a 12px label and the next size up would be 18px, and there is
+     no 18px UI on this site. The steep ratio is for display, where it works.  */
 
   --text-3xs: 0.6875rem;   /* 11px, the smallest label that stays legible */
   --text-2xs: 0.75rem;     /* 12px, uppercase labels, ordinals            */
-  --text-xs: 0.8125rem;    /* 13px, captions, chips, placeholder specs    */
+  --text-xs: 0.8125rem;    /* 13px, captions, specs                       */
   --text-sm: 0.875rem;     /* 14px, dense metadata, code                  */
   --text-base: 0.9375rem;  /* 15px, UI baseline                           */
   --text-md: 1.0625rem;    /* 17px, LONG-FORM BODY. The scale's origin.   */
-  --text-lg: 1.3125rem;    /* 21px, deck, lead paragraph                  */
+  --text-lg: 1.3125rem;    /* 21px, deck, lead paragraph. THE CEILING.    */
 
   /* -- Display tier -------------------------------------------------------
-     Ratio 1.5, compounding off --text-md (17px). THE STEPS ARE UNCHANGED,
-     what changed is which step each role points at, see below.
+     Ratio 1.5, compounding off --text-md (17px). The steps are unchanged from
+     the previous system. WHAT CHANGED IS WHICH STEP EACH ROLE POINTS AT.
 
-       d1  25.5px   1.5^1     entry-row titles at their large end
-       d2  38.3px   1.5^2     the hero at its small end, section titles large
-       d3  57.4px   1.5^3     page titles at their large end
-       d4  86.1px   1.5^4     the home statement, via --type-statement, and
-                              nothing else anywhere on the site.
-       d5  129.1px  1.5^5     unused. The statement sat here until the clip
-                              needed the vertical space back; kept as the step
-                              above so the ratio still reads.
+       d1  25.5px   1.5^1     small display, rarely used now
+       d2  38.3px   1.5^2     the bottom of the display tier
+       d3  57.4px   1.5^3     section heads at their large end
+       d4  86.1px   1.5^4     page titles at their large end
+       d5  129.1px  1.5^5     the home statement, and nothing else
 
-     HEADINGS CAME DOWN ONE FULL STEP. Every display role was re-pointed at
-     the next rung down: hero d5 -> d4, title d4 -> d3, section d3 -> d2,
-     entry d2 -> d1. The vw coefficients were divided by the same 1.5, so the
-     viewport at which each role reaches its ceiling is exactly where it was.
-     The type is smaller; the fluid behaviour is untouched.
+     EVERY ROLE WENT BACK UP ONE STEP. A previous pass moved all of them DOWN
+     one (hero d5 to d4, title d4 to d3, and so on) to buy vertical space for
+     the home clip. The brief reverses that: the complaint is flatness, and a
+     scale whose top is 86px cannot produce a page where one thing dominates.
+     The vw coefficients were multiplied by 1.5 to match, so the viewport at
+     which each role reaches its ceiling is exactly where it was, near 1400px,
+     just inside the 90rem container.
 
-     THE 6x BRIEF NO LONGER HOLDS, and that was the explicit trade. The hero
-     was 129.1px, 7.59x long-form body. It is now 86.1px, 5.06x. The brief
-     asked for at least 6x and this is under it. The hero is still by a wide
-     margin the largest thing on any page, and nothing else moved, so the
-     internal order of the scale is intact.                                  */
+     THE HOLE IS THE POINT. --text-lg is 21px and --display-2 is 38.3px, and
+     the only role permitted to land between them is --type-entry at its
+     phone floor. "Generous type scale contrast, very big vs very small,
+     little in between" is not a mood, it is this gap, and it is enforced by
+     there being no token in it.                                             */
 
   --display-1: 1.594rem;
   --display-2: 2.391rem;
@@ -132,61 +207,47 @@
   --display-4: 5.379rem;
   --display-5: 8.069rem;
 
-  /* Fluid display roles, each clamped between two real steps, so the scale
-     holds at any viewport: the type gets smaller on a phone, it does not fall
-     out of the system.
+  /* THE HOME STATEMENT, and nothing else on the site. Floors at d2 on a phone
+     and reaches d5 at ~1400px. */
+  --type-statement: clamp(var(--display-2), 9.2vw, var(--display-5));
 
-     TWO FLOORS ARE NOT A DISPLAY STEP. `section` and `entry` floor at
-     --text-lg (21px) rather than one step below d1, which would have been
-     17px, the long-form body size. A section heading that renders at exactly
-     body size on a phone is not a heading. 21px is the nearest real step of
-     the text tier and keeps both above the paragraphs they head.            */
+  /* Page titles, the <h1> on every route. */
+  --type-title: clamp(var(--display-2), 6.15vw, var(--display-4));
 
-  /* THE HOME STATEMENT, and nothing else on the site.
+  /* Section heads, the <h2>. */
+  --type-section: clamp(var(--display-1), 4.1vw, var(--display-3));
 
-     IT CAME DOWN A STEP, d5 -> d4, 129.1px -> 86.1px, AND THE REASON IS THE
-     CLIP, NOT THE TYPE. Two lines at 129px are ~222px tall, and with the nav,
-     the hero's air and the band's gap above it the clip did not start until
-     ~526px down a 1440px window. On a laptop screen that is a third of the
-     footage below the fold on landing, and the clip is the hero's own visual:
-     it has to be SEEN in the first screen, not scrolled to. At d4 the same two
-     lines are ~148px and the clip lands most of the way inside the fold.
+  /* Entry and row titles. Its floor is --text-lg, which is the one permitted
+     crossing of the gap: a row title that renders at body size on a phone is
+     not a title, and 21px is the nearest real step. */
+  --type-entry: clamp(var(--text-lg), 2.74vw, var(--display-2));
 
-     The vw coefficient was divided by 1.5 with the step, 9.2 -> 6.13, which is
-     the same move the one-step-down pass made on every other display role: the
-     ceiling still lands at ~1403px, just inside the 90rem container, so the
-     statement is at full size on any desktop window and the fluid behaviour is
-     untouched. The floor stays at d2, so phones are unchanged.
-
-     IT IS STILL THE LARGEST THING ON THE SITE. --type-title, at 57.4px, is the
-     next largest type anywhere, so the statement outranks it by 1.5x rather
-     than 2.25x. d5 is now unused, and stays in the scale as the step above.
-     `.statement`'s 22ch cap holds the two-line break at the new size, so the
-     composition is the same shape, smaller. */
-  --type-statement: clamp(var(--display-2), 6.13vw, var(--display-4));
-
-  --type-hero: clamp(var(--display-2), 7.47vw, var(--display-4));
-  --type-title: clamp(var(--display-1), 5.07vw, var(--display-3));
-  --type-section: clamp(var(--text-lg), 2.93vw, var(--display-2));
-  --type-entry: clamp(var(--text-lg), 2.27vw, var(--display-1));
+  /* Kept because components reference it. Points at the title role. */
+  --type-hero: var(--type-title);
 
   /* -- Leading, set per size, never globally ------------------------------
      Big type needs less than 1; body needs 1.6. One global line-height is the
-     tell that a type system was never actually designed.                    */
+     tell that a type system was never actually designed. At 129px in a 900
+     weight the leading has to come down further than it did at 86px, or the
+     two lines of the statement stop reading as one object.                  */
 
-  --leading-hero: 0.86;
-  --leading-display: 0.9;
-  --leading-title: 1.02;
+  --leading-hero: 0.82;
+  --leading-display: 0.88;
+  --leading-title: 0.94;
   --leading-snug: 1.18;
   --leading-normal: 1.45;
   --leading-body: 1.62;
+  --leading-quote: 1.14;
 
-  /* -- Tracking. Large serif needs negative; small caps need positive. ---- */
+  /* -- Tracking. Big display goes tighter than before, because the weight
+        went up: at 900 the counters close and the default spacing reads
+        loose. Small caps still need positive. ------------------------------ */
 
-  --tracking-hero: -0.04em;
-  --tracking-display: -0.03em;
-  --tracking-tight: -0.018em;
+  --tracking-hero: -0.045em;
+  --tracking-display: -0.035em;
+  --tracking-tight: -0.02em;
   --tracking-normal: 0;
+  --tracking-quote: -0.015em;
   --tracking-caps: 0.1em;
   --tracking-caps-wide: 0.16em;
 
@@ -195,22 +256,27 @@
   --weight-semibold: 600;
   --weight-bold: 700;
 
-  /* Archivo is variable across weight AND width, which is the whole reason
-     it is here rather than Inter. Display type runs heavy and slightly
-     narrow: at 130px a regular weight reads as "large text", and a compressed
-     heavy weight reads as a decision. The narrow width is what keeps a long
-     headline from eating four lines. Both values sit inside Archivo's wdth
-     range of 62-125. */
-  --weight-display: 700;
-  --width-display: 88;     /* wdth axis, big type   */
-  --width-display-mid: 94; /* wdth axis, mid sizes  */
+  /* ARCHIVO, PUSHED. It is variable across weight AND width, which is the
+     whole reason it is here rather than Inter, and the previous system used
+     700 and a narrow 88. The brief asks for Archivo Black or Expanded, so
+     display is now 900 across the board.
+
+     THE TWO WIDTHS ARE A FIT DECISION, NOT A TASTE ONE. The largest role
+     renders at 129px, and at 375px of viewport the statement's longest word
+     has to clear the gutters. 900 weight at wdth 112 does not; at 96 it does,
+     with room. So the biggest type is Black and very slightly narrow of
+     normal, and the genuinely expanded width is spent on section heads and
+     labels, where the lines are short and the width reads as a decision
+     rather than as a near miss. Both sit inside Archivo's 62-125 range.     */
+  --weight-display: 900;
+  --width-display: 96;      /* wdth axis, the big roles   */
+  --width-display-mid: 110; /* wdth axis, section heads   */
 
   /* ---- 3. SPACE ---------------------------------------------------------
-     Geometric, and it JUMPS at the top. The point of the top three steps
-     being so far apart is that page rhythm is a design decision here: some
-     sections crowd their neighbour, some get enormous air. A uniform
-     3.5rem between everything is the other half of why a layout reads as
-     templated.                                                              */
+     Geometric, and it JUMPS at the top. The point of the top steps being far
+     apart is that page rhythm is a design decision: some sections crowd their
+     neighbour, some get air. A uniform 3.5rem between everything is the other
+     half of why a layout reads as templated.                                */
 
   --space-1: 0.25rem;   /*   4px */
   --space-2: 0.5rem;    /*   8px */
@@ -225,11 +291,18 @@
   --space-11: 16rem;    /* 256px */
 
   /* Named rhythms. Components pick one INTENTIONALLY rather than reaching for
-     a number, that is what makes the varied rhythm survive editing. */
-  --rhythm-crowd: var(--space-5);                            /* deliberately tight */
-  --rhythm-tight: clamp(var(--space-6), 5vw, var(--space-7));
-  --rhythm-normal: clamp(var(--space-7), 8vw, var(--space-9));
-  --rhythm-loose: clamp(var(--space-9), 14vw, var(--space-11)); /* enormous air */
+     a number, which is what makes a varied rhythm survive editing.
+
+     EVERY RHYTHM CAME DOWN, ROUGHLY BY HALF. The brief: "the current spacing
+     reads empty rather than composed." It was not that the numbers were
+     arbitrary, it was that --rhythm-loose topped out at 256px of nothing
+     between two sections, and at that distance the two stop being part of one
+     page. Density is the point of this direction, and density is mostly this
+     block. The ceilings are now 36 / 56 / 120 where they were 56 / 120 / 256. */
+  --rhythm-crowd: var(--space-4);                              /* deliberately tight */
+  --rhythm-tight: clamp(var(--space-5), 3.2vw, var(--space-6));
+  --rhythm-normal: clamp(var(--space-6), 5vw, var(--space-7));
+  --rhythm-loose: clamp(var(--space-7), 7vw, var(--space-9));  /* the most air anything gets */
 
   /* Legacy aliases, so no component had to be rewritten just to keep
      compiling. New CSS uses the numbered scale above. */
@@ -262,9 +335,26 @@
 
   --rail: 14rem;
 
+  /* -- Bands and structure ------------------------------------------------
+     A band is a full-bleed run of colour with its own vertical padding. It is
+     the main new structural element in this direction and the reason the
+     palette needed on-pairs: a band sets a ground, and everything inside it
+     inherits what is legal on that ground.                                  */
+
+  --band-pad: clamp(var(--space-7), 7vw, var(--space-9));
+  --band-pad-tight: clamp(var(--space-6), 4.5vw, var(--space-7));
+
+  /* The hairline column overlay. Structure made visible, which is the
+     "visible grid" half of the brief's texture note. Kept very faint: it is
+     the paper the page is printed on, not a thing to read. */
+  --grid-line: color-mix(in srgb, var(--ink) 7%, transparent);
+  --grid-line-band: color-mix(in srgb, var(--paper) 12%, transparent);
+
   /* ---- 5. RULES ---------------------------------------------------------
      Hairlines are structure. Radius is zero, nothing here is a rounded card
-     floating on grey, and there are no shadows anywhere in this project.     */
+     floating on grey, and there are no shadows anywhere in this project. The
+     brief bans soft drop shadows, frosted cards and glassmorphism explicitly;
+     there is no token for any of them, which is how that stays true.        */
 
   --radius-none: 0;
   --radius-sm: 0;
@@ -275,17 +365,84 @@
   --rule-faint: var(--hairline) solid var(--color-rule-faint);
   --rule-strong: var(--hairline) solid var(--color-rule-strong);
   --rule-heavy: 1.5px solid var(--color-text);
+  /* The accent rule. Ochre's most useful legal job: a thick underline that
+     marks an active state without being asked to be readable. */
+  --rule-accent: 3px solid var(--color-underline-active);
 
   /* ---- 6. MOTION --------------------------------------------------------
-     Short, few, and never scroll-triggered. There is no fade-up on this site. */
+     Short and few. The brief's rule: animation is welcome as enhancement on
+     top of visible content, and never as the gate in front of it. Nothing
+     here may be used to hide something until an interaction happens.        */
 
   --duration-fast: 110ms;
   --duration-base: 180ms;
+  --duration-slow: 420ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* ---- 7. Z ------------------------------------------------------------- */
 
   --z-base: 0;
   --z-rail: 5;
+  --z-subnav: 90;
   --z-nav: 100;
+}
+
+/* ============================================================================
+   GROUNDS
+   ============================================================================
+   A `data-ground` attribute is the ONLY way a section changes colour on this
+   site, and setting it rebinds five properties at once: the background, the
+   legal text colour, the legal accent, the rule tint and the muted tone.
+
+   WHY AN ATTRIBUTE AND NOT A CLASS PER COLOUR. Because the failure this
+   prevents is specific and easy to commit. Write `color: var(--color-text)`
+   inside a band and it renders Ink on Ultramarine, which measures 2.09:1, and
+   it will look approximately fine to the person who wrote it because they are
+   looking at a dark blue rectangle with dark text and their brain fills in
+   the contrast. Every descendant of a ground reads `--ground-text` instead,
+   which resolves to the value that was measured against that background.
+
+   The four grounds and what is legal on each are the table in section 1.
+   ========================================================================= */
+
+[data-ground="paper"] {
+  --ground-bg: var(--paper);
+  --ground-text: var(--on-paper);
+  --ground-accent: var(--accent-on-paper);
+  --ground-rule: var(--ink-rule);
+  --ground-mute: var(--ink-mute);
+}
+
+[data-ground="ink"] {
+  --ground-bg: var(--ink);
+  --ground-text: var(--on-ink);
+  --ground-accent: var(--accent-on-ink);
+  --ground-rule: var(--paper-rule);
+  --ground-mute: var(--paper-mute);
+}
+
+[data-ground="ultramarine"] {
+  --ground-bg: var(--ultramarine);
+  --ground-text: var(--on-ultramarine);
+  /* Ochre on ultramarine is 4.15:1, which is AA for LARGE TEXT ONLY. The
+     only things that read --ground-accent are labels, ordinals and hover
+     states. Labels are 12px, so on this ground they take the full paper
+     value instead and the accent is reserved for the big numerals. */
+  --ground-accent: var(--accent-on-ultramarine);
+  --ground-rule: var(--paper-rule);
+  --ground-mute: var(--paper-mute-blue);
+}
+
+[data-ground="ochre"] {
+  --ground-bg: var(--ochre);
+  --ground-text: var(--on-ochre);
+  --ground-accent: var(--accent-on-ochre);
+  --ground-rule: color-mix(in srgb, var(--ink) 24%, transparent);
+  --ground-mute: color-mix(in srgb, var(--ink) 68%, var(--ochre));
+}
+
+/* A 12px uppercase label is small text, and small text needs 4.5:1. On the
+   ultramarine ground the ochre accent is 4.15, so labels there stay paper. */
+[data-ground="ultramarine"] .label {
+  color: var(--on-ultramarine);
 }

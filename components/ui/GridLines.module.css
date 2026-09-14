@@ -1,0 +1,50 @@
+/* The 12 columns, drawn. See GridLines.tsx.
+
+   IT MATCHES THE CONTENT GRID EXACTLY because it uses the same three tokens
+   the content grid does: --grid-cols, --grid-gap and --gutter. There is no
+   second set of numbers to keep in sync, which is the failure mode of every
+   version of this that is built out of a gradient. */
+
+.lines {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  /* The same container geometry as <Container>: centred, capped, guttered.
+     Without this the lines would span the viewport and the content would sit
+     on a different rhythm inside them. */
+  width: 100%;
+  max-width: var(--width-page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+}
+
+.line {
+  /* The line sits on the column's own left edge, which is where the content
+     in that column starts. Half the gap to its left is empty, which is
+     correct: the division belongs to the column it opens. */
+  border-left: var(--hairline) solid var(--grid-line);
+}
+
+/* Eleven interior divisions, not twelve edges. See GridLines.tsx. */
+.line:first-child { border-left: 0; }
+
+/* On a dark ground the ink tint is invisible, so the lines are drawn out of
+   the paper colour instead. Both are declared in tokens.css against the
+   ground they are for. */
+.lines[data-tone="paper"] .line { border-left-color: var(--grid-line-band); }
+
+/* --- Phones -------------------------------------------------------------
+   One column, no hatching. See GridLines.tsx. */
+@media (max-width: 48rem) {
+  .lines { display: none; }
+}
+
+/* Someone who has asked for reduced motion has not asked for less texture,
+   so there is deliberately no reduced-motion branch here: these lines do not
+   move, and hiding them would be answering a question nobody asked. */

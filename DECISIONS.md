@@ -6,6 +6,41 @@ lines to read first.
 
 ---
 
+## AMENDED, 2026-09-14: the editorial redesign
+
+A redesign brief supersedes parts of this document. It is being built in
+phases on `redesign/editorial`, and this note exists so that nobody reads a
+section below and believes something the code stopped doing.
+
+**Superseded by Phase 1 (foundation).** Read these sections as history:
+
+| Section | What it says | What is true now |
+| --- | --- | --- |
+| [Colour](#colour) | One ink, one ground, one rationed accent on a cool neutral. | Five colours on a warm Paper ground. Ultramarine is dominant and used as full-bleed bands. Ochre and Flare are rationed. Colour is a GROUND, set by `data-ground`, and each ground declares what text colour is legal on it. |
+| [Type](#type) | Archivo at 700, narrow, scale pointed one step down. | Archivo at 900. Every display role went back UP one step: the statement reaches 129px again. Instrument Serif is a fourth family, rationed to pull quotes and section intros. |
+| [The steps are unchanged. The headings came down one.](#the-steps-are-unchanged-the-headings-came-down-one) | The whole of it. | Reversed. The vw coefficients were multiplied by 1.5 to match, so each role reaches its ceiling at the same viewport it did before. |
+| [Space and composition](#space-and-composition) | Rhythms up to 256px. | Every rhythm came down by roughly half. Ceilings are 36 / 56 / 120 where they were 56 / 120 / 256. The brief: the old spacing "reads empty rather than composed". |
+
+**Still true, and load-bearing.** [There is no dark mode](#there-is-no-dark-mode),
+[No em dashes](#no-em-dashes), [No dates, anywhere](#no-dates-anywhere), and
+the folder-is-the-config contract on the design side.
+
+**One correction this document should carry.** The brief assigned Ochre
+`#E0A526` to pull quotes and active nav states, which are both text on the
+Paper ground. Measured, that pairing is 2.00:1 and fails every contrast
+threshold at every size. Ochre is used as a FIELD with ink on top of it, as
+rules, and as underlines instead. Flare `#FF4D2E` is 3.01:1 and is never body
+copy. The full measured table is the contrast contract at the top of
+`styles/tokens.css`, and it is the reason the palette is built out of
+`--on-*` pairs rather than a list of five hexes.
+
+**Not yet done.** Phases 2 to 5: killing the hover-gated index, removing the
+metadata chips, the design pages' subnav rewrite, the American Scientific
+website case study, the DrawEvolve scroll sequence, the home grid, About, and
+a working contact form. See `PROPOSAL.md`.
+
+---
+
 ## Direction
 
 **[A] Editorial.** Chosen, not proposed: of the three, it is the only one whose

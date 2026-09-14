@@ -3,24 +3,30 @@
    ============================================================================
    Role assignment, stated once and enforced everywhere:
 
-     display  Archivo              page titles, section titles, entry titles,
-                                   the hero, and big hanging numerals
-     text     DM Sans              body, decks, UI, links, every sentence
-     mono     DM Mono              DATA ONLY: filenames, pixel dimensions,
-                                   repo paths, code spans
+     display  Archivo           page titles, section titles, entry titles,
+                                the home statement, big hanging numerals
+     text     DM Sans           body, decks, UI, links, every sentence
+     quote    Instrument Serif  PULL QUOTES AND SECTION INTROS. Nothing else.
+     mono     DM Mono           DATA ONLY: filenames, pixel dimensions,
+                                repo paths, code spans
 
-   THE MONO RULE CHANGED, and it is the main reason this reads less generic
-   than the previous build. Labels and ordinals used to be monospace, which is
-   the reflex that makes a portfolio look like a dev tool: mono was doing
-   decorative work, signalling "technical" rather than carrying information.
-   Here, uppercase letterspaced DM Sans carries labels, the editorial
-   convention, and mono is reserved for strings where character alignment is
-   genuinely load-bearing. If it is a label, it is DM Sans. If it is a filename,
-   it is mono.
+   THE SERIF IS RATIONED BY LIVING HERE. `--font-quote` is assigned in exactly
+   two places in this project, `.quote` and `.intro` below, and both are global
+   utilities rather than tokens a component module can reach for. A third
+   typographic voice used freely is a ransom note; used twice on a page it is a
+   change of register. If a new element wants the serif, it has to come here
+   and be named, which is a small enough friction to keep the count honest.
 
-   Hierarchy comes from SIZE, and nothing else. There is no grey ramp to lean
-   on and the display face has one weight, so a heading earns its place in the
-   order by being bigger, or it does not earn it.
+   THE MONO RULE. Labels and ordinals are NOT monospace. That reflex is what
+   makes a portfolio look like a dev tool: mono doing decorative work,
+   signalling "technical" rather than carrying information. Uppercase
+   letterspaced DM Sans carries labels, the editorial convention, and mono is
+   reserved for strings where character alignment is genuinely load-bearing.
+   If it is a label, it is DM Sans. If it is a filename, it is mono.
+
+   HIERARCHY COMES FROM SIZE, WEIGHT AND GROUND. There is no grey ramp to lean
+   on. A heading earns its place by being bigger, heavier, or on a different
+   colour, or it does not earn it.
    ========================================================================= */
 
 body {
@@ -39,7 +45,11 @@ body {
    Leading and tracking are set PER SIZE. A single global line-height applied
    from an 11px label to a 129px headline is the flatness the brief is about:
    at 129px, 1.45 leading opens a hole you could park a car in, and at 11px,
-   0.9 leading overlaps the descenders.                                      */
+   0.88 leading overlaps the descenders.
+
+   THE WEIGHT WENT TO 900. Archivo Black, across every display role. At 700 on
+   a page with this much colour the headings stopped holding their own against
+   a full-bleed band sitting next to them.                                    */
 
 h1, h2, h3 {
   font-family: var(--font-display);
@@ -47,9 +57,7 @@ h1, h2, h3 {
   font-style: normal;
   margin: 0;
   font-feature-settings: "kern" 1, "liga" 1;
-  /* The width axis. Display type is set slightly narrow so a heavy weight at
-     large size stays a shape rather than a wall. This is the axis that makes
-     the face look drawn rather than picked. */
+  /* The width axis, and the reason this face is here rather than Inter. */
   font-variation-settings: "wdth" var(--width-display-mid);
 }
 
@@ -57,6 +65,9 @@ h1 {
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
+  /* The biggest roles run slightly NARROW of normal, not expanded. At 900
+     weight and 86px, an expanded width does not clear the gutters on a
+     375px phone. The expanded width is spent on h2, where lines are short. */
   font-variation-settings: "wdth" var(--width-display);
   text-wrap: balance;
 }
@@ -75,8 +86,7 @@ h3 {
 }
 
 /* h4+ drop out of the display face into the text face. At that size the
-   display face reads as noise rather than voice, and a third typographic
-   voice on one page is a ransom note. */
+   display face reads as noise rather than voice. */
 h4, h5, h6 {
   font-family: var(--font-text);
   font-size: var(--text-base);
@@ -91,7 +101,7 @@ p { text-wrap: pretty; }
 /* ---- Links ---------------------------------------------------------------
    The underline stays on, it is the accessible affordance and an editorial
    one. The accent is reserved for the hovered/focused state, so a page full
-   of links is not a page full of accent blue.                              */
+   of links is not a page full of ultramarine.                               */
 
 a {
   color: inherit;
@@ -106,6 +116,42 @@ a {
 a:hover {
   color: var(--color-signal);
   text-decoration-color: currentColor;
+}
+
+/* ---- The two serif roles -------------------------------------------------
+   Both are global utilities on purpose. See the header of this file.        */
+
+/* A PULL QUOTE. Instrument Serif, large, tight, and it is the one place on
+   this site where a sentence is set as an object rather than as prose.
+
+   NOT SET IN OCHRE. The brief asked for ochre pull quotes, and ochre measures
+   2.00:1 on the paper ground, which fails every contrast threshold at every
+   size. The quote is Ink and the OCHRE IS THE FIELD BEHIND IT, which keeps
+   the colour at full strength and the sentence readable. See the contrast
+   contract in tokens.css. */
+.quote {
+  font-family: var(--font-quote);
+  font-weight: 400;
+  font-size: clamp(var(--text-lg), 3.4vw, var(--display-3));
+  line-height: var(--leading-quote);
+  letter-spacing: var(--tracking-quote);
+  text-wrap: balance;
+  margin: 0;
+}
+
+/* A SECTION INTRO. The same face, much smaller, and italic is available
+   because the family ships one. Used for the paragraph that opens a section,
+   never for the section's body copy: two hundred words of display serif is
+   a legibility problem, not a voice. */
+.intro {
+  font-family: var(--font-quote);
+  font-weight: 400;
+  font-size: clamp(var(--text-lg), 2vw, var(--display-1));
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-quote);
+  color: var(--color-text);
+  text-wrap: pretty;
+  max-width: 46ch;
 }
 
 /* ---- Utilities ----------------------------------------------------------- */
@@ -129,8 +175,7 @@ a:hover {
 }
 
 /* A hanging numeral. Display face and the accent colour, because on this site
-   the section numbers are a typographic event rather than a caption, and the
-   accent has been let off its leash. */
+   the section numbers are a typographic event rather than a caption. */
 .ordinal {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
@@ -140,6 +185,18 @@ a:hover {
   line-height: 1;
   color: var(--color-signal);
 }
+
+/* ---- Ground-aware text ---------------------------------------------------
+   An element inside a band inherits the band's legal text colour rather than
+   the page's. These are the only correct way to put type on a coloured
+   ground: they read the on-pair from tokens.css, so a component cannot put
+   ink on ultramarine (2.09:1) by writing `color: var(--color-text)` inside a
+   band and having it look fine on the paper page it was authored against.   */
+
+[data-ground] { color: var(--ground-text); }
+[data-ground] .label,
+[data-ground] .ordinal { color: var(--ground-accent); }
+[data-ground] a:hover { color: var(--ground-accent); }
 
 /* ---- A11y ---------------------------------------------------------------- */
 
