@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { Frame } from "@/components/ui/Frame";
 import { VideoSlot } from "@/components/ui/Video";
 import { Gallery } from "@/components/ui/Gallery";
+import { ScrollSequence } from "@/components/ui/ScrollSequence";
 import { Pager } from "@/components/ui/Pager";
 import { MetaRail, Meta, MetaChips, MetaLinks } from "@/components/ui/MetaRail";
 import { MdxBody } from "@/components/mdx/MdxBody";
@@ -61,6 +62,19 @@ export default async function CaseStudyPage({
     (i) => i.exists && !entry.body.includes(i.src),
   );
 
+  /* THE SEQUENCE IS COVER PLUS PLATES, AS ONE OBJECT. An entry that opts in
+     stops rendering a lead plate above the prose and a gallery strip below
+     it, because that split is what it is opting out of: five steps of one
+     loop shown in two places is not a sequence, it is two galleries. See the
+     note on `sequence` in content/index.ts.
+
+     Falls back to the normal treatment on its own if there is nothing to
+     sequence: <ScrollSequence> returns null under two shots, and these two
+     flags are what the rest of the template branches on. */
+  const sequence =
+    entry.sequence && entry.cover?.exists ? [entry.cover, ...plates] : [];
+  const hasSequence = sequence.length >= 2;
+
   return (
     <>
       <Container as="header" className={styles.head}>
@@ -74,39 +88,52 @@ export default async function CaseStudyPage({
 
         <div className={styles.headGrid}>
           <div className={styles.headMain}>
-            {/* THE MARK OPENS THE ENTRY. Above the title, on the content
-                column's own axis, cropped to the mark's declared content
-                bounds so all three read at the same optical weight whatever
-                canvas they were exported on.
+            {/* THE MARK IS THE HEADING. It used to sit above an <h1> that
+                set the entry's name in type, so the page opened by saying
+                "DrawEvolve" twice: once as the wordmark it was designed as,
+                and again underneath in Archivo. The brief calls that what it
+                is, a type block that restates the wordmark.
 
-                `alt=""` and no role: the <h1> directly beneath already reads
-                the entry's name, and a mark that announces the same word
-                twice is worse than a decorative one. */}
-            {entry.logo?.exists && (
-              <span
-                className={styles.logo}
-                /* The box takes the logo's DECLARED aspect, which is the
-                   mark's content bounds. Inline because it is per-entry data,
-                   not a design token. */
-                style={
-                  {
-                    "--logo-aspect": `${entry.logo.width} / ${entry.logo.height}`,
-                  } as CSSProperties
-                }
-              >
-                <Image
-                  src={entry.logo.url}
-                  alt=""
-                  fill
-                  sizes="(max-width: 62rem) 70vw, 26rem"
-                  priority
-                  unoptimized={entry.logo.unoptimized}
-                  className={styles.logoImage}
-                />
-              </span>
-            )}
+                So the logo moved INSIDE the h1 and carries the accessible
+                name as its alt text. There is still exactly one h1 on the
+                page, it still reads the entry's name to a screen reader and
+                to a crawler, and nothing is said twice in type.
 
-            <h1 className={styles.title}>{entry.title}</h1>
+                When there is no mark on disk the h1 renders the name as type,
+                because a heading is not optional and a page whose title
+                depends on a file existing is a page that can lose its title. */}
+            <h1 className={styles.title}>
+              {entry.logo?.exists ? (
+                <span
+                  className={styles.logo}
+                  /* The box takes the logo's DECLARED aspect, which is the
+                     mark's content bounds. Inline because it is per-entry
+                     data, not a design token. */
+                  style={
+                    {
+                      "--logo-aspect": `${entry.logo.width} / ${entry.logo.height}`,
+                    } as CSSProperties
+                  }
+                >
+                  <Image
+                    src={entry.logo.url}
+                    alt={entry.title}
+                    fill
+                    sizes="(max-width: 62rem) 70vw, 26rem"
+                    priority
+                    unoptimized={entry.logo.unoptimized}
+                    className={styles.logoImage}
+                  />
+                </span>
+              ) : (
+                entry.title
+              )}
+            </h1>
+
+            {/* THE ONE LINE OF ORIENTATION, and the only type in the head. A
+                mark on its own tells a stranger nothing: "thoosie" is not a
+                word, and a wordmark for an app nobody has heard of is a
+                picture of a name. This says what the thing actually is. */}
             {entry.deck && <p className={styles.deck}>{entry.deck}</p>}
 
             {/* NO STATUS CHIP. `entry.state` is still read from frontmatter
@@ -143,8 +170,13 @@ export default async function CaseStudyPage({
       {/* Every cover in content is a portrait screenshot, and a portrait lead
           at full width is the giant-image problem in its purest form. In the
           container, height-capped by Frame, it comes out near 585px wide and
-          reads as a picture of an app rather than as wallpaper. */}
-      {entry.cover?.exists && (
+          reads as a picture of an app rather than as wallpaper.
+
+          Skipped entirely when the entry is a sequence: the cover is the
+          sequence's first shot and rendering it here as well would put the
+          same picture on the page twice, once above the prose and once
+          inside the run it opens. */}
+      {entry.cover?.exists && !hasSequence && (
         <Container className={styles.lead}>
           <Frame
             image={entry.cover}
@@ -177,7 +209,7 @@ export default async function CaseStudyPage({
 
           <Gallery> owns the mechanics: derived plate widths, native snap
           scrolling that works unhydrated, mouse drag, and no scrollbar. */}
-      {plates.length > 0 && (
+      {plates.length > 0 && !hasSequence && (
         <Container as="section" className={styles.block}>
           <Reveal>
             <Gallery
@@ -185,6 +217,20 @@ export default async function CaseStudyPage({
               label={`${entry.title}, ${plates.length} plates`}
             />
           </Reveal>
+        </Container>
+      )}
+
+      {/* THE SEQUENCE, and it is NOT wrapped in <Reveal>. Reveal ships its
+          children as opacity: 0 in the server HTML and waits for hydration to
+          bring them back, which would mean the one block on this page whose
+          entire point is that the first shot is visible on arrival would
+          start invisible and depend on a JS chunk to appear. */}
+      {hasSequence && (
+        <Container as="section" className={styles.sequence}>
+          <ScrollSequence
+            images={sequence}
+            label={`${entry.title}, ${sequence.length} screens in sequence`}
+          />
         </Container>
       )}
 

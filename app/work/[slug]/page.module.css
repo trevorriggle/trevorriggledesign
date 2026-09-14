@@ -91,6 +91,12 @@
    inside the group is what the mark multiplies onto. The box is invisible
    because that ground is the same colour as the page. */
 
+/* THE MARK, INSIDE THE <h1>. It is the heading's whole visible content when
+   the file is on disk, and the h1's own type settings only apply to the text
+   fallback underneath it. See the note in page.tsx.
+
+   No bottom margin: the deck's own top margin is the gap now that these two
+   are adjacent siblings rather than three stacked elements. */
 .logo {
   position: relative;
   display: block;
@@ -98,7 +104,6 @@
   aspect-ratio: var(--logo-aspect, 3 / 1);
   isolation: isolate;
   background: var(--color-bg);
-  margin-bottom: var(--space-6);
 }
 
 /* `cover`, NOT `contain`, and this is the part that does the work. With
@@ -122,11 +127,23 @@
    The 12ch cap is gone. At 12ch a one-word title like "thoosie" occupied
    about a third of its own column and left the rail beside it with nothing to
    sit against. Only the optical left correction stays. */
+/* The heading. Its type settings apply only when there is no mark on disk
+   and the h1 falls back to rendering the name as type. */
 .title {
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
+  /* Optical alignment: pulls the first glyph's left sidebearing back onto the
+     grid so a capital D lines up with the paragraph beneath it. */
   margin-left: -0.045em;
+}
+
+/* AN IMAGE HAS NO SIDEBEARING. When the h1 contains the mark instead of type,
+   the optical pull above is measured against --type-title, which is up to
+   86px, so it would shove the logo about 4px off the page's own left edge to
+   correct for a glyph that is not there. */
+.title:has(.logo) {
+  margin-left: 0;
 }
 
 /* On the content column's own axis, directly under the title. Text face, it
@@ -179,6 +196,19 @@
 .systems { grid-column: 1 / -1; }
 
 .block { margin-top: var(--rhythm-normal); }
+
+/* THE SCROLL SEQUENCE.
+   ============================================================================
+   More air above it than a normal block, because the pinned state takes over
+   the whole viewport and needs a clear edge to arrive at rather than sliding
+   up under the last paragraph of the prose.
+
+   NO BOTTOM MARGIN. In the pinned state the track is n x 100vh and its last
+   viewport is the stage releasing; a margin there is dead scroll after the
+   sequence has visibly finished. The pager's own top margin closes the page. */
+.sequence {
+  margin-top: var(--rhythm-loose);
+}
 
 .blockLabel {
   font-size: var(--text-2xs);

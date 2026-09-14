@@ -1,0 +1,171 @@
+/* ============================================================================
+   SCROLL SEQUENCE
+   ============================================================================
+   Read this file top to bottom as two states, in this order:
+
+     1. THE STACK. Everything above the enhancement block. Plain vertical
+        flow, every screenshot visible, no pinning, no animation. This is what
+        a phone gets, what Firefox gets, what reduced motion gets, and what
+        anything without CSS scroll-driven animation gets.
+
+     2. THE SEQUENCE. One block, gated on three conditions at once. It
+        converts the stack into a pinned stage.
+
+   The stack is FIRST and it is the default, not a fallback written after the
+   fact. See the header of ScrollSequence.tsx for why that ordering is the
+   whole design of this component.
+   ========================================================================= */
+
+/* --- 1. The stack -------------------------------------------------------- */
+
+.track {
+  margin: 0;
+}
+
+.stage {
+  /* Nothing. In the stack state this is a transparent wrapper. */
+}
+
+.shots {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rhythm-tight);
+}
+
+.shot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  /* Bounded on both axes, cropped on neither, the same rule <Frame> runs on.
+     These are 2064x2752 portrait grabs, so they are height-bound: without the
+     cap, one screenshot at full container width is taller than the window. */
+  max-height: 78vh;
+  background-color: var(--color-bg-sunk);
+  border: var(--rule);
+}
+
+/* The plate number. Small, mono, tabular, and it travels with its own shot
+   rather than being a separate counter that has to be kept in sync. */
+.index {
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  color: var(--color-text-meta);
+}
+
+.of {
+  color: var(--color-text-faint);
+}
+
+/* --- 2. The sequence ----------------------------------------------------
+   THREE CONDITIONS, ALL REQUIRED.
+
+   The @supports test is not decoration. Without it, Firefox would apply the
+   pinned LAYOUT with nothing driving the animation: a 500vh block showing
+   shot one and four permanently invisible ones. An enhancement written as
+   the base fails exactly that way, which is why this is written as an
+   enhancement. */
+
+@supports (animation-timeline: view()) {
+  @media (min-width: 62rem) and (prefers-reduced-motion: no-preference) {
+    .track {
+      /* One viewport of scroll per shot. The track is what the timeline
+         measures and what the stage sticks inside. */
+      height: calc(var(--n) * 100vh);
+
+      /* The timeline. `view-timeline` tracks THIS element's progress through
+         the viewport, which is what a pinned block needs; `scroll-timeline`
+         would need this element to be a scroller, and it is not. */
+      view-timeline-name: --sequence;
+      view-timeline-axis: block;
+    }
+
+    .stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .shots {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: block;
+      gap: 0;
+    }
+
+    .shot {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-4);
+
+      /* Ascending, so each shot covers the one before it. */
+      z-index: var(--i);
+
+      /* Every shot after the first starts transparent and fades in across
+         its own slice of the track. The first is the base layer and is
+         overridden below. */
+      opacity: 0;
+      animation: sequence-in linear both;
+      animation-timeline: --sequence;
+
+      /* `contain` is the range in which the track fully covers the viewport,
+         which is exactly the window the sticky stage is pinned for. The
+         default `cover` range would start the sequence while the block was
+         still sliding into view. The two percentages are computed per shot
+         in the component. */
+      animation-range: contain var(--from) contain var(--to);
+    }
+
+    /* THE FIRST SHOT NEVER ANIMATES. It is on screen the moment the block
+       arrives, which is the brief's requirement, and it has no window of its
+       own to fade in across. */
+    .shot:first-child {
+      opacity: 1;
+      animation: none;
+    }
+
+    .image {
+      /* Inside a 100vh stage, minus the index line and its gap. */
+      max-height: 74vh;
+      object-fit: contain;
+    }
+
+    .index {
+      order: 1;
+    }
+  }
+}
+
+@keyframes sequence-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* --- Print ---------------------------------------------------------------
+   Paper has no scroll. The stack is already the default, and this only has to
+   undo the viewport-relative cap so a screenshot is not sized against a
+   window that does not exist. */
+
+@media print {
+  .image { max-height: none; }
+}

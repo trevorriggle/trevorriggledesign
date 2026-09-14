@@ -73,6 +73,30 @@ names, dates, volumes, outcomes or metrics. Every block carries
 `placeholder: true`, and the marker renders in development only. The production
 HTML is still verified to contain none of those strings.
 
+**Superseded by Phase 4 (the application pages).**
+
+| Section | What it says | What is true now |
+| --- | --- | --- |
+| [Three media fields, three jobs](#three-media-fields-three-jobs) | `cover` is the lead plate, `images` are the plate gallery. | Still true for thoosie and Lynk. DrawEvolve opts into `sequence: true`, which renders cover plus images as ONE pinned scroll run and suppresses both the lead plate and the gallery strip. |
+| [Logos of three different paddings, at one optical weight](#logos-of-three-different-paddings-at-one-optical-weight) | The mark sits above the `<h1>` with `alt=""`, because the h1 already names the entry. | The mark IS the `<h1>`, and carries the entry name as its alt text. The page no longer says "DrawEvolve" twice, once as the wordmark and again underneath in Archivo. |
+
+The head is now the mark and one line of orientation. That line matters more
+than it looks: a wordmark for an app nobody has heard of is a picture of a
+name, and "thoosie" is not a word. The deck is what tells a stranger what the
+thing is.
+
+**The scroll sequence is CSS, with no JavaScript at all**, and its unenhanced
+state is the default rather than a fallback. The base stylesheet is a plain
+vertical stack of all five screenshots; the pinning is layered on inside three
+conditions that must all hold: `@supports (animation-timeline: view())`,
+`min-width: 62rem`, and `prefers-reduced-motion: no-preference`. Written the
+other way round, Firefox would get the pinned layout with nothing driving it,
+which is a 500vh block showing one screenshot and four invisible ones.
+
+A phone gets the stack, deliberately. A pinned sequence fights the address bar
+collapsing, breaks momentum scrolling and strands people mid-run, and most of
+this site's readers are on a phone.
+
 **Kept, and not a chip:** the `Stack` row in a case study's metadata rail
 ("Swift, Metal, Cloudflare Workers, Supabase"). The brief's cull named status
 badges and count labels. Stack is evidence a technical reader wants, it is a

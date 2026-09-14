@@ -79,6 +79,22 @@ links:
     href: https://drawevolve.com
     kind: live
 
+# ---- Presentation --------------------------------------------------------
+# THE FIVE SCREENSHOTS ARE ONE SEQUENCE, NOT A PLATE AND A GALLERY.
+#
+# They used to render in two places on this page: `cover` as a lead plate
+# above the prose, and the four `images` as a horizontal gallery strip below
+# it. That split the one thing they have to say. These are not five views of
+# the app, they are five steps of one loop, in order: the static critique, Eve
+# picking it up in conversation, the follow-up question, the composition
+# panel, and the attention overlay drawn back onto the canvas.
+#
+# With `sequence: true` the template renders cover plus images as a single
+# pinned run that a reader scrolls through. On a phone, in Firefox, and under
+# reduced motion it is a plain vertical stack instead, which is the default
+# state rather than the fallback. See components/ui/ScrollSequence.
+sequence: true
+
 # ---- Plates --------------------------------------------------------------
 # The rest of the drop, in the order the critique loop actually runs: the
 # static critique (the cover), then Eve picking it up in conversation, then

@@ -103,6 +103,22 @@ export type CaseStudy = {
    */
   thumb: ImageRef | null;
   images: ImageRef[];
+  /**
+   * Render `cover` plus `images` as ONE pinned scroll sequence rather than as
+   * a lead plate and a separate gallery below the prose.
+   *
+   * OPT-IN, PER ENTRY, AND IT IS A PRESENTATION DECISION rather than a
+   * property of the pictures. A sequence only says something when the shots
+   * are steps in one flow that a reader should move through in order.
+   * DrawEvolve's five are exactly that: the static critique, Eve picking it up
+   * in conversation, the follow-up, the composition panel, the attention
+   * overlay on the canvas. thoosie's one screenshot and Lynk's one are not a
+   * sequence and declaring them as one would be a transition applied to a
+   * single picture.
+   *
+   * Absent or false, the entry renders the lead-plus-gallery it always did.
+   */
+  sequence: boolean;
   body: string;
 };
 
@@ -212,6 +228,7 @@ function load(): CaseStudy[] {
       images: (Array.isArray(d.images) ? d.images : [])
         .map((img) => toImage(img, slug))
         .filter((i): i is ImageRef => i !== null),
+      sequence: d.sequence === true,
       body: content.trim(),
     });
   }
