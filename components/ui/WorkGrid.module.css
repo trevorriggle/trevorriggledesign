@@ -1,0 +1,120 @@
+/* The home page's work tier. See WorkGrid.tsx.
+
+   THREE UP, NOT FOUR, and not a 2x2. Three columns is what lets a set of six
+   read as two rows of a single system, and at the container's width it puts
+   each tile near 400px, which is where a composed 4:3 thumbnail is legible
+   without being a feature. */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  text-decoration: none;
+  color: inherit;
+}
+
+.media {
+  display: block;
+  overflow: hidden;
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+  /* THE ONE CROP ON THE SITE. See the note in WorkGrid.tsx: a grid of mixed
+     proportions is not a grid, and every picture fed to this tier was chosen
+     to survive this box. */
+  aspect-ratio: 4 / 3;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--duration-slow) var(--ease-out);
+}
+
+.label {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-entry);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-display);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.arrow {
+  margin-left: auto;
+  font-size: var(--text-base);
+  color: var(--color-text-meta);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+/* --- Hover and focus, on top of visible content -------------------------
+   Deletable without changing what the page communicates. Nothing here is a
+   reveal. */
+
+.tile:hover .image,
+.tile:focus-visible .image {
+  transform: scale(1.03);
+}
+
+.tile:hover .title,
+.tile:focus-visible .title {
+  color: var(--color-signal);
+}
+
+.tile:hover .arrow,
+.tile:focus-visible .arrow {
+  color: var(--color-signal);
+  transform: translateX(0.3em);
+}
+
+.tile:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+/* --- Collapse ------------------------------------------------------------ */
+
+@media (max-width: 68rem) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 40rem) {
+  /* One column. Two 50vw tiles on a phone put a 4:3 crop at about 160px
+     tall, which is a thumbnail of a thumbnail. Full width instead: fewer
+     things on screen, each of them actually legible. */
+  .grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image,
+  .arrow { transition: none; }
+
+  .tile:hover .image,
+  .tile:focus-visible .image { transform: none; }
+
+  .tile:hover .arrow,
+  .tile:focus-visible .arrow { transform: none; }
+}

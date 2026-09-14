@@ -1,0 +1,185 @@
+/* The contact form. See ContactForm.tsx.
+
+   THE FIELDS ARE RULED, NOT BOXED. An input with a border, a radius and a
+   pale fill is the default component-library look the brief rejects. These
+   are a label, a hairline and the text sitting on it, which is what a form
+   looks like on paper. */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.label {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.input,
+.textarea {
+  font-family: var(--font-text);
+  font-size: var(--text-md);
+  line-height: var(--leading-normal);
+  color: var(--color-text);
+  background: transparent;
+  border: 0;
+  border-bottom: var(--rule-heavy);
+  border-radius: 0;
+  padding: var(--space-3) 0;
+  width: 100%;
+  /* iOS zooms the page when a focused input is under 16px. --text-md is 17px,
+     which is above that line on purpose. */
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 9rem;
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  border-bottom-color: var(--color-signal);
+}
+
+/* The focus ring is on the rule, not an outline box: the field IS a rule, so
+   thickening and colouring it is the clearest possible focus state here. It
+   is a colour AND a weight change, never colour alone. */
+.input:focus-visible,
+.textarea:focus-visible {
+  border-bottom-width: 3px;
+  border-bottom-color: var(--color-signal);
+}
+
+.input:disabled,
+.textarea:disabled {
+  color: var(--color-text-meta);
+  border-bottom-color: var(--color-rule);
+}
+
+/* An invalid field takes the flare, which is one of its two licensed uses on
+   the site. It is paired with the message below it, so the error is never
+   carried by colour alone. */
+.input[aria-invalid="true"],
+.textarea[aria-invalid="true"] {
+  border-bottom-color: var(--color-flare);
+}
+
+.fieldError {
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  /* Flare is 3.01:1 on the paper ground, which is AA for large text only and
+     not for 14px. The RULE above carries the colour and this carries the
+     sentence, at full ink. */
+  color: var(--color-text);
+  font-weight: var(--weight-medium);
+}
+
+/* --- The honeypot --------------------------------------------------------
+   Off screen, not `display: none`: some bots skip hidden fields, and the
+   whole point is that this one gets filled. */
+
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* --- Actions -------------------------------------------------------------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.submit {
+  font-family: var(--font-text);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-invert);
+  background: var(--color-bg-invert);
+  border: 0;
+  border-radius: 0;
+  /* 44px of height at the smallest, which is the floor for a touch target. */
+  padding: var(--space-4) var(--space-7);
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.submit:hover:not(:disabled),
+.submit:focus-visible:not(:disabled) {
+  background: var(--color-signal);
+}
+
+.submit:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.submit:disabled {
+  background: var(--color-text-meta);
+  cursor: progress;
+}
+
+/* --- Status --------------------------------------------------------------
+   In the DOM from first render and empty, so the live region is observed
+   becoming non-empty rather than appearing already full. An empty one must
+   take no space. */
+
+.status:empty {
+  display: none;
+}
+
+.status {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-flare);
+  color: var(--paper);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  max-width: 46ch;
+}
+
+/* --- Sent ----------------------------------------------------------------- */
+
+.done {
+  padding: var(--space-6);
+  background: var(--color-field-accent);
+  color: var(--on-ochre);
+  max-width: 46ch;
+}
+
+.doneHeading {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-entry);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-display);
+  margin: 0;
+}
+
+.doneLine {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  overflow-wrap: anywhere;
+}

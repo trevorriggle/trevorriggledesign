@@ -1,27 +1,38 @@
 /* ============================================================================
    ABOUT
    ============================================================================
-   Four paragraphs of continuous prose, no headings, exactly as written.
-
-   The composition does the work the missing subheads would otherwise do: the
-   title sits at title scale, the lead paragraph is set at lead size on a short
-   measure, and the remaining three run at body size on the reading measure.
-   Hierarchy is type size, not indentation.
-
-   The prose column used to start at column 3, drawn for a left-pinned
-   container. Centred, that was a band of dead padding beside the copy.
+   The same four paragraphs the page always carried, in three registers:
+   a serif standfirst, body prose beside a rail, and the ask as a pull quote.
+   See page.tsx for why the fourth paragraph is the quote and not also prose.
    ========================================================================= */
 
 .head {
-  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
-  padding-bottom: var(--space-7);
+  padding-top: clamp(var(--space-6), 6vw, var(--space-8));
+  padding-bottom: var(--rhythm-tight);
 }
 
 .title {
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
+  /* Optical alignment: pulls the A's left sidebearing onto the container
+     axis so the heading lines up with the paragraph beneath it. */
   margin-left: -0.045em;
+}
+
+/* THE STANDFIRST. Serif, large, short measure. `.intro` the global utility in
+   styles/typography.css carries the face and size; this is spacing only, so
+   the two are not fighting over the same properties.
+
+   It used to be set in the DISPLAY face at --display-1, which made it a
+   second heading under the first. In the serif it reads as a change of voice,
+   which is what an opening paragraph is. */
+.lead {
+  margin-top: var(--rhythm-tight);
+}
+
+.body {
+  padding-bottom: var(--rhythm-normal);
 }
 
 .grid {
@@ -30,25 +41,12 @@
   column-gap: var(--grid-gap);
   row-gap: var(--space-7);
   align-items: start;
-  padding-bottom: var(--rhythm-normal);
+  padding-top: var(--rhythm-tight);
+  border-top: var(--rule-heavy);
 }
 
-.main { grid-column: 1 / 9; }
+.main { grid-column: 1 / 8; }
 .rail { grid-column: 9 / -1; }
-
-/* The lead: bigger, full ink, short measure. The one paragraph a hiring team
-   reads if they read only one. */
-.lead {
-  font-size: var(--display-1);
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: "wdth" var(--width-display-mid);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-tight);
-  color: var(--color-text);
-  max-width: 26ch;
-  text-wrap: pretty;
-}
 
 .prose {
   font-size: var(--text-md);
@@ -58,22 +56,99 @@
   text-wrap: pretty;
 }
 
-.lead + .prose { margin-top: var(--space-8); }
 .prose + .prose { margin-top: var(--space-5); }
 
-/* The closing paragraph, one sentence, gets the accent rule and real air
-   above it. It is the ask, and it should read as one. */
-.prose:last-child {
-  margin-top: var(--space-8);
-  padding-top: var(--space-4);
-  border-top: 1.5px solid var(--color-signal);
-  font-size: var(--text-lg);
-  line-height: var(--leading-snug);
-  max-width: 34ch;
+/* --- The resume ----------------------------------------------------------
+   A real button, in the rail, under the metadata it belongs with. Ink field,
+   paper type: the loudest affordance on the page, because on a portfolio read
+   by a hiring team it is the one thing a reader might actually want to take
+   away with them.
+
+   It renders only when a PDF is on disk. See lib/resume.ts. */
+
+.resume {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-6);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg-invert);
+  color: var(--color-text-invert);
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
+
+.resume:hover,
+.resume:focus-visible {
+  background: var(--color-signal);
+  color: var(--color-text-invert);
+}
+
+.resumeLabel {
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+}
+
+/* The size, in mono, because it is data. A download with no size is a small
+   rudeness on a metered connection. */
+.resumeMeta {
+  font-size: var(--text-3xs);
+  color: var(--paper-mute);
+}
+
+.resume:hover .resumeMeta,
+.resume:focus-visible .resumeMeta {
+  color: var(--paper-mute-blue);
+}
+
+/* --- The ask -------------------------------------------------------------- */
+
+.askBlock {
+  padding-bottom: var(--rhythm-normal);
+}
+
+/* --- The closer ----------------------------------------------------------- */
+
+.closer {
+  text-align: left;
+}
+
+.closerLine {
+  margin: 0;
+}
+
+/* Set at section scale, in the display face: this is a destination, not a
+   footnote. On the ink ground the accent is ochre at 8.67:1, which is a real
+   text colour there, so the link can carry the colour itself rather than
+   needing an underline to hold it. */
+.closerLink {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-section);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--ground-accent);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.closerLink:hover,
+.closerLink:focus-visible {
+  color: var(--on-ink);
+}
+
+/* --- Collapse ------------------------------------------------------------- */
 
 @media (max-width: 62rem) {
   .main,
   .rail { grid-column: 1 / -1; }
-  .title { max-width: none; }
+
+  .resume {
+    /* Full width on a phone rather than a button the width of a rail that no
+       longer exists. */
+    align-items: flex-start;
+  }
 }

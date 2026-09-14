@@ -3,8 +3,9 @@
 Portfolio. Next.js App Router, TypeScript, MDX content in-repo, no CMS,
 deployed on Vercel.
 
-Home is a 2x2 of four doors: Applications, Design, Agentic AI, About. Three
-case studies live under `/work/`, three bodies of design work under `/design/`.
+Home opens on the statement, the clip, and then the work itself: three
+applications and three bodies of design work, as pictures. Three case studies
+live under `/work/`, three bodies of design work under `/design/`.
 **[DECISIONS.md](DECISIONS.md)** carries the reasoning, type scale, palette,
 grid, and what was deliberately torn out.
 
@@ -24,19 +25,21 @@ content/
   design.ts        the three design categories, their order and their copy
   work/<slug>/     drawevolve, thoosie, lynk
 public/design/<category>/   design images, drop files in, that is the config
-public/home/<slug>.<ext>    the four home tile thumbnails, same rule
 public/media/<slug>/        case study images
+public/resume/*.pdf         drop a PDF in, the /about download button appears
 styles/tokens.css           every colour, type size, space and grid value
 lib/site.ts                 name, domain, email, nav
 lib/design-images.ts        reads the design folders at build time
-lib/home-tiles.ts           the four home tiles and their thumbnails
+lib/resume.ts               finds the resume PDF, or renders no button
+lib/cards.ts                the rows both the home grid and /applications read
+app/api/contact/route.ts    the contact form's send, through Resend
 scripts/check-links.mjs     the one build-time check
 ```
 
 ## Routes
 
 ```
-/                          home, a 2x2 of four tiles and nothing else
+/                          home, the statement, the clip, and six pieces of work
 /applications              the three shipped products, equal weight
 /work/drawevolve           ┐
 /work/thoosie              ├ a page per application
@@ -47,8 +50,10 @@ scripts/check-links.mjs     the one build-time check
 /design/personal            ┘
 /agentic-ai                its own section
 /about  /contact           404
+/api/contact               POST, the contact form's send
 
 /work redirects to /applications, permanent.
+/design/<category>/<group> 308 to the matching anchor on the category page.
 ```
 
 ## Adding design work
@@ -79,12 +84,44 @@ every one of them renders nothing at all when empty. Only Personal Works has
 an `intro`; American Scientific and Taranto's have no copy yet. Fill a field
 and its element appears, with no other edit.
 
-## Adding home tile thumbnails
+## The home grid needs no thumbnails
 
-Drop a file at `public/home/<slug>.<ext>`, where slug is `applications`,
-`design`, `agentic-ai` or `about`. Any of png/jpg/jpeg/webp/avif/gif/svg,
-landscape, at least 1200px on the long edge. A tile with no file renders its
-title and count only, with no placeholder box.
+There is no `public/home/` any more. The home grid reads the same rows
+`/applications` and `/design` do, out of `lib/cards.ts`, so a new entry shows
+up in both places from one edit and the two can never disagree about which
+picture belongs to DrawEvolve. The tiles crop to a single proportion, which is
+the one place on this site that happens: six mixed proportions are not a grid.
+
+## Adding the resume
+
+Drop a PDF anywhere in `public/resume/`. The download button on `/about`
+appears, labelled with the file's real size, and the browser saves it as
+"Trevor Riggle, resume.pdf" whatever it is called on disk. No manifest, no
+import, no other edit.
+
+**No placeholder PDF ships, deliberately.** With no file in that folder the
+button does not render at all. A missing resume is a gap a reader asks about;
+a blank one is a thing they remember. See the header of `lib/resume.ts`.
+
+## The contact form
+
+`/contact` posts JSON to `/api/contact`, which validates again server-side and
+sends one email through Resend over plain `fetch`, no SDK. Anti-spam is a
+honeypot field and a two-second minimum on the form, not a rate limiter.
+
+Three environment variables, all optional at build time:
+
+```
+RESEND_API_KEY   the API key
+CONTACT_FROM     an address on a domain verified in Resend. NOT the gmail
+                 address: the sender's own address rides in Reply-To, and
+                 From must be the verified domain or the mail gets filtered
+CONTACT_TO       where it lands. Defaults to site.email
+```
+
+With `RESEND_API_KEY` or `CONTACT_FROM` unset the route answers 503 and the
+form tells the visitor to email the address directly, naming it. It never
+reports success without sending.
 
 ## What fails the build
 

@@ -103,6 +103,93 @@ badges and count labels. Stack is evidence a technical reader wants, it is a
 rail row rather than a badge, and deleting it would lose information rather
 than noise. Flagged rather than assumed.
 
+**Superseded by Phase 5 (home, about, contact).**
+
+| Section | What it says | What is true now |
+| --- | --- | --- |
+| [The home page is four doors](#the-home-page-is-four-doors) | A 2x2 of four tiles, Applications / Design / Agentic AI / About, each over a thumbnail read from `public/home/`. | The doors are gone. Home is the statement, the clip, then six pieces of WORK: three applications and three bodies of design work, as pictures. `lib/home-tiles.ts` and `public/home/` are deleted. |
+| [The home page has three tiers](#the-home-page-has-three-tiers) | Statement, clip, and four ways in. | Statement, clip, Applications, a full-bleed band, Design. Two numbered sections of work rather than a menu. |
+| [The masthead came back, as one sentence](#the-masthead-came-back-as-one-sentence) | "the tile grid is still four doors". | There is no tile grid. That clause is the only thing in the section that stopped being true; the statement standing alone, with no accent bar and no vitals rail, still holds. |
+| [The tiles carry no invented copy](#the-tiles-carry-no-invented-copy) | Each tile is a title plus a derived count. | The counts went in Phase 2 with the rest of the derived meta. A tile is a picture and a name. |
+| [Thumbnails are drop-in, and there is no placeholder box](#thumbnails-are-drop-in-and-there-is-no-placeholder-box) | `public/home/<slug>.<ext>`, a folder is the config. | That folder does not exist. The grid reads `lib/cards.ts`, the same rows `/applications` and `/design` render, so home cannot show a different picture for DrawEvolve than its own case study does. |
+
+**A door is not work, and that is the whole argument.** Somebody who has just
+come out of a final-round interview and wants to look at what this person makes
+was being handed four category names to choose between. Two of the four tiles
+had no image at all, so half the grid was a word on flat ground, and the
+Applications tile that did have one was a rough line sketch from an old build
+sitting one click from the finished portrait the case study now leads with.
+That is how a separate thumbnail folder goes stale without anyone noticing.
+
+**This reverses a decision this document argued for**, and the reversal is
+narrower than it looks. The doors replaced an earlier home that carried the
+applications inline, on the grounds that the page was "showing the same set
+twice and the doors were competing with a copy of what they open". That was
+true of THAT build, where home rendered the full browse tier: names at display
+scale, decks, status, the lot. The two tiers are now genuinely different. Home
+is a picture and a name, dense, six things read as one set. `/applications` is
+the picture, the name and the deck at reading size, one entry per row, built to
+be read through. Navigation did not move into the work: Agentic AI and About
+lost their tiles and kept their nav tabs, which is where a section that is not
+work belongs.
+
+**The tiles crop, and it is the one place on this site that does.** Everything
+else is framed at its own proportion. A grid of six mixed proportions has no
+grid in it, and the point of this tier is that the set reads as a set. The
+uncropped picture is what the browse tier and the case studies are for.
+
+**The statement's reveal stayed CSS and did not become framer.** It is the
+page's LCP text. A framer reveal ships it as `opacity: 0` in the server HTML
+and waits for hydration, which would put the largest paint on the site behind a
+JS chunk. The keyframes run on first paint with no JavaScript at all.
+
+**About went from one column to three registers, with the same four
+paragraphs.** Nothing was rewritten, condensed or added to. The first paragraph
+is a serif standfirst, the middle two are body on the measure beside a real
+metadata rail, and the fourth, the one-sentence ask, is lifted out as the
+page's single pull quote on an ochre field. It is NOT also left in the prose:
+setting it twice is the same mistake the case study heads were making with the
+wordmark. Ink on ochre rather than ochre type, per the contrast correction
+above.
+
+**The resume button is real and no placeholder PDF ships.** This is a
+deliberate departure from the brief, which asked for "a placeholder file we
+will wire up later". The wiring is all there: drop any PDF into
+`public/resume/` and the button appears on `/about`, labelled with the file's
+real size and downloading under a stable human name whatever it is called on
+disk. With no file, no button. The reason is who downloads it. A missing resume
+is a gap a reader asks about; a blank or lorem-filled one is a thing they
+remember, and this site's readers are deciding something. The standing rule
+that an absent asset is absent rather than faked applies hardest here.
+
+**Contact is a form, and the address did not shrink to make room for it.** The
+page was a heading, two sentences and a mailto set at title scale, which is
+fine for someone already sold and worse for a hiring manager on a phone between
+meetings, for whom "open mail client, compose, find the address" is three
+places to abandon. The address is still set large and still the first thing
+under the copy, because plenty of people would rather write from their own
+client where they have their signature and a record of having sent it. The form
+is the only client component on the page: if the JS never arrives, the address
+is still there and still works.
+
+**The send is `fetch`, not the Resend SDK.** That package wraps exactly this
+one JSON POST plus a React-email renderer this site does not use. Anti-spam is
+a honeypot and a two-second floor on time-to-submit, both of which cost nothing
+and catch the undirected crawlers; a real rate limiter needs a shared store,
+which on Vercel means provisioning KV for a personal site's contact form, and
+that is worth paying for once this is actually being abused. The ceiling that
+matters meanwhile is on the Resend account.
+
+**It fails loudly when it is not configured.** With `RESEND_API_KEY` or
+`CONTACT_FROM` unset the route answers 503 and names the email address, so a
+visitor on an unconfigured deploy is told where to write instead of watching a
+spinner. It never answers success without sending. A contact form that reports
+a send it did not make is the worst bug this page can have, because nobody
+finds out: not the sender, who thinks they wrote, and not the owner, who thinks
+nobody did. `From` is the verified domain and the sender's own address rides in
+`Reply-To`; putting a stranger's gmail in `From` is how a sending domain's
+reputation gets burned.
+
 **Still true, and load-bearing.** [There is no dark mode](#there-is-no-dark-mode),
 [No em dashes](#no-em-dashes), [No dates, anywhere](#no-dates-anywhere), and
 the folder-is-the-config contract on the design side.
@@ -116,10 +203,21 @@ copy. The full measured table is the contrast contract at the top of
 `styles/tokens.css`, and it is the reason the palette is built out of
 `--on-*` pairs rather than a list of five hexes.
 
-**Not yet done.** Phases 2 to 5: killing the hover-gated index, removing the
-metadata chips, the design pages' subnav rewrite, the American Scientific
-website case study, the DrawEvolve scroll sequence, the home grid, About, and
-a working contact form. See `PROPOSAL.md`.
+**Not yet done, and none of it is code.** All five phases are built. What is
+outstanding is content and configuration, listed in full in section 5 of
+`PROPOSAL.md`:
+
+- The American Scientific website case study is a scaffold. It needs the
+  screenshots, the ERP answer, the lead-pipeline answer, the stack, the scale
+  numbers and the confidentiality boundary.
+- `/agentic-ai` is still a nav tab over a page with `body: []`. Write it or cut
+  the tab. A dead section in front of a reader in a debrief is worse than no
+  section.
+- `site.social` is still empty, so the footer's "Elsewhere" block and the
+  contact rail render nothing. Two URLs fills both.
+- No resume PDF is in `public/resume/`, so `/about` shows no download button.
+- Resend needs an account, a verified sending domain on `trevorriggle.design`,
+  and `RESEND_API_KEY` plus `CONTACT_FROM` in Vercel.
 
 ---
 

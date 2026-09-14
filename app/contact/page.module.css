@@ -1,10 +1,10 @@
 /* ============================================================================
    CONTACT
    ============================================================================
-   Three things: a heading, two sentences, and an address. The address is the
-   content, so it gets the largest type on the page, larger than the heading,
-   which is the point. A contact page where the heading outranks the address
-   has its hierarchy backwards.
+   A heading, two sentences, the address, and a form. The address is still the
+   largest type on the page, larger than the heading, which is the point: a
+   contact page where the heading outranks the address has its hierarchy
+   backwards, and adding a form is not a reason to demote it.
    ========================================================================= */
 
 .wrap {
@@ -55,6 +55,28 @@
 
 .address a { text-decoration-color: var(--color-rule); }
 .address a:hover { color: var(--color-signal); }
+
+/* --- The form ------------------------------------------------------------
+   Under the address, separated by the heavy rule that marks a top-level
+   boundary everywhere else on the site. */
+
+.formBlock {
+  margin-top: var(--rhythm-normal);
+  padding-top: var(--rhythm-tight);
+  border-top: var(--rule-heavy);
+}
+
+/* "Or send this". Deliberately small, because it is a connective between two
+   options rather than a section title competing with the address above it. */
+.formHeading {
+  font-family: var(--font-text);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+  margin-bottom: var(--space-6);
+}
 
 @media (max-width: 62rem) {
   .main,

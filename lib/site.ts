@@ -61,8 +61,12 @@ export const site = {
 
    Applications points at /applications, a real route. It used to be the
    fragment /#applications, because the home page WAS the applications page.
-   Home is now a 2x2 of four doors and every nav label resolves to its own
-   page, so no tab scrolls you down someone else's. */
+   Home now shows the work rather than being the list of it, and every nav
+   label resolves to its own page, so no tab scrolls you down someone else's.
+
+   Agentic AI and About kept their tabs when the home page's four doors were
+   deleted. A section that is not work belongs in the nav, not in the grid of
+   work. */
 export const nav = [
   { label: "Applications", href: "/applications" },
   { label: "Design", href: "/design" },

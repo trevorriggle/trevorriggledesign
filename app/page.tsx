@@ -1,57 +1,69 @@
 import { Fragment, type CSSProperties } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { VideoSlot } from "@/components/ui/Video";
-import { Reveal } from "@/components/motion/Reveal";
-import { getHomeTiles } from "@/lib/home-tiles";
-import { getCaseStudy } from "@/content";
+import { Band } from "@/components/ui/Band";
+import { SectionHead } from "@/components/ui/SectionHead";
+import { WorkGrid } from "@/components/ui/WorkGrid";
+import { caseStudyRows, designCategoryRows } from "@/lib/cards";
+import { getSelected, getCaseStudy } from "@/content";
 import styles from "./page.module.css";
 
 /* ============================================================================
    HOME
    ============================================================================
-   Three things, in this order, and nothing else:
+     1  the statement    the opening line, revealed word by word
+     2  the clip         thoosie's footage, full bleed, closing the hero
+     3  Applications     three shipped products, as pictures
+     4  the band         one sentence, ultramarine, full bleed
+     5  Design           three bodies of work, as pictures
 
-     1  the statement   129px, revealed word by word, and ON ITS OWN
-     2  the clip        thoosie's footage, full bleed, closing the hero
-     3  the four doors  Applications, Design, Agentic AI, About
+   THE FOUR DOORS ARE GONE. This page was a 2x2 of section names, Applications,
+   Design, Agentic AI, About, each over a thumbnail read from public/home/.
+   Two of the four had no image, so half the grid was a word on flat ground,
+   and the two that did were stale: the Applications tile was a rough line
+   sketch from an old build sitting one click from the finished portrait the
+   case study leads with.
 
-   THE STATEMENT HAS NO SUPPORTING PARAGRAPH. It used to carry the second half
-   of `portfolio-copy.md`'s opening block, the four-years-of-catalogs sentence,
-   set at lead size beneath it. That is out of the build on request. The first
-   screen is the statement and the clip, and the About page is where the longer
-   version of that sentence already lives.
+   A DOOR IS NOT WORK, which is the real reason they went. Someone who has
+   just come out of a final-round interview and wants to look at what this
+   person makes was being handed four category names to choose between. The
+   page now opens with the statement and then shows six pieces of work.
 
-   THE APPLICATIONS BAND IS GONE. This page used to carry the statement, then
-   an "Applications" heading, then DrawEvolve as a large feature, then thoosie
-   and Lynk as preview cards, and then the doors. Those three boxes were the
-   whole of `/applications`, one click away and reachable from a door directly
-   beneath them, so the page was showing the same set twice and the doors were
-   competing with a copy of what they open. The browsing tier lives on
-   `/applications` and `/design`; this page's job is the statement, the clip,
-   and four ways in.
+   THIS REVERSES A DECISION THIS REPOSITORY MADE ON PURPOSE, and it is worth
+   naming rather than quietly undoing. The doors replaced an earlier home that
+   carried the applications inline, on the argument that the page was "showing
+   the same set twice and the doors were competing with a copy of what they
+   open". That argument was sound about THAT build, where home rendered the
+   full browse tier: decks, status, the lot. It is a portfolio home page, and
+   a portfolio home page that shows no work is solving the wrong problem. The
+   duplication is handled by the two tiers being genuinely different: this is
+   a picture and a name, and /applications is the picture, the name and the
+   deck at reading size. See components/ui/WorkGrid.
 
-   THE STATEMENT'S REVEAL IS CSS, NOT FRAMER, and that is a load decision, not
-   a style one. This is the page's LCP text. A framer reveal ships it as
-   `opacity: 0` in the server HTML and waits for hydration to bring it back,
-   which would make the largest paint on the site depend on a JS chunk. The
-   keyframes in page.module.css run on first paint with no JS at all. Framer
-   handles the doors, which are below the fold, where a hydration wait costs
-   nothing because nobody has scrolled to them yet.
+   NAVIGATION DID NOT MOVE INTO THE WORK. Agentic AI and About lost their
+   tiles and keep their nav tabs, which is where a section that is not work
+   belongs. Contact was never here.
 
-   THE WORD SPLIT IS PRESENTATIONAL. The statement is one string constant,
-   split on spaces at render, so it exists once and no word is written into the
-   markup. Each word is a masked span: the mask clips, the word inside rises.
-   The <h1>'s text content is the sentence, spaces and all, so the accessible
-   name is unchanged.
+   THE STATEMENT'S REVEAL IS CSS, NOT FRAMER, and that is a load decision. This
+   is the page's LCP text. A framer reveal ships it as `opacity: 0` in the
+   server HTML and waits for hydration, which would make the largest paint on
+   the site depend on a JS chunk. The keyframes in page.module.css run on
+   first paint with no JS at all.
    ========================================================================= */
 
 /** The site's opening line. Split on spaces for the reveal, never edited. */
 const STATEMENT = "Graphic Designer & Developer";
 
+/* The band's sentence is the author's own, lifted verbatim from /about. It is
+   the site's argument in one line, which is what a pull quote is for, and
+   nothing was written for this slot. */
+const BAND_LINE =
+  "I design the thing, build the thing, and own the parts of it that break.";
+
 export default function HomePage() {
-  const tiles = getHomeTiles();
+  const applications = caseStudyRows(getSelected());
+  const design = designCategoryRows();
 
   /* The one clip in the whole content set. Rendered only if the mp4 is
      actually on disk; VideoSlot falls back to its poster frame and then to
@@ -67,8 +79,7 @@ export default function HomePage() {
               {/* A REAL TEXT NODE, not a margin. The masks are inline-block,
                   so without this the words butt together and the heading's
                   text content comes out as "GraphicDesigner&Developer", which
-                  is what a screen reader would read and what the browser would
-                  use as the accessible name. */}
+                  is what a screen reader would read. */}
               {i > 0 && " "}
               <span
                 className={styles.mask}
@@ -81,50 +92,44 @@ export default function HomePage() {
         </h1>
       </Container>
 
-      {/* THE HERO'S OWN VISUAL, and the one full-bleed element on the site.
-          It closes the first screen rather than opening a new section.
-
-          Real footage, and it is the site's existing clip: same file, same
-          poster, same <AutoVideo> policy. That component already refuses to
-          autoplay on a metered or unknown connection, under reduced motion, or
-          off screen, and it preloads metadata only, so a 14MB file is not
-          pulled down to decorate a page nobody scrolled. */}
+      {/* THE HERO'S OWN VISUAL. Real footage, the site's existing clip.
+          <AutoVideo> refuses to autoplay on a metered or unknown connection,
+          under reduced motion, or off screen, and preloads metadata only, so
+          a 14MB file is not pulled down to decorate a page nobody scrolled. */}
       {clip && (
         <Container width="full" className={styles.band}>
           <VideoSlot video={clip} sizes="100vw" />
         </Container>
       )}
 
-      <Container as="section" className={styles.doors}>
-        <Reveal>
-          <ul className={styles.grid} aria-label="Sections">
-            {tiles.map((tile) => (
-              <li key={tile.slug} className={styles.cell}>
-                <Link href={tile.href} className={styles.tile}>
-                  {tile.image && (
-                    <span className={styles.media}>
-                      <Image
-                        src={tile.image.url}
-                        alt=""
-                        width={tile.image.width}
-                        height={tile.image.height}
-                        sizes="(max-width: 48rem) 100vw, 50vw"
-                        loading="lazy"
-                        /* An animated tile thumbnail stays animated. */
-                        unoptimized={tile.image.unoptimized}
-                        className={styles.image}
-                      />
-                    </span>
-                  )}
+      <Container as="section" className={styles.section}>
+        <SectionHead number="01" title="Applications" />
+        <div className={styles.grid}>
+          <WorkGrid
+            entries={applications}
+            label="Applications"
+            /* Three tiles, all of them in the first screen after the clip on
+               a desktop window. */
+            priorityCount={3}
+          />
+        </div>
+      </Container>
 
-                  <span className={styles.label}>
-                    <span className={styles.title}>{tile.title}</span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+      {/* A FULL-BLEED BAND BETWEEN THE TWO SETS. It divides the page, which is
+          what makes colour structural here rather than decorative: a reader
+          scrolling past knows the set changed without reading a word. */}
+      <Band ground="ultramarine" grid className={styles.quoteBand}>
+        <p className={`quote ${styles.quote}`}>{BAND_LINE}</p>
+        <Link href="/about" className={styles.quoteLink}>
+          About
+        </Link>
+      </Band>
+
+      <Container as="section" className={styles.section}>
+        <SectionHead number="02" title="Design" />
+        <div className={styles.grid}>
+          <WorkGrid entries={design} label="Bodies of design work" />
+        </div>
       </Container>
     </>
   );

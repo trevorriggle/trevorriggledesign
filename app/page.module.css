@@ -144,120 +144,63 @@
   border: 0;
 }
 
-/* --- 3. The doors ---------------------------------------------------------
-   The 2x2, and the only navigation on the page. It moved from the top to the
-   bottom when the statement arrived, and it is now the page's whole browsing
-   offer: the applications band that used to sit above it was a copy of what
-   the Applications door opens.
+/* --- 3 & 5. The work sections -------------------------------------------
+   Two numbered sections of three tiles each. The tiles themselves live in
+   components/ui/WorkGrid; this only places the sections on the page.
 
-   THE CELLS ARE DEFINED BY RULES, NOT BY BOXES. Structural hairlines between
-   the four cells give the grid its shape whether or not any thumbnail exists
-   yet. A rule is a real element of this design system; a grey rectangle at
-   4:3 is a hole with a colour in it. */
+   THE DOORS BLOCK THAT WAS HERE IS GONE, along with its 2x2, its cell
+   hairlines, its 16rem min-height floor and its own crop rules. All of it
+   described a grid of four section names. See app/page.tsx. */
 
-.doors {
-  /* `rhythm-loose`, the largest on the site, 120-256px. This is the gap the
-     hero used to own and it is what makes the doors read as being revealed
-     under the clip rather than stacked against it. */
-  padding-top: var(--rhythm-loose);
+.section {
+  padding-top: var(--rhythm-normal);
+}
+
+.section:last-of-type {
   padding-bottom: var(--rhythm-normal);
 }
 
 .grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  /* The outer edge of the 2x2. The inner hairlines come from the cells. */
-  border-top: var(--rule);
-  border-left: var(--rule);
+  margin-top: var(--rhythm-tight);
 }
 
-.cell {
-  border-right: var(--rule);
-  border-bottom: var(--rule);
-  min-width: 0;
+/* --- 4. The band between the two sets -----------------------------------
+   Full bleed ultramarine. It divides the page, which is what makes the colour
+   structural rather than decorative. */
+
+.quoteBand {
+  margin-top: var(--rhythm-normal);
 }
 
-.tile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-5);
-  height: 100%;
-  padding: var(--space-5);
+.quote {
+  /* Face, size, leading and tracking come from the global `.quote` utility in
+     styles/typography.css, which is the only file that assigns the serif. */
+  max-width: 20ch;
+}
+
+/* The one link on the band. Set as a label rather than as body type, so it
+   reads as a way out of the band rather than as a second sentence. */
+.quoteLink {
+  display: inline-block;
+  margin-top: var(--rhythm-tight);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
   text-decoration: none;
-  /* Holds the 2x2 as a square-ish composition while the tiles are text only.
-     Once every cell carries an image the media box drives the height and this
-     floor stops mattering. */
-  min-height: 16rem;
-  transition: background-color var(--duration-fast) var(--ease-out);
+  /* Ochre on ultramarine is 4.15:1, which is fine for large text and NOT for
+     a 12px label, so the label stays paper and the ochre is in the rule
+     under it. Same idiom as the masthead's current-page mark. */
+  color: var(--on-ultramarine);
+  box-shadow: inset 0 -3px 0 0 var(--color-underline-active);
+  padding-bottom: var(--space-1);
+  transition: box-shadow var(--duration-fast) var(--ease-out);
 }
 
-.tile:hover,
-.tile:focus-visible { background: var(--color-bg-sunk); }
-
-.tile:hover .title,
-.tile:focus-visible .title { color: var(--color-signal); }
-
-/* FIXED CROP, same rule as the preview cards. A tile's thumbnail used to
-   render at its own proportion, so applications.png at 874x629 and design.png
-   at 3840x1589 gave their two cells visibly different heights. The box is 4:3
-   for every tile now and the image covers it.
-
-   This only applies when a file exists. A tile with no image still renders no
-   media element at all, because a grey 4:3 rectangle is a hole with a colour
-   in it, which is the rule this page was built on. */
-.media {
-  position: relative;
-  display: block;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  background: var(--color-bg-sunk);
-}
-
-.image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  transition:
-    opacity var(--duration-base) var(--ease-out),
-    transform var(--duration-base) var(--ease-out);
-}
-
-/* The category tiles get the same hover as the project cards. Consistency is
-   the requirement here: a visitor should not have to learn two idioms for
-   "this is clickable" on one page. */
-.tile:hover .image,
-.tile:focus-visible .image {
-  opacity: 0.92;
-  transform: scale(1.04);
-}
-
-/* Pushed to the bottom of the cell, so the four titles sit on one line
-   across the grid whether or not the tiles above them are the same height.
-
-   A single child since the derived count came off the tiles, but it keeps the
-   flex column: `margin-top: auto` is what does the pushing, and it needs a
-   flex parent to push against. */
-.label {
-  display: flex;
-  flex-direction: column;
-  margin-top: auto;
-}
-
-.title {
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: "wdth" var(--width-display-mid);
-  font-size: var(--type-entry);
-  line-height: var(--leading-snug);
-  letter-spacing: var(--tracking-display);
-  transition: color var(--duration-fast) var(--ease-out);
+.quoteLink:hover,
+.quoteLink:focus-visible {
+  color: var(--on-ultramarine);
+  box-shadow: inset 0 -6px 0 0 var(--color-underline-active);
 }
 
 /* --- Collapse ------------------------------------------------------------- */
@@ -266,32 +209,6 @@
   .statement { max-width: none; }
 }
 
-/* One column on a phone. Two 50vw tiles side by side put the titles at a
-   measure nothing can read. */
-@media (max-width: 48rem) {
-  .grid { grid-template-columns: minmax(0, 1fr); }
-  .tile { min-height: 11rem; }
-}
-
-/* --- Reduced motion ------------------------------------------------------
-   THE GLOBAL RESET IS NOT ENOUGH HERE, and this is the subtle one. reset.css
-   forces `animation-duration: 0.01ms`, but it does NOT touch
-   `animation-delay`. The statement's words are staggered by delay, so under
-   the global reset alone the last word would sit invisible for the length of
-   its stagger and then snap in: a flash of missing heading, caused by the
-   accessibility rule itself. Both the animation and its delay are cancelled
-   outright.
-
-   The hover transforms are dropped rather than snapped, for the same reason.
-   The colour and opacity signals stay: they are not motion. */
-@media (prefers-reduced-motion: reduce) {
-  .word {
-    animation: none;
-    animation-delay: 0s;
-    opacity: 1;
-    transform: none;
-  }
-
-  .tile:hover .image,
-  .tile:focus-visible .image { transform: none; }
+@media (max-width: 40rem) {
+  .quote { max-width: none; }
 }
