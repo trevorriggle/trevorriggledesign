@@ -82,6 +82,15 @@
   margin-top: var(--rhythm-normal);
 }
 
+/* A section that leads with a before/after. It sits between the section head
+   and the copy, because the comparison IS the section's argument and the
+   paragraphs underneath are the explanation of something the reader has
+   already looked at. The two files in it are filtered out of the gallery
+   below; see page.tsx. */
+.sectionCompare {
+  margin-top: var(--rhythm-tight);
+}
+
 .sectionCopy {
   margin-top: var(--space-6);
   /* Hangs in the first half of the grid, so the copy reads at a measure and

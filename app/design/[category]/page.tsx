@@ -6,6 +6,7 @@ import { DesignGrid } from "@/components/ui/DesignGrid";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { SubNav } from "@/components/ui/SubNav";
 import { FeaturedCase } from "@/components/ui/FeaturedCase";
+import { Compare, type CompareSide } from "@/components/ui/Compare";
 import {
   designCategories,
   getCategory,
@@ -13,7 +14,9 @@ import {
   getSection,
   getFeatured,
 } from "@/content/design";
+import type { CompareShot } from "@/content/design";
 import { getDesignGroups, getUngroupedImages } from "@/lib/design-images";
+import type { DesignItem } from "@/lib/design-images";
 import { site } from "@/lib/site";
 import styles from "./page.module.css";
 
@@ -84,6 +87,44 @@ export async function generateMetadata({
 
 const IS_DEV = process.env.NODE_ENV !== "production";
 
+/** The filename at the end of a media URL. */
+function basename(url: string): string {
+  return url.slice(url.lastIndexOf("/") + 1);
+}
+
+/**
+ * Resolve a declared comparison shot against what is actually on disk.
+ *
+ * THE DIMENSIONS COME FROM THE FILE, NOT FROM THE DECLARATION. Both exist:
+ * content/design.ts states them so the shape of the comparison is readable
+ * without opening an image, and lib/design-images.ts measures the real header
+ * at build time. The measured one wins, because a declaration can drift from
+ * the file it describes and the file cannot drift from itself.
+ *
+ * Returns null when the named file is not there, and the caller then renders
+ * no comparison at all rather than a frame around a missing image. Same
+ * standing rule as every other media slot on this site.
+ */
+function resolveShot(
+  shot: CompareShot,
+  items: DesignItem[],
+  label: string,
+): CompareSide | null {
+  const found = items.find((item) => basename(item.src) === shot.src);
+  if (!found) return null;
+
+  return {
+    src: found.src,
+    alt: shot.alt,
+    width: found.width,
+    height: found.height,
+    caption: shot.caption,
+    redact: shot.redact,
+    unoptimized: found.passthrough,
+    label,
+  };
+}
+
 export default async function DesignCategoryPage({
   params,
 }: {
@@ -100,8 +141,8 @@ export default async function DesignCategoryPage({
 
   /* The subnav indexes the SECTIONS, which are the groups. The featured case
      is deliberately not in it: the brief is explicit that it must not read as
-     a peer of "Print", and it sits above the bar where nothing has scrolled
-     past it yet. A bar with one item is furniture, so one group gets none. */
+     a peer of "Print". A bar with one item is furniture, so one group gets
+     none. */
   const navItems = groups.map((group) => ({
     id: group.slug,
     label: group.title,
@@ -109,6 +150,21 @@ export default async function DesignCategoryPage({
 
   return (
     <>
+      {/* THE BAR IS THE FIRST THING ON THE PAGE, above the masthead's own
+          title block rather than buried under it.
+
+          It used to render after the intro copy and after the featured case,
+          which meant the one control for moving around a very long page was
+          itself below the fold on a phone: you had to scroll past everything
+          the bar exists to let you skip in order to find the bar. Putting it
+          at the top costs the title nothing (it is still the <h1>, still the
+          first thing read) and means the index is on screen at the moment
+          the page arrives, which is when somebody deciding where to look
+          actually wants it. */}
+      {navItems.length > 1 && (
+        <SubNav items={navItems} label={`${found.title}, sections`} />
+      )}
+
       <Container as="header" className={styles.head}>
         <p className={styles.breadcrumb}>
           <Link href="/design">Design</Link>
@@ -132,12 +188,32 @@ export default async function DesignCategoryPage({
 
       {featured && <FeaturedCase data={featured} />}
 
-      {navItems.length > 1 && (
-        <SubNav items={navItems} label={`${found.title}, sections`} />
-      )}
-
       {groups.map((group, i) => {
         const copy = getSection(found.slug, group.slug);
+
+        /* A section may lead with a before/after. When it does, the two files
+           it names DROP OUT OF THE GALLERY below it: the comparison has
+           already shown both, at a size chosen for the comparison, and
+           printing them again as loose thumbnails underneath is the same
+           picture twice with less to say the second time. This is the same
+           claiming rule lib/design-images.ts uses to stop a video's poster
+           frame rendering as a still of its own. */
+        const before = copy?.compare
+          ? resolveShot(copy.compare.before, group.items, "Before")
+          : null;
+        const after = copy?.compare
+          ? resolveShot(copy.compare.after, group.items, "After")
+          : null;
+        const compare = before && after ? { before, after } : null;
+
+        const claimed = new Set(
+          compare
+            ? [basename(compare.before.src), basename(compare.after.src)]
+            : [],
+        );
+        const items = compare
+          ? group.items.filter((item) => !claimed.has(basename(item.src)))
+          : group.items;
 
         return (
           <Container
@@ -150,6 +226,17 @@ export default async function DesignCategoryPage({
               number={String(i + 1).padStart(2, "0")}
               title={group.title}
             />
+
+            {compare && copy?.compare && (
+              <div className={styles.sectionCompare}>
+                <Compare
+                  label={copy.compare.label}
+                  before={compare.before}
+                  after={compare.after}
+                  eager={i === 0}
+                />
+              </div>
+            )}
 
             {copy && copy.body.length > 0 && (
               <div className={styles.sectionCopy}>
@@ -170,9 +257,11 @@ export default async function DesignCategoryPage({
               </div>
             )}
 
-            <div className={styles.sectionGrid}>
-              <DesignGrid images={group.items} priorityFirst={i === 0} />
-            </div>
+            {items.length > 0 && (
+              <div className={styles.sectionGrid}>
+                <DesignGrid images={items} priorityFirst={i === 0 && !compare} />
+              </div>
+            )}
           </Container>
         );
       })}

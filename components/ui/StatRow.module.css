@@ -1,0 +1,60 @@
+/* A small number of oversized figures. See StatRow.tsx.
+
+   Colours are --ground-* variables: this renders inside a <Band>. */
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: var(--rhythm-tight) var(--grid-gap);
+  margin: 0;
+  padding-top: var(--space-6);
+  border-top: var(--hairline) solid var(--ground-rule);
+}
+
+.stat {
+  min-width: 0;
+}
+
+/* THE FIGURE IS THE POINT AND IT IS SET LIKE ONE. Display face at display-3,
+   which is the size the scale reserves for section heads — the hole in the
+   middle of the scale (see tokens.css) is exactly what makes a number at this
+   size read as a number rather than as a slightly larger paragraph.
+
+   Tabular numerals so a row of figures shares a grid, and the negative left
+   margin is optical: it pulls the first glyph's sidebearing onto the column
+   axis so a "2" starts where the label under it starts. */
+.figure {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display);
+  font-size: clamp(var(--display-2), 4.6vw, var(--display-3));
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-variant-numeric: tabular-nums;
+  color: var(--ground-text);
+  margin-left: -0.04em;
+}
+
+.label {
+  display: block;
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--ground-accent);
+  text-wrap: pretty;
+}
+
+/* The qualifier. Sentence case, not uppercase, because it is a phrase rather
+   than a label and setting it in caps would make it compete with the thing it
+   is qualifying. */
+.note {
+  display: block;
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
+  color: var(--ground-mute);
+}

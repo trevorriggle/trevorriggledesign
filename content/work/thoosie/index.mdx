@@ -1,5 +1,19 @@
 ---
-# COPY: every prose string below is portfolio-copy.md, verbatim.
+# COPY. Two sources now, and they are marked where they differ.
+#
+#   The deck, role, context and state are portfolio-copy.md, verbatim.
+#
+#   The body is NOT, in two places. "The constraint" is new, and "What I
+#   built" gained the build detail this entry was missing next to DrawEvolve's.
+#
+#   "WHAT I CUT" WAS DELETED RATHER THAN EDITED. It said the Reddit build was
+#   finished and deliberately not shipped, and that the standalone web build
+#   was the only one that went out. That is no longer true: all three targets
+#   shipped off the one codebase, confirmed by the author. A section whose
+#   entire argument was a cut that did not happen cannot be corrected a
+#   sentence at a time, so it is gone and the three-platform ship took its
+#   place. The pull quote it contained about cutting a finished platform went
+#   with it, for the same reason.
 title: thoosie
 deck: Draw a line, ride it as a roller coaster.
 section: ai-systems
@@ -72,7 +86,9 @@ links:
     href: https://thoosie.net
     kind: live
 
-stack: []
+# JavaScript, and the three targets it ships to. Named in the copy below, so
+# the chips are an index of the prose rather than a claim it does not make.
+stack: [JavaScript, Reddit Developer Platform, itch.io, Web]
 
 status: published
 ---
@@ -89,28 +105,57 @@ often a ride that either stalls out halfway up the hill or pulls G-forces
 that would put a person in the hospital. The app has to let people draw
 freely and still produce something that works.
 
+## The constraint
+
+One codebase, three platforms, and they do not agree about anything.
+
+thoosie ships to the Reddit Developer Platform, to itch.io, and to its own
+standalone site at thoosie.net. Those are three genuinely different
+environments: Reddit runs the game inside a sandboxed embed on someone
+else's page, in a viewport it controls and can resize under you; itch.io
+runs it in an iframe with its own fullscreen and sizing rules; the
+standalone build owns the whole window and can assume nothing about either
+of the other two.
+
+It is all JavaScript, and it is one codebase — not a core with three forks,
+which is the version of this that looks the same from outside and rots
+within a month, because the third platform's bug fix never makes it back
+into the first. Everything that differs between the three is isolated at the
+edges: how the canvas learns what size it is, how input arrives, where a
+saved coaster is persisted, how fullscreen is requested. The game does not
+know which of the three it is running in.
+
+That is the interesting constraint in this project, and it is a design
+decision before it is an engineering one. Every feature has to be specified
+in a way that survives all three: anything that depends on a known viewport,
+on a real URL, or on a window the game controls is either designed
+differently or is not built.
+
 ## What I built
 
-A full track editor: freehand, straight, and arc tools, plus a library of
+**A full track editor.** Freehand, straight, and arc tools, plus a library of
 prefab elements: first drops, vertical loops, camelbacks, bunny hops,
 valleys, barrel rolls, half loops, Immelmanns, dive loops. Track types that
 behave differently under the physics sim: chain lift, launch, brake run, and
 trigger track.
 
-A trigger and reaction system, so pieces can respond to the train passing:
+**A trigger and reaction system**, so pieces can respond to the train passing:
 a brake run that holds the train, counts down, then launches it onward, or
 track that physically moves between two positions when a trigger fires. That
 turned the editor from a drawing tool into something closer to a small
 state machine, and it's the feature that made people build things I didn't
 anticipate.
 
-Live physics telemetry surfaced during the ride: current speed, vertical G,
+**Live physics telemetry surfaced during the ride:** current speed, vertical G,
 airtime accumulating in real time, then a summary of height, top speed, max
 and min G, inversions, length and ride time.
 
-Plus the unglamorous half: autosave, cross-platform level sharing, a
+**Plus the unglamorous half:** autosave, cross-platform level sharing, a
 gallery, a tutorial, a content filter on shared coasters, and a full mobile
-pass.
+pass. Cross-platform sharing is the one that earns its place in this list:
+a coaster drawn in the Reddit embed opens on the standalone site, which
+means the save format had to be settled before any of the three shipped
+rather than after two of them had already picked something.
 
 ## The decision that mattered
 
@@ -123,21 +168,10 @@ respond, not by reading a rule.
 It's the same instinct as DrawEvolve, honestly. The system's job is to
 teach you to get better, not to do it for you.
 
-## What I cut
-
-I built the game to run inside Reddit as a Devvit app and then didn't ship
-it there. Two platforms meant two sets of layout bugs, two embed
-environments, and a mobile letterboxing problem I'd have owned indefinitely.
-I shipped the standalone web build only.
-
-Cutting a finished platform is unpleasant. It was the right call. The
-standalone build launched a day early and I spent that time on the game
-instead of on embed CSS.
-
 ## Outcome
 
-Launched. Promoted through the coaster and indie dev
-communities with a single gameplay clip.
+Launched, on all three platforms, off the one codebase. Promoted through the
+coaster and indie dev communities with a single gameplay clip.
 
 The response I actually cared about: two testers played for twenty-five
 minutes unprompted, without being asked to and without stopping to give

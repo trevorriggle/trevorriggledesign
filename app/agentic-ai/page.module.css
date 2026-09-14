@@ -1,5 +1,19 @@
+/* ============================================================================
+   AGENTIC AI
+   ============================================================================
+   Method, then four agents. Each agent section is: head, diagram, prose
+   beside its artefact, and an optional number.
+
+   The page carries no colour band of its own. The four diagrams are the
+   colour on it, which is deliberate — the notation is the only place
+   ultramarine, ochre and flare appear together, so a reader learns to read
+   them as a system rather than as decoration. Adding a full-bleed band would
+   put a fifth large colour field in competition with the thing that has to
+   be read carefully.
+   ========================================================================= */
+
 .head {
-  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
+  padding-top: clamp(var(--space-6), 6vw, var(--space-8));
   padding-bottom: var(--space-7);
 }
 
@@ -12,72 +26,165 @@
 }
 
 .title {
-  grid-column: 1 / 9;
+  grid-column: 1 / 7;
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
+  /* Optical: pulls the A onto the container axis. */
+  margin-left: -0.045em;
 }
 
-.lead { grid-column: 3 / 11; }
+.lead { grid-column: 7 / -1; }
 
+/* THE THESIS. Set at the text tier's ceiling rather than in the display face,
+   because it is a sentence to be read rather than a second heading, and not
+   in the serif, which this site rations to pull quotes. */
 .para {
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
   color: var(--color-text);
-  max-width: 40ch;
+  max-width: 38ch;
+  text-wrap: pretty;
 }
 
-.para + .para { margin-top: var(--space-4); }
-
-/* The pointer to the passage that already covers this ground. */
-.relatedBlock { padding-bottom: var(--rhythm-loose); }
-
-.related {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  align-items: baseline;
-  border-top: var(--rule-heavy);
-  border-bottom: var(--rule);
-  padding-block: var(--space-6);
-  text-decoration: none;
-  color: inherit;
-  transition: background-color var(--duration-fast) var(--ease-out);
-}
-
-.related:hover { background: var(--color-bg-sunk); }
-.related:hover .relatedTitle { color: var(--color-signal); }
-
-.relatedLabel {
-  grid-column: 1 / 4;
-  font-size: var(--text-3xs);
+/* The evidence, in one line, directly under the claim. */
+.support {
+  margin-top: var(--space-4);
+  font-size: var(--text-2xs);
   font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps-wide);
+  letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--color-signal);
 }
 
-.relatedTitle {
-  grid-column: 4 / 7;
-  font-family: var(--font-display);
-  font-weight: var(--weight-display);
-  font-variation-settings: "wdth" var(--width-display-mid);
-  font-size: var(--type-entry);
-  line-height: var(--leading-title);
-  letter-spacing: var(--tracking-display);
-  transition: color var(--duration-fast) var(--ease-out);
+/* --- Sections ------------------------------------------------------------ */
+
+.section {
+  margin-top: var(--rhythm-normal);
+  padding-bottom: var(--rhythm-tight);
 }
 
-.relatedDeck {
-  grid-column: 7 / -1;
-  font-size: var(--text-base);
-  line-height: var(--leading-snug);
-  color: var(--color-text);
-  max-width: 46ch;
+.methodBody {
+  margin-top: var(--space-6);
+  max-width: var(--measure);
 }
+
+.prose {
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.prose + .prose { margin-top: var(--space-5); }
+
+/* --- The diagram ---------------------------------------------------------
+   Full width, directly under the section head, above the prose. It is the
+   hero of its section: it says in a picture what the paragraphs then say in
+   words, and on a page whose argument is about where the human goes, the
+   picture is the faster route to that. */
+
+.flow {
+  margin: var(--rhythm-tight) 0 0;
+}
+
+.flowCaption {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: var(--rule-faint);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+  max-width: 56ch;
+  text-wrap: pretty;
+}
+
+/* --- Prose beside the artefact ------------------------------------------ */
+
+.body {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--rhythm-tight);
+  align-items: start;
+  margin-top: var(--rhythm-tight);
+}
+
+.body .prose { grid-column: 1 / 7; }
+.sample { grid-column: 8 / -1; }
+
+.para2 {
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.para2 + .para2 { margin-top: var(--space-5); }
+
+/* THE POINT. The sentence each section exists to deliver, and the one thing
+   on the page that gets a rule and a colour of its own.
+
+   It is NOT a pull quote. Pull quotes on this site are the serif on a colour
+   field and are rationed to one per page; there are four of these. This is a
+   quieter device doing a different job: same size as the prose it sits in, so
+   it reads as the argument arriving rather than as an interruption, with an
+   ultramarine rule down its left edge marking it as the load-bearing line. */
+.point {
+  margin-top: var(--space-6);
+  padding-left: var(--space-5);
+  border-left: 3px solid var(--color-signal);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+/* --- The number, when there is one --------------------------------------- */
+
+.stat {
+  margin-top: var(--rhythm-tight);
+}
+
+/* --- The scaffold marker, development only -------------------------------
+   Dropped from production builds entirely. Loud on purpose: it is a note to
+   the author and must be impossible to mistake for part of the design. */
+
+.todo {
+  margin-top: var(--rhythm-tight);
+  padding: var(--space-5);
+  background: var(--color-flare);
+  color: var(--paper);
+}
+
+.todoHeading {
+  font-family: var(--font-text);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  margin-bottom: var(--space-4);
+}
+
+.todoList {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+/* --- Collapse ------------------------------------------------------------ */
 
 @media (max-width: 62rem) {
-  .title, .lead { grid-column: 1 / -1; }
-  .relatedLabel, .relatedTitle, .relatedDeck { grid-column: 1 / -1; }
-  .relatedTitle, .relatedDeck { margin-top: var(--space-3); }
+  .title,
+  .lead { grid-column: 1 / -1; }
+
+  .para { max-width: none; }
+
+  .body .prose,
+  .sample { grid-column: 1 / -1; }
 }

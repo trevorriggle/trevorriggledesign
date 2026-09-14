@@ -1,5 +1,8 @@
 import { Band } from "./Band";
 import { PullQuote } from "./PullQuote";
+import { Compare } from "./Compare";
+import { SpecTable } from "./SpecTable";
+import { StatRow } from "./StatRow";
 import type { FeaturedCase as FeaturedCaseData } from "@/content/design";
 import styles from "./FeaturedCase.module.css";
 
@@ -18,21 +21,29 @@ import styles from "./FeaturedCase.module.css";
    reading FEATURED to be read as featured. The eyebrow says what the thing
    is, not how important it is.
 
+   THE ORDER OF THE SECTION IS AN ARGUMENT AND IT IS DELIBERATE:
+
+     deck → standfirst → BEFORE/AFTER → prose → table → numbers → the gap
+
+   The comparison is third, above all of the prose, because the old site has
+   been switched off and these screenshots are the only surviving evidence
+   that it was ever there. A rebuild case study that describes a predecessor
+   the reader cannot see is asking to be taken on trust, and this one does not
+   have to be. The gap is last and it ships: see the note on `gap` in
+   content/design.ts for why the unfinished half is on the page at all.
+
+   EVERY ONE OF THOSE SLOTS IS OPTIONAL AND ABSENT MEANS ABSENT. A case with
+   no table renders no table and no empty heading over one.
+
    THE TODO LIST IS DEVELOPMENT ONLY. `process.env.NODE_ENV` is inlined at
    build time, so in a production build the entire block is dead code and is
    dropped: the strings do not ship, and there is nothing in the HTML for a
-   visitor to see. This is how the scaffold stays visible to the author
-   without a note addressed to the author appearing on a page a hiring manager
-   is reading.
-
-   WITH NO MEDIA, THIS RENDERS AS COPY. That is the honest state while there
-   are no screenshots: a section that says what the work is, with nothing
-   pretending to be a picture of it. No grey boxes, no "coming soon", same
-   standing rule as the rest of the site.
+   visitor to see.
    ========================================================================= */
 
 export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
   const showTodo = process.env.NODE_ENV !== "production" && data.todo.length > 0;
+  const dir = data.compareDir;
 
   return (
     <Band
@@ -48,22 +59,75 @@ export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
         <p className={styles.deck}>{data.deck}</p>
       </div>
 
-      <div className={styles.body}>
+      <div className={styles.standfirstBlock}>
         <p className={`intro ${styles.standfirst}`}>{data.standfirst}</p>
+      </div>
 
-        <div className={styles.blocks}>
-          {data.blocks.map((block) => (
-            <section key={block.heading} className={styles.block}>
-              <h3 className={styles.blockHeading}>{block.heading}</h3>
+      {dir && data.compare && data.compare.length > 0 && (
+        <div className={styles.compareSlot}>
+          {data.compare.map((pair, i) => (
+            <Compare
+              key={pair.label}
+              label={pair.label}
+              /* Only the first pair is above the fold. */
+              eager={i === 0}
+              before={{
+                ...pair.before,
+                src: `/media/${dir}/${pair.before.src}`,
+                label: "Before",
+              }}
+              after={{
+                ...pair.after,
+                src: `/media/${dir}/${pair.after.src}`,
+                label: "After",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className={styles.blocks}>
+        {data.blocks.map((block) => (
+          <section key={block.heading} className={styles.block}>
+            <h3 className={styles.blockHeading}>{block.heading}</h3>
+            <div className={styles.blockBody}>
               {block.body.map((para, i) => (
                 <p key={i} className={styles.para}>
                   {para}
                 </p>
               ))}
-            </section>
-          ))}
-        </div>
+            </div>
+          </section>
+        ))}
       </div>
+
+      {data.table && (
+        <div className={styles.tableSlot}>
+          <SpecTable caption={data.table.caption} rows={data.table.rows} />
+        </div>
+      )}
+
+      {data.numbers && data.numbers.stats.length > 0 && (
+        <div className={styles.numbersSlot}>
+          <h3 className={styles.numbersHeading}>{data.numbers.heading}</h3>
+          <StatRow stats={data.numbers.stats} label={data.numbers.label} />
+        </div>
+      )}
+
+      {data.gap && (
+        <div className={styles.blocks}>
+          <section className={styles.block}>
+            <h3 className={styles.blockHeading}>{data.gap.heading}</h3>
+            <div className={styles.blockBody}>
+              {data.gap.body.map((para, i) => (
+                <p key={i} className={styles.para}>
+                  {para}
+                </p>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
 
       {data.quote && (
         <div className={styles.quoteSlot}>

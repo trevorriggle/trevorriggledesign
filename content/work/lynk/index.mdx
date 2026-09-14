@@ -1,5 +1,13 @@
 ---
-# COPY: every prose string below is portfolio-copy.md, verbatim.
+# COPY. Two sources now, and they are marked where they differ.
+#
+#   The deck, role, context and state are portfolio-copy.md, verbatim.
+#
+#   The body below is NOT. "What it did" is new, written from the author's own
+#   account of the four capabilities the entry was underselling, and "What it
+#   was" and "Why I killed it" keep their original sentences. Every claim in
+#   the new section is one the author made about their own project; nothing in
+#   it was inferred from the screenshot or invented to fill the section out.
 title: Lynk
 deck: A multi-model LLM workspace, and the decision to stop building it.
 section: ai-systems
@@ -31,15 +39,18 @@ logo:
 # an idea. Absent this file the slot renders nothing at all.
 # The file in the source drop is a JPEG, 1615x896, which is exactly the
 # aspect and minWidth declared below. The extension follows the file.
-# THE BROWSING THUMBNAIL. No new thumbnail was supplied for this entry, so it
-# reuses the workspace shot the card was already showing. Declared rather than
-# left to fall back, so the card's picture is a stated decision and does not
-# silently change if `cover` ever does.
+# THE BROWSING THUMBNAIL, and it is now its own picture rather than a second
+# printing of the cover. The card used to reuse `01-multi-model-workspace.jpg`,
+# which is a 16:9 UI grab: centre-cropped into the 4:3 card it lost both rails,
+# and the rails are the entry. This shot is composed for the card — the
+# workspace on a monitor in a real room, the same register as DrawEvolve's and
+# thoosie's cards — and at 380px it still reads as software rather than as an
+# unreadable screenshot.
 thumb:
-  src: 01-multi-model-workspace.jpg
-  alt: "The Lynk workspace in guest mode, with the model switcher open on Claude, OpenAI, Gemini and Grok"
-  aspect: "1615:896"
-  minWidth: 1615
+  src: thumbnail.jpg
+  alt: "Lynk open on a desktop monitor on a wooden desk: the workspace rail down the left with Context Files, Behaviors, Commands, Projects and Recent Chats, a conversation running on OpenAI in the middle, and a Session Insights rail on the right showing Live Notes captured in snapshots with key topics and a running discussion summary"
+  aspect: "4:3"
+  minWidth: 1600
 
 cover:
   src: 01-multi-model-workspace.jpg
@@ -67,11 +78,35 @@ A multi-provider LLM orchestration platform: routing across model
 providers, with hierarchical context compression so long sessions stayed
 usable without blowing up token costs.
 
-The compression work is the part I'd still defend. Long-running LLM sessions
-degrade in predictable ways, and hierarchically summarizing older context
-while keeping recent context intact was a genuinely reasonable answer to it.
-The same idea, scaled down, is what runs Eve's rolling summaries in
-DrawEvolve today.
+## What it did
+
+**Live notes, written as the conversation happened.** A rail beside the chat
+took notes on the session while it ran, in snapshots, pulling out key topics
+and keeping a running summary of what had actually been discussed. Not a
+transcript. A read on the conversation, produced while you were still in it.
+
+**Commands it wrote for you.** Lynk generated invocable commands out of the
+conversation itself — you could call them in-chat to perform a function
+rather than describing the function again in prose every time.
+
+**Four models from four providers, inside one conversation.** Claude, OpenAI,
+Gemini and Grok, switchable mid-thread, with context carried across the
+switch. Not four chats in four tabs: one conversation that changed engines
+under you and remembered everything that had been said to the previous one.
+
+**Summaries used as memory.** As a session grew, Lynk summarized its own
+older turns and then referenced those summaries instead of replaying the full
+history — hierarchical compression, in order to spend fewer tokens and hold
+more session. The compression is the part I'd still defend. Long-running LLM
+sessions degrade in predictable ways, and summarizing older context while
+keeping recent context intact was a genuinely reasonable answer to it. The
+same idea, scaled down, is what runs Eve's rolling summaries in DrawEvolve
+today.
+
+All four of those shipped before the major providers shipped anything
+comparable. That timing is the reason the project is worth showing at all:
+the reading was right, and being right early is not the same thing as being
+able to hold the position.
 
 ## Why I killed it
 

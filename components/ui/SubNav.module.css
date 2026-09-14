@@ -21,12 +21,33 @@
      full-bleed colour band anyway. */
 }
 
+/* THE BAR IS FULL-BLEED AND THE LIST INSIDE IT IS NOT.
+
+   This used to be a bare flex row with `padding: 0`, sitting inside a
+   full-bleed bar that no <Container> wraps. On a phone a media query added
+   the gutter back, so it looked correct there and ONLY there: at every
+   width above 46rem the first label started flush against the viewport's
+   left edge while the page's own content began one gutter in, and the row
+   collected all the leftover width as dead space on the right. It read as a
+   broken wrapper rather than as a decision, which is exactly the failure
+   Container.module.css records having already fixed once for the page
+   itself.
+
+   So the list now carries the same container discipline as everything else
+   on the page: the page max-width, centred, with the gutter as padding. It
+   is ALSO centred within that measure, because a section index is furniture
+   rather than content and hanging four short labels off the left of a 90rem
+   measure leaves the bar looking half-empty. */
 .list {
   display: flex;
+  justify-content: center;
   gap: clamp(var(--space-4), 2.4vw, var(--space-7));
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin-inline: auto;
+  margin-block: 0;
+  padding-inline: var(--gutter);
+  padding-block: 0;
+  max-width: var(--width-page);
   min-width: 0;
 }
 
@@ -89,11 +110,12 @@
 
   .list::-webkit-scrollbar { display: none; }
 
-  /* The gutter is re-added inside the scroller so the first and last items
-     can reach the page's own margins instead of being clipped at them. */
+  /* Centring is wrong once the row overflows: `justify-content: center` on a
+     scroller pushes the first item out of reach past the scroll origin, so
+     the bar opens mid-list with no way to swipe back to item one. The row
+     packs from the start instead and the swipe carries it. */
   .list {
-    padding-inline: var(--gutter);
-    margin-inline: calc(var(--gutter) * -1);
+    justify-content: flex-start;
   }
 }
 

@@ -1,0 +1,133 @@
+/* One diagram language for four agents. See AgentFlow.tsx.
+
+   Every colour resolves to a token. The three-colour notation and the reason
+   each colour is used the way it is (outline vs fill) is documented in the
+   component header, and it follows the contrast contract in tokens.css. */
+
+/* --- The scroller --------------------------------------------------------
+   THE DIAGRAM SCROLLS, IT DOES NOT SHRINK. A six-step flow scaled to fit a
+   320px viewport renders its labels at about 4px, which is a picture of a
+   diagram rather than a diagram. The SVG keeps its intrinsic width and the
+   container scrolls sideways under a finger.
+
+   `data-lenis-prevent` is on the element in the markup: Lenis owns the
+   document's wheel events and this tells it to leave a nested horizontal
+   scroller alone, the same arrangement <SubNav> uses. */
+
+.scroller {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* The gutter is re-added inside the scroller so the first node can reach
+     the page margin instead of being clipped at it. */
+  padding-inline: var(--gutter);
+  margin-inline: calc(var(--gutter) * -1);
+}
+
+.scroller::-webkit-scrollbar { display: none; }
+
+.svg {
+  display: block;
+  /* Never wider than it was drawn: on a desktop the diagram sits at its own
+     size rather than stretching to fill a 90rem measure. */
+  max-width: 100%;
+  height: auto;
+}
+
+/* --- Nodes ---------------------------------------------------------------
+   Zero radius on every box, like every other filled thing on this site. */
+
+.box {
+  stroke-width: 1.25;
+}
+
+/* AUTOMATED: an outline. Ultramarine is 8.28:1 on paper and is a real text
+   colour, so this node can be a paper field with coloured type on it. */
+.box-auto {
+  fill: var(--color-bg);
+  stroke: var(--ultramarine);
+}
+
+/* HUMAN: a field. Ochre is 2.00:1 and can never carry text, so the colour
+   goes in the background and the label is ink at 8.67:1. */
+.box-human {
+  fill: var(--ochre);
+  stroke: var(--ochre);
+}
+
+/* EXCEPTION: a field, for the same reason. Flare is 3.01:1 — fills and large
+   display only — so it is the ground and the label is paper on it. */
+.box-flag {
+  fill: var(--flare);
+  stroke: var(--flare);
+}
+
+/* --- Type inside the nodes ----------------------------------------------- */
+
+.ordinal {
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  font-family: var(--font-display);
+  font-weight: var(--weight-medium);
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+}
+
+/* What is legal on each of the three grounds. */
+.on-auto { fill: var(--ink); }
+.on-human { fill: var(--ink); }
+.on-flag { fill: var(--paper); }
+
+/* The ordinal is quieter than the label it numbers, on every ground. */
+.ordinal.on-auto { fill: var(--ultramarine); }
+.ordinal.on-human { fill: color-mix(in srgb, var(--ink) 62%, var(--ochre)); }
+.ordinal.on-flag { fill: color-mix(in srgb, var(--paper) 78%, var(--flare)); }
+
+/* --- Connectors ----------------------------------------------------------
+   Hairlines. A connector takes the colour of the node it arrives at, so the
+   branch is already the colour of its destination before you reach it. */
+
+.edge {
+  stroke-width: 1.25;
+}
+
+.stroke-auto { stroke: var(--ultramarine); }
+.stroke-human { stroke: var(--ochre); }
+.stroke-flag { stroke: var(--flare); }
+
+/* Arrowhead fills, referenced from the <marker> definitions. */
+.auto { fill: var(--ultramarine); }
+.human { fill: var(--ochre); }
+.flag { fill: var(--flare); }
+
+/* The condition that takes a branch. Set on the connector itself, so "clean"
+   and "unusual" are attached to the lines rather than to a key somewhere
+   else on the page. */
+.edgeLabel {
+  font-family: var(--font-text);
+  font-weight: var(--weight-semibold);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Ochre and flare cannot carry 10px type, so a branch label is ink or the
+   ultramarine, never the branch's own colour at text size. */
+.text-auto { fill: var(--ultramarine); }
+.text-human { fill: var(--ink); }
+.text-flag { fill: var(--ink); }
+
+/* --- Print ---------------------------------------------------------------
+   Paper has no horizontal scroll: let the diagram size itself down instead,
+   which on a printed page is legible in a way it is not at 320px. */
+
+@media print {
+  .scroller { overflow: visible; }
+}

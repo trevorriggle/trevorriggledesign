@@ -186,6 +186,31 @@ export default async function CaseStudyPage({
         </Container>
       )}
 
+      {/* THE SEQUENCE, AND IT IS HIGH ON THE PAGE ON PURPOSE.
+
+          It used to render after the entire prose body, which put the one
+          thing that shows the product actually running below four sections of
+          argument about it. A reader deciding in fifteen seconds whether this
+          is worth their time was being asked to read first and look second.
+          It now sits directly under the deck, where the lead plate would
+          otherwise be — because for a sequence entry it IS the lead plate,
+          with the cover as its first shot.
+
+          IT IS NOT WRAPPED IN <Reveal>. Reveal ships its children as
+          opacity: 0 in the server HTML and waits for hydration to bring them
+          back, which would mean the one block on this page whose entire point
+          is that the first shot is visible on arrival would start invisible
+          and depend on a JS chunk to appear. */}
+      {hasSequence && (
+        <Container as="section" className={styles.sequence}>
+          <ScrollSequence
+            images={sequence}
+            label={`${entry.title}, ${sequence.length} screens in sequence`}
+            priorityFirst
+          />
+        </Container>
+      )}
+
       {entry.body && (
         <Container as="section" className={styles.block}>
           <Reveal className={styles.body}>
@@ -217,20 +242,6 @@ export default async function CaseStudyPage({
               label={`${entry.title}, ${plates.length} plates`}
             />
           </Reveal>
-        </Container>
-      )}
-
-      {/* THE SEQUENCE, and it is NOT wrapped in <Reveal>. Reveal ships its
-          children as opacity: 0 in the server HTML and waits for hydration to
-          bring them back, which would mean the one block on this page whose
-          entire point is that the first shot is visible on arrival would
-          start invisible and depend on a JS chunk to appear. */}
-      {hasSequence && (
-        <Container as="section" className={styles.sequence}>
-          <ScrollSequence
-            images={sequence}
-            label={`${entry.title}, ${sequence.length} screens in sequence`}
-          />
         </Container>
       )}
 

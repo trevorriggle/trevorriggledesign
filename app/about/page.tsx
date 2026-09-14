@@ -36,9 +36,31 @@ export const metadata: Metadata = {
    THE RAIL IS REAL METADATA. Based and Looking for come from lib/site.ts and
    render nothing when empty, so the rail cannot become a labelled void.
 
-   THE RESUME BUTTON APPEARS ONLY WHEN A REAL FILE EXISTS. No placeholder PDF
-   is shipped. See lib/resume.ts for why that is worth a deviation from the
-   brief on the one page where the reader is deciding something.
+   THE RESUME IS ITS OWN SECTION, not a button in the rail, and it appears
+   only when a real file exists. See lib/resume.ts.
+
+   A PLACEHOLDER PDF IS CURRENTLY ON DISK, at the author's explicit request,
+   and it is the one thing on this page that should not ship as it stands.
+   lib/resume.ts argues at length against exactly this file, and the argument
+   still holds: the reader most likely to click it is a hiring manager in a
+   debrief, and handing that reader a stub is worse than showing them no
+   button. It is named *-PLACEHOLDER.pdf so it cannot be mistaken for the
+   real thing in a directory listing. Drop the real export into
+   public/resume/ and delete it; no code changes.
+
+   THE PALETTE WAS REBALANCED OFF OCHRE. The page carried an ochre pull quote
+   AND an ink closing band with ochre type on it, and navy-plus-gold at that
+   scale reads as collegiate rather than as this site. Both moved to
+   ultramarine, which is the palette's dominant and the ground the home page
+   already closes on, so About now matches it instead of being the one page
+   with a private colour scheme. Ochre survives as the hover state on the
+   closer and as the subnav's active rule, which is the rationing tokens.css
+   describes.
+
+   ARCHIVO AND DM SANS, AND THE SERIF ONLY IN THE PULL QUOTE. The standfirst
+   used to be set in Instrument Serif via the global `.intro` utility and the
+   resume's file size in DM Mono, which put all four of the site's faces on
+   one page. The serif is now on this page exactly once, in the quote.
    ========================================================================= */
 
 const LEAD =
@@ -46,7 +68,7 @@ const LEAD =
 
 const BODY = [
   "Somewhere in there I got tired of designing interfaces I couldn’t build. I taught myself Swift, then SwiftUI, then the rest of it: TypeScript, Cloudflare Workers, Supabase, enough Metal to write a renderer. I now build and ship products under RIG Tech LLC.",
-  "The through-line is that I don’t hand off. I design the thing, build the thing, and own the parts of it that break. That means I’ve had to make real engineering decisions with real costs: architecture I had to migrate, features I had to cut, a product I shelved because the economics didn’t work. Those are on this site too.",
+  "The through-line is that I don’t hand off. Designing, building, and taking apart whatever project comes to mind. It’s all part of the process. That means I’ve had to make real engineering decisions with real costs: architecture I had to migrate, features I had to cut, a product I shelved because the economics didn’t work. Those are on this site too.",
 ];
 
 const ASK =
@@ -54,13 +76,13 @@ const ASK =
 
 export default function AboutPage() {
   const resume = getResume();
-  const hasRail = Boolean(site.location || site.availability || resume);
+  const hasRail = Boolean(site.location || site.availability);
 
   return (
     <>
       <Container as="header" className={styles.head}>
         <h1 className={styles.title}>About</h1>
-        <p className={`intro ${styles.lead}`}>{LEAD}</p>
+        <p className={styles.lead}>{LEAD}</p>
       </Container>
 
       <Container className={styles.body}>
@@ -79,36 +101,60 @@ export default function AboutPage() {
                 <Meta term="Based" value={site.location} />
                 <Meta term="Looking for" value={site.availability} />
               </MetaRail>
-
-              {resume && (
-                <a
-                  href={resume.url}
-                  download={resume.filename}
-                  className={styles.resume}
-                >
-                  <span className={styles.resumeLabel}>Download resume</span>
-                  <span className={`mono ${styles.resumeMeta}`}>
-                    PDF{resume.sizeKb > 0 && `, ${resume.sizeKb} KB`}
-                  </span>
-                </a>
-              )}
             </div>
           )}
         </div>
       </Container>
 
+      {/* THE RESUME, AS ITS OWN SECTION.
+
+          It used to be a button at the bottom of the metadata rail, which on
+          a wide screen put the one thing a reader might want to take away
+          with them in the narrowest column on the page, under two lines of
+          metadata, below the fold. It was findable only if you already knew
+          it was there. It is now a titled section on the page's own axis,
+          which is what "obvious" means for an element whose whole job is to
+          be picked up.
+
+          It still renders only when a PDF is actually on disk. See
+          lib/resume.ts: the button is real or it is absent, and there is no
+          third state where it is present and broken. */}
+      {resume && (
+        <Container as="section" className={styles.resumeBlock}>
+          <div className={styles.resumeGrid}>
+            <h2 className={styles.resumeHeading}>Resume</h2>
+            <div className={styles.resumeBody}>
+              <p className={styles.resumeCopy}>
+                The whole thing on one page, for reading offline or passing
+                along.
+              </p>
+              <a
+                href={resume.url}
+                download={resume.filename}
+                className={styles.resume}
+              >
+                <span className={styles.resumeLabel}>Download resume</span>
+                <span className={styles.resumeMeta}>
+                  PDF{resume.sizeKb > 0 && `, ${resume.sizeKb} KB`}
+                </span>
+              </a>
+            </div>
+          </div>
+        </Container>
+      )}
+
       {/* The ask, as the page's one pull quote. Ink on ochre: the brief asked
           for ochre pull quotes, and ochre type on this ground is 2.00:1. The
           field carries the colour and the sentence stays readable. */}
       <Container className={styles.askBlock}>
-        <PullQuote>{ASK}</PullQuote>
+        <PullQuote ground="ultramarine">{ASK}</PullQuote>
       </Container>
 
       {/* A closing band, and the only navigation this page offers. Somebody
           who has read to the bottom of the about page is the reader most
           likely to want to get in touch, and making them go back up to the
           masthead for it is a small, avoidable failure. */}
-      <Band ground="ink" pad="tight" className={styles.closer}>
+      <Band ground="ultramarine" pad="tight" className={styles.closer}>
         <p className={styles.closerLine}>
           <Link href="/contact" className={styles.closerLink}>
             Get in touch

@@ -1,0 +1,137 @@
+/* Old against new, one layer per row. See SpecTable.tsx.
+
+   Every colour is a --ground-* variable because this renders inside a <Band>,
+   which rebinds them per ground. Nothing here names a colour. */
+
+.wrap {
+  margin: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  /* FIXED, so the two comparison columns are equal and the eye can run down
+     either one. With `auto` the browser sizes columns by content and the
+     longer half of every comparison silently wins more width, which makes the
+     new stack look bigger than the old one for typographic reasons rather
+     than real ones. */
+  table-layout: fixed;
+  text-align: left;
+}
+
+.caption {
+  /* Above the table, left, set as metadata rather than as a title: the
+     section already has a heading and this is the line that says what the
+     grid underneath it is. */
+  caption-side: top;
+  margin-bottom: var(--space-4);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--ground-mute);
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.head th {
+  padding: 0 var(--space-4) var(--space-3) 0;
+  border-bottom: 1.5px solid var(--ground-text);
+  font-family: var(--font-text);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--ground-text);
+  vertical-align: bottom;
+}
+
+.colLayer { width: 22%; }
+.col { width: 39%; }
+
+.row th,
+.row td {
+  padding: var(--space-5) var(--space-4) var(--space-5) 0;
+  border-bottom: var(--hairline) solid var(--ground-rule);
+  vertical-align: top;
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  text-wrap: pretty;
+}
+
+.row td:last-child,
+.head th:last-child { padding-right: 0; }
+
+/* The layer name. Display face, so the row is findable by scanning down the
+   left edge without it competing with the section heading above. */
+.rowLabel {
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--text-base);
+  letter-spacing: var(--tracking-tight);
+  color: var(--ground-text);
+}
+
+/* WAS IS MUTED AND NOW IS NOT, which is the one piece of emphasis in the
+   table and it does the argument's work without a word of copy: the old
+   column reads as the record and the new one as the state. */
+.was { color: var(--ground-mute); }
+.now { color: var(--ground-text); }
+
+/* --- Narrow: one block per row ------------------------------------------
+   Three columns of prose do not survive 320px, and a horizontal scroller
+   full of sentences is worse than the stack. Roles are in the markup so the
+   table keeps its semantics through the display switch. */
+
+@media (max-width: 52rem) {
+  .table,
+  .head,
+  .row,
+  .row th,
+  .row td,
+  .table tbody {
+    display: block;
+    width: auto;
+  }
+
+  /* The column headers are gone; each cell carries its own label below. */
+  .head {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .row {
+    padding-block: var(--space-5);
+    border-bottom: var(--hairline) solid var(--ground-rule);
+  }
+
+  .row th,
+  .row td {
+    padding: 0;
+    border: 0;
+  }
+
+  .rowLabel {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-3);
+  }
+
+  /* WAS / NOW, printed per cell, so a sentence is never stranded without the
+     word that says which half of the comparison it belongs to. */
+  .row td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: var(--space-1);
+    font-size: var(--text-3xs);
+    font-weight: var(--weight-semibold);
+    letter-spacing: var(--tracking-caps);
+    text-transform: uppercase;
+    color: var(--ground-accent);
+  }
+
+  .row td + td { margin-top: var(--space-4); }
+}

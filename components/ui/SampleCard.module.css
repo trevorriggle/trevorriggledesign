@@ -1,0 +1,161 @@
+/* What an agent hands over. See SampleCard.tsx.
+
+   It is a bordered block on a sunk ground rather than a shadowed, rounded
+   card: the brief bans the SaaS-landing-page card and nothing else on this
+   site has a radius or a shadow on it. What makes this read as an artefact
+   rather than as more page is the chrome strip at the top and the fact that
+   it sits on a slightly different ground from the prose around it. */
+
+.wrap {
+  margin: 0;
+  min-width: 0;
+}
+
+.card {
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+}
+
+/* --- The chrome ----------------------------------------------------------
+   From / Subject / Date, or whatever this artefact's envelope is. Mono,
+   because it is machine-written metadata, and this is one of the few places
+   on the site where that is literally true. */
+
+.chrome {
+  display: grid;
+  gap: var(--space-1);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: var(--rule);
+}
+
+.chromeRow {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  min-width: 0;
+}
+
+.chromeLabel {
+  flex: none;
+  width: 4.5rem;
+  font-family: var(--font-text);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}
+
+.chromeValue {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* --- The body ------------------------------------------------------------- */
+
+.title {
+  margin: 0;
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.row {
+  padding: var(--space-4) var(--space-5);
+  border-top: var(--rule-faint);
+}
+
+.rowTitle {
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.rowBody {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+  text-wrap: pretty;
+}
+
+/* --- The tag -------------------------------------------------------------
+   The same three-colour notation the flow diagrams use, so a row tagged
+   FLAGGED here is unmistakably the same state as a flare-filled node in the
+   picture above it. The contrast rules are identical: ultramarine can carry
+   text, ochre and flare have to be fields. */
+
+.tag {
+  display: inline-block;
+  margin-bottom: var(--space-3);
+  padding: 2px var(--space-2);
+  font-family: var(--font-text);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  background: var(--color-bg);
+  border: var(--rule);
+  color: var(--color-text-meta);
+}
+
+.tag-auto {
+  background: var(--color-signal-quiet);
+  border-color: var(--ultramarine);
+  color: var(--ultramarine);
+}
+
+.tag-human {
+  background: var(--ochre);
+  border-color: var(--ochre);
+  color: var(--ink);
+}
+
+.tag-flag {
+  background: var(--flare);
+  border-color: var(--flare);
+  color: var(--paper);
+}
+
+/* --- The footer ----------------------------------------------------------- */
+
+.footer {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-top: var(--rule);
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+  text-wrap: pretty;
+}
+
+/* --- The disclosure ------------------------------------------------------
+   Outside the card, so it is the page speaking rather than the artefact. It
+   is required by the component's type: see SampleCard.tsx. */
+
+.note {
+  margin-top: var(--space-3);
+  font-size: var(--text-3xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-meta);
+}

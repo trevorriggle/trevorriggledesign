@@ -64,6 +64,32 @@ import styles from "./ScrollSequence.module.css";
    the others fade in over it in ascending stacking order. Each screenshot
    fully covers the one under it, so there is no cross-fade through a gap and
    no moment where two are half-visible over the page ground.
+
+   ---- THE CAPTION COLUMN --------------------------------------------------
+   Each shot now carries its own copy, set beside it, and the two advance
+   together because they are the same element: the caption is inside the <li>
+   that the opacity animation is applied to, so there is no second timeline to
+   keep in sync with the first and no way for them to drift apart.
+
+   ON A PHONE THE CAPTION GOES UNDER ITS SCREENSHOT, which is the same stack
+   the images already fall back to, one column instead of two.
+
+   ---- WHY THE PLATE NUMBER USED TO STACK ON ITSELF ------------------------
+   The counter was inside each shot, laid out under an image whose height
+   depends on that image's own proportions. Every shot is absolutely
+   positioned at inset: 0, so five counters sat at five slightly different
+   heights, on top of each other. And because the first shot is pinned at
+   opacity: 1 forever — correctly, it is the base layer that stops the page
+   showing through — its "01" was painted underneath all of them, permanently.
+   What you saw was 01 and whatever shot you were on, a few pixels apart.
+
+   The fix is the mechanism the images were already using. The caption column
+   carries the page's own background and fills the full height of the stage,
+   so each one COVERS the one beneath it exactly the way each screenshot
+   covers the screenshot beneath it. The counter sits at the top of that
+   column, at the same coordinate in every shot, and only the topmost is ever
+   visible. No new animation, no fade-out on the base layer, and no gap for
+   the ground to show through.
    ========================================================================= */
 
 /** Half-width of each cross-fade, as a fraction of one shot's share of the
@@ -120,23 +146,35 @@ export function ScrollSequence({
                 className={styles.shot}
                 style={style as CSSProperties}
               >
-                <span className={`mono ${styles.index}`} aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                  <span className={styles.of}>/{String(count).padStart(2, "0")}</span>
-                </span>
+                <div className={styles.figure}>
+                  <Image
+                    src={image.url}
+                    alt={image.alt}
+                    width={image.width}
+                    height={image.height}
+                    sizes="(max-width: 62rem) 100vw, 34rem"
+                    /* `priority` is deprecated as of Next 16; the docs point
+                       at `loading` and `fetchPriority` instead. */
+                    loading={priorityFirst && i === 0 ? "eager" : "lazy"}
+                    fetchPriority={priorityFirst && i === 0 ? "high" : "auto"}
+                    decoding="async"
+                    unoptimized={image.unoptimized}
+                    className={styles.image}
+                  />
+                </div>
 
-                <Image
-                  src={image.url}
-                  alt={image.alt}
-                  width={image.width}
-                  height={image.height}
-                  sizes="(max-width: 62rem) 100vw, 40rem"
-                  priority={priorityFirst && i === 0}
-                  loading={priorityFirst && i === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  unoptimized={image.unoptimized}
-                  className={styles.image}
-                />
+                <div className={styles.side}>
+                  <span className={`mono ${styles.index}`} aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                    <span className={styles.of}>
+                      /{String(count).padStart(2, "0")}
+                    </span>
+                  </span>
+
+                  {image.caption && (
+                    <p className={styles.caption}>{image.caption}</p>
+                  )}
+                </div>
               </li>
             );
           })}

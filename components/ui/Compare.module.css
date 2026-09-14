@@ -1,0 +1,98 @@
+/* A before and an after, side by side. See Compare.tsx.
+
+   The pair is a two-column grid with a real gap rather than a divider rule:
+   two framed pictures already have four edges between them and a fifth line
+   down the middle is a line too many. */
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--grid-gap);
+  align-items: start;
+  margin: 0;
+}
+
+.side {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* BEFORE / AFTER. Uppercase, letterspaced, in the text face — the global
+   `label` utility carries all of that, so this is colour and spacing only.
+
+   The label is above the frame rather than over it. Laid on top it would sit
+   on whatever that screenshot happens to have in its top-left corner, which
+   for one of these is a navigation bar and for another is white space, and a
+   label whose legibility depends on the picture under it is not a label. */
+.sideLabel {
+  margin: 0;
+  color: var(--color-text-meta);
+}
+
+/* THE BOX TAKES THE IMAGE'S OWN RATIO, declared per side as --ratio. This is
+   what makes the percentage-positioned redactions land correctly: the frame
+   is never a different shape from the picture in it, at any width, so a panel
+   at 17% from the left is over the same content at every size. It is also how
+   the pair reserves its height before either file has loaded. */
+.frame {
+  position: relative;
+  aspect-ratio: var(--ratio);
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+  overflow: hidden;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* CONTAIN, NOT COVER. These are logos and screenshots: cropping one to fill
+     a box removes the evidence. The frame already matches the ratio, so
+     `contain` is exact rather than letterboxed. */
+  object-fit: contain;
+}
+
+.caption {
+  font-size: var(--text-xs);
+  line-height: var(--leading-normal);
+  color: var(--color-text-meta);
+  text-wrap: pretty;
+}
+
+/* --- Redaction -----------------------------------------------------------
+   A frosted panel over a region that should not be published.
+
+   THE SCRIM ALONE IS SUFFICIENT AND THE BLUR IS AN ENHANCEMENT. If this were
+   a translucent panel relying on `backdrop-filter` to do the hiding, then any
+   browser that does not support the property would drop that one declaration
+   and render a faint rectangle over perfectly legible text — a redaction that
+   silently fails open, which is the worst way for this particular component
+   to be wrong. So the scrim is opaque first. The blur only softens the edge
+   between the panel and the screenshot under it. */
+
+.redaction {
+  position: absolute;
+  left: var(--left);
+  top: var(--top);
+  width: var(--width);
+  height: var(--height);
+  background: var(--color-bg-sunk);
+  border: var(--rule-faint);
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+/* --- Narrow --------------------------------------------------------------
+   Stacked, and the labels are doing the work now: BEFORE on the first frame
+   and AFTER on the second is the only thing carrying the order once the
+   left-to-right reading is gone. */
+
+@media (max-width: 52rem) {
+  .pair {
+    grid-template-columns: 1fr;
+    gap: var(--rhythm-tight);
+  }
+}

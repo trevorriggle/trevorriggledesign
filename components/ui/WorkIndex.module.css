@@ -129,9 +129,14 @@
   transform: translateX(0.35em);
 }
 
+/* Same correction as WorkGrid, scaled to this tier. This was 1.012, which at
+   any real image size is a sub-pixel-to-two-pixel move and is invisible. The
+   index plates are much larger than the grid's cards, so they need less
+   multiplier to travel the same visible distance: 1.03 here reads as roughly
+   the same gesture as 1.06 does on a card. */
 .link:hover .image,
 .link:focus-visible .image {
-  transform: scale(1.012);
+  transform: scale(1.03);
 }
 
 .link:hover .title,

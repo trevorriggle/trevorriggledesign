@@ -20,15 +20,29 @@
   margin-left: -0.045em;
 }
 
-/* THE STANDFIRST. Serif, large, short measure. `.intro` the global utility in
-   styles/typography.css carries the face and size; this is spacing only, so
-   the two are not fighting over the same properties.
+/* THE STANDFIRST. Large, short measure, and IN THE TEXT FACE.
 
-   It used to be set in the DISPLAY face at --display-1, which made it a
-   second heading under the first. In the serif it reads as a change of voice,
-   which is what an opening paragraph is. */
+   This has now been three things. It was the DISPLAY face at --display-1,
+   which made it a second heading under the first. It was then Instrument
+   Serif, via the global `.intro` utility, which read as a change of voice but
+   put a third typeface on a page that also had a serif pull quote and a mono
+   file size on it — four faces, which is the ransom note fonts.ts warns
+   about.
+
+   It is DM Sans now, at the text tier's ceiling. The change of register is
+   carried by size and measure rather than by a fourth face: 21px on a 46ch
+   measure against 17px on 62ch is a clear enough step down into the body,
+   and it leaves the serif doing exactly one job on this page, which is the
+   pull quote. */
 .lead {
   margin-top: var(--rhythm-tight);
+  font-family: var(--font-text);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  text-wrap: pretty;
+  max-width: 46ch;
 }
 
 .body {
@@ -59,18 +73,63 @@
 .prose + .prose { margin-top: var(--space-5); }
 
 /* --- The resume ----------------------------------------------------------
-   A real button, in the rail, under the metadata it belongs with. Ink field,
-   paper type: the loudest affordance on the page, because on a portfolio read
-   by a hiring team it is the one thing a reader might actually want to take
-   away with them.
+   ITS OWN SECTION, on the page's own axis, with a heading on it. It used to
+   be a button at the foot of the metadata rail, which is the narrowest column
+   on the page and below the fold on anything but a desktop. See page.tsx.
 
-   It renders only when a PDF is on disk. See lib/resume.ts. */
+   The section reads as a two-column row on a wide screen — heading in the
+   rail position, copy and button on the measure — and stacks on a phone. */
 
+.resumeBlock {
+  padding-bottom: var(--rhythm-normal);
+}
+
+.resumeGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  column-gap: var(--grid-gap);
+  row-gap: var(--space-5);
+  align-items: start;
+  padding-top: var(--rhythm-tight);
+  border-top: var(--rule-heavy);
+}
+
+.resumeHeading {
+  grid-column: 1 / 4;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--display-1);
+  line-height: var(--leading-title);
+  letter-spacing: var(--tracking-tight);
+}
+
+.resumeBody {
+  grid-column: 5 / -1;
+  max-width: var(--measure);
+}
+
+.resumeCopy {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+/* Ink field, paper type: the loudest affordance on the page, because on a
+   portfolio read by a hiring team this is the one thing a reader might
+   actually want to take away with them.
+
+   INLINE-FLEX, NOT FLEX. In the rail it was a full-width block because the
+   rail was its width. On the measure a button stretched to 62ch is a banner,
+   so it now sizes to its own label. */
 .resume {
-  display: flex;
+  display: inline-flex;
   flex-direction: column;
   gap: var(--space-1);
-  margin-top: var(--space-6);
+  margin-top: var(--space-5);
   padding: var(--space-4) var(--space-5);
   background: var(--color-bg-invert);
   color: var(--color-text-invert);
@@ -93,8 +152,13 @@
 
 /* The size, in mono, because it is data. A download with no size is a small
    rudeness on a metered connection. */
+/* The size. It used to carry the global `mono` utility, which put DM Mono on
+   this page for one six-character string and made it the fourth typeface
+   here. Tabular numerals are the only thing the mono face was actually doing
+   for it, and DM Sans has them. */
 .resumeMeta {
   font-size: var(--text-3xs);
+  font-variant-numeric: tabular-nums;
   color: var(--paper-mute);
 }
 
@@ -120,9 +184,17 @@
 }
 
 /* Set at section scale, in the display face: this is a destination, not a
-   footnote. On the ink ground the accent is ochre at 8.67:1, which is a real
-   text colour there, so the link can carry the colour itself rather than
-   needing an underline to hold it. */
+   footnote.
+
+   IT IS PAPER AT REST AND OCHRE ON HOVER, which is the reverse of what it
+   was. Ochre display type on the ink ground measured fine (8.67:1) and was
+   never a legibility problem; it was a BALANCE problem. Ochre at
+   --type-section, directly under an ochre pull-quote field, made navy and
+   gold the two loudest things on the page. The band is ultramarine now and
+   the link is paper on it, so ochre appears on this page only as the answer
+   to a pointer — which is the rationing tokens.css asks for. At display size
+   ochre on ultramarine is 4.15:1, which is inside the large-text threshold
+   this role is licensed for. */
 .closerLink {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
@@ -130,14 +202,14 @@
   font-size: var(--type-section);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
-  color: var(--ground-accent);
+  color: var(--ground-text);
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease-out);
 }
 
 .closerLink:hover,
 .closerLink:focus-visible {
-  color: var(--on-ink);
+  color: var(--ground-accent);
 }
 
 /* --- Collapse ------------------------------------------------------------- */
@@ -146,9 +218,11 @@
   .main,
   .rail { grid-column: 1 / -1; }
 
+  .resumeHeading,
+  .resumeBody { grid-column: 1 / -1; }
+
   .resume {
-    /* Full width on a phone rather than a button the width of a rail that no
-       longer exists. */
+    /* Left-aligned rather than stretched: it is still sizing to its label. */
     align-items: flex-start;
   }
 }

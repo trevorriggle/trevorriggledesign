@@ -4,16 +4,19 @@
    Read this file top to bottom as two states, in this order:
 
      1. THE STACK. Everything above the enhancement block. Plain vertical
-        flow, every screenshot visible, no pinning, no animation. This is what
-        a phone gets, what Firefox gets, what reduced motion gets, and what
-        anything without CSS scroll-driven animation gets.
+        flow, every screenshot visible with its caption under it, no pinning,
+        no animation. This is what a phone gets, what Firefox gets, what
+        reduced motion gets, and what anything without CSS scroll-driven
+        animation gets.
 
      2. THE SEQUENCE. One block, gated on three conditions at once. It
-        converts the stack into a pinned stage.
+        converts the stack into a pinned stage with the screenshot on the left
+        and its caption on the right.
 
    The stack is FIRST and it is the default, not a fallback written after the
    fact. See the header of ScrollSequence.tsx for why that ordering is the
-   whole design of this component.
+   whole design of this component, and for why the plate number used to stack
+   on top of itself.
    ========================================================================= */
 
 /* --- 1. The stack -------------------------------------------------------- */
@@ -32,15 +35,22 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--rhythm-tight);
+  gap: var(--rhythm-normal);
 }
 
+/* ONE COLUMN HERE, TWO IN THE SEQUENCE. On a phone the caption goes under
+   its own screenshot, which is the shape the brief asks for and also the only
+   one that works at 380px. */
 .shot {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-3);
+  gap: var(--space-4);
+}
+
+.figure {
+  min-width: 0;
 }
 
 .image {
@@ -56,9 +66,15 @@
   border: var(--rule);
 }
 
+.side {
+  min-width: 0;
+  max-width: 44ch;
+}
+
 /* The plate number. Small, mono, tabular, and it travels with its own shot
    rather than being a separate counter that has to be kept in sync. */
 .index {
+  display: block;
   font-size: var(--text-2xs);
   letter-spacing: var(--tracking-caps);
   color: var(--color-text-meta);
@@ -66,6 +82,15 @@
 
 .of {
   color: var(--color-text-faint);
+}
+
+/* What this screen does. */
+.caption {
+  margin-top: var(--space-4);
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text);
+  text-wrap: pretty;
 }
 
 /* --- 2. The sequence ----------------------------------------------------
@@ -109,14 +134,17 @@
       gap: 0;
     }
 
+    /* TWO COLUMNS: the screenshot on the left, its copy on the right. The
+       image column is sized to the portrait grabs these actually are; the
+       copy takes the rest. */
     .shot {
       position: absolute;
       inset: 0;
-      display: flex;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
       align-items: center;
-      justify-content: center;
-      gap: var(--space-4);
+      column-gap: clamp(var(--space-6), 5vw, var(--space-8));
+      gap: 0;
 
       /* Ascending, so each shot covers the one before it. */
       z-index: var(--i);
@@ -144,14 +172,60 @@
       animation: none;
     }
 
+    .figure {
+      /* Left-aligned, per the brief: the screenshots sit on one edge and the
+         copy runs beside them, rather than the whole pair drifting about as
+         the image proportions change. */
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100%;
+
+      /* THE SAME COVERING TRICK AS THE CAPTION COLUMN. The five shots in the
+         one sequence this currently renders are all 2064x2752, so each image
+         happens to cover the one beneath it exactly. That is a property of
+         this drop, not of the component, and a set with mixed proportions
+         would show the previous shot around the edges of the current one.
+         The column carries the ground so covering is guaranteed rather than
+         inherited from the content. */
+      background: var(--color-bg);
+    }
+
     .image {
-      /* Inside a 100vh stage, minus the index line and its gap. */
-      max-height: 74vh;
+      /* Inside a 100vh stage. */
+      max-height: 82vh;
       object-fit: contain;
     }
 
+    /* THE COLUMN THAT FIXES THE COUNTER.
+
+       It carries the page's own background and fills the full height of the
+       stage, so each caption column completely covers the one beneath it —
+       the same mechanism that stops two screenshots being half-visible at
+       once. Without it, five plate numbers at five slightly different heights
+       are painted on top of each other and the first one never goes away.
+       See the header of ScrollSequence.tsx. */
+    .side {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      max-width: 42ch;
+      padding-block: var(--space-6);
+      background: var(--color-bg);
+    }
+
     .index {
-      order: 1;
+      padding-bottom: var(--space-4);
+      margin-bottom: var(--space-5);
+      border-bottom: var(--rule);
+    }
+
+    .caption {
+      margin-top: 0;
+      font-size: var(--text-lg);
+      line-height: var(--leading-snug);
+      letter-spacing: var(--tracking-tight);
     }
   }
 }

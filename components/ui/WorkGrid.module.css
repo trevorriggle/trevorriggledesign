@@ -74,9 +74,18 @@
    Deletable without changing what the page communicates. Nothing here is a
    reveal. */
 
+/* THE PICTURE MOVES ENOUGH TO READ AS AN ANSWER.
+
+   This was 1.03, which on a 380px-wide card is about five pixels of travel
+   across 420ms. That is under the threshold where a change of state reads as
+   deliberate: it registers as the image having twitched rather than as the
+   card having responded, which is worse than no hover at all. 1.06 is still
+   a restrained move — the frame crops it, nothing reflows, and the whole
+   effect is deletable without changing what the page communicates — but it
+   is unambiguously a response. */
 .tile:hover .image,
 .tile:focus-visible .image {
-  transform: scale(1.03);
+  transform: scale(1.06);
 }
 
 .tile:hover .title,
