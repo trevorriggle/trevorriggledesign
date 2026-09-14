@@ -17,11 +17,9 @@ state: Shipped to TestFlight; approved for external testing
 # THE LOGO OPENS THE PAGE. It is the mark, not evidence, so it has its own
 # field and its own slot in the head and it does NOT displace the cover below.
 #
-# This is the repo's existing wordmark file, kept rather than replaced. The
-# upload at the repo root (`drawevolve logo.jpg`) is the same artwork on a
-# 1600x1200 white canvas; this is the same mark tight-cropped at 1129x372 with
-# real transparency, which is strictly better on this ground: no white
-# rectangle sitting a shade brighter than the page, and no dead margin.
+# The mark tight-cropped at 1129x372 with real transparency, which is what
+# this ground needs: no white rectangle sitting a shade brighter than the
+# page, and no dead margin.
 #
 # `alt` is empty deliberately. The <h1> next to it already reads "DrawEvolve"
 # and a mark that announces the same word twice is worse than a decorative one.
@@ -38,7 +36,16 @@ logo:
 # home page. Absent this file the slot renders nothing at all, no placeholder.
 # PORTRAIT. Every screenshot in the source drop is a 2064x2752 iPad grab, so
 # the declared box is that shape rather than the 874:629 landscape this slot
-# used to carry. The file is the strongest of the five: the finished colour
+# used to carry.
+#
+# THE FILES ARE 1-5.jpg AND THE NUMBER IS THE ORDER. They were 02-06.jpg,
+# renamed on disk without this file following, which pointed every media slot
+# at a path that no longer existed. Every one of them resolved `exists: false`
+# and the templates render nothing for an absent file, so this case study was
+# serving a logo, a deck and no screenshots at all. The numbers now run 1-5 in
+# the order the critique loop does, and `1.jpg` is the cover.
+#
+# `1.jpg` is the strongest of the five: the finished colour
 # portrait with the AI Feedback panel open on it, Quick Take, What's Working
 # and a Focus Area, which is the frame that proves the deck.
 # THE BROWSING THUMBNAIL, and the only thing the preview card shows. Composed
@@ -54,7 +61,7 @@ thumb:
   minWidth: 1600
 
 cover:
-  src: 02.jpg
+  src: 1.jpg
   alt: "DrawEvolve on an iPad: a finished colour portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
   aspect: "2064:2752"
   minWidth: 2064
@@ -81,19 +88,19 @@ links:
 # in the head. It used to sit last in this run with a note that it was identity
 # rather than evidence, which was the right observation and the wrong slot.
 images:
-  - src: 03.jpg
+  - src: 2.jpg
     alt: "Eve, DrawEvolve's conversational layer, opened over the critique: the question 'How would I improve this based on the feedback?' answered with a construction pass to run on a new layer, ball plus jaw wedge plus neck cylinder, and a 'Show Eve my canvas' button"
     aspect: "2064:2752"
     minWidth: 2064
-  - src: 04.jpg
+  - src: 3.jpg
     alt: "The same Eve conversation further on, with the canvas attached to the turn and the question 'What is the one part that I should really focus on in here?' answered with a single priority, the eye line wrapping around the head"
     aspect: "2064:2752"
     minWidth: 2064
-  - src: 05.jpg
+  - src: 4.jpg
     alt: "DrawEvolve's Composition panel: a top attention region at 59% confidence from an on-device vision model, an intended focal point marked at 55% across and 32% down, and a prompt to ask Eve why the eye goes there"
     aspect: "2064:2752"
     minWidth: 2064
-  - src: 06.jpg
+  - src: 5.jpg
     alt: "The attention overlay drawn on the canvas: four numbered dashed regions over the finished portrait showing where the model estimates the eye lands, with the artist's own marked focal point on the near eye"
     aspect: "2064:2752"
     minWidth: 2064

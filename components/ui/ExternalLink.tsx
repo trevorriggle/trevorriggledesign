@@ -50,9 +50,16 @@ export function ExternalLink({
       {...(isMail ? {} : { target: "_blank", rel: "noopener noreferrer" })}
     >
       <span>{children}</span>
-      <span className={styles.mark} aria-hidden="true">
-        {isMail ? "@" : "↗"}
-      </span>
+      {/* NO MARK ON A MAILTO. This used to render an "@" here, in the accent
+          colour, immediately after an address that already contains one, so
+          /contact read "trevorriggle@gmail.com @" with the second one bright
+          blue and unexplained. An email address announces itself. The arrow
+          stays, because "this leaves the site" is not self-evident. */}
+      {!isMail && (
+        <span className={styles.mark} aria-hidden="true">
+          ↗
+        </span>
+      )}
       {showHost && !isMail && (
         <span className={styles.host}>{url.hostname.replace(/^www\./, "")}</span>
       )}

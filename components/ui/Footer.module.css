@@ -15,9 +15,10 @@
   align-items: start;
 }
 
-.identity { grid-column: 1 / 7; }
-.elsewhere { grid-column: 7 / 10; }
-.meta { grid-column: 10 / -1; }
+/* Two columns now, not three. The colophon held 10 / -1 and is gone, so the
+   sign-off takes the space rather than leaving a third of the footer empty. */
+.identity { grid-column: 1 / 8; }
+.elsewhere { grid-column: 8 / -1; }
 
 /* The one place the name is set large. It is the sign-off. */
 .name {
@@ -48,18 +49,8 @@
   font-size: var(--text-base);
 }
 
-/* Genuine data, a domain and a year, so this one is mono. */
-.metaLine {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  line-height: var(--leading-normal);
-  color: var(--color-text-meta);
-  font-variant-numeric: tabular-nums;
-}
-
 @media (max-width: 62rem) {
   .identity,
-  .elsewhere,
-  .meta { grid-column: 1 / -1; }
+  .elsewhere { grid-column: 1 / -1; }
   .footer { padding-bottom: var(--space-7); }
 }

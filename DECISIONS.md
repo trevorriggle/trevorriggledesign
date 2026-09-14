@@ -968,7 +968,7 @@ visible**, the first row.
 | --- | --- | --- |
 | Home eyebrow label | `app/page.tsx` | The slot is deleted. The copy has no label line above the headline. |
 | Home / About / Contact rail: "Based", "Focus", "Looking for" | `lib/site.ts` → `location`, `availability` | Rows omitted. Fill either constant and every row reappears. |
-| Footer one-liner | `components/ui/Footer.tsx` | Deleted. The footer is name, domain, year, colophon. |
+| Footer one-liner | `components/ui/Footer.tsx` | Deleted. The footer is the sign-off, "Trevor Riggle, Columbus Ohio", and nothing else. The domain and the "Set in Archivo & DM Sans" colophon were removed on 2026-09-14: a colophon is a note from the designer to other designers, and the domain printed the address the reader is already at. |
 | Footer "Elsewhere" | `lib/site.ts` → `social` | Whole block omitted rather than showing an empty heading. |
 | /work index standfirst | `app/work/page.tsx` | Omitted. The six section intros do that job. |
 | About rail chips | `app/about/page.tsx` | Deleted. Filling "Building with" / "Designing with" / "Shipped on" would mean mining tool names out of your prose and re-setting them as tags you did not write. |
