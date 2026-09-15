@@ -1,9 +1,13 @@
 /* ============================================================================
    PROSE
    ============================================================================
-   Long-form body copy for a case study. Full ink at 17px on a 62ch measure,
-   with 1.62 leading, the only place on the site running comfortable leading,
-   because it is the only place anyone reads more than two sentences.
+   Long-form body copy for a case study. Full ink at 17px, with 1.62 leading,
+   the only place on the site running comfortable leading, because it is the
+   only place anyone reads more than two sentences.
+
+   NO MEASURE CAP. The copy takes its width from the body grid it sits in, and
+   that grid is now spanned end to end. See the note on `.prose` in
+   app/work/[slug]/page.module.css for what happens when it is not.
 
    Subheads are the copy's OWN headings ("The premise", "What I built"). They
    take the display serif at a real step of the scale, d1, 25.5px, so the
@@ -16,7 +20,6 @@
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--color-text);
-  max-width: var(--measure-wide);
 }
 
 .prose > * + * { margin-top: var(--space-5); }

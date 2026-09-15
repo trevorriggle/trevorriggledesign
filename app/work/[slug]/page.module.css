@@ -9,8 +9,8 @@
      columns are one object.
    · The lead media is CONTAINED and framed, like every other image on the
      site. Nothing here touches the viewport edge.
-   · The prose starts at the content column's own left edge and is bounded by
-     the reading measure.
+   · The prose SPANS THE WHOLE BODY GRID and runs the full width of the page,
+     the same edges as the media above it and the pager below it.
    · Plates are a horizontal snap strip. See components/ui/Gallery.
 
    WHAT CHANGED. This page was drawn for a left-pinned container: the title
@@ -184,15 +184,28 @@
   column-gap: var(--grid-gap);
 }
 
-/* SINGLE COLUMN, SO IT TAKES THE WIDE MEASURE. Nothing sits beside it:
-   `.body` has exactly one child. It used to be constrained twice, by
-   `grid-column: 1 / 9` and by a 62ch cap, and the grid-column never bound
-   anything because 62ch is about 583px and eight of twelve columns is about
-   842px. Two constraints, one of them dead, and the result was the narrowest
-   prose on the site on its three longest pages. */
+/* IT HAS TO SPAN, AND THIS IS THE WHOLE BUG THAT BROKE ALL THREE ENTRIES.
+
+   `.body` is a twelve-column grid. When `grid-column: 1 / 9` was removed here
+   on the theory that a measure cap was doing the same job, nothing replaced
+   it, so `.prose` auto-placed into ONE TRACK: a twelfth of the container,
+   about 85px. Every paragraph on DrawEvolve, thoosie and Lynk rendered as a
+   sliver against the left edge with words broken mid-syllable, "The pre mise",
+   "measurin g speed". A max-width cannot widen a box; it only ever narrows
+   one, so the 82ch cap was dead and changing it fixed nothing. The track was
+   the constraint.
+
+   The span is the fix and it is not optional: any child of this grid without
+   a `grid-column` gets one track. It was only ever visible above 62rem,
+   because the mobile rule below already spanned it.
+
+   NO MEASURE CAP. With the span restored the copy runs the full width of the
+   body rather than stopping at 82ch with a third of the page empty beside it,
+   which is what "the length of the body of the page" means here. */
 .prose,
 .argument {
-  max-width: var(--measure-wide);
+  grid-column: 1 / -1;
+  max-width: none;
 }
 
 .systems { grid-column: 1 / -1; }
