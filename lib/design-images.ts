@@ -64,6 +64,23 @@ const IMAGE_EXT = /\.(png|jpe?g|webp|avif|gif|svg)$/i;
  */
 const PASSTHROUGH_EXT = /\.(gif|svg)$/i;
 const VIDEO_EXT = /\.(mp4|webm)$/i;
+/**
+ * `card.jpg` at a category root: the browsing card, and never a gallery item.
+ *
+ * WHY THIS EXISTS. A category's card image was always one of the pieces in its
+ * folders, picked by `designThumbs`. That works when one of the pieces happens
+ * to survive a 4:3 crop at 380px, and it fails when the right card is a shot
+ * that does not belong in the archive at all: Personal Works is illustration
+ * and comics, and the picture that sells it is one of those drawings ON an
+ * iPad on a desk. Dropping that into 03-drawings would print the same portrait
+ * twice, once as the work and once as a photograph of the work.
+ *
+ * So a card is addressed by filename rather than by position. It is measured
+ * and available to the thumbnail picker like anything else, and it is filtered
+ * out of every gallery. Same idea as the poster-claiming rule below: a file
+ * with a job other than being looked at in the grid does not appear in it.
+ */
+const CARD_FILE = /^card\.(png|jpe?g|webp|avif)$/i;
 /** Extensions tried, in order, when looking for a video's poster. */
 const POSTER_EXT = ["jpg", "jpeg", "png", "webp", "avif"];
 
@@ -76,6 +93,8 @@ export type DesignItem = {
   src: string;
   /** Videos only: the poster frame. */
   poster?: string;
+  /** `card.jpg` at a category root. The browsing card, never a gallery item. */
+  card?: boolean;
   /**
    * A still URL that is always safe to put in an <Image>. Equals `src` for an
    * image and `poster` for a video, so a caller that needs one picture (a lead,
@@ -228,6 +247,7 @@ function itemsIn(
 
     const { width, height } = measure(path.join(dir, file));
     items.push({
+      card: CARD_FILE.test(file),
       kind: "image",
       src: url,
       still: url,
@@ -315,6 +335,12 @@ export function getUngroupedImages(
   category: string,
   categoryTitle: string,
 ): DesignItem[] {
+  /* The card is measured and pickable, and it is not a piece of work. */
+  return rootItems(category, categoryTitle).filter((item) => !item.card);
+}
+
+/** Loose files at a category root, INCLUDING the card. Internal. */
+function rootItems(category: string, categoryTitle: string): DesignItem[] {
   const dir = categoryDir(category);
   if (!fs.existsSync(dir)) return [];
   return itemsIn(dir, `/design/${category}`, categoryTitle);
@@ -329,7 +355,7 @@ export function getDesignImages(
   categoryTitle: string,
 ): DesignItem[] {
   return [
-    ...getUngroupedImages(category, categoryTitle),
+    ...rootItems(category, categoryTitle),
     ...getDesignGroups(category, categoryTitle).flatMap((g) => g.items),
   ];
 }
@@ -361,7 +387,7 @@ export function getCategoryThumb(
   return pickThumb(all, designThumbs[category]);
 }
 
-/** How many pieces a category has. Pairs count once. */
+/** How many pieces a category has. Pairs count once, a card counts never. */
 export function countDesignImages(category: string): number {
-  return getDesignImages(category, category).length;
+  return getDesignImages(category, category).filter((i) => !i.card).length;
 }

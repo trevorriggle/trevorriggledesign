@@ -127,9 +127,18 @@ export const designThumbs: Record<string, string> = {
   "tarantos/marketing": "01.jpg",
   "tarantos/logo-variants": "01.jpg",
 
-  /* The reaper. 1920x1440 is already the card's ratio, and it is one
-     high-contrast subject rather than a page of small marks. */
-  personal: "03-drawings/01.jpg",
+  /* THE ONLY CARD ON THIS SITE THAT IS NOT ALSO A PIECE IN THE ARCHIVE.
+     `card.jpg` at a category root is a card-only asset: measured and pickable
+     like anything else, filtered out of every gallery. See the note on
+     CARD_FILE in lib/design-images.ts.
+
+     It replaces the reaper at 03-drawings/01.jpg, which was a fine crop and
+     the wrong register: the other two categories show their work in context,
+     on a classroom wall and as a printed trifold, and this one showed a raw
+     file on flat ground. This is the portrait from 03-drawings/05.jpg on an
+     iPad on a desk, which says what Personal Works is in the same voice the
+     other two cards use. 1448x1086 is exactly 4:3, so the card crops nothing. */
+  personal: "card.jpg",
   /* Citrus Splash lettering: heavy, two colours, legible at any size. */
   "personal/misc-art": "01.png",
   "personal/comics": "03.jpg",
@@ -358,7 +367,7 @@ export const designSections: Record<string, DesignSection[]> = {
       slug: "motion-graphics",
       placeholder: true,
       body: [
-        "Animation made for its own sake, and the place where techniques get tried before they turn up in client work.",
+        "Animation and 3D, and the place where techniques get tried before they turn up in client work. The Similac render is a packaging study: a real product, modelled and lit from scratch, for the practice rather than for a brief.",
       ],
     },
   ],
