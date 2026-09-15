@@ -504,18 +504,22 @@ export const designFeatured: Record<string, FeaturedCase> = {
             caption:
               "The same category on the old site. A featured-products carousel, a plain list of subcategories, and an image that had stopped loading.",
           },
+          /* NO REDACTIONS ON THIS ONE, and that is a property of the shot
+             rather than a decision. The grab it replaced was taken signed in
+             as an admin, so it carried an account name in the masthead and a
+             row of account-resolved prices, both of which had to be masked.
+             This one is signed out: every price reads "Sign in for price" and
+             there is nothing on the page that belongs to anybody. A shot with
+             nothing to hide is better evidence than a shot with panels over
+             it, because a reader cannot tell what is under a panel. */
           {
-            src: "04-catalog-after.png",
+            src: "04-catalog-after.jpg",
             label: "After",
-            width: 2536,
-            height: 1314,
-            alt: "The rebuilt Physics and Physical Science category: a titled header showing 303 products, a row of subcategory filters each carrying its own count, and a grid of product cards with images, category tags, option counts, SKUs and prices",
+            width: 2560,
+            height: 1315,
+            alt: "The rebuilt Physics and Physical Science category, signed out: a header showing 303 products beside a Sign in for your account pricing prompt, a row of subcategory filters each carrying its own count with Light and Sound Waves active, a line reading Showing 78 of 303 products, and a grid of product cards with images, category tags, option counts and a Sign in for price link where the figure would be",
             caption:
-              "Physics and Physical Science, with a real count on every subcategory. Prices and the signed-in account are masked here. They resolve per account.",
-            redact: [
-              { left: 69.5, top: 4.5, width: 7.5, height: 4.5 },
-              { left: 16, top: 89, width: 59, height: 6 },
-            ],
+              "Physics and Physical Science, with a real count on every subcategory and one of them applied. Price sits behind sign-in, because price depends on the account.",
           },
         ],
       },
@@ -588,11 +592,9 @@ export const designFeatured: Record<string, FeaturedCase> = {
     },
 
     todo: [
-      "SUPPLY: an AFTER shot of the catalog from the current site to replace 04-catalog-after.png. The uploaded `phys` folder held two byte-identical copies of the BEFORE page, so the after half of that sequence is still the older grab, which is the one carrying redactions.",
       "ANSWER: how long the rebuild took, and over what period it ran.",
       "ANSWER: your role versus anyone else's on it.",
       "DECIDE: whether the live URL can be linked from here.",
-      "CHECK: the masked regions on 04-catalog-after.png. If those are public list prices rather than account-resolved ones, delete the `redact` array and the masks come off.",
     ],
   },
 };
