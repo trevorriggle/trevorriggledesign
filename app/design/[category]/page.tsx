@@ -76,11 +76,13 @@ export async function generateMetadata({
 
    2. GROUPS AS SECTIONS. Personal Works: subnav and sections, no feature.
 
-   3. A FLAT GALLERY, unchanged. Taranto's has no group folders, three pieces
-      and no copy. It renders exactly as it did: heading, gallery, pager. No
-      subnav, because a sticky bar with one item in it is furniture, and no
-      invented sections, because splitting three pieces into sub-groups would
-      be structure invented to satisfy a pattern.
+   3. A FLAT GALLERY, for a category whose folder holds loose files rather
+      than group folders. Nothing is in this shape today. Taranto's used to
+      be, and the note here still described it that way long after the three
+      pieces were regrouped into 01-menu, 02-marketing and 03-logo-variants
+      and given copy: it renders as shape 2, with a three-item subnav. The
+      branch stays because it is what the template does with a bare folder,
+      and dropping loose files into one is still the way to get it.
 
    WHICH SHAPE A CATEGORY GETS IS STILL READ OFF THE DISK. Group folders mean
    sections; no group folders mean a flat gallery. Nothing was added to the
