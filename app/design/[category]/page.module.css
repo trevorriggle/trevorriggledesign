@@ -57,15 +57,16 @@
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
   color: var(--color-text);
-  max-width: 40ch;
+  max-width: var(--measure-lead);
 }
 
 /* --- Body copy ----------------------------------------------------------- */
 
 .bodyBlock { margin-top: var(--rhythm-tight); }
 
+/* The category's own intro body. Single column, nothing beside it. */
 .prose {
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--color-text);

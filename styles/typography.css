@@ -151,7 +151,7 @@ a:hover {
   letter-spacing: var(--tracking-quote);
   color: var(--color-text);
   text-wrap: pretty;
-  max-width: 46ch;
+  max-width: var(--measure-lead);
 }
 
 /* ---- Utilities ----------------------------------------------------------- */

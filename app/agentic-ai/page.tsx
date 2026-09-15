@@ -112,7 +112,14 @@ export default function AgenticAIPage() {
             </figcaption>
           </figure>
 
-          <div className={styles.body}>
+          {/* `solo` when there is no sample card. See page.module.css: the
+              half-width copy column is one side of a pair, and one of the
+              four agents has nothing to pair with. */}
+          <div
+            className={[styles.body, agent.sample ? "" : styles.solo]
+              .filter(Boolean)
+              .join(" ")}
+          >
             <div className={styles.prose}>
               {agent.body.map((para, j) => (
                 <p key={j} className={styles.para2}>

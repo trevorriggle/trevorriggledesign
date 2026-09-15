@@ -7,7 +7,7 @@
   font-size: var(--text-sm);
   line-height: var(--leading-normal);
   color: var(--color-text-meta);
-  max-width: 44ch;
+  max-width: var(--measure-lead);
 }
 
 .aside > * + * { margin-top: var(--space-xs); }

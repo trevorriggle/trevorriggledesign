@@ -44,7 +44,7 @@
   line-height: var(--leading-snug);
   letter-spacing: var(--tracking-tight);
   color: var(--color-text);
-  max-width: 38ch;
+  max-width: var(--measure-lead);
   text-wrap: pretty;
 }
 
@@ -65,9 +65,10 @@
   padding-bottom: var(--rhythm-tight);
 }
 
+/* Method has no sample card beside it, unlike the agent sections below. */
 .methodBody {
   margin-top: var(--space-6);
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
 }
 
 .prose {
@@ -111,8 +112,20 @@
   margin-top: var(--rhythm-tight);
 }
 
+/* PAIRED: the copy takes half the row and the sample card takes the other
+   half. Three of the four agents are shaped like this. */
 .body .prose { grid-column: 1 / 7; }
 .sample { grid-column: 8 / -1; }
+
+/* THE FOURTH ONE IS NOT. competitive-intel has no sample card, so its copy
+   was sitting in six of twelve columns with the other six empty: half width,
+   for nothing, because it was styled as one half of a pair that has no other
+   half. It runs as single-column prose instead, on the wide measure, like
+   Method above it. */
+.solo .prose {
+  grid-column: 1 / -1;
+  max-width: var(--measure-wide);
+}
 
 .para2 {
   font-size: var(--text-md);

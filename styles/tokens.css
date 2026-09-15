@@ -354,17 +354,31 @@
 
   --width-page: 90rem;     /* 1440px, outer bound              */
   --width-prose: 34rem;    /*  544px, narrow measure           */
-  --measure: 62ch;         /* long-form reading measure         */
-  /* THE WIDE MEASURE, for single-column prose with nothing beside it.
-     --measure is 62ch, which is the right line length when copy shares a row
-     with a rail or a picture. Alone in a 90rem container it reads as a narrow
-     column pinned to the left of a much wider box, which looks like a bug
-     rather than a decision. 82ch at --text-md is about 770px in a 1282px
-     container: noticeably wider, still short of edge to edge, still inside
-     the range a line can be read at without the eye losing its place.
-     Paired layouts keep --measure. */
-  --measure-wide: 82ch;
-  --measure-lead: 24ch;    /* deck / lead, short lines on purpose */
+  /* THREE MEASURES, AND EVERY TEXT BLOCK ON THE SITE USES ONE OF THEM.
+
+     There used to be sixteen distinct values across thirty-three blocks,
+     eleven of them raw `ch` literals written into component files. 46ch
+     appeared five times and 38ch three times, which is what an undeclared
+     token looks like: the same decision made repeatedly, by hand, with
+     nothing keeping the copies in step.
+
+     WHICH ONE A BLOCK TAKES IS DECIDED BY WHAT IS BESIDE IT, not by which
+     page it is on. Prose sharing a row with a rail, a sample card or a
+     picture is already narrow because the row is split, so 62ch is right.
+     Prose with nothing beside it in a 90rem container at 62ch is a 583px
+     column hanging off the left of a 1282px box with 700px of nothing next to
+     it, which reads as a broken wrapper rather than as a decision.
+
+     82ch at --text-md is about 770px: noticeably wider, well short of edge to
+     edge, and still inside the range a line can be read at without the eye
+     losing the start of the next one. */
+  --measure-wide: 82ch;    /* single-column prose, nothing beside it */
+  --measure: 62ch;         /* prose paired with a rail, card or picture */
+  /* Decks, leads, standfirsts and section intros. 46ch rather than the 24ch
+     this used to declare, because 24ch was never used anywhere: the five
+     places that wanted this role each wrote 46ch by hand instead. The token
+     now says what the site already does. */
+  --measure-lead: 46ch;
 
   --rail: 14rem;
 

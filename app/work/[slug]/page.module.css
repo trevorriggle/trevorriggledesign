@@ -153,7 +153,7 @@
   line-height: var(--leading-snug);
   color: var(--color-text);
   margin-top: var(--space-6);
-  max-width: 46ch;
+  max-width: var(--measure-lead);
 }
 
 /* THE STATUS CHIP IS GONE, and so are its two variants. It rendered the
@@ -184,13 +184,15 @@
   column-gap: var(--grid-gap);
 }
 
-/* The content column, bounded by the reading measure rather than by an
-   indent. 8 of 12 with a 62ch cap lands the body at a real measure and keeps
-   its left edge on the same axis as the title above it. */
+/* SINGLE COLUMN, SO IT TAKES THE WIDE MEASURE. Nothing sits beside it:
+   `.body` has exactly one child. It used to be constrained twice, by
+   `grid-column: 1 / 9` and by a 62ch cap, and the grid-column never bound
+   anything because 62ch is about 583px and eight of twelve columns is about
+   842px. Two constraints, one of them dead, and the result was the narrowest
+   prose on the site on its three longest pages. */
 .prose,
 .argument {
-  grid-column: 1 / 9;
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
 }
 
 .systems { grid-column: 1 / -1; }

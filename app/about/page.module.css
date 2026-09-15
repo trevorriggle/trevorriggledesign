@@ -42,7 +42,7 @@
   letter-spacing: var(--tracking-tight);
   color: var(--color-text);
   text-wrap: pretty;
-  max-width: 46ch;
+  max-width: var(--measure-lead);
 }
 
 .body {

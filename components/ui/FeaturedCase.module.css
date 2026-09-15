@@ -61,7 +61,7 @@
   margin-top: var(--space-5);
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
-  max-width: 44ch;
+  max-width: var(--measure-lead);
 }
 
 /* --- Body ----------------------------------------------------------------
@@ -79,7 +79,7 @@
 
 .standfirst {
   /* `.intro` the global utility carries the serif, size and measure. */
-  max-width: 38ch;
+  max-width: var(--measure-lead);
 }
 
 /* --- The comparisons -----------------------------------------------------
@@ -137,10 +137,11 @@
   border: 0;
 }
 
+/* Single column: the blocks run full width and nothing sits beside them. */
 .para {
   font-size: var(--text-md);
   line-height: var(--leading-body);
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
 }
 
 .para + .para {

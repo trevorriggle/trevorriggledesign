@@ -155,7 +155,7 @@
   color: var(--paper);
   font-size: var(--text-sm);
   line-height: var(--leading-snug);
-  max-width: 46ch;
+  max-width: var(--measure-lead);
 }
 
 /* --- Sent ----------------------------------------------------------------- */
@@ -164,7 +164,7 @@
   padding: var(--space-6);
   background: var(--color-field-accent);
   color: var(--on-ochre);
-  max-width: 46ch;
+  max-width: var(--measure-lead);
 }
 
 .doneHeading {

@@ -36,7 +36,7 @@
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
   color: var(--color-text);
-  max-width: 38ch;
+  max-width: var(--measure-lead);
 }
 
 .landingPara + .landingPara {

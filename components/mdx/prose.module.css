@@ -16,7 +16,7 @@
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--color-text);
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
 }
 
 .prose > * + * { margin-top: var(--space-5); }
