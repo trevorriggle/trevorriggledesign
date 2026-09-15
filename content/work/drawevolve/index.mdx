@@ -56,16 +56,16 @@ logo:
 # of it.
 thumb:
   src: thumbnail.jpg
-  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a colour portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
+  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a color portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
   aspect: "4:3"
   minWidth: 1600
 
 cover:
   src: 1.jpg
-  alt: "DrawEvolve on an iPad: a finished colour portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
+  alt: "DrawEvolve on an iPad: a finished color portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
   aspect: "2064:2752"
   minWidth: 2064
-  caption: "The critique itself. Not a score and not a list of errors: a Quick Take, then what is working, then one focus area — in that order, because an artist told what is wrong first stops reading."
+  caption: "The critique itself. A Quick Take, then what is working, then one focus area, in that order, because an artist told what is wrong first stops reading."
 
 # The spine fields (constraint / attempts / tradeoff / outcome / revisit) are
 # deliberately absent. This case study's argument is its own prose, under the
@@ -114,17 +114,17 @@ images:
     alt: "The same Eve conversation further on, with the canvas attached to the turn and the question 'What is the one part that I should really focus on in here?' answered with a single priority, the eye line wrapping around the head"
     aspect: "2064:2752"
     minWidth: 2064
-    caption: "The canvas travels with the question. Asked for the one thing worth fixing, the answer is one thing — a critique that returns five priorities has returned none."
+    caption: "The canvas travels with the question. Asked for the one thing worth fixing, the answer is one thing. A critique that returns five priorities has returned none."
   - src: 4.jpg
     alt: "DrawEvolve's Composition panel: a top attention region at 59% confidence from an on-device vision model, an intended focal point marked at 55% across and 32% down, and a prompt to ask Eve why the eye goes there"
     aspect: "2064:2752"
     minWidth: 2064
-    caption: "Composition, measured rather than described. An on-device vision model estimates where attention actually lands, and the artist marks where they meant it to."
+    caption: "Composition, as a measurement. An on-device vision model estimates where attention actually lands, and the artist marks where they meant it to."
   - src: 5.jpg
     alt: "The attention overlay drawn on the canvas: four numbered dashed regions over the finished portrait showing where the model estimates the eye lands, with the artist's own marked focal point on the near eye"
     aspect: "2064:2752"
     minWidth: 2064
-    caption: "The estimate drawn back onto the drawing. The distance between where the eye goes and where it was sent is the whole critique, and it is a picture rather than a paragraph."
+    caption: "The estimate drawn back onto the drawing. The distance between where the eye goes and where it was sent is the whole critique, drawn instead of written."
 
 # Named in the copy above. Metadata chips, never a section.
 stack: [Swift, Metal, Cloudflare Workers, Supabase]
@@ -195,9 +195,9 @@ That's a debt I named rather than hid, and it's scheduled.
 ## How I worked
 
 I ran parallel Claude Code agents across git worktrees for most of the build.
-Not as a novelty, but as the only way one person covers that much surface
-area in six months. Each agent held a bounded scope on its own branch, and I did
-integration and review.
+That was the only way one person covers that much surface area in six months.
+Each agent held a bounded scope on its own branch, and I did integration and
+review.
 
 Learning to decompose work so that agents don't collide is a real skill, and
 it's most of why the timeline was possible at all.

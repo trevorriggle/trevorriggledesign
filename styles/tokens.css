@@ -60,6 +60,25 @@
   --ochre: #e0a526;        /* 2.00:1 on Paper. A FIELD, NOT A TEXT COLOUR.   */
   --flare: #ff4d2e;        /* 3.01:1 on Paper. Large display or fills only.  */
 
+  /* A SIXTH VALUE, AND IT IS THE SAME HUE TAKEN DOWN.
+
+     Ultramarine works as a band under a paragraph and a link. It does not
+     work as the ground for the longest section on the site: a full screen of
+     #1b2ecc behind four blocks of prose, a table, three statistics and two
+     full-width screenshots is painfully bright, and a screenshot sitting on
+     it glares. This is the same blue at roughly half the luminance. It reads
+     as the dominant rather than as a second colour, and it lets a white
+     screenshot sit on it without the ground fighting the picture.
+
+     MEASURED, like everything else in this block:
+
+                      on Deep
+       Paper           13.17     body copy at any size
+       Ochre            6.60     AA at any size, where on Ultramarine it is 4.15
+       Flare            4.38     large display only
+       Ink              1.31     never                                       */
+  --ultramarine-deep: #111b78;
+
   /* -- What may sit on what ----------------------------------------------
      THIS BLOCK IS THE ACCESSIBILITY CONTRACT AND IT IS NOT DECORATION.
      Measured contrast, sRGB, computed before these were written:
@@ -86,12 +105,14 @@
   --on-paper: var(--ink);
   --on-ink: var(--paper);
   --on-ultramarine: var(--paper);
+  --on-ultramarine-deep: var(--paper);
   --on-ochre: var(--ink);
 
   /* The accent that is legal on each ground, for a mark or an active state. */
   --accent-on-paper: var(--ultramarine);
   --accent-on-ink: var(--ochre);
   --accent-on-ultramarine: var(--ochre);  /* large text only, 4.15 */
+  --accent-on-ultramarine-deep: var(--ochre);  /* 6.60, AA at any size */
   --accent-on-ochre: var(--ink);
 
   /* -- Muted tones, ONE PER GROUND ----------------------------------------
@@ -108,6 +129,9 @@
   --ink-mute: color-mix(in srgb, var(--ink) 70%, var(--paper));     /* 6.92 */
   --paper-mute: color-mix(in srgb, var(--paper) 70%, var(--ink));   /* 8.71 on Ink */
   --paper-mute-blue: color-mix(in srgb, var(--paper) 82%, var(--ultramarine)); /* 5.99 */
+  /* 72% rather than 82%, because the deep ground has more room: the same mix
+     that measures 5.99 on Ultramarine reads almost white against this one. */
+  --paper-mute-deep: color-mix(in srgb, var(--paper) 72%, var(--ultramarine-deep)); /* 7.34 */
 
   /* Rule tints. Structure, not decoration, so they stay well under text. */
   --ink-rule: color-mix(in srgb, var(--ink) 16%, var(--paper));
@@ -431,6 +455,21 @@
   --ground-accent: var(--accent-on-ultramarine);
   --ground-rule: var(--paper-rule);
   --ground-mute: var(--paper-mute-blue);
+}
+
+/* THE DEEP GROUND, and it exists because of how much page sits on it.
+
+   Ultramarine divides a page: a band with one sentence on it, between two
+   sections. This ground carries a whole case study, so it is the same hue
+   taken down to where a full screen of it stops glaring and a white
+   screenshot can sit on it. Ochre clears AA at any size here, which the
+   bright ground cannot manage, so the label override below does not apply. */
+[data-ground="ultramarine-deep"] {
+  --ground-bg: var(--ultramarine-deep);
+  --ground-text: var(--on-ultramarine-deep);
+  --ground-accent: var(--accent-on-ultramarine-deep);
+  --ground-rule: var(--paper-rule);
+  --ground-mute: var(--paper-mute-deep);
 }
 
 [data-ground="ochre"] {

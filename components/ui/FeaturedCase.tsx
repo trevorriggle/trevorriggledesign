@@ -1,8 +1,7 @@
 import { Band } from "./Band";
-import { PullQuote } from "./PullQuote";
-import { Compare } from "./Compare";
 import { SpecTable } from "./SpecTable";
 import { StatRow } from "./StatRow";
+import { ScrollSequence } from "./ScrollSequence";
 import type { FeaturedCase as FeaturedCaseData } from "@/content/design";
 import styles from "./FeaturedCase.module.css";
 
@@ -10,9 +9,14 @@ import styles from "./FeaturedCase.module.css";
    FEATURED CASE
    ============================================================================
    The one piece of work on a design page that is not part of the archive
-   below it. Rendered as an ultramarine band at the top of the page, which is
-   the loudest structural move the system has, because the whole point is that
+   below it. Rendered as a deep blue band at the top of the page, which is the
+   loudest structural move the system has, because the whole point is that
    this is not a fourth category of collateral.
+
+   THE GROUND IS `ultramarine-deep` RATHER THAN `ultramarine`. Ultramarine is
+   right for a band carrying one sentence. This band carries a case study, and
+   a full screen of #1b2ecc behind prose, a table, three statistics and two
+   full-width screenshots glares. Same hue, half the luminance. See tokens.css.
 
    IT IS A BAND, NOT A CARD. The brief bans cards, and a "featured" treatment
    built as a bordered box with a badge on it is exactly the SaaS-landing-page
@@ -23,14 +27,21 @@ import styles from "./FeaturedCase.module.css";
 
    THE ORDER OF THE SECTION IS AN ARGUMENT AND IT IS DELIBERATE:
 
-     deck → standfirst → BEFORE/AFTER → prose → table → numbers → the gap
+     deck → BEFORE/AFTER → prose → table → numbers
 
-   The comparison is third, above all of the prose, because the old site has
+   The comparison is second, above all of the prose, because the old site has
    been switched off and these screenshots are the only surviving evidence
    that it was ever there. A rebuild case study that describes a predecessor
    the reader cannot see is asking to be taken on trust, and this one does not
-   have to be. The gap is last and it ships: see the note on `gap` in
-   content/design.ts for why the unfinished half is on the page at all.
+   have to be.
+
+   THE COMPARISONS ARE SCROLL SEQUENCES, NOT SIDE-BY-SIDE FRAMES. Two 2:1
+   desktop grabs set beside each other render at about 580px across, which is
+   a picture of a website rather than a website you can read, and the whole
+   claim of this section is what is written on those two pages. As a sequence
+   each one takes the full stage and roughly doubles in width, and the reader
+   moves between them by scrolling. Same component as the DrawEvolve loop, in
+   its `wide` layout. See ScrollSequence.
 
    EVERY ONE OF THOSE SLOTS IS OPTIONAL AND ABSENT MEANS ABSENT. A case with
    no table renders no table and no empty heading over one.
@@ -47,40 +58,37 @@ export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
 
   return (
     <Band
-      ground="ultramarine"
+      ground="ultramarine-deep"
       grid
       id={data.slug}
       className={styles.band}
       aria-label={data.title}
     >
-      <div className={styles.head}>
+      <div>
         <p className={`label ${styles.eyebrow}`}>{data.eyebrow}</p>
         <h2 className={styles.title}>{data.title}</h2>
         <p className={styles.deck}>{data.deck}</p>
       </div>
 
-      <div className={styles.standfirstBlock}>
-        <p className={`intro ${styles.standfirst}`}>{data.standfirst}</p>
-      </div>
+      {data.standfirst && (
+        <div className={styles.standfirstBlock}>
+          <p className={`intro ${styles.standfirst}`}>{data.standfirst}</p>
+        </div>
+      )}
 
-      {dir && data.compare && data.compare.length > 0 && (
+      {dir && data.sequences && data.sequences.length > 0 && (
         <div className={styles.compareSlot}>
-          {data.compare.map((pair, i) => (
-            <Compare
-              key={pair.label}
-              label={pair.label}
-              /* Only the first pair is above the fold. */
-              eager={i === 0}
-              before={{
-                ...pair.before,
-                src: `/media/${dir}/${pair.before.src}`,
-                label: "Before",
-              }}
-              after={{
-                ...pair.after,
-                src: `/media/${dir}/${pair.after.src}`,
-                label: "After",
-              }}
+          {data.sequences.map((seq, i) => (
+            <ScrollSequence
+              key={seq.label}
+              label={seq.label}
+              layout="wide"
+              /* Only the first sequence is anywhere near the fold. */
+              priorityFirst={i === 0}
+              shots={seq.shots.map((shot) => ({
+                ...shot,
+                url: `/media/${dir}/${shot.src}`,
+              }))}
             />
           ))}
         </div>
@@ -90,13 +98,11 @@ export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
         {data.blocks.map((block) => (
           <section key={block.heading} className={styles.block}>
             <h3 className={styles.blockHeading}>{block.heading}</h3>
-            <div className={styles.blockBody}>
-              {block.body.map((para, i) => (
-                <p key={i} className={styles.para}>
-                  {para}
-                </p>
-              ))}
-            </div>
+            {block.body.map((para, i) => (
+              <p key={i} className={styles.para}>
+                {para}
+              </p>
+            ))}
           </section>
         ))}
       </div>
@@ -111,27 +117,6 @@ export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
         <div className={styles.numbersSlot}>
           <h3 className={styles.numbersHeading}>{data.numbers.heading}</h3>
           <StatRow stats={data.numbers.stats} label={data.numbers.label} />
-        </div>
-      )}
-
-      {data.gap && (
-        <div className={styles.blocks}>
-          <section className={styles.block}>
-            <h3 className={styles.blockHeading}>{data.gap.heading}</h3>
-            <div className={styles.blockBody}>
-              {data.gap.body.map((para, i) => (
-                <p key={i} className={styles.para}>
-                  {para}
-                </p>
-              ))}
-            </div>
-          </section>
-        </div>
-      )}
-
-      {data.quote && (
-        <div className={styles.quoteSlot}>
-          <PullQuote>{data.quote}</PullQuote>
         </div>
       )}
 

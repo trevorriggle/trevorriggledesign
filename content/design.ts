@@ -55,7 +55,7 @@ export const designCategories: DesignCategory[] = [
     slug: "tarantos",
     title: "Taranto's",
     intro:
-      "A neighbourhood pizzeria, and the whole of its printed and posted output: the menu, the promotions that run on top of it, and the marks that go where the main logo does not fit.",
+      "A neighborhood pizzeria, and the whole of its printed and posted output: the menu, the promotions that run on top of it, and the marks that go where the main logo does not fit.",
     body: [],
     demonstrates: "",
   },
@@ -239,9 +239,9 @@ export const designSections: Record<string, DesignSection[]> = {
           src: "01-before.png",
           width: 1366,
           height: 1228,
-          alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in grey with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
+          alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in gray with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
           caption:
-            "Five colours, a heavy outline, a character, a badge, a ring of type and two atoms. Every element is doing something.",
+            "Five colors, a heavy outline, a character, a badge, a ring of type and two atoms. Every element is doing something.",
         },
         after: {
           src: "02-after.png",
@@ -249,23 +249,23 @@ export const designSections: Record<string, DesignSection[]> = {
           height: 857,
           alt: "The rebranded system: at left the same elephant badge redrawn as a single-weight outline in one dark red with no fills, at right the am-sci shorthand set in a heavy lowercase with a left-to-right gradient running from red through violet into blue",
           caption:
-            "The same elephant, reduced to one value and one colour, beside the am-sci shorthand it now travels with.",
+            "The same elephant, reduced to one value and one color, beside the am-sci shorthand it now travels with.",
         },
       },
       body: [
-        "The original mark was overdesigned, and it was overdesigned in a specific and datable way: a character illustration with a black keyline, a rendered gradient on the body, a prop in the trunk, a hard-edged badge behind it and the full company name curved around the ring, with two atoms tucked into the border in case the test tube had not made the point. It belonged to the era of design that produced it. It also did not survive being made small, which by then was most of where it had to live.",
-        "The obvious move was to kill it. That was not on the table. The founder was attached to the elephant, and the attachment was not vanity — it was a mark the company had traded under for a long time, and the person who had built the company was not wrong to want it to survive. A rebrand that opens by throwing it away is a rebrand that does not get approved, and an unapproved rebrand is not work, it is a deck.",
-        "So the elephant stayed and everything around it was reduced. The mark is now a single-value line drawing in one colour: no fills, no keyline sitting separately from the art, no rendered gradient on the body, and no second ring of type competing with the first. The ornament is still present but it is de-emphasised to the point where it reads as texture rather than as content. At the same time I adopted “am-sci” as the shorthand, which is what the company was already called out loud, and put the emphasis the old mark spent on ornament into a single modern device instead: a gradient running red to blue across the letterforms.",
-        "I also built the full AMERICAN SCIENTIFIC wordmark as an alternative lockup, carrying the same gradient. Partly that is a practical need — some applications want the whole name — but mostly it was so leadership could see the new system next to the old name and read it as continuity rather than as a break. Showing only the abbreviation would have made the change look like a bigger departure than it is.",
-        "The mark is not the interesting part of this project. Reducing an overdrawn logo is a known exercise and any competent designer can do it. The actual problem was constraint-driven: solve for a stakeholder’s genuine attachment to a specific piece of artwork, and do it without shipping something dated. Those two requirements pull directly against each other, and the work was finding the version where both are satisfied rather than the version where one of them quietly loses.",
+        "The original mark was overdesigned in a specific and datable way. A character illustration with a black keyline. A rendered gradient on the body, a prop in the trunk, a hard-edged badge behind it, and the full company name curved around the ring, with two atoms tucked into the border in case the test tube had not made the point. It belonged to the era of design that produced it, and it fell apart at small sizes, which by then was most of where it had to live.",
+        "The obvious move was to kill it. That was not on the table. The founder was attached to the elephant, and the attachment had a reason behind it: the company had traded under that mark for a long time. A rebrand that opens by throwing away the one thing leadership cares about does not get approved.",
+        "So the elephant stayed and everything around it was reduced. The mark is now a single-value line drawing in one color. No fills. No keyline sitting separately from the art, no rendered gradient on the body, no second ring of type competing with the first. The ornament is still there, quiet enough now to read as texture. I adopted “am-sci” as the shorthand at the same time, which is what the company was already called out loud, and put the weight the old mark spent on ornament into one device: a gradient running red to blue across the letterforms.",
+        "I built the full AMERICAN SCIENTIFIC wordmark as an alternative lockup, carrying the same gradient. Some applications want the whole name. Mostly, though, it let leadership see the new system next to the old one and read it as continuity. Showing only the abbreviation would have made the change look bigger than it is.",
+        "The mark is not the interesting part of this project. Reducing an overdrawn logo is a known exercise, and any competent designer can do it. The actual problem was the constraint: solve for a stakeholder’s real attachment to a specific piece of artwork, and do it without shipping something dated. Those two requirements pull against each other. The work was finding the version that satisfies both.",
       ],
     },
     {
       slug: "print",
       placeholder: true,
       body: [
-        "Product sell sheets, built as a system rather than as one-offs. Every sheet has the same parts in the same places: the item number, the product shot knocked out in a circle, a short row of feature icons, the description, the what-is-included list, and the line telling the reader to contact their sales representative.",
-        "The constraint that shapes all of it is that the parts arrive in wildly different states. Some products come with a clean studio shot and a paragraph of copy; some come with a phone photo and a spec table. The layout has to absorb that without every sheet looking like it was made by a different person, which is most of what designing at this volume actually is.",
+        "Product sell sheets, built as a system. Every sheet has the same parts in the same places: the item number, the product shot knocked out in a circle, a short row of feature icons, the description, the what-is-included list, and the line telling the reader to contact their sales representative.",
+        "The parts arrive in wildly different states. Some products come with a clean studio shot and a paragraph of copy. Some come with a phone photo and a spec table. The layout has to absorb that without every sheet looking like a different person made it.",
       ],
     },
     {
@@ -273,7 +273,7 @@ export const designSections: Record<string, DesignSection[]> = {
       placeholder: true,
       body: [
         "Posts for the company's Instagram account, built around an on-this-day-in-history series: a moment from the history of science, illustrated as a single composed image, with the detail in the caption.",
-        "It is the one channel here that is not selling a product. The job is to be worth following, which means the image has to carry the idea on its own in a feed, at thumbnail size, next to everything else competing for the same scroll.",
+        "It is the one channel here that is not selling a product. The job is to be worth following. The image has to carry the idea on its own, at thumbnail size, in a feed.",
       ],
     },
     {
@@ -281,7 +281,7 @@ export const designSections: Record<string, DesignSection[]> = {
       placeholder: true,
       body: [
         "Short looping animations for social and for the site: logo builds, animated banners, and posts that move.",
-        "All of it is made to survive autoplay with the sound off and to read inside the first second, because that is the whole of the attention a looping banner gets. The loop point matters more than the animation does.",
+        "All of it has to survive autoplay with the sound off and read inside the first second, because that is the whole of the attention a looping banner gets. The loop point matters more than the animation.",
       ],
     },
   ],
@@ -305,16 +305,16 @@ export const designSections: Record<string, DesignSection[]> = {
       slug: "menu",
       placeholder: false,
       body: [
-        "The menu, rebuilt from scratch rather than reset. A trifold that has to carry subs, lunch combos, a kids' menu, take-and-bake, desserts, catering, build-your-own pizza at four sizes, specialty pizzas, entrees, appetizers, salads, soups and drinks, and still be readable by somebody holding it at a table.",
-        "The hard part of a menu this dense is not the layout, it is the hierarchy: every item wants to be a heading, and the ones that actually earn it are the categories a customer is scanning for. Everything else drops a level. The cover panel carries the mark and the food photography and nothing else, so the piece opens as a brand and unfolds into a price list.",
+        "The menu, rebuilt from scratch. A trifold that has to carry subs, lunch combos, a kids' menu, take-and-bake, desserts, catering, build-your-own pizza at four sizes, specialty pizzas, entrees, appetizers, salads, soups and drinks, and still be readable by somebody holding it at a table.",
+        "The hard part of a menu this dense is hierarchy. Every item wants to be a heading. The ones that earn it are the categories a customer is scanning for, and everything else drops a level. The cover panel carries the mark and the food photography and nothing else, so the piece opens as a brand and unfolds into a price list.",
       ],
     },
     {
       slug: "marketing",
       placeholder: false,
       body: [
-        "Promotional work that runs on top of the menu rather than beside it: in-store posters, seasonal and limited-time offers, and co-branded pieces where a partner's mark has to sit next to the restaurant's without either one losing.",
-        "The Cinco de Mayo taco pizza promotion is the one that shows the constraint. It is a limited-time item with a date range, a co-brand, a product shot, an address block and a call to action, all on a single poster read from across a dining room. Everything on it is competing for the same few seconds, so the decision that matters is what gets to be large — and it is the offer, not the logo.",
+        "Promotional work that runs on top of the menu: in-store posters, seasonal and limited-time offers, and co-branded pieces where a partner's mark has to sit next to the restaurant's without either one losing.",
+        "The Cinco de Mayo taco pizza promotion is the one that shows the constraint. It is a limited-time item with a date range, a co-brand, a product shot, an address block and a call to action, all on a single poster read from across a dining room. Everything on it competes for the same few seconds, so the decision that matters is what gets to be large. The offer won that, over the logo.",
       ],
     },
     {
@@ -322,7 +322,7 @@ export const designSections: Record<string, DesignSection[]> = {
       placeholder: false,
       body: [
         "Alternate marks, drawn for the places the primary logo does not go. The main lockup is a full wordmark in a banner with a tagline under it, which is right on a menu cover and wrong on anything small, square, or aimed at children.",
-        "The variants solve those cases specifically rather than generally: a single illustrated character mark, built from the same pizza and the same two brand colours, that reads at any size and in any orientation and does not need the wordmark next to it to be recognisable. A variant that only works when the original is also present is not a variant, it is a decoration.",
+        "The variants solve those cases one at a time: a single illustrated character mark, built from the same pizza and the same two brand colors, that reads at any size and in any orientation without the wordmark beside it. A variant that only works when the original is also present is a decoration.",
       ],
     },
   ],
@@ -332,21 +332,21 @@ export const designSections: Record<string, DesignSection[]> = {
       slug: "misc-art",
       placeholder: true,
       body: [
-        "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colours, and usually an excuse to draw letterforms rather than set them.",
+        "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colors, and usually an excuse to draw letterforms rather than set them.",
       ],
     },
     {
       slug: "comics",
       placeholder: true,
       body: [
-        "Short strips, written and drawn. The constraint that makes them interesting to make is the panel count: the joke or the turn has to land inside a fixed number of frames, so the writing and the staging are the same decision.",
+        "Short strips, written and drawn. The panel count is what makes them interesting to make. The joke has to land inside a fixed number of frames, so the writing and the staging are one decision.",
       ],
     },
     {
       slug: "drawings",
       placeholder: true,
       body: [
-        "Illustration, mostly figures and characters, mostly finished in colour. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
+        "Illustration, mostly figures and characters, mostly finished in color. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
       ],
     },
     {
@@ -398,6 +398,22 @@ export function getSection(
 export type SpecRow = { label: string; was: string; now: string };
 export type Stat = { figure: string; label: string; note?: string };
 
+/**
+ * One shot in a featured case's before/after run.
+ *
+ * SAME FIELDS AS A CompareShot PLUS A LABEL, because these render through
+ * <ScrollSequence> rather than through <Compare>. The label is what the
+ * component shows in place of a plate number: "01 / 02" is the wrong mark on
+ * a two-shot comparison, where BEFORE and AFTER is the whole information.
+ */
+export type SequenceShot = CompareShot & { label: string };
+
+export type Sequence = {
+  /** The accessible name for the whole run. */
+  label: string;
+  shots: SequenceShot[];
+};
+
 export type FeaturedCase = {
   /** Anchor id and the section's own slug. */
   slug: string;
@@ -406,35 +422,30 @@ export type FeaturedCase = {
   title: string;
   /** One sentence. The claim the section has to prove. */
   deck: string;
-  /** The opening paragraph, set large. */
-  standfirst: string;
+  /** An opening paragraph, set large. Absent renders nothing. */
+  standfirst?: string;
   /**
-   * Before and after, rendered directly under the standfirst.
+   * Before and after, as pinned scroll sequences, directly under the deck.
    *
    * HIGH ON THE PAGE, DELIBERATELY. The old site no longer exists anywhere,
    * so these screenshots are the only surviving evidence that it did, and a
    * rebuild case study that describes a predecessor nobody can see is asking
    * to be taken on trust. Files resolve against public/media/<dir>/.
+   *
+   * SEQUENCES RATHER THAN SIDE-BY-SIDE FRAMES. These are full-page desktop
+   * grabs at roughly 2:1. Set two of those beside each other and each lands
+   * at about 580px across, which is a picture of a website rather than a
+   * website anybody can read, and what is written on the two pages is the
+   * entire argument. See components/ui/ScrollSequence.
    */
   compareDir?: string;
-  compare?: ComparePair[];
+  sequences?: Sequence[];
   /** Body, as heading plus paragraphs. */
   blocks: { heading: string; body: string[] }[];
   /** Old against new, one layer per row. */
   table?: { caption: string; rows: SpecRow[] };
   /** Counts the cutover actually moved. */
   numbers?: { label: string; heading: string; stats: Stat[] };
-  /**
-   * What is still not done.
-   *
-   * THIS IS A RENDERED SECTION, NOT A `todo`. It ships. A case study that
-   * lists only what works is a brochure, and the Lynk entry already set the
-   * precedent on this site that the honest gap is part of the argument
-   * rather than an admission to be kept off the page.
-   */
-  gap?: { heading: string; body: string[] };
-  /** A sentence worth lifting out. Rendered as the page's one pull quote. */
-  quote?: string;
   /** What is still missing. DEVELOPMENT ONLY, never rendered in production. */
   todo: string[];
 };
@@ -445,86 +456,94 @@ export const designFeatured: Record<string, FeaturedCase> = {
     eyebrow: "Featured",
     title: "The company website, rebuilt",
     deck: "A B2B wholesaler whose site was guessing at a number its ERP already knew exactly.",
-    standfirst:
-      "The old stack pulled NetSuite’s full price matrix on a schedule, discarded almost all of it, and then had a WordPress plugin re-approximate each customer’s negotiated price from their user role. Every other problem on the site was downstream of that one.",
+
+    /* NO STANDFIRST. This section ran to about nine hundred words, longer than
+       Rebrand, Print, Social Media and Motion Graphics combined, on a page
+       about American Scientific as a whole. The cut went at the parts that
+       restated each other: the standfirst was the pricing story told once
+       before the prose told it again, the pull quote at the bottom was the
+       deck above rephrased, and a closing "what is still not done" section
+       added a fourth pass over the same ground. The deck states the claim, the
+       screenshots show it, two blocks explain it, and the table carries the
+       detail. */
 
     compareDir: "american-scientific",
-    compare: [
+    sequences: [
       {
         label: "The home page, before and after",
-        before: {
-          src: "01-before-home.png",
-          width: 2543,
-          height: 1214,
-          alt: "The previous American Scientific home page: the old elephant badge above a search field, a blue navigation bar, a carousel promoting a stream table kit with a paragraph of copy over a product photograph, and four flat colour tiles below it linking to protective equipment, sale items, a 2020 catalog and product videos",
-          caption:
-            "A carousel, four tiles, and a 2020 catalog link still on the page.",
-        },
-        after: {
-          src: "03-after-home.png",
-          width: 2541,
-          height: 1310,
-          alt: "The rebuilt home page: a gradient announcement bar, the am-sci mark, a dark hero reading Wholesale scientific supply, engineered for educators, with Browse Catalog and Request an Account actions, and six category cards to the right showing subcategory counts",
-          caption:
-            "Categories with live counts, and an account request as a first-class action.",
-          redact: [{ left: 75, top: 5.5, width: 7.5, height: 4 }],
-        },
+        shots: [
+          {
+            src: "01-home-before.jpg",
+            label: "Before",
+            width: 2560,
+            height: 1315,
+            alt: "The previous American Scientific home page: the old elephant badge above a site search field, a gray navigation bar, a carousel promoting an Understanding Coronavirus kit over a spread of lab equipment, and four flat color tiles below it linking to protective equipment, sale items, a 2020 catalog and product videos",
+            caption:
+              "A carousel, four tiles, and a 2020 catalog link still on the page.",
+          },
+          {
+            src: "02-home-after.jpg",
+            label: "After",
+            width: 2560,
+            height: 1315,
+            alt: "The rebuilt home page: a red-to-blue announcement bar carrying the wholesale notice and the office contact details, the am-sci mark, a dark hero reading Wholesale scientific supply, engineered for educators, with Browse Catalog and Request an Account actions, six category cards to the right each showing its subcategory count, and a row beneath reading Wholesale, 4 core disciplines, K-College, Tiered",
+            caption:
+              "Categories with live counts, and an account request as a first-class action.",
+          },
+        ],
       },
       {
         label: "The catalog, before and after",
-        before: {
-          src: "02-before-catalog.png",
-          width: 2528,
-          height: 1242,
-          alt: "The previous All Products listing: a grey banner, a nearly empty category sidebar offering a single Laboratory checkbox, a count reading 1-15 of 1308, and a grid in which most product images have failed to load and render as broken-image placeholders",
-          caption:
-            "1,308 products, one filter, and most of the product images no longer loading.",
-        },
-        after: {
-          src: "04-after-catalog.png",
-          width: 2536,
-          height: 1314,
-          alt: "The rebuilt Physics and Physical Science category: a titled header showing 303 products, a row of subcategory filters each carrying its own count, and a grid of product cards with images, category tags, option counts, SKUs and prices",
-          caption:
-            "The same catalog, filtered by real subcategory counts. Prices and the signed-in account are masked here; they resolve per account.",
-          redact: [
-            { left: 69.5, top: 4.5, width: 7.5, height: 4.5 },
-            { left: 16, top: 89, width: 59, height: 6 },
-          ],
-        },
+        shots: [
+          {
+            src: "03-catalog-before.jpg",
+            label: "Before",
+            width: 2560,
+            height: 1315,
+            alt: "The previous Physics and Physical Science listing: a gray banner over a breadcrumb, a count reading 1-15 of 560, a plain text list of subcategories down the left, a Featured Products carousel of four items, and a product below it whose image has failed to load and renders as a broken-image placeholder",
+            caption:
+              "The same category on the old site. A featured-products carousel, a plain list of subcategories, and an image that had stopped loading.",
+          },
+          {
+            src: "04-catalog-after.png",
+            label: "After",
+            width: 2536,
+            height: 1314,
+            alt: "The rebuilt Physics and Physical Science category: a titled header showing 303 products, a row of subcategory filters each carrying its own count, and a grid of product cards with images, category tags, option counts, SKUs and prices",
+            caption:
+              "Physics and Physical Science, with a real count on every subcategory. Prices and the signed-in account are masked here. They resolve per account.",
+            redact: [
+              { left: 69.5, top: 4.5, width: 7.5, height: 4.5 },
+              { left: 16, top: 89, width: 59, height: 6 },
+            ],
+          },
+        ],
       },
     ],
 
     blocks: [
       {
-        heading: "The number nobody could produce",
+        heading: "The old site",
         body: [
-          "American Scientific is a wholesale distributor. Almost nobody pays list: price depends on which price level an account sits at and how many units are on the line, and NetSuite, the ERP the business is actually run on, holds all of that exactly.",
-          "The old site synced a base price out of NetSuite and threw the rest away. A pair of custom SOAP plugins pulled the matrix down; a WordPress plugin then re-derived each customer’s tier from their WordPress user role and applied a discount to the base figure. The role was a proxy for the price level, maintained by hand, in a second system, with nothing reconciling the two. So the price a customer saw was a WordPress plugin’s reconstruction of a number that existed, correct and authoritative, one API call away.",
-          "That is the whole case in one sentence, and everything else follows from it: if the site cannot be trusted to state a price, then it is a catalog with a phone number on it, and the ordering has to happen somewhere else.",
-        ],
-      },
-      {
-        heading: "What was actually running",
-        body: [
-          "Thirty-plus plugins, interdependent, with the catalog, the faceting, the pricing and the ERP integration each owned by a different one. Upgrading any of them meant establishing first what the other twenty-nine would do about it, which in practice meant none of them were upgraded.",
-          "The product catalog was driven by a NetSuite saved search named DO NOT DELETE. Nobody currently at the company could explain what was in it, who had built it, or what its criteria were — only that the catalog stopped working without it. That is not an unusual artefact in a system of this age, and it is a precise measure of how much of the business logic had leaked out of anywhere it could be read.",
-          "By the end the backend data had stopped reaching the customer at all. The product grid in the screenshot above is the live site: most of the images had stopped resolving, and the sync that was supposed to be keeping the listings current had quietly failed. Nothing alerted; it simply degraded until somebody noticed.",
+          "American Scientific is a wholesale distributor. Almost nobody pays list. What an account pays depends on its price level and on the quantity on the line, and NetSuite, the ERP the business is run on, holds all of that exactly.",
+          "The old site never asked. It synced a base price out of NetSuite, then let a WordPress plugin work out each customer's discount from their WordPress user role. The role was maintained by hand, in a second system, with nothing reconciling the two.",
+          "Under that sat thirty-plus plugins, all depending on each other. Upgrading one meant first finding out what the other twenty-nine would do about it, so none of them were upgraded. By the end most of the product images had stopped loading and nothing had said so.",
+          "The catalog ran off a NetSuite saved search called DO NOT DELETE. Nobody still at the company knew what was in it or who had built it. They knew the catalog stopped working without it.",
         ],
       },
       {
         heading: "What replaced it",
         body: [
-          "A Next.js application running on Cloudflare Workers through OpenNext, with D1 as the catalog store, and a second Worker that owns the NetSuite integration on its own and exposes it to the first over an internal boundary. Nothing that touches the ERP lives in the same process as the thing rendering a page.",
-          "Pricing is no longer derived from anything. The site asks NetSuite for the price level on the account and resolves the real figure for the quantity requested. The WordPress user role, and the entire concept of inferring a customer’s tier from their login, is gone rather than reimplemented.",
-          "The catalog is one SQL query in version control. It can be read, reviewed, changed with a diff, and explained to somebody who was not there when it was written — which is the actual replacement for DO NOT DELETE, and it is worth more than the performance of it.",
+          "A Next.js application on Cloudflare Workers through OpenNext, with D1 as the catalog store. A second Worker owns the NetSuite integration and exposes it over an internal boundary. Nothing that touches the ERP runs in the same process as a page render.",
+          "The site now asks NetSuite for the price level on the account and resolves the real figure for the quantity requested. The WordPress user role does not exist in the new system.",
+          "The catalog is one SQL query, in version control. Somebody who was not there when it was written can read it and change it in a diff.",
         ],
       },
     ],
 
     table: {
       caption:
-        "The same five layers, before and after. Nothing in the right-hand column is planned work; all of it is running.",
+        "The same five layers, before and after. Everything in the right-hand column is running now.",
       rows: [
         {
           label: "Stack",
@@ -568,22 +587,12 @@ export const designFeatured: Record<string, FeaturedCase> = {
       ],
     },
 
-    gap: {
-      heading: "What is still not done",
-      body: [
-        "Order write-back to NetSuite has not shipped. A customer can browse the real catalog at their own real price and build a real cart, and then a sales rep keys the resulting order into the ERP by hand, exactly as they did before.",
-        "That is the largest remaining piece of work and it is the one that would close the loop, so it is worth being precise about what the rebuild has and has not achieved: reading out of the ERP is solved, writing back into it is not.",
-      ],
-    },
-
-    quote:
-      "A wholesaler’s site was guessing at a number its own ERP already knew exactly.",
-
     todo: [
+      "SUPPLY: an AFTER shot of the catalog from the current site to replace 04-catalog-after.png. The uploaded `phys` folder held two byte-identical copies of the BEFORE page, so the after half of that sequence is still the older grab, which is the one carrying redactions.",
       "ANSWER: how long the rebuild took, and over what period it ran.",
-      "ANSWER: your role versus anyone else’s on it.",
+      "ANSWER: your role versus anyone else's on it.",
       "DECIDE: whether the live URL can be linked from here.",
-      "CHECK: the masked regions on the two after shots. If those are public list prices rather than account-resolved ones, delete the `redact` arrays and the masks come off.",
+      "CHECK: the masked regions on 04-catalog-after.png. If those are public list prices rather than account-resolved ones, delete the `redact` array and the masks come off.",
     ],
   },
 };

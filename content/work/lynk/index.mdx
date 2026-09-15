@@ -82,22 +82,22 @@ usable without blowing up token costs.
 
 **Live notes, written as the conversation happened.** A rail beside the chat
 took notes on the session while it ran, in snapshots, pulling out key topics
-and keeping a running summary of what had actually been discussed. Not a
-transcript. A read on the conversation, produced while you were still in it.
+and keeping a running summary of what had actually been discussed. A read on
+the conversation, produced while you were still in it.
 
 **Commands it wrote for you.** Lynk generated invocable commands out of the
-conversation itself — you could call them in-chat to perform a function
-rather than describing the function again in prose every time.
+conversation itself. You could call them in-chat to perform a function instead
+of describing it again in prose every time.
 
 **Four models from four providers, inside one conversation.** Claude, OpenAI,
 Gemini and Grok, switchable mid-thread, with context carried across the
-switch. Not four chats in four tabs: one conversation that changed engines
-under you and remembered everything that had been said to the previous one.
+switch. One conversation that changed engines under you and remembered
+everything that had been said to the previous one.
 
 **Summaries used as memory.** As a session grew, Lynk summarized its own
 older turns and then referenced those summaries instead of replaying the full
-history — hierarchical compression, in order to spend fewer tokens and hold
-more session. The compression is the part I'd still defend. Long-running LLM
+history. Hierarchical compression, to spend fewer tokens and hold more
+session. The compression is the part I'd still defend. Long-running LLM
 sessions degrade in predictable ways, and summarizing older context while
 keeping recent context intact was a genuinely reasonable answer to it. The
 same idea, scaled down, is what runs Eve's rolling summaries in DrawEvolve

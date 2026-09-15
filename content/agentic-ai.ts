@@ -67,9 +67,9 @@ export type AgentSection = {
 export const method = {
   title: "Method",
   body: [
-    "Every one of these was built the same way, and it is the same loop I work in with a model on anything else: investigate, propose, implement, with an explicit approval between each step. The model does the investigating and the proposing. I do the deciding.",
-    "That sounds like a workflow preference and it is actually the entire product decision. Generation is cheap and it is no longer the constraint on any of this — a model will happily write the billing agent in an afternoon. What is expensive, and what determines whether the thing can be pointed at a live business, is knowing where it is allowed to act on its own conclusions and where it has to stop and show its work.",
-    "So the gates are the design, not the friction. An agent that acts without first justifying what it is about to do is not a more capable agent, it is an unreviewable one — and an unreviewable process attached to a system that sends invoices is a liability rather than a feature.",
+    "Every one of these was built the same way: investigate, propose, implement, with an explicit approval between each step. The model investigates and proposes. I decide.",
+    "The approvals are the entire product decision. Generation is cheap now; a model will write the billing agent in an afternoon. What costs something is knowing where it is allowed to act on its own conclusions and where it has to stop and show its work, which is what decides whether you can point one at a live business.",
+    "An agent that acts without justifying what it is about to do is unreviewable. Attach an unreviewable process to a system that sends invoices and you have a liability.",
   ],
 };
 
@@ -83,15 +83,15 @@ export const agents: AgentSection[] = [
     body: [
       "Every day the warehouse scans its picking tickets to a shared drive. The agent reads the day's batch, and for each ticket it goes to NetSuite and establishes three things: that the items on the ticket are the items on the order, that the quantities picked are the quantities sold, and that the order has not already been invoiced.",
       "Where all three hold, it bills the order and formally sends the billing. Where any of them does not, it stops and writes the ticket into an exception report for a person, with the reason attached.",
-      "The exceptions are not edge cases in the sense of being rare — they are the ordinary texture of a wholesale operation. A quantity picked short because that is what was on the shelf. An order that was prepaid, where invoicing would charge twice. Shipping that a rep comped verbally. A note somebody wrote on the ticket in pen, which is a real instruction from a real person that exists nowhere in the ERP. Each of those has a defensible automatic answer, and the agent is not permitted to reach for any of them.",
+      "The exceptions are not rare. They are the ordinary texture of a wholesale operation. A quantity picked short because that is what was on the shelf. An order that was prepaid, where invoicing would charge twice. Shipping a rep comped over the phone. A note somebody wrote on the ticket in pen, which is a real instruction from a real person that exists nowhere in the ERP. Each of those has a defensible automatic answer. The agent is not allowed to reach for any of them.",
     ],
     point:
-      "The interesting engineering here is not the automation. It is the confidence boundary. Deciding what the agent is not allowed to decide is the design work, and everything else is plumbing.",
+      "Deciding what the agent is not allowed to decide is the design work here. The automation around it is plumbing.",
     flow: {
       label:
-        "The billing agent's daily run: read tickets, match to NetSuite, verify items, quantities and invoice status, then fork — clean orders are invoiced and sent automatically, anything unusual is held and routed to a person",
+        "The billing agent's daily run: read tickets, match to NetSuite, verify items, quantities and invoice status, then fork, with clean orders invoiced and sent automatically and anything unusual held and routed to a person",
       caption:
-        "The fork at step three is the whole design. Everything left of it is verification; everything right of it is a decision about who is allowed to make the call.",
+        "The fork at step three is the whole design. Everything before it is verification. What happens after it depends on who is allowed to make the call.",
       nodes: [
         { id: "scan", label: "The day's scanned picking tickets", kind: "auto", col: 0 },
         { id: "match", label: "Match each to its NetSuite order", kind: "auto", col: 1 },
@@ -116,7 +116,7 @@ export const agents: AgentSection[] = [
         chrome: [
           { label: "Run", value: "daily, 06:15" },
           { label: "Source", value: "/scans/picking-tickets/" },
-          { label: "Action", value: "held — not invoiced" },
+          { label: "Action", value: "held, not invoiced" },
         ],
         title: "Held for review",
         rows: [
@@ -136,18 +136,18 @@ export const agents: AgentSection[] = [
             tag: "Manual",
             tone: "flag",
             title: "Handwritten note on the scanned ticket",
-            body: "Freight marked as comped by the rep. A real instruction from a real person that exists nowhere in the ERP, so nothing in the ERP can confirm it.",
+            body: "Freight marked as comped by the rep. Nothing in the ERP can confirm it.",
           },
         ],
         footer:
           "Every other ticket on this run was verified, invoiced and sent without intervention.",
-        note: "Sample artefact. Every value in it is invented.",
+        note: "Sample artifact. Every value in it is invented.",
       },
     },
     stat: null,
     todo: [
       "ANSWER: how long the billing agent has been running.",
-      "ANSWER: daily ticket volume. This is the one number that would turn the section from a description into a measurement, and the <StatRow> slot is already wired to take it — set `stat` and it appears.",
+      "ANSWER: daily ticket volume. This is the one number that would turn the section from a description into a measurement. The <StatRow> slot is already wired to take it: set `stat` and it appears.",
       "ANSWER: roughly what share of a run comes back clean, if that is knowable and not sensitive.",
     ],
   },
@@ -159,16 +159,16 @@ export const agents: AgentSection[] = [
     title: "The competitive intelligence agent",
     deck: "Watches what our largest accounts are actually selling, and reads what the changes mean.",
     body: [
-      "It monitors the websites of the company's largest accounts, scrapes their product and pricing data, and diffs each run against the last one. What it is specifically looking for is movement in items supplied by our largest competitor: something of theirs appearing on a shelf that did not carry it, something disappearing, something whose price has moved.",
-      "The diff is the easy half and it is not the output. A list of changed rows is a thing anybody can generate and nobody reads. The agent's actual job starts after the diff: taking a change and saying what it indicates for us — that an account has opened a second supplier, that a line we compete on is being discounted, that a category is being quietly exited.",
+      "It monitors the websites of the company's largest accounts, scrapes their product and pricing data, and diffs each run against the last one. It is looking for movement in items supplied by our largest competitor: something of theirs appearing on a shelf that did not carry it, something disappearing, something whose price has moved.",
+      "The diff is the easy half. A list of changed rows is something anybody can generate and nobody reads. The agent's job starts after it, taking a change and saying what it indicates for us. That an account has opened a second supplier. That a line we compete on is being discounted. That a category is being quietly exited.",
     ],
     point:
-      "It is scoped to interpret, not just to diff. A change log is data. A read on what the change means is the thing somebody can act on, and getting a model to produce the second without drifting into inventing the first is most of the work.",
+      "A change log is data. A read on what the change means is something somebody can act on. Getting a model to produce the second without inventing the first is most of the work.",
     flow: {
       label:
         "The competitive intelligence agent: crawl account sites, extract product and pricing data, diff against the previous run, flag competitor movement, interpret what it signals, then brief a person",
       caption:
-        "Only one step here is a diff. The step after it is the one the agent exists for.",
+        "Only one step here is a diff. The agent exists for the step after it.",
       nodes: [
         { id: "crawl", label: "Crawl the largest accounts' sites", kind: "auto", col: 0 },
         { id: "extract", label: "Extract products and pricing", kind: "auto", col: 1 },
@@ -188,7 +188,7 @@ export const agents: AgentSection[] = [
     stat: null,
     todo: [
       "ANSWER: how many accounts it watches, and how often it runs.",
-      "ANSWER: where the interpretation lands — an email, a channel, a document?",
+      "ANSWER: where the interpretation lands. An email, a channel, a document?",
       "CHECK: whether anything about which accounts are monitored is sensitive. The copy is deliberately aggregate and names nobody, but confirm the shape of it is safe to publish at all.",
     ],
   },
@@ -200,16 +200,16 @@ export const agents: AgentSection[] = [
     title: "The lead generation agent",
     deck: "Researches and compiles prospective leads into something a salesperson can act on directly.",
     body: [
-      "It researches potential leads and compiles what it finds into a single brief per lead, so that the work arriving on a salesperson's desk is already assembled rather than being a name and an invitation to go and look it up.",
-      "The design constraint is the same one that shapes the billing agent, pointed at a softer problem. Research is exactly the kind of task where a model will produce something confident and wrong, and a lead brief that contains an invented fact is worse than no brief at all, because somebody will repeat it on a call. So the agent compiles and attributes; it does not conclude.",
+      "It researches potential leads and compiles what it finds into one brief per lead, so the work arriving on a salesperson's desk is already assembled instead of being a name and a homework assignment.",
+      "The constraint is the billing agent's, pointed at a softer problem. Research is exactly where a model produces something confident and wrong. A lead brief with an invented fact in it is worse than no brief, because somebody will repeat it on a call. So the agent compiles and attributes. It does not conclude.",
     ],
     point:
-      "Handing a person a finished artefact rather than a starting point is the whole value, and it only works if every line in the artefact can be traced back to where it came from.",
+      "The value is handing a person something finished. That only works if every line in it can be traced back to where it came from.",
     flow: {
       label:
         "The lead generation agent: source candidates, research each one, compile a single brief per lead, then hand it to sales",
       caption:
-        "Four steps, and the last one is a person. The agent's output is an input to somebody's day, not a decision about it.",
+        "Four steps, and the last one is a person. What the agent produces is an input to somebody's day.",
       nodes: [
         { id: "source", label: "Source candidate leads", kind: "auto", col: 0 },
         { id: "research", label: "Research each one", kind: "auto", col: 1 },
@@ -242,7 +242,7 @@ export const agents: AgentSection[] = [
             tag: "Signal",
             tone: "auto",
             title: "No existing supplier relationship on record",
-            body: "Not in the account list. This is a new relationship rather than a competitive displacement, which changes how it should be approached.",
+            body: "Not in the account list. There is no incumbent to displace here, which changes the approach.",
           },
           {
             tag: "Action",
@@ -251,15 +251,15 @@ export const agents: AgentSection[] = [
             body: "The agent stops here. What to offer, and when, is not its call.",
           },
         ],
-        note: "Sample artefact. Every value in it is invented.",
+        note: "Sample artifact. Every value in it is invented.",
       },
     },
     stat: null,
     todo: [
-      "ANSWER: what it actually researches — which sources, which signals?",
+      "ANSWER: what it actually researches. Which sources, which signals?",
       "ANSWER: where the output lands. A sheet, a CRM, an inbox?",
       "ANSWER: who consumes it, and whether they act on it directly.",
-      "WRITE: the sample lead card above is a reasonable guess at the shape of the artefact and it should be replaced with the real shape once the three answers above exist.",
+      "WRITE: the sample lead card above is a reasonable guess at the shape of the artifact and it should be replaced with the real shape once the three answers above exist.",
     ],
   },
 
@@ -270,16 +270,16 @@ export const agents: AgentSection[] = [
     title: "The daily brief agent",
     deck: "A morning email on what moved in AI, filtered to what would change how I work.",
     body: [
-      "It reads the day's developments in AI and sends me one email about the ones that are relevant to what I am actually building. Relevance is the entire feature: an unfiltered digest of AI news is a way of spending twenty minutes learning nothing, and the volume is the reason nobody keeps reading one.",
-      "It carries one standing watch beyond my own work, which is AI in the education sector. American Scientific sells to schools and districts, so what those buyers are being told about AI, what their procurement frameworks are starting to permit, and what their budgets are being pointed at is commercially useful to us well before it is obvious.",
+      "It reads the day's developments in AI and sends me one email about the ones relevant to what I am building. Relevance is the entire feature. An unfiltered digest of AI news is a way to spend twenty minutes learning nothing, and that is why nobody keeps reading one.",
+      "It carries one standing watch beyond my own work: AI in the education sector. American Scientific sells to schools and districts, so what those buyers are being told about AI, and what their procurement frameworks are starting to permit, is commercially useful to us well before it is obvious.",
     ],
     point:
-      "This is the smallest of the four and the one I would defend longest. An agent whose job is to decide what is not worth telling me is doing the same work as the billing agent's fork, on a different scale.",
+      "This is the smallest of the four and the one I would defend longest. An agent whose job is to decide what is not worth telling me is running the billing agent's fork on a smaller scale.",
     flow: {
       label:
         "The daily brief agent: scan the day's AI developments, filter to relevance against my work and the education sector, assess what each one changes, then email one brief",
       caption:
-        "Two of the four steps are discarding things. That is the product.",
+        "Two of the four steps are discarding things.",
       nodes: [
         { id: "scan", label: "Scan the day's AI developments", kind: "auto", col: 0 },
         { id: "filter", label: "Filter to my work and to education", kind: "auto", col: 1 },
@@ -296,7 +296,7 @@ export const agents: AgentSection[] = [
       label: "A sample daily brief email",
       data: {
         chrome: [
-          { label: "Subject", value: "Daily brief — two things worth your time" },
+          { label: "Subject", value: "Daily brief: two things worth your time" },
           { label: "Sent", value: "06:00, daily" },
           { label: "Filtered", value: "everything else, with reasons" },
         ],
@@ -317,7 +317,7 @@ export const agents: AgentSection[] = [
         ],
         footer:
           "Everything else from the day was filtered out, each with the reason it was dropped, in case the filter is wrong.",
-        note: "Sample artefact. Every value in it is invented.",
+        note: "Sample artifact. Every value in it is invented.",
       },
     },
     stat: null,

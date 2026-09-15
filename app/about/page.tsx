@@ -18,8 +18,11 @@ export const metadata: Metadata = {
 /* ============================================================================
    ABOUT
    ============================================================================
-   Copy: portfolio-copy.md, "ABOUT". All four paragraphs, verbatim, in the
-   order they were written. Nothing here is rewritten, condensed or added to.
+   Copy: portfolio-copy.md, "ABOUT". Four paragraphs, in the order they were
+   written, edited once for the site-wide plain-declarative pass. The third
+   paragraph lost "Designing, building, and taking apart whatever project
+   comes to mind. It's all part of the process.", which was a dangling
+   fragment followed by a sentence that said nothing. Nothing was added.
 
    WHAT THE OVERHAUL CHANGED IS COMPOSITION, NOT WORDS. The page was four
    paragraphs stacked in one column at two sizes, which is the flat, minimal
@@ -68,7 +71,7 @@ const LEAD =
 
 const BODY = [
   "Somewhere in there I got tired of designing interfaces I couldn’t build. I taught myself Swift, then SwiftUI, then the rest of it: TypeScript, Cloudflare Workers, Supabase, enough Metal to write a renderer. I now build and ship products under RIG Tech LLC.",
-  "The through-line is that I don’t hand off. Designing, building, and taking apart whatever project comes to mind. It’s all part of the process. That means I’ve had to make real engineering decisions with real costs: architecture I had to migrate, features I had to cut, a product I shelved because the economics didn’t work. Those are on this site too.",
+  "The through-line is that I don’t hand off. That means I’ve had to make real engineering decisions with real costs: architecture I had to migrate, features I had to cut, a product I shelved because the economics didn’t work. Those are on this site too.",
 ];
 
 const ASK =

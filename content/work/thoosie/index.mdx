@@ -117,10 +117,10 @@ runs it in an iframe with its own fullscreen and sizing rules; the
 standalone build owns the whole window and can assume nothing about either
 of the other two.
 
-It is all JavaScript, and it is one codebase — not a core with three forks,
-which is the version of this that looks the same from outside and rots
-within a month, because the third platform's bug fix never makes it back
-into the first. Everything that differs between the three is isolated at the
+It is all JavaScript, and it is one codebase. A core with three forks looks
+the same from outside and rots within a month, because the third platform's
+bug fix never makes it back into the first. Everything that differs between
+the three is isolated at the
 edges: how the canvas learns what size it is, how input arrives, where a
 saved coaster is persisted, how fullscreen is requested. The game does not
 know which of the three it is running in.

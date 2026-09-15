@@ -1,8 +1,8 @@
-/* The featured case, on an ultramarine band. See FeaturedCase.tsx.
+/* The featured case, on the deep blue band. See FeaturedCase.tsx.
 
    Everything here inherits its colour from the band's ground rather than the
-   page palette: --ground-text is Paper on this background at 8.28:1, where
-   --color-text would be Ink at 2.09:1. See the contrast contract in
+   page palette: --ground-text is Paper on this background at 13.17:1, where
+   --color-text would be Ink at 1.31:1. See the contrast contract in
    tokens.css. */
 
 .band {
@@ -12,17 +12,24 @@
   border-top: 0;
 }
 
-/* --- Head ---------------------------------------------------------------- */
+/* --- Head ----------------------------------------------------------------
+   THE MEASURE USED TO BE ON THE WRAPPER AND IT WAS WRONG BY A FACTOR OF FOUR.
+   `.head` was a plain div carrying `max-width: 26ch`, and `ch` resolves in
+   the element's OWN font: a div inherits DM Sans at 15px, so 26ch is about
+   215px. The title under it renders at up to 86px, which meant an 86px
+   heading squeezed into a 215px column, breaking one word per line with the
+   long words hanging out past the edge, and the deck crushed into the same
+   column behind it.
 
-.head {
-  max-width: 26ch;
-}
+   The measure belongs on each piece of type, in its own font, which is the
+   only place a `ch` value means what it says. */
 
 .eyebrow {
   /* The label utility colours itself from --ground-accent, which on this
-     ground is ochre at 4.15:1. That is fine for large text and NOT for a 12px
-     uppercase label, so tokens.css overrides `.label` on this ground back to
-     paper. This rule only handles the spacing. */
+     ground is ochre. On the bright ultramarine that measures 4.15:1 and
+     tokens.css has to override it back to paper for a 12px label; on the deep
+     ground it is 6.60:1 and clears AA at any size, so the ochre stands. This
+     rule only handles the spacing. */
   margin-bottom: var(--space-5);
 }
 
@@ -34,26 +41,23 @@
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
   text-wrap: balance;
+  /* In Archivo at this size, not in the body face. Two lines at the ceiling. */
+  max-width: 17ch;
 }
 
 .deck {
   margin-top: var(--space-5);
   font-size: var(--text-lg);
   line-height: var(--leading-snug);
-  max-width: 34ch;
+  max-width: 44ch;
 }
 
 /* --- Body ----------------------------------------------------------------
-   THE STANDFIRST AND THE PROSE ARE NO LONGER SIDE BY SIDE, and the reason is
-   the comparison that now sits between them. They used to be two halves of
-   one 12-column row: standfirst in 1-6, argument in 7-12. That worked while
-   this section was a deck and four paragraphs. It cannot work with a pair of
-   full-width before/after frames in the middle of it, and stacking those into
-   a half-column would waste the one piece of evidence the section has.
-
-   So the section is a single column of full-width blocks now, and the
-   structure is carried by the blocks themselves: each one hangs its heading
-   in the rail position and runs its paragraphs on the measure beside it. */
+   ONE COLUMN OF FULL-WIDTH BLOCKS. The standfirst and the prose used to be
+   two halves of a 12-column row. That worked while this section was a deck
+   and four paragraphs. It cannot work with two full-width comparisons sitting
+   between them, and folding those into a half-column would waste the only
+   evidence the section has. */
 
 .standfirstBlock {
   margin-top: var(--rhythm-normal);
@@ -66,14 +70,17 @@
   max-width: 38ch;
 }
 
-/* --- The comparison ------------------------------------------------------
-   Full width, and the most air anything in this section gets. It is the
-   evidence, and the old site cannot be looked at any other way. */
+/* --- The comparisons -----------------------------------------------------
+   Two scroll sequences, before and after, each one taking the full stage.
+   This is the evidence, and the old site cannot be looked at any other way.
+
+   NO GAP BETWEEN THEM. Each sequence is its own pinned track, so one begins
+   where the last unpins. A rhythm gap here would be a band of empty blue
+   between two full-height stages. */
 
 .compareSlot {
   display: flex;
   flex-direction: column;
-  gap: var(--rhythm-normal);
   margin-top: var(--rhythm-normal);
 }
 
@@ -82,34 +89,40 @@
 .blocks {
   display: flex;
   flex-direction: column;
-  gap: var(--rhythm-tight);
+  gap: var(--rhythm-normal);
   margin-top: var(--rhythm-normal);
 }
 
 .block {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  row-gap: var(--space-4);
   padding-top: var(--rhythm-tight);
   border-top: var(--hairline) solid var(--ground-rule);
 }
 
+/* A REAL HEADING, NOT A LABEL IN A GUTTER.
+
+   This was a 12px uppercase line hung in columns 1-3 of the page grid, which
+   is roughly 215px wide. Every one of these headings is four or five words,
+   so each of them wrapped to three or four lines of tiny capitals stacked
+   down a narrow rail beside the paragraph they belong to. Small type set in a
+   column too narrow for it reads as a mistake, and on a page arguing that the
+   author can set type it reads as a worse one.
+
+   It is now display type on its own line, spanning the block. --type-entry is
+   the bottom step of the display tier, which puts it clearly under the
+   section's own <h2> at --type-title and clearly over the body. Nothing lands
+   in the hole in the scale. See tokens.css. */
 .blockHeading {
-  grid-column: 1 / 4;
-  font-family: var(--font-text);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  /* The rule moved to the block, so the heading no longer draws its own. */
-  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--weight-display);
+  font-variation-settings: "wdth" var(--width-display-mid);
+  font-size: var(--type-entry);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
+  max-width: 24ch;
+  margin: 0 0 var(--space-6);
   padding: 0;
   border: 0;
-}
-
-.blockBody {
-  grid-column: 4 / -1;
 }
 
 .para {
@@ -138,10 +151,6 @@
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   margin-bottom: var(--space-6);
-}
-
-.quoteSlot {
-  margin-top: var(--rhythm-normal);
 }
 
 /* --- The scaffold marker, development only ------------------------------
@@ -181,13 +190,10 @@
 /* --- Collapse ------------------------------------------------------------ */
 
 @media (max-width: 62rem) {
-  .head { max-width: none; }
-
-  .standfirst { max-width: none; }
-
-  /* The heading stops hanging in a rail and sits above its paragraphs. */
-  .blockHeading,
-  .blockBody {
-    grid-column: 1 / -1;
+  .title,
+  .deck,
+  .standfirst,
+  .blockHeading {
+    max-width: none;
   }
 }

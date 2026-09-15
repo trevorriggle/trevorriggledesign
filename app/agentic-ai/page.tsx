@@ -51,7 +51,7 @@ export const metadata: Metadata = {
 const IS_DEV = process.env.NODE_ENV !== "production";
 
 const LEAD =
-  "Not that I use AI. That I scope the work, make the model justify itself before it acts, and decide deliberately where a person stays in the loop.";
+  "I scope the work, make the model justify itself before it acts, and decide where a person stays in the loop.";
 
 export default function AgenticAIPage() {
   const navItems = [

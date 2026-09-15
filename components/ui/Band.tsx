@@ -33,7 +33,15 @@ import styles from "./Band.module.css";
    site's ground and most of the page is still on it.
    ========================================================================= */
 
-export type Ground = "paper" | "ink" | "ultramarine" | "ochre";
+/* `ultramarine-deep` is the same hue at roughly half the luminance, for a
+   band long enough that a full screen of the bright one glares. See the
+   grounds block in tokens.css. */
+export type Ground =
+  | "paper"
+  | "ink"
+  | "ultramarine"
+  | "ultramarine-deep"
+  | "ochre";
 
 export function Band({
   children,

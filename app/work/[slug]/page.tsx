@@ -204,7 +204,14 @@ export default async function CaseStudyPage({
       {hasSequence && (
         <Container as="section" className={styles.sequence}>
           <ScrollSequence
-            images={sequence}
+            shots={sequence.map((image) => ({
+              url: image.url,
+              alt: image.alt,
+              width: image.width,
+              height: image.height,
+              caption: image.caption,
+              unoptimized: image.unoptimized,
+            }))}
             label={`${entry.title}, ${sequence.length} screens in sequence`}
             priorityFirst
           />
