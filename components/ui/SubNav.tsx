@@ -97,9 +97,11 @@ export function SubNav({
 
   return (
     <nav className={styles.bar} aria-label={label}>
-      {/* Lenis owns the document's wheel events; this tells it to leave a
-          horizontal scroller nested inside it alone. See styles/global.css. */}
-      <ul className={styles.list} data-lenis-prevent>
+      {/* NO `data-lenis-prevent`. This bar is sticky across the top of every
+          long page, so an attribute that stops Lenis handling the wheel over
+          it stopped the page scrolling whenever the pointer crossed it. Lenis
+          works the axis out per gesture now; see SmoothScroll.tsx. */}
+      <ul className={styles.list}>
         {items.map((item) => (
           <li key={item.id} className={styles.item}>
             <a

@@ -10,9 +10,10 @@
    diagram rather than a diagram. The SVG keeps its intrinsic width and the
    container scrolls sideways under a finger.
 
-   `data-lenis-prevent` is on the element in the markup: Lenis owns the
-   document's wheel events and this tells it to leave a nested horizontal
-   scroller alone, the same arrangement <SubNav> uses. */
+   IT NO LONGER CARRIES `data-lenis-prevent`. That attribute stopped Lenis
+   handling any gesture over this element on either axis, so a wheel over a
+   diagram scrolled nothing at all. Lenis runs with `allowNestedScroll`
+   instead, which tests the axis of the gesture. See SmoothScroll.tsx. */
 
 .scroller {
   overflow-x: auto;

@@ -47,6 +47,13 @@ import styles from "./AgentFlow.module.css";
    320px viewport produces 4px type. The SVG scales to its container on a
    desktop and the container scrolls below that, which the brief permits by
    name. See AgentFlow.module.css.
+
+   THE SCROLLER DOES NOT TRAP THE WHEEL. It used to carry
+   `data-lenis-prevent`, which stopped Lenis handling any gesture over it —
+   both axes — so putting the pointer on a diagram stopped the page scrolling.
+   These are the biggest elements on their page. Lenis runs with
+   `allowNestedScroll` now and works the axis out for itself. See
+   components/motion/SmoothScroll.tsx.
    ========================================================================= */
 
 export type FlowKind = "auto" | "human" | "flag";
@@ -178,7 +185,7 @@ export function AgentFlow({
     (rows - 1) * ROW_H + Math.max(...measured.map((n) => n.h)) + MARGIN * 2 + 18;
 
   return (
-    <div className={styles.scroller} data-lenis-prevent>
+    <div className={styles.scroller}>
       <svg
         className={styles.svg}
         viewBox={`${-MARGIN} ${-MARGIN} ${width} ${height}`}

@@ -21,9 +21,13 @@ html.lenis body {
   scroll-behavior: auto !important;
 }
 
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
+/* NO `[data-lenis-prevent]` RULE. Nothing on the site carries that attribute
+   any more: it stopped Lenis handling a gesture over an element on BOTH axes,
+   which turned every horizontal scroller into a place where the page would not
+   scroll. The three that had it — the agent diagrams, the sticky subnav and
+   the case-study plate strip — each set `overscroll-behavior-x: contain` in
+   their own stylesheet, which is the part that was doing real work and is
+   where it belongs. See components/motion/SmoothScroll.tsx. */
 
 .lenis.lenis-stopped {
   overflow: hidden;

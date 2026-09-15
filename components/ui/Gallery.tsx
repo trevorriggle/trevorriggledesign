@@ -90,9 +90,12 @@ export function Gallery({
       tabIndex={0}
       role="group"
       aria-label={label}
-      /* Keeps the smooth-scroll wrapper from swallowing a horizontal gesture
-         that belongs to this element. See components/motion/SmoothScroll. */
-      data-lenis-prevent
+      /* NO `data-lenis-prevent`. It kept the smooth-scroll wrapper off this
+         element's horizontal gestures and off its VERTICAL ones too, so the
+         page stopped scrolling while the pointer was over a plate strip.
+         Lenis runs with `allowNestedScroll`, which tests the axis of each
+         gesture: this strip still takes a horizontal one and no longer eats
+         the wheel. See components/motion/SmoothScroll. */
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}

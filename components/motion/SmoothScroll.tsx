@@ -60,6 +60,23 @@ export function SmoothScroll() {
            than anything a library does and is what the OS gesture expects. */
         smoothWheel: true,
         syncTouch: false,
+        /* NOTHING ON THIS SITE MAY TRAP THE WHEEL, and this is what replaces
+           the three `data-lenis-prevent` attributes that used to.
+
+           That attribute is all-or-nothing: Lenis bails out of ANY wheel or
+           touch gesture whose path includes the element, on either axis. It
+           was on the agent diagrams, the sticky subnav and the case-study
+           plate strip, so putting the pointer over any of them stopped the
+           PAGE scrolling. On /agentic-ai the diagrams are the largest thing
+           on the page and the subnav is pinned across the top of it, so most
+           of the window was dead to the wheel.
+
+           `allowNestedScroll` is the per-axis version of the same idea, and
+           it is the one that is actually correct. Lenis measures the element
+           on the axis of the gesture: a horizontal strip has no vertical
+           overflow, so a vertical wheel over it is never prevented and the
+           page scrolls, while a horizontal gesture still reaches the strip. */
+        allowNestedScroll: true,
       });
 
       setLenis(lenis);

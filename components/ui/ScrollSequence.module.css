@@ -290,20 +290,45 @@
       row-gap: var(--space-3);
     }
 
-    /* THE SHOT SITS ON THE CAPTION, NOT FLOATING ABOVE IT.
+    /* THE PINNED STAGE BREAKS OUT OF THE CONTAINER, and this is the fix for
+       the empty band above these screenshots. Read it with the cap below.
 
-       This is the actual cause of the gap, and it is not padding. The plate
-       is bounded by WIDTH here — a 2:1 grab at the full container is about
-       641px tall — while its grid row is everything the caption bar does not
-       take, around 790px on a 900px window. The plate was centred in that
-       row, so the ~150px of slack was split evenly and about 75px of it sat
-       between the bottom of the screenshot and the caption describing it.
-       Trimming the row gap could never close that: the space was inside the
-       row, not between the rows.
+       THE CONTAINER GETS NARROWER AS THE WINDOW GETS WIDER, which is the part
+       that is not obvious. `.container` is `max-width: 90rem` with the gutter
+       as PADDING INSIDE that cap, and the gutter is `clamp(1.5rem, 5.5vw,
+       7.5rem)`. So the content column is 1440 minus twice the gutter: 1282px
+       at a 1440 window, 1229px at 1920, and 1200px at 2558. The wider the
+       screen, the smaller the picture.
 
-       Bottom-aligned, all of the slack goes above the plate, where it reads
-       as the block's own breathing room, and the caption is directly under
-       the picture it belongs to. */
+       A wide shot is bounded by that width, never by the height cap, so all
+       the growing room a big window offers went to neither: the plate stayed
+       around 1200px and the stage stayed 100vh, and the difference was dead
+       colour. Measured at 2558x1200 before this: a 1200x616 plate in a 1200px
+       stage, with 525px of empty blue above it.
+
+       Bottom-aligning the plate, which is what the previous pass did, moved
+       that space rather than removing it. The only thing that removes it is
+       letting the picture grow, and the only room left to grow into is
+       outside the container. The stage spans the viewport less one gutter a
+       side, so the plate takes 1709px at 1920 and 2318px at 2558 instead of
+       1229 and 1200.
+
+       IT IS SCOPED TO THE PINNED STATE and to `.wide`. The stack fallback, the
+       portrait layout, phones, Firefox and reduced motion are all untouched
+       and stay inside the container. This is the one block on the site whose
+       whole argument is "a website you can read rather than a picture of
+       one", and it is already inside a full-bleed colour band.
+
+       `50vw` counts the classic scrollbar, so the real width can come out
+       about 15px over. The gutter is never below 24px, so it absorbs that
+       with room to spare and the page never gains a horizontal scrollbar. */
+    .wide .stage {
+      margin-inline: calc(50% - 50vw + var(--gutter));
+    }
+
+    /* Bottom-aligned, so what slack is left after the plate has grown sits
+       above it as breathing room and the caption stays against the picture it
+       describes. With the breakout that is now tens of pixels, not hundreds. */
     .wide .figure {
       justify-content: center;
       align-items: flex-end;
@@ -313,14 +338,28 @@
        slightly under it so a short window clips nothing: the stage is
        `overflow: hidden` and a plate taller than its row would lose its
        bottom edge rather than scale. */
-    /* Same cut as `.portrait` above. The caption bar under a wide shot is
-       real and has to be subtracted, but 11rem was budgeting 176px for a
-       single line of type plus its rule: the two American Scientific
-       galleries were each running with a band of empty blue above and below
-       the screenshot that was the entire point of the section. 6.5rem is the
-       bar plus its padding and nothing else. */
+    /* WHAT THE CAPTION BAR TAKES, PLUS A LITTLE. The bar is one line of 17px
+       on 1.18, its own 12px of padding top and bottom, a hairline and the
+       12px row gap: about 57px. 11rem (176px) was budgeting three times that
+       and 5rem left almost nothing above the plate. 7rem subtracts the bar
+       and leaves roughly 55px of air above the picture.
+
+       IT MATTERS NOW IN A WAY IT DID NOT BEFORE. While the plate was capped by
+       the container this value was never the binding constraint on any normal
+       window — the width always ran out first. With the breakout above, the
+       height is what bounds the plate on a wide screen, so this is the number
+       that decides how big the screenshot actually gets.
+
+       AND IT HAS TO SUBTRACT THE STICKY BARS. The stage is `top: 0`, so its
+       first --sticky-stack (123px) sits BEHIND the masthead and the subnav.
+       The plate is bottom-aligned, so at 1440 and 1920 the leftover was large
+       enough to hide that and nothing showed; at 2558 the plate grew until its
+       top edge went 69px UNDER the subnav. Subtracting the bars here is what
+       makes the clearance a property of the layout rather than of how much
+       slack a given window happens to leave over. Measured after: the top of
+       the plate clears the bars by about 30px at every size tested. */
     .wide .plate {
-      --cap: calc(100vh - 5rem);
+      --cap: calc(100vh - var(--sticky-stack) - 7rem);
     }
 
     .wide .side {
