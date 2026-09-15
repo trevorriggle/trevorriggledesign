@@ -287,11 +287,26 @@
     .wide .shot {
       grid-template-rows: minmax(0, 1fr) auto;
       align-items: stretch;
-      row-gap: var(--space-5);
+      row-gap: var(--space-3);
     }
 
+    /* THE SHOT SITS ON THE CAPTION, NOT FLOATING ABOVE IT.
+
+       This is the actual cause of the gap, and it is not padding. The plate
+       is bounded by WIDTH here — a 2:1 grab at the full container is about
+       641px tall — while its grid row is everything the caption bar does not
+       take, around 790px on a 900px window. The plate was centred in that
+       row, so the ~150px of slack was split evenly and about 75px of it sat
+       between the bottom of the screenshot and the caption describing it.
+       Trimming the row gap could never close that: the space was inside the
+       row, not between the rows.
+
+       Bottom-aligned, all of the slack goes above the plate, where it reads
+       as the block's own breathing room, and the caption is directly under
+       the picture it belongs to. */
     .wide .figure {
       justify-content: center;
+      align-items: flex-end;
     }
 
     /* The height left over once the caption bar has taken its share. Held
@@ -305,7 +320,7 @@
        the screenshot that was the entire point of the section. 6.5rem is the
        bar plus its padding and nothing else. */
     .wide .plate {
-      --cap: calc(100vh - 6.5rem);
+      --cap: calc(100vh - 5rem);
     }
 
     .wide .side {
@@ -314,8 +329,11 @@
       gap: clamp(var(--space-4), 3vw, var(--space-6));
       max-width: none;
       height: auto;
-      padding-top: var(--space-4);
-      padding-bottom: var(--space-6);
+      /* Tight to the rule above it, which is tight to the plate above that.
+         The bar was carrying 16px over and 36px under; the space under it is
+         doing nothing, because the stage ends there. */
+      padding-top: var(--space-3);
+      padding-bottom: var(--space-3);
       border-top: var(--hairline) solid var(--ground-rule, var(--color-rule));
     }
 

@@ -194,3 +194,35 @@
     max-width: none;
   }
 }
+
+/* --- The live link -------------------------------------------------------
+   The last thing in the band. Set at body size rather than as a heading: it
+   is a sentence, and the only one on the page that points off the site. */
+
+.live {
+  margin-top: var(--rhythm-normal);
+  padding-top: var(--rhythm-tight);
+  border-top: var(--hairline) solid var(--ground-rule);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+}
+
+/* THE GROUND'S COLOURS, NOT THE PAGE'S. <ExternalLink> sets its arrow in
+   --color-signal, which IS ultramarine: on this deep-ultramarine band that is
+   a mark the same colour as the field behind it. The descendant selector is
+   what reaches the component's own `.mark` class, which is hashed and cannot
+   be named from here; it out-specifies it at (0,1,1) against (0,1,0). */
+.liveLink {
+  color: var(--ground-text);
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--ground-accent);
+  text-decoration-thickness: 2px;
+  transition: text-decoration-color var(--duration-fast) var(--ease-out);
+}
+
+.liveLink span { color: inherit; }
+
+.liveLink:hover,
+.liveLink:focus-visible {
+  text-decoration-color: var(--ground-text);
+}

@@ -253,6 +253,22 @@ export default async function DesignCategoryPage({
           ? group.items.filter((item) => !claimed.has(basename(item.src)))
           : group.items;
 
+        /* A LAYOUT MAY PLACE PICTURES ON BOTH SIDES OF THE COPY. Rows marked
+           `lead` render above it, everything else below, and the two grids
+           are given disjoint sets of files so neither can print the other's.
+           See the note on `lead` in content/design.ts. */
+        const leadRows = copy?.layout?.filter((r) => r.lead) ?? [];
+        const bodyRows = copy?.layout?.filter((r) => !r.lead) ?? [];
+        const leadFiles = new Set(
+          leadRows.flatMap((r) => r.cells.flatMap((c) => c.files)),
+        );
+        const leadItems = items.filter((it) =>
+          leadFiles.has(it.src.slice(it.src.lastIndexOf("/") + 1)),
+        );
+        const bodyItems = items.filter(
+          (it) => !leadFiles.has(it.src.slice(it.src.lastIndexOf("/") + 1)),
+        );
+
         return (
           <Container
             as="section"
@@ -269,6 +285,12 @@ export default async function DesignCategoryPage({
                   after={compare.after}
                   eager={i === 0}
                 />
+              </div>
+            )}
+
+            {leadRows.length > 0 && leadItems.length > 0 && (
+              <div className={styles.sectionLead}>
+                <DesignGrid images={leadItems} layout={leadRows} />
               </div>
             )}
 
@@ -291,14 +313,14 @@ export default async function DesignCategoryPage({
               </div>
             )}
 
-            {items.length > 0 && (
+            {bodyItems.length > 0 && (
               <div className={styles.sectionGrid}>
                 <DesignGrid
-                  images={items}
-                  priorityFirst={i === 0 && !compare}
+                  images={bodyItems}
+                  priorityFirst={i === 0 && !compare && leadItems.length === 0}
                   /* Placed rows when the section declares them, the automatic
                      grid when it does not. See content/design.ts. */
-                  layout={copy?.layout}
+                  layout={bodyRows}
                 />
               </div>
             )}

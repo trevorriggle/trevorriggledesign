@@ -1,4 +1,5 @@
 import { Band } from "./Band";
+import { ExternalLink } from "./ExternalLink";
 import { SpecTable } from "./SpecTable";
 import { StatRow } from "./StatRow";
 import { ScrollSequence } from "./ScrollSequence";
@@ -126,6 +127,18 @@ export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
           <h3 className={styles.numbersHeading}>{data.numbers.heading}</h3>
           <StatRow stats={data.numbers.stats} label={data.numbers.label} />
         </div>
+      )}
+
+      {/* THE SITE IS STILL RUNNING, and this is the only place the section
+          says so. It closes the band: everything above it is evidence about a
+          predecessor that no longer exists. */}
+      {data.live && (
+        <p className={styles.live}>
+          See it live at{" "}
+          <ExternalLink href={data.live.href} className={styles.liveLink}>
+            {data.live.label}
+          </ExternalLink>
+        </p>
       )}
 
       {showTodo && (

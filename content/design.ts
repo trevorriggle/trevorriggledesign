@@ -274,6 +274,20 @@ export type DesignLayoutCell = {
 
 export type DesignLayoutRow = {
   cells: DesignLayoutCell[];
+  /**
+   * Render this row ABOVE the section's copy instead of below it.
+   *
+   * THIS IS WHY "PUT THE WORDMARK ABOVE THE COPY" COULD NOT BE EXPRESSED
+   * BEFORE, and the reason is structural rather than an oversight in the
+   * data. A section renders head, then comparison, then copy, then grid, in
+   * that fixed order, and a layout row only ever reordered things WITHIN the
+   * grid — which is always the last of the four. Any picture the layout
+   * placed was therefore below the copy no matter what the layout said.
+   *
+   * A lead row is rendered by a second <DesignGrid> above the copy block,
+   * over the subset of files it names. Everything else is unchanged.
+   */
+  lead?: boolean;
   /** Centre the row when its spans do not fill all twelve columns. */
   center?: boolean;
   /** Every cell the same height, cropping to fill. The first cell sets it. */
@@ -315,6 +329,26 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "rebrand",
       placeholder: false,
+      /* THE FULL WORDMARK SITS ABOVE THE COPY, CENTRED. It is the only file
+         in this section the before/after does not claim, so by default it
+         landed in the gallery underneath the prose — three paragraphs below
+         the sentence that introduces it.
+
+         `lead` is what makes this expressible: a section renders head,
+         comparison, copy, grid, in that fixed order, and until now a layout
+         could only reorder things inside the last of those four. See the note
+         on `lead` in the type above.
+
+         SIX COLUMNS, NOT EIGHT. The file is 694px wide and eight columns is
+         842px at a 90rem page, which would render it larger than it exists.
+         Six is 623px, which it fills. */
+      layout: [
+        {
+          lead: true,
+          center: true,
+          cells: [{ files: ["03-wordmark.png"], span: 6 }],
+        },
+      ],
       compare: {
         label: "The American Scientific mark, before and after",
         before: {
@@ -411,7 +445,13 @@ export const designSections: Record<string, DesignSection[]> = {
          The two long banners take a line each, centred, at ten columns
          rather than the eight their proportion earned them. */
       layout: [
+        /* SQUARE, ALL THREE. 01 and 02 are 1:1 and 03 is 1000x893, so at four
+           columns each the Thanksgiving loop rendered 43px shorter than the
+           two beside it and the row had a ragged bottom edge. `ratio: 1`
+           makes the row a row; 03 gives up about 5% of its height to it. */
         {
+          equal: true,
+          ratio: 1,
           cells: [
             { files: ["02.gif"], span: 4 },
             { files: ["01.gif"], span: 4 },
@@ -563,7 +603,11 @@ export const designSections: Record<string, DesignSection[]> = {
           equal: true,
           cells: [
             { files: ["04.png"], span: 6 },
-            { files: ["05.jpg"], span: 6, focus: "50% 0%" },
+            /* 40%, NOT 0%. Top-aligned, the 636px-tall cell cut the frame at
+               his jaw and took the chin off. The window moves down far enough
+               to clear it and spends the difference on the top of his hair,
+               which is the right thing to lose. */
+            { files: ["05.jpg"], span: 6, focus: "50% 40%" },
           ],
         },
       ],
@@ -701,6 +745,16 @@ export type FeaturedCase = {
   table?: { caption: string; rows: SpecRow[] };
   /** Counts the cutover actually moved. */
   numbers?: { label: string; heading: string; stats: Stat[] };
+  /**
+   * The thing itself, still running, at the end of the section.
+   *
+   * IT CLOSES THE ARGUMENT. Everything above it is screenshots of a site the
+   * reader cannot visit and a table of what changed; this is the one line
+   * that says the subject of the case study is on the internet right now.
+   * `label` is what the link reads as and `href` is absolute, which
+   * <ExternalLink> asserts again at runtime.
+   */
+  live?: { label: string; href: string };
   /** What is still missing. DEVELOPMENT ONLY, never rendered in production. */
   todo: string[];
 };
@@ -864,10 +918,16 @@ export const designFeatured: Record<string, FeaturedCase> = {
       ],
     },
 
+    /* ANSWERED. The URL is linked, which is what the todo below used to be
+       asking about. */
+    live: {
+      label: "american-scientific.com",
+      href: "https://www.american-scientific.com",
+    },
+
     todo: [
       "ANSWER: how long the rebuild took, and over what period it ran.",
       "ANSWER: your role versus anyone else's on it.",
-      "DECIDE: whether the live URL can be linked from here.",
     ],
   },
 };

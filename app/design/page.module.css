@@ -5,9 +5,15 @@
    old archive: these are destinations, not a contact sheet.
    ========================================================================= */
 
+/* THE SAME OPENING AS /applications, AND IT HAS TO BE. These two pages are
+   one tier of the site shown twice, so a reader moving between them should
+   not be able to tell that they were built at different times. This carried
+   up to 120px above the title and 80px below it against the other page's
+   ~36px on both sides, which put the Design heading most of a screen lower
+   than the Applications one. The values are now that page's, verbatim. */
 .head {
-  padding-top: clamp(var(--space-7), 9vw, var(--space-9));
-  padding-bottom: var(--space-8);
+  padding-top: var(--rhythm-tight);
+  padding-bottom: var(--rhythm-tight);
 }
 
 .headGrid {

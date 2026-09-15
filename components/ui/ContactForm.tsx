@@ -142,11 +142,23 @@ export function ContactForm({ email }: { email: string }) {
   }
 
   if (status === "sent") {
+    /* THE ADDRESS IS THE SENDER'S, and it is stamped from the submitted form
+       rather than from anything on the server, so it is always the address the
+       reply will actually go to.
+
+       IT FALLS BACK RATHER THAN PRINTING AN EMPTY SENTENCE. `sentTo` is set
+       immediately before this state and has never been empty in practice, but
+       "I will reply to ." is a bad enough sentence to be worth one branch.
+
+       The wording replaces "That is with me, and I will reply to ...", which
+       read as a fragment and buried the one fact the sender wants confirmed. */
     return (
       <div className={styles.done} role="status">
         <p className={styles.doneHeading}>Sent.</p>
         <p className={styles.doneLine}>
-          That is with me, and I will reply to {sentTo}.
+          {sentTo
+            ? `I’ve got your message and will reply to ${sentTo}.`
+            : "I’ve got your message and will reply to the email address you provided."}
         </p>
       </div>
     );

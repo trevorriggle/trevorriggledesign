@@ -90,6 +90,11 @@
   margin-top: var(--rhythm-tight);
 }
 
+/* A LEAD ROW, above the copy. See the note on `lead` in content/design.ts. */
+.sectionLead {
+  margin-top: var(--rhythm-tight);
+}
+
 /* SINGLE-COLUMN PROSE, FULL WIDTH. Nothing sits beside a section's copy: the
    comparison is above it and the gallery is below it, at full width. It has
    been capped twice, at --measure (62ch, a 583px column against the left of a
@@ -97,6 +102,19 @@
    copy short of the media above and below it. The cap is gone. */
 .sectionCopy {
   margin-top: var(--space-6);
+  /* AIR UNDERNEATH IT. A section whose last element is its copy used to run
+     straight into whatever follows, and on American Scientific what follows
+     the rebrand is a full-bleed colour band: the final paragraph ended and
+     the blue started, with nothing between them. `.sectionGrid` supplies
+     this gap when there are pictures below the copy; this is the case where
+     there are not. */
+  padding-bottom: var(--rhythm-tight);
+}
+
+/* ...and when a gallery DOES follow the copy, its own top margin is the gap,
+   so the padding above would double it. */
+.sectionCopy:not(:last-child) {
+  padding-bottom: 0;
 }
 
 .sectionPara {
