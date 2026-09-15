@@ -66,36 +66,46 @@
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--color-text);
-  max-width: var(--measure);
   text-wrap: pretty;
 }
+
+/* NO MEASURE CAP. It ran at --measure, 62ch, about 583px, inside a main
+   column that is seven of twelve and about 733px wide, so the copy stopped
+   150px short of its own column with nothing in the gap. The rail still sits
+   beside it and still bounds it; the cap was a second constraint behind the
+   first and only ever narrowed the copy inside the box the grid had already
+   given it. Site-wide rule, see the note in styles/tokens.css. */
 
 .prose + .prose { margin-top: var(--space-5); }
 
 /* --- The resume ----------------------------------------------------------
-   ITS OWN SECTION, on the page's own axis, with a heading on it. It used to
-   be a button at the foot of the metadata rail, which is the narrowest column
-   on the page and below the fold on anything but a desktop. See page.tsx.
+   THE DOCUMENT IS ON THE PAGE AND THE BUTTON IS UNDER IT, both centred.
 
-   The section reads as a two-column row on a wide screen — heading in the
-   rail position, copy and button on the measure — and stacks on a phone. */
+   It has been three things. A button at the foot of the metadata rail, which
+   is the narrowest column on the page and below the fold on anything but a
+   desktop. Then a two-column row, heading in the rail position and a line of
+   copy plus the button on the measure. It is now a centred column: heading,
+   the sheet itself, then the button.
+
+   THE SENTENCE THAT USED TO SIT HERE IS GONE. "The whole thing on one page,
+   for reading offline or passing along" was describing a file the reader
+   could not see. They can see it now, so the description is redundant and the
+   button's own label says the rest. */
 
 .resumeBlock {
-  padding-bottom: var(--rhythm-normal);
-}
-
-.resumeGrid {
-  display: grid;
-  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
-  column-gap: var(--grid-gap);
-  row-gap: var(--space-5);
-  align-items: start;
   padding-top: var(--rhythm-tight);
+  padding-bottom: var(--rhythm-normal);
   border-top: var(--rule-heavy);
+  /* The whole block is a centred column. Nothing in it sits beside anything
+     else, which is what makes the heading, the sheet and the button read as
+     one object rather than as a row and a thing under it. */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .resumeHeading {
-  grid-column: 1 / 4;
   margin: 0;
   font-family: var(--font-display);
   font-weight: var(--weight-display);
@@ -105,17 +115,20 @@
   letter-spacing: var(--tracking-tight);
 }
 
-.resumeBody {
-  grid-column: 5 / -1;
-  max-width: var(--measure);
-}
+/* THE SHEET. Bounded by width rather than by height, so the page's shape is
+   what decides how big it gets and a longer resume simply renders longer.
 
-.resumeCopy {
-  margin: 0;
-  font-size: var(--text-md);
-  line-height: var(--leading-body);
-  color: var(--color-text);
-  text-wrap: pretty;
+   It carries the same hairline every other framed picture on this site does.
+   The document is white and the page ground is paper, so without an edge it
+   would read as a brighter patch of page rather than as a sheet. */
+.resumeSheet {
+  display: block;
+  width: 100%;
+  max-width: 46rem;
+  height: auto;
+  margin-top: var(--rhythm-tight);
+  background: var(--color-bg-sunk);
+  border: var(--rule);
 }
 
 /* Ink field, paper type: the loudest affordance on the page, because on a
@@ -128,8 +141,9 @@
 .resume {
   display: inline-flex;
   flex-direction: column;
+  align-items: center;
   gap: var(--space-1);
-  margin-top: var(--space-5);
+  margin-top: var(--rhythm-tight);
   padding: var(--space-4) var(--space-5);
   background: var(--color-bg-invert);
   color: var(--color-text-invert);
@@ -167,11 +181,9 @@
   color: var(--paper-mute-blue);
 }
 
-/* --- The ask -------------------------------------------------------------- */
-
-.askBlock {
-  padding-bottom: var(--rhythm-normal);
-}
+/* NO `.askBlock`. It held the page's one pull quote, on an ultramarine field:
+   "What I'm looking for is the job where the design and the building are the
+   same job." Sentence and block both removed. See page.tsx. */
 
 /* --- The closer ----------------------------------------------------------- */
 

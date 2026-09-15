@@ -10,12 +10,18 @@ import styles from "./SampleCard.module.css";
    A fake application window around them would be inventing a product that
    does not exist in order to illustrate one that does.
 
-   EVERY VALUE IN EVERY CARD IS INVENTED, AND THE CARD SAYS SO. `note` is
-   required, it renders under the card, and it is not decorative: these
-   agents run against a live wholesale business, and a plausible-looking
-   account name or dollar figure on a public portfolio page is a disclosure
-   whether or not anybody checks it. Nothing in this component's data comes
-   from the real system. The required field is the enforcement.
+   EVERY VALUE IN EVERY CARD IS INVENTED, AND THE CARD NO LONGER SAYS SO.
+   There was a required `note` under every card reading "Sample artefact.
+   Every value in it is invented." It is removed, by instruction, on all
+   three.
+
+   THE REASON IT EXISTED HAS NOT GONE AWAY and is worth leaving written down
+   here rather than deleting with the field: these agents run against a live
+   wholesale business, and a plausible-looking account name or dollar figure
+   on a public page is a disclosure whether or not anybody checks it. Nothing
+   in this component's data comes from the real system. That is now a rule
+   kept by whoever edits content/agentic-ai.ts rather than one the type
+   enforces.
    ========================================================================= */
 
 export type SampleRow = {
@@ -36,7 +42,6 @@ export type SampleCardData = {
   rows: SampleRow[];
   footer?: string;
   /** Required. States that the contents are invented. See above. */
-  note: string;
 };
 
 export function SampleCard({
@@ -81,7 +86,6 @@ export function SampleCard({
         {data.footer && <p className={styles.footer}>{data.footer}</p>}
       </div>
 
-      <figcaption className={styles.note}>{data.note}</figcaption>
     </figure>
   );
 }

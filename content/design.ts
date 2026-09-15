@@ -47,7 +47,12 @@ export const designCategories: DesignCategory[] = [
   {
     slug: "american-scientific",
     title: "American Scientific",
-    intro: "",
+    /* WRITTEN FOR THIS SLOT. This category was the one row on /design with no
+       description at all, so the largest body of work on the site introduced
+       itself with a name and a picture. It names the five kinds of work the
+       page actually contains, in the order the page runs them. */
+    intro:
+      "Four years of in-house design for a wholesale science supplier. The elephant mark reduced to one colour and one weight, a sell-sheet system that absorbs whatever state the product data arrives in, an on-this-day social series, looping banners, and the company's e-commerce site rebuilt from scratch.",
     body: [],
     demonstrates: "",
   },
@@ -55,7 +60,7 @@ export const designCategories: DesignCategory[] = [
     slug: "tarantos",
     title: "Taranto's",
     intro:
-      "A neighbourhood pizzeria, and the whole of its printed and posted output: the menu, the promotions that run on top of it, and the marks that go where the main logo does not fit.",
+      "A neighbourhood pizzeria, and the whole of its printed and posted output. A trifold menu dense enough to carry thirteen categories and still be read at a table, the seasonal promotions that run on top of it, and the alternate marks drawn for the places the main logo does not fit.",
     body: [],
     demonstrates: "",
   },
@@ -63,7 +68,7 @@ export const designCategories: DesignCategory[] = [
     slug: "personal",
     title: "Personal Works",
     intro:
-      "Illustration and comics, mostly made for myself. One of them ended up on the front page of Reddit, which was not the plan.",
+      "Illustration, comics and motion, made outside any brief. Figures finished in colour, short strips written and drawn to a fixed panel count, lettering as an excuse to draw letterforms rather than set them, and the 3D work where a technique gets tried before it reaches a client. One comic reached the front page of Reddit, which was not the plan.",
     body: [],
     demonstrates: "",
   },
@@ -225,6 +230,58 @@ export type ComparePair = {
   after: CompareShot;
 };
 
+/* ============================================================================
+   COMPOSED LAYOUT, for a section whose pictures are placed rather than flowed.
+   ============================================================================
+   <DesignGrid> derives every image's column span from its own proportion and
+   its pixel width, automatically, and that is still the default and still what
+   most sections want: it never crops, never upscales, and needs no decisions.
+
+   IT CANNOT SAY "THESE TWO, ONE LINE, SAME HEIGHT, CENTRED." Which is what a
+   composed section needs, and there was no way to express it short of
+   hand-writing a grid per section. This is that vocabulary, and a section
+   without it behaves exactly as it did before.
+
+   A ROW IS A ROW OF THE TWELVE-COLUMN GRID. Cells carry a span; the spans in
+   a row should sum to twelve, or less when the row is centred.
+
+   A CELL IS ONE FILE, OR SEVERAL STACKED WITH NO GAP. The stack is what makes
+   "Citrus Splash directly above the brain infographic, with the padding
+   between them removed" expressible at all.
+
+   `equal` IS THE HEIGHT RULE AND THE FIRST CELL SETS IT. Every other cell in
+   the row fills that height and crops to it, which is how a poster ends up
+   exactly as tall as the two pieces stacked beside it. It is done by layout
+   rather than by arithmetic: the first cell sizes itself from its own files,
+   the others are absolutely positioned inside it, so the heights are equal at
+   every viewport width with no numbers written down anywhere.
+
+   `ratio` OVERRIDES THAT with an explicit width-over-height for every cell in
+   the row, for a row where no single file should decide the shape.
+
+   ANY FILE NOT NAMED IN A ROW STILL RENDERS, in the automatic grid underneath.
+   A layout that forgets a picture loses its placement, never the picture.
+   ========================================================================= */
+
+export type DesignLayoutCell = {
+  /** Filenames, exactly as on disk. More than one stacks them, no gap. */
+  files: string[];
+  /** Columns of twelve. */
+  span: number;
+  /** `object-position` for this cell when it crops. Defaults to centre. */
+  focus?: string;
+};
+
+export type DesignLayoutRow = {
+  cells: DesignLayoutCell[];
+  /** Centre the row when its spans do not fill all twelve columns. */
+  center?: boolean;
+  /** Every cell the same height, cropping to fill. The first cell sets it. */
+  equal?: boolean;
+  /** width / height for every cell in an `equal` row, overriding the first. */
+  ratio?: number;
+};
+
 export type DesignSection = {
   /** Matches the folder slug exactly: "02-print" -> "print". */
   slug: string;
@@ -241,6 +298,16 @@ export type DesignSection = {
    * poster-claiming rule in lib/design-images.ts.
    */
   compare?: ComparePair;
+  /**
+   * Overrides the group title derived from the folder name.
+   *
+   * The folder is `03-logo-variants` and the redirect it generates is a
+   * published URL, so the folder cannot be renamed without breaking it. This
+   * changes what the page says without touching what the page is at.
+   */
+  title?: string;
+  /** Placed layout. Absent means the automatic grid. See above. */
+  layout?: DesignLayoutRow[];
 };
 
 export const designSections: Record<string, DesignSection[]> = {
@@ -283,6 +350,27 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "print",
       placeholder: true,
+      /* 01 is the measuring-cylinder flyer and 03 is the Solar Spectrum
+         poster on a classroom wall. They are the two single pieces in the
+         section and they run as a matched pair: 1.52 against 1.40, close
+         enough that levelling them costs about a four per cent crop.
+
+         02 is the envelope-and-stirrer collage, centred at ten columns
+         rather than the eight its proportion earned it.
+
+         05 IS NOT LISTED BECAUSE IT NO LONGER EXISTS. The holiday-catalog
+         collage was deleted from disk, by instruction. */
+      layout: [
+        {
+          equal: true,
+          cells: [
+            { files: ["01.jpg"], span: 6 },
+            { files: ["03.jpg"], span: 6 },
+          ],
+        },
+        { center: true, cells: [{ files: ["02.jpg"], span: 10 }] },
+        { cells: [{ files: ["04.jpg"], span: 12 }] },
+      ],
       body: [
         "Product sell sheets, built as a system. Every sheet has the same parts in the same places: the item number, the product shot knocked out in a circle, a short row of feature icons, the description, the what-is-included list, and the line telling the reader to contact their sales representative.",
         "The parts arrive in wildly different states. Some products come with a clean studio shot and a paragraph of copy. Some come with a phone photo and a spec table. The layout has to absorb that without every sheet looking like a different person made it.",
@@ -291,6 +379,19 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "social-media",
       placeholder: true,
+      /* The colour broadcast mockup takes its own line, centred and a step
+         larger. The three square posts keep the size they had and move
+         underneath it as one row of three rather than wrapping around it. */
+      layout: [
+        { center: true, cells: [{ files: ["02.jpg"], span: 8 }] },
+        {
+          cells: [
+            { files: ["01.jpg"], span: 4 },
+            { files: ["03.png"], span: 4 },
+            { files: ["04.jpg"], span: 4 },
+          ],
+        },
+      ],
       body: [
         "Posts for the company's Instagram account, built around an on-this-day-in-history series: a moment from the history of science, illustrated as a single composed image, with the detail in the caption.",
         "It is the one channel here that is not selling a product. The job is to be worth following. The image has to carry the idea on its own, at thumbnail size, in a feed.",
@@ -302,6 +403,23 @@ export const designSections: Record<string, DesignSection[]> = {
       body: [
         "Short looping animations for social and for the site: logo builds, animated banners, and posts that move.",
         "All of it has to survive autoplay with the sound off and read inside the first second, because that is the whole of the attention a looping banner gets. The loop point matters more than the animation.",
+      ],
+      /* The three squares come DOWN a step, from six columns each to four,
+         which is what puts all three on one line across the full twelve
+         instead of two-then-one. 02 is the elephant logo build and leads.
+
+         The two long banners take a line each, centred, at ten columns
+         rather than the eight their proportion earned them. */
+      layout: [
+        {
+          cells: [
+            { files: ["02.gif"], span: 4 },
+            { files: ["01.gif"], span: 4 },
+            { files: ["03.gif"], span: 4 },
+          ],
+        },
+        { center: true, cells: [{ files: ["04.gif"], span: 10 }] },
+        { center: true, cells: [{ files: ["05.gif"], span: 10 }] },
       ],
     },
   ],
@@ -324,6 +442,9 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "menu",
       placeholder: false,
+      /* One piece, centred. The section had a single image hanging off the
+         left of a twelve-column page. */
+      layout: [{ center: true, cells: [{ files: ["01.jpg"], span: 8 }] }],
       body: [
         "The menu, rebuilt from scratch. A trifold that has to carry subs, lunch combos, a kids' menu, take-and-bake, desserts, catering, build-your-own pizza at four sizes, specialty pizzas, entrees, appetizers, salads, soups and drinks, and still be readable by somebody holding it at a table.",
         "The hard part of a menu this dense is hierarchy. Every item wants to be a heading. The ones that earn it are the categories a customer is scanning for, and everything else drops a level. The cover panel carries the mark and the food photography and nothing else, so the piece opens as a brand and unfolds into a price list.",
@@ -332,6 +453,9 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "marketing",
       placeholder: false,
+      /* One piece, centred. The section had a single image hanging off the
+         left of a twelve-column page. */
+      layout: [{ center: true, cells: [{ files: ["01.jpg"], span: 6 }] }],
       body: [
         "Promotional work that runs on top of the menu: in-store posters, seasonal and limited-time offers, and co-branded pieces where a partner's mark has to sit next to the restaurant's without either one losing.",
         "The Cinco de Mayo taco pizza promotion is the one that shows the constraint. It is a limited-time item with a date range, a co-brand, a product shot, an address block and a call to action, all on a single poster read from across a dining room. Everything on it competes for the same few seconds, so the decision that matters is what gets to be large. The offer won that, over the logo.",
@@ -340,6 +464,12 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "logo-variants",
       placeholder: false,
+      /* "Logo variant", singular: there is one variant mark in this section
+         and the plural was counting the folder rather than the work. The
+         folder stays `03-logo-variants` because next.config.ts generates a
+         published redirect from it. */
+      title: "Logo variant",
+      layout: [{ center: true, cells: [{ files: ["01.jpg"], span: 6 }] }],
       body: [
         "Alternate marks, drawn for the places the primary logo does not go. The main lockup is a full wordmark in a banner with a tagline under it, which is right on a menu cover and wrong on anything small, square, or aimed at children.",
         "The variants solve those cases one at a time: a single illustrated character mark, built from the same pizza and the same two brand colours, that reads at any size and in any orientation without the wordmark beside it. A variant that only works when the original is also present is a decoration.",
@@ -351,6 +481,26 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "misc-art",
       placeholder: true,
+      /* ONE RECTANGLE, THREE PIECES. Citrus Splash sits directly on top of
+         the brain infographic with no gap between them, and the Dracula
+         poster runs down the right at the height of both plus the gap that
+         is not there.
+
+         The stack is one cell, which is the only way to say "no padding
+         between these two" without removing it from the whole grid. Dracula
+         is the second cell, so it takes the stack's height and crops to it:
+         at 7/5 the poster's natural height comes out about 11% short, and
+         `focus: top` spends that crop on the bottom edge so the title and
+         the face stay whole. */
+      layout: [
+        {
+          equal: true,
+          cells: [
+            { files: ["01.png", "03.jpg"], span: 7 },
+            { files: ["02.jpg"], span: 5, focus: "50% 0%" },
+          ],
+        },
+      ],
       body: [
         "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colours, and usually an excuse to draw letterforms rather than set them.",
       ],
@@ -358,6 +508,26 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "comics",
       placeholder: true,
+      /* 02 is the three-panel strip and leads at full width. 01 is the
+         four-panel strip and 03 is the page carrying five of them; they run
+         as one centred pair at matched height, which is the point — the
+         second holds more comics and is not therefore a bigger picture.
+
+         04 is the Reddit front page. It is a 600px file, so four columns
+         (403px) is as large as it goes before it is being upscaled, which is
+         the one sizing mistake this grid refuses to make anywhere else. */
+      layout: [
+        { cells: [{ files: ["02.jpg"], span: 12 }] },
+        {
+          center: true,
+          equal: true,
+          cells: [
+            { files: ["01.jpg"], span: 5 },
+            { files: ["03.jpg"], span: 5 },
+          ],
+        },
+        { center: true, cells: [{ files: ["04.jpg"], span: 4 }] },
+      ],
       body: [
         "Short strips, written and drawn. The panel count is what makes them interesting to make. The joke has to land inside a fixed number of frames, so the writing and the staging are one decision.",
       ],
@@ -365,6 +535,38 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "drawings",
       placeholder: true,
+      /* FIVE PIECES, TWO ROWS, THREE THEN TWO. The section ran 6/4/6/6/6
+         across a twelve-column dense grid, which packed into four ragged
+         rows with a different gap under every picture.
+
+         Both rows are square frames rather than natural proportions: these
+         five are a landscape scene, two near-squares, a square and a tall
+         portrait, and nothing reads as even while each keeps its own shape.
+         `ratio: 1` is what makes the row a row. The two portraits crop from
+         the bottom so the faces survive it. */
+      layout: [
+        {
+          equal: true,
+          ratio: 1,
+          cells: [
+            { files: ["01.jpg"], span: 4 },
+            { files: ["02.jpg"], span: 4, focus: "50% 0%" },
+            { files: ["03.png"], span: 4 },
+          ],
+        },
+        /* The second row takes NO `ratio`. Forced square at six columns it
+           produced 623px boxes that dwarfed the row above and cut the top and
+           bottom off both pieces. 04 is very nearly square already, so letting
+           it set the height crops it not at all, and 05 gives up its bottom
+           quarter — the signature, not the face. */
+        {
+          equal: true,
+          cells: [
+            { files: ["04.png"], span: 6 },
+            { files: ["05.jpg"], span: 6, focus: "50% 0%" },
+          ],
+        },
+      ],
       body: [
         "Illustration, mostly figures and characters, mostly finished in colour. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
       ],
@@ -372,6 +574,19 @@ export const designSections: Record<string, DesignSection[]> = {
     {
       slug: "motion-graphics",
       placeholder: true,
+      /* The Similac render first and the map GIF beside it, at matched
+         height. The render is 1920x1080 and sets the row; the GIF is 490x360
+         and fills what is left, which at 7/5 is close enough to its own
+         proportion that the crop is a few pixels off each side. */
+      layout: [
+        {
+          equal: true,
+          cells: [
+            { files: ["02-similac-360-packaging-render.mp4"], span: 7 },
+            { files: ["01.gif"], span: 5 },
+          ],
+        },
+      ],
       body: [
         "Animation and 3D, and the place where techniques get tried before they turn up in client work. The Similac render is a packaging study: a real product, modelled and lit from scratch, for the practice rather than for a brief.",
       ],

@@ -24,26 +24,10 @@
    The measure belongs on each piece of type, in its own font, which is the
    only place a `ch` value means what it says. */
 
-.eyebrow {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-4);
-  /* The label utility colours itself from --ground-accent, which on this
-     ground is ochre. On the bright ultramarine that measures 4.15:1 and
-     tokens.css has to override it back to paper for a 12px label; on the deep
-     ground it is 6.60:1 and clears AA at any size, so the ochre stands. This
-     rule only handles the spacing. */
-  margin-bottom: var(--space-5);
-}
-
-/* The ordinal, at the same size <SectionHead> sets its own, so this section
-   and the folder sections around it index identically. `.ordinal` the global
-   utility carries the display face and the ground's accent. */
-.number {
-  flex: none;
-  font-size: var(--text-lg);
-  transform: translateY(-0.12em);
-}
+/* NO `.eyebrow` AND NO `.number`. The band opened with an ordinal and the
+   word "Featured" on a row above the title; both are gone, so the title is
+   the first thing in the band and nothing sits above it. See FeaturedCase.tsx.
+   The deck below it keeps the air that row used to provide. */
 
 .title {
   font-family: var(--font-display);
@@ -137,11 +121,11 @@
   border: 0;
 }
 
-/* Single column: the blocks run full width and nothing sits beside them. */
+/* Single column: the blocks run full width and nothing sits beside them, so
+   there is no measure cap on them either. */
 .para {
   font-size: var(--text-md);
   line-height: var(--leading-body);
-  max-width: var(--measure-wide);
 }
 
 .para + .para {

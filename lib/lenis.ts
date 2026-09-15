@@ -55,18 +55,23 @@ export function scrollToId(id: string): boolean {
 
   const lenis = getLenis();
   if (lenis) {
-    /* READ THE SAME NUMBER THE BROWSER WOULD. This used to read the target's
-       own scroll-margin-top, which meant a click through Lenis and a click
-       without it resolved to different positions: native fragment navigation
-       applies the scrollport's scroll-padding-top AS WELL as the target's
-       scroll-margin-top, so the two paths were 56px apart on the same link.
+    /* NO OFFSET, AND THAT IS THE FIX. Lenis's own scrollTo ALREADY subtracts
+       the scrollport's scroll-padding-top before it animates: see `scrollTo`
+       in lenis/dist/lenis.mjs, which reads `scrollPaddingTop` off the root
+       element and takes it off the target position.
 
-       There is now one value, scroll-padding-top on the document element, and
-       this reads it. See the sticky stack note in tokens.css. */
-    const pad = parseFloat(
-      getComputedStyle(document.documentElement).scrollPaddingTop || "0",
-    );
-    lenis.scrollTo(target, { offset: Number.isFinite(pad) ? -pad : 0 });
+       This used to read that same property and hand it back as a negative
+       offset, so it was applied TWICE and every subnav click landed exactly
+       one --sticky-stack short. Measured on /design/american-scientific at
+       1440x900, from a fresh load, all five anchors resolved to
+       `docTop - 272` against a correct `docTop - 136`, which left 148px of
+       the previous section sitting above the divider. Native fragment
+       navigation was never affected, which is why this presented as "the
+       subnav is broken" rather than as "anchors are broken".
+
+       Nothing replaces it. The one value is scroll-padding-top in reset.css
+       and both paths now read it exactly once. */
+    lenis.scrollTo(target);
     return true;
   }
 

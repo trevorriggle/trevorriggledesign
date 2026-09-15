@@ -30,8 +30,14 @@ export const site = {
   /** portfolio-copy.md → "Contact page", verbatim. */
   email: "trevorriggle@gmail.com",
 
-  /** Supplied by the author. Shown on /about, /contact and the home rail. */
-  availability: "Open to design engineering and AI product roles",
+  /** Supplied by the author. Shown on /about, /contact and the home rail.
+   *
+   *  ONE STRING, TWO PAGES. The rail on /about and the rail on /contact both
+   *  read this, so the roles are stated once. The list is deliberately long:
+   *  it is the answer to "what would you actually do here", and naming five
+   *  disciplines is the point of it rather than a failure to choose. */
+  availability:
+    "Graphic Design, Motion design, UX/UI design, design engineering and AI product roles",
 
   /** Supplied by the author. */
   location: "Columbus, Ohio",

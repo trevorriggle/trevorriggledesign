@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/ui/Container";
 import { ContactForm } from "@/components/ui/ContactForm";
-import { MetaRail, Meta, MetaLinks } from "@/components/ui/MetaRail";
 import { site } from "@/lib/site";
-import grid from "@/components/ui/grid.module.css";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -31,17 +29,13 @@ export const metadata: Metadata = {
    signature and a record of having sent it. A form that hides the address is
    optimising for the owner's inbox over the sender's habits.
 
-   THE FORM IS THE ONLY CLIENT COMPONENT ON THIS PAGE. The heading, the copy,
-   the address and the rail are all server-rendered, so the contact route's
-   content does not depend on hydration: if the JS never arrives, the address
-   is still there, still set at title scale, still a working mailto.
+   THE FORM IS THE ONLY CLIENT COMPONENT ON THIS PAGE. The heading, the copy
+   and the address are all server-rendered, so the contact route's content
+   does not depend on hydration: if the JS never arrives, the address is still
+   there, still set at title scale, still a working mailto.
    ========================================================================= */
 
 export default function ContactPage() {
-  const hasRail = Boolean(
-    site.location || site.availability || site.social.length,
-  );
-
   return (
     <Container className={styles.wrap}>
       <div className={styles.grid}>
@@ -67,23 +61,12 @@ export default function ContactPage() {
           </div>
         </div>
 
-        {/* Renders only when there is something to put in it. An empty ruled
-            rail is worse than no rail. */}
-        {hasRail && (
-          <div className={`${styles.rail} ${grid.railRuled}`}>
-            <MetaRail>
-              <Meta term="Based" value={site.location} />
-              <Meta term="Looking for" value={site.availability} />
-              <MetaLinks
-                term="Elsewhere"
-                links={site.social.map((s) => ({
-                  ...s,
-                  kind: "other" as const,
-                }))}
-              />
-            </MetaRail>
-          </div>
-        )}
+        {/* NO RAIL. It carried Based / Columbus, Ohio and Looking for / the
+            roles, in a ruled column beside the address. Removed entirely, by
+            instruction. Both facts are still on the site: the location is in
+            the footer sign-off on every page and the roles are the first
+            sentence of this page. A rail that repeats what is already two
+            inches to its left is furniture. /about keeps its own rail. */}
       </div>
     </Container>
   );

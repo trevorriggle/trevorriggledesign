@@ -174,34 +174,18 @@
 
 .quote {
   /* Face, size, leading and tracking come from the global `.quote` utility in
-     styles/typography.css, which is the only file that assigns the serif. */
-  max-width: 20ch;
+     styles/typography.css, which is the only file that assigns the serif.
+
+     TWO LINES, NOT FOUR. The cap was 20ch, about 450px at this size, which
+     broke a 96-character sentence over four lines in a band 1282px wide. At
+     42ch it sets as two, which is the shape the band was composed for: a wide
+     statement, not a narrow column of serif inside a full-bleed field. */
+  max-width: 42ch;
 }
 
-/* The one link on the band. Set as a label rather than as body type, so it
-   reads as a way out of the band rather than as a second sentence. */
-.quoteLink {
-  display: inline-block;
-  margin-top: var(--rhythm-tight);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  text-decoration: none;
-  /* Ochre on ultramarine is 4.15:1, which is fine for large text and NOT for
-     a 12px label, so the label stays paper and the ochre is in the rule
-     under it. Same idiom as the masthead's current-page mark. */
-  color: var(--on-ultramarine);
-  box-shadow: inset 0 -3px 0 0 var(--color-underline-active);
-  padding-bottom: var(--space-1);
-  transition: box-shadow var(--duration-fast) var(--ease-out);
-}
-
-.quoteLink:hover,
-.quoteLink:focus-visible {
-  color: var(--on-ultramarine);
-  box-shadow: inset 0 -6px 0 0 var(--color-underline-active);
-}
+/* NO `.quoteLink`. The band carried an "About" link under the sentence; it is
+   gone, along with the ochre underline it was the only user of on this page.
+   See page.tsx. */
 
 /* --- Collapse ------------------------------------------------------------- */
 

@@ -2,22 +2,19 @@ import type { ReactNode } from "react";
 import styles from "./SectionHead.module.css";
 
 /* ============================================================================
-   SECTION HEAD, numbered.
+   SECTION HEAD
    ============================================================================
-   The brief's "numbered sections" and "hairline rules", as one element, so
-   that every section on the site opens the same way and the numbering cannot
-   drift into six different treatments across four pages.
+   The brief's "hairline rules" and one heading treatment, as one element, so
+   that every section on the site opens the same way.
 
-   THE NUMBER IS NOT CONTENT. It is `aria-hidden`, because a heading that
-   reads "zero one Rebrand" to a screen reader is worse than one that reads
-   "Rebrand": the ordinal is a visual index for someone scanning a page, and a
-   screen reader user is not scanning, they are being read to in order. The
-   number is also never used as the anchor, for the same reason a URL should
-   not renumber itself when a section is inserted above it.
+   THERE IS NO ORDINAL ANY MORE. Every section head on the site used to open
+   with a two-digit index, 00 through 05, passed in per page. They are gone
+   site-wide, by instruction, along with the row that held one beside the
+   title and the phone rule that dropped it onto its own line. The heading is
+   the heading.
 
-   THE NUMBER IS PASSED IN, NOT COUNTED. A component that counts its own
-   instances would number them by render order, and the running order of a
-   page is a decision, not an accident of where a component happens to sit.
+   The anchor is unaffected: `id` was never the number, for the same reason a
+   URL should not renumber itself when a section is inserted above it.
 
    THE INTRO IS THE SERIF, AND IT IS THE ONLY PLACE IT APPEARS BESIDES A PULL
    QUOTE. `.intro` is a global utility in styles/typography.css, which is the
@@ -26,8 +23,6 @@ import styles from "./SectionHead.module.css";
    ========================================================================= */
 
 export function SectionHead({
-  /** The visual index. "01", "02". Decorative, see above. */
-  number,
   title,
   /** One or two sentences in the serif. Renders nothing when absent. */
   intro,
@@ -37,7 +32,6 @@ export function SectionHead({
   as: Tag = "h2",
   children,
 }: {
-  number?: string;
   title: string;
   intro?: ReactNode;
   id?: string;
@@ -48,14 +42,7 @@ export function SectionHead({
     <header className={styles.head} id={id}>
       <div className={styles.rule} aria-hidden="true" />
 
-      <div className={styles.row}>
-        {number && (
-          <span className={`ordinal ${styles.number}`} aria-hidden="true">
-            {number}
-          </span>
-        )}
-        <Tag className={styles.title}>{title}</Tag>
-      </div>
+      <Tag className={styles.title}>{title}</Tag>
 
       {intro && <p className={`intro ${styles.intro}`}>{intro}</p>}
       {children}

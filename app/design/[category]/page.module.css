@@ -17,23 +17,9 @@
   padding-bottom: var(--space-7);
 }
 
-.breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2) var(--space-3);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-  padding-bottom: var(--space-4);
-  margin-bottom: var(--space-7);
-  border-bottom: var(--rule);
-}
-
-.breadcrumb a { text-decoration: none; }
-.breadcrumb a:hover { color: var(--color-signal); }
+/* NO `.breadcrumb`. It was a ruled row reading "Design" above the title, plus
+   56px of margin under it. Removed entirely, see page.tsx. The masthead's
+   Design tab is the way back. */
 
 .headGrid {
   display: grid;
@@ -43,12 +29,24 @@
   align-items: start;
 }
 
+/* ONE LINE, AND THE WIDTH AXIS IS WHAT BUYS IT. "American Scientific" is 19
+   characters; at 86px in wdth 110 it measured about 1480px against a box of
+   733px, so it broke after "American" and the page opened on half a name.
+
+   Two things changed and neither is the size. The title spans all twelve
+   columns rather than seven, and the width axis drops from 110 to 84, which
+   is the compression this face is in the build for: the type stays at 86px
+   and keeps its place in the hierarchy, and the letterforms narrow instead.
+   That is the same move --type-title's own clamp makes at every other step.
+   See the note on Archivo in app/fonts.ts. */
 .title {
-  grid-column: 1 / 8;
+  grid-column: 1 / -1;
   font-size: var(--type-title);
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
+  font-variation-settings: "wdth" 84;
   margin-left: -0.045em;
+  text-wrap: nowrap;
 }
 
 /* The intro sits under the title, on the same left axis as it. */
@@ -64,9 +62,9 @@
 
 .bodyBlock { margin-top: var(--rhythm-tight); }
 
-/* The category's own intro body. Single column, nothing beside it. */
+/* The category's own intro body. Single column, nothing beside it, so it
+   takes the full twelve columns and no measure cap. */
 .prose {
-  max-width: var(--measure-wide);
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--color-text);
@@ -92,14 +90,13 @@
   margin-top: var(--rhythm-tight);
 }
 
-/* SINGLE-COLUMN PROSE, so it takes the wide measure. Nothing sits beside a
-   section's copy: the comparison is above it and the gallery is below it, at
-   full width. At --measure (62ch) it was a 583px column hanging off the left
-   of a 1282px container with 700px of nothing to its right. See the note on
-   --measure-wide in tokens.css. */
+/* SINGLE-COLUMN PROSE, FULL WIDTH. Nothing sits beside a section's copy: the
+   comparison is above it and the gallery is below it, at full width. It has
+   been capped twice, at --measure (62ch, a 583px column against the left of a
+   1282px container) and then at --measure-wide (82ch, 770px). Both left the
+   copy short of the media above and below it. The cap is gone. */
 .sectionCopy {
   margin-top: var(--space-6);
-  max-width: var(--measure-wide);
 }
 
 .sectionPara {
@@ -177,4 +174,13 @@
 @media (max-width: 62rem) {
   .title,
   .intro { grid-column: 1 / -1; }
+}
+
+/* THE NO-WRAP GUARANTEE IS RELEASED ON A PHONE. At 360px "American
+   Scientific" measured 322px against a 314px column and hung 8px off the
+   side, because `nowrap` is a promise the viewport cannot always keep. Above
+   this width it holds at every size tested, 420px to 1920px. Below it, a
+   two-line title is the correct answer and the overflow is not. */
+@media (max-width: 30rem) {
+  .title { text-wrap: balance; }
 }

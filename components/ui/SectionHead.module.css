@@ -19,23 +19,9 @@
   margin-bottom: var(--space-4);
 }
 
-.row {
-  display: flex;
-  align-items: baseline;
-  gap: clamp(var(--space-3), 1.6vw, var(--space-5));
-}
-
-/* THE ORDINAL IS SMALL, and that is the point. The brief asks for "very big
-   vs very small, little in between": a number set at the same size as the
-   heading is a second heading, and two headings side by side have no order
-   between them. At label size beside a 57px title it reads as an index mark. */
-.number {
-  flex: none;
-  font-size: var(--text-lg);
-  /* Nudged off the baseline so the numeral's flat top aligns with the cap
-     height of the title rather than sitting visually low beside it. */
-  transform: translateY(-0.12em);
-}
+/* NO `.row` AND NO `.number`. The row existed to sit an ordinal beside the
+   title on a shared baseline; with the ordinal gone it wrapped a single
+   child, so the title is the rule's next sibling directly. */
 
 .title {
   /* Inherits h2's size, weight and tracking from typography.css. The only
@@ -50,15 +36,3 @@
      only the spacing, so the two are not fighting over the same properties. */
 }
 
-@media (max-width: 48rem) {
-  .row {
-    /* The ordinal drops above the title rather than beside it. At a phone
-       width a 21px number plus a gap plus a 38px title is most of the line
-       box before the first word lands. */
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--space-2);
-  }
-
-  .number { transform: none; }
-}

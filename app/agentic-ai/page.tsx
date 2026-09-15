@@ -79,7 +79,7 @@ export default function AgenticAIPage() {
 
       {/* ---- Method ---- */}
       <Container as="section" className={styles.section}>
-        <SectionHead id="method" number="00" title={method.title} />
+        <SectionHead id="method" title={method.title} />
         <div className={styles.methodBody}>
           {method.body.map((para, i) => (
             <p key={i} className={styles.prose}>
@@ -94,7 +94,6 @@ export default function AgenticAIPage() {
         <Container as="section" key={agent.slug} className={styles.section}>
           <SectionHead
             id={agent.slug}
-            number={String(i + 1).padStart(2, "0")}
             title={agent.title}
             intro={agent.deck}
           />

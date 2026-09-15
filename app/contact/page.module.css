@@ -20,10 +20,10 @@
   align-items: start;
 }
 
-/* 8 + 4 of 12, the site's content/rail proportion. The rail used to take the
-   last 3 columns, which was too narrow to set a term over its value. */
-.main { grid-column: 1 / 9; }
-.rail { grid-column: 9 / -1; }
+/* THE WHOLE TWELVE. This was 8 + 4, content and a metadata rail; the rail is
+   gone and nothing replaced it, so the column it left behind goes back to the
+   content rather than staying as four columns of nothing. */
+.main { grid-column: 1 / -1; }
 
 .title {
   font-size: var(--type-section);
@@ -49,7 +49,10 @@
   font-size: clamp(var(--display-1), 5.6vw, var(--display-3));
   line-height: var(--leading-title);
   letter-spacing: var(--tracking-display);
-  margin-top: var(--space-9);
+  /* NO LEADING AIR. It was --space-9, 120px, between the two sentences and
+     the address, which on a page with four elements on it read as a missing
+     block rather than as rhythm. The lead's own line height is the gap now. */
+  margin-top: var(--space-5);
   overflow-wrap: anywhere;
 }
 
@@ -81,5 +84,5 @@
 @media (max-width: 62rem) {
   .main,
   .rail { grid-column: 1 / -1; }
-  .address { margin-top: var(--space-7); }
+  .address { margin-top: var(--space-4); }
 }

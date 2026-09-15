@@ -1,5 +1,4 @@
 import { Fragment, type CSSProperties } from "react";
-import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { VideoSlot } from "@/components/ui/Video";
 import { Band } from "@/components/ui/Band";
@@ -104,7 +103,7 @@ export default function HomePage() {
       )}
 
       <Container as="section" className={styles.section}>
-        <SectionHead number="01" title="Applications" />
+        <SectionHead title="Applications" />
         <div className={styles.grid}>
           <WorkGrid
             entries={applications}
@@ -118,16 +117,22 @@ export default function HomePage() {
 
       {/* A FULL-BLEED BAND BETWEEN THE TWO SETS. It divides the page, which is
           what makes colour structural here rather than decorative: a reader
-          scrolling past knows the set changed without reading a word. */}
-      <Band ground="ultramarine" grid className={styles.quoteBand}>
+          scrolling past knows the set changed without reading a word.
+
+          `ultramarine-deep`, NOT `ultramarine`. The bright #1b2ecc read too
+          hot behind a 49px line; this is the same blue the American Scientific
+          website-rebuild band already uses, so the two loudest colour fields
+          on the site are now the same colour rather than two blues.
+
+          NO "ABOUT" LINK. The band carried one under the sentence. It is gone:
+          About is a masthead tab on every page, and the band is a statement,
+          not a door. */}
+      <Band ground="ultramarine-deep" grid className={styles.quoteBand}>
         <p className={`quote ${styles.quote}`}>{BAND_LINE}</p>
-        <Link href="/about" className={styles.quoteLink}>
-          About
-        </Link>
       </Band>
 
       <Container as="section" className={styles.section}>
-        <SectionHead number="02" title="Design" />
+        <SectionHead title="Design" />
         <div className={styles.grid}>
           <WorkGrid entries={design} label="Bodies of design work" />
         </div>

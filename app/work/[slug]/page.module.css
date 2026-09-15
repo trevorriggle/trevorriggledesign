@@ -29,28 +29,9 @@
   padding-bottom: var(--space-7);
 }
 
-.breadcrumb {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: var(--space-2) var(--space-3);
-  font-size: var(--text-2xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-  padding-bottom: var(--space-4);
-  margin-bottom: var(--space-7);
-  border-bottom: var(--rule);
-}
-
-.breadcrumb a { text-decoration: none; }
-.breadcrumb a:hover { color: var(--color-signal); }
-
-.crumbOrdinal {
-  color: var(--color-signal);
-  font-variant-numeric: tabular-nums;
-}
+/* NO `.breadcrumb`. It was a ruled row reading "Applications / 01" above the
+   mark, plus 56px of margin under it. Removed entirely, see page.tsx, and the
+   head reflows up into the space by itself. */
 
 .headGrid {
   display: grid;
@@ -100,7 +81,11 @@
 .logo {
   position: relative;
   display: block;
-  width: clamp(11rem, 22vw, 17rem);
+  /* TWICE THE SIZE. It was clamp(11rem, 22vw, 17rem), which resolved to 272px
+     at a 1440 window: a mark opening a page at about a fifth of the content
+     width, smaller than the deck under it is long. The mark is the heading
+     here, and a heading that small is not one. */
+  width: clamp(16rem, 40vw, 34rem);
   aspect-ratio: var(--logo-aspect, 3 / 1);
   isolation: isolate;
   background: var(--color-bg);
@@ -154,6 +139,15 @@
   color: var(--color-text);
   margin-top: var(--space-6);
   max-width: var(--measure-lead);
+}
+
+/* THE SECOND LINE. One step under the deck and in the meta colour, so the two
+   read as a claim and its elaboration rather than as two decks. */
+.deckB {
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+  color: var(--color-text-meta);
+  margin-top: var(--space-4);
 }
 
 /* THE STATUS CHIP IS GONE, and so are its two variants. It rendered the
@@ -212,6 +206,13 @@
 
 .block { margin-top: var(--rhythm-normal); }
 
+/* THE PREMISE, above the sequence. It crowds the head deliberately: the deck
+   and this are one thought, and the air on this page belongs under the
+   sequence rather than between a deck and the sentence that follows it. */
+.leadBlock {
+  margin-top: var(--rhythm-normal);
+}
+
 /* THE SCROLL SEQUENCE.
    ============================================================================
    More air above it than a normal block, because the pinned state takes over
@@ -220,9 +221,16 @@
 
    NO BOTTOM MARGIN. In the pinned state the track is n x 100vh and its last
    viewport is the stage releasing; a margin there is dead scroll after the
-   sequence has visibly finished. The pager's own top margin closes the page. */
+   sequence has visibly finished. The pager's own top margin closes the page.
+
+   THE TOP MARGIN CAME DOWN FROM `loose` TO `crowd`. `rhythm-loose` is up to
+   120px, and it was buying nothing: the stage that follows it is a pinned
+   100vh block which already opens with air of its own above the plate, so
+   the two stacked into roughly 200px of empty page between the prose and
+   the first screenshot. See the cap in ScrollSequence.module.css for the
+   other half of this. */
 .sequence {
-  margin-top: var(--rhythm-loose);
+  margin-top: var(--rhythm-crowd);
 }
 
 .blockLabel {

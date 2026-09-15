@@ -165,7 +165,11 @@ export default async function DesignCategoryPage({
     rows.push({ kind: "featured", id: featured.slug, label: featured.nav });
   }
   for (const group of groups) {
-    rows.push({ kind: "group", id: group.slug, label: group.title, group });
+    /* The section's own title wins over the one derived from the folder
+       name. `03-logo-variants` generates a published redirect, so the folder
+       cannot be renamed; the heading and the subnav label can. */
+    const label = getSection(found.slug, group.slug)?.title ?? group.title;
+    rows.push({ kind: "group", id: group.slug, label, group });
     if (featured && featured.after === group.slug) {
       rows.push({ kind: "featured", id: featured.slug, label: featured.nav });
     }
@@ -195,11 +199,10 @@ export default async function DesignCategoryPage({
         <SubNav items={navItems} label={`${found.title}, sections`} />
       )}
 
+      {/* NO BREADCRUMB. A ruled row reading "Design" used to sit above the
+          title. The block is gone, not just its text, and the head's own top
+          padding opens the page. The masthead's Design tab is the way back. */}
       <Container as="header" className={styles.head}>
-        <p className={styles.breadcrumb}>
-          <Link href="/design">Design</Link>
-        </p>
-
         <div className={styles.headGrid}>
           <h1 className={styles.title}>{found.title}</h1>
           {found.intro && <p className={styles.intro}>{found.intro}</p>}
@@ -216,13 +219,11 @@ export default async function DesignCategoryPage({
         </Container>
       )}
 
+      {/* `i` is still the running index: it drives which section eager-loads
+          its lead image. It no longer prints an ordinal. */}
       {rows.map((row, i) => {
-        const number = String(i + 1).padStart(2, "0");
-
         if (row.kind === "featured") {
-          return (
-            <FeaturedCase key={row.id} data={featured!} number={number} />
-          );
+          return <FeaturedCase key={row.id} data={featured!} />;
         }
 
         const group = row.group;
@@ -258,7 +259,7 @@ export default async function DesignCategoryPage({
             key={group.slug}
             className={styles.section}
           >
-            <SectionHead id={group.slug} number={number} title={group.title} />
+            <SectionHead id={group.slug} title={copy?.title ?? group.title} />
 
             {compare && copy?.compare && (
               <div className={styles.sectionCompare}>
@@ -292,7 +293,13 @@ export default async function DesignCategoryPage({
 
             {items.length > 0 && (
               <div className={styles.sectionGrid}>
-                <DesignGrid images={items} priorityFirst={i === 0 && !compare} />
+                <DesignGrid
+                  images={items}
+                  priorityFirst={i === 0 && !compare}
+                  /* Placed rows when the section declares them, the automatic
+                     grid when it does not. See content/design.ts. */
+                  layout={copy?.layout}
+                />
               </div>
             )}
           </Container>

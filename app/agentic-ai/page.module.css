@@ -65,10 +65,12 @@
   padding-bottom: var(--rhythm-tight);
 }
 
-/* Method has no sample card beside it, unlike the agent sections below. */
+/* METHOD IS ONE OF THE TWO FULL-WIDTH BLOCKS ON THIS PAGE, and the only two.
+   Everything else here has a sample card beside it and keeps its half-column
+   treatment; this and `.solo` below do not, so they take all twelve columns
+   with no measure cap. The other sections are unchanged on purpose. */
 .methodBody {
   margin-top: var(--space-6);
-  max-width: var(--measure-wide);
 }
 
 .prose {
@@ -120,11 +122,11 @@
 /* THE FOURTH ONE IS NOT. competitive-intel has no sample card, so its copy
    was sitting in six of twelve columns with the other six empty: half width,
    for nothing, because it was styled as one half of a pair that has no other
-   half. It runs as single-column prose instead, on the wide measure, like
-   Method above it. */
+   half. It runs as single-column prose instead, like Method above it, and it
+   is the SECOND of this page's two full-width blocks. Like Method it carries
+   no measure cap: twelve columns, edge to edge. */
 .solo .prose {
   grid-column: 1 / -1;
-  max-width: var(--measure-wide);
 }
 
 .para2 {

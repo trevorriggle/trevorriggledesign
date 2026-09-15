@@ -22,9 +22,14 @@ import type { Stat } from "@/content/design";
    marked and handled two ways. Facts that do not exist yet — how long the
    billing agent has run, how many tickets a day it sees — are `todo` entries
    that render in development only. And every value inside a sample artefact
-   is invented on purpose, is stated as invented on the card itself, and is
-   kept clear of anything that could be mistaken for a real account, product
-   or figure. See components/ui/SampleCard.tsx.
+   is invented on purpose and is kept clear of anything that could be mistaken
+   for a real account, product or figure.
+
+   THE CARD NO LONGER SAYS SO. Each one carried "Sample artefact. Every value
+   in it is invented." underneath it; all three lines are removed and the
+   field with them. The rule that the values are invented still holds and is
+   now kept here rather than enforced by a type. See
+   components/ui/SampleCard.tsx.
 
    THE DRAWEVOLVE POINTER IS GONE. It was here because the "How I worked"
    passage in that case study was the only writing on the site about agents,
@@ -141,7 +146,6 @@ export const agents: AgentSection[] = [
         ],
         footer:
           "Every other ticket on this run was verified, invoiced and sent without intervention.",
-        note: "Sample artefact. Every value in it is invented.",
       },
     },
     stat: null,
@@ -169,13 +173,23 @@ export const agents: AgentSection[] = [
         "The competitive intelligence agent: crawl account sites, extract product and pricing data, diff against the previous run, flag competitor movement, interpret what it signals, then brief a person",
       caption:
         "Only one step here is a diff. The agent exists for the step after it.",
+      /* THREE WIDE AND TWO DEEP, not six wide. Six columns draws at about
+         1604 user units inside a 1282px frame, so the whole diagram scaled
+         DOWN to fit and its labels rendered smaller than every other flow on
+         the page — the one diagram where raising the font size achieves
+         nothing, because width is what is binding. Wrapped, it draws at about
+         764 units and scales UP, which roughly doubles the type.
+
+         The reading order is unchanged: 01 to 06, left to right, then the
+         line wraps the way a line of type does. See the connector note in
+         AgentFlow.tsx. */
       nodes: [
         { id: "crawl", label: "Crawl the largest accounts' sites", kind: "auto", col: 0 },
         { id: "extract", label: "Extract products and pricing", kind: "auto", col: 1 },
         { id: "diff", label: "Diff against the previous run", kind: "auto", col: 2 },
-        { id: "flag", label: "Competitor line added, pulled or repriced", kind: "flag", col: 3 },
-        { id: "read", label: "Interpret what it signals for us", kind: "auto", col: 4 },
-        { id: "brief", label: "Brief the people who can act", kind: "human", col: 5 },
+        { id: "flag", label: "Competitor line added, pulled or repriced", kind: "flag", col: 0, row: 1 },
+        { id: "read", label: "Interpret what it signals for us", kind: "auto", col: 1, row: 1 },
+        { id: "brief", label: "Brief the people who can act", kind: "human", col: 2, row: 1 },
       ],
       edges: [
         { from: "crawl", to: "extract" },
@@ -251,7 +265,6 @@ export const agents: AgentSection[] = [
             body: "The agent stops here. What to offer, and when, is not its call.",
           },
         ],
-        note: "Sample artefact. Every value in it is invented.",
       },
     },
     stat: null,
@@ -317,7 +330,6 @@ export const agents: AgentSection[] = [
         ],
         footer:
           "Everything else from the day was filtered out, each with the reason it was dropped, in case the filter is wrong.",
-        note: "Sample artefact. Every value in it is invented.",
       },
     },
     stat: null,

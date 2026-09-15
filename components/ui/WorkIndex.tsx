@@ -51,6 +51,12 @@ import styles from "./WorkIndex.module.css";
 
    NO META ROW. Entries used to carry a derived count or a status word on the
    right. Both are gone site-wide, see lib/cards.ts.
+
+   NO ORDINAL EITHER. Every row opened with its position in the set, 01 / 02 /
+   03, beside the name. They are gone by instruction, along with every other
+   section number on the site. The running order is still a decision and is
+   still manual; it is just no longer printed. The list is an <ol>, so the
+   order is still in the markup for anything reading it as a list.
    ========================================================================= */
 
 export type WorkEntry = {
@@ -95,13 +101,9 @@ export function WorkIndex({
       {entries.map((entry, i) => (
         <li key={entry.href} className={styles.row}>
           <Link href={entry.href} className={styles.link}>
-            {/* The head reads ordinal, name, out. Same idiom as <SectionHead>,
-                so an index row and a section opening are visibly the same
-                system rather than two takes on a numbered heading. */}
+            {/* The head reads name, out. Same idiom as <SectionHead>, so an
+                index row and a section opening are visibly the same system. */}
             <span className={styles.head}>
-              <span className={`ordinal ${styles.ordinal}`} aria-hidden="true">
-                {String(i + 1).padStart(2, "0")}
-              </span>
               <span className={styles.title}>{entry.title}</span>
               <span className={styles.arrow} aria-hidden="true">
                 &rarr;

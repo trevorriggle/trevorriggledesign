@@ -20,6 +20,20 @@ import { site } from "@/lib/site";
    page, because nobody finds out: not the sender, who thinks they wrote, and
    not the owner, who thinks nobody did.
 
+   THE FROM ADDRESS HAS A DEFAULT NOW, AND THAT IS A BUG FIX. This route
+   required TWO environment variables and only one of them was ever set:
+   CONTACT_FROM was unset in production, so every submission took the 503
+   branch above and every visitor was told the form was not connected. The
+   failure was honest and it was still a failure, and it was invisible from
+   the outside because the message it prints is the same one an intentionally
+   unconfigured deploy prints.
+
+   The domain is verified in Resend, so the correct From address is knowable
+   without configuration and is written down here. CONTACT_FROM still wins
+   when it is set, which is what makes a different sending domain a one-line
+   change. One variable is required now, and it is the one that cannot have a
+   default because it is a secret.
+
    VALIDATION RUNS HERE AND NOT ONLY IN THE BROWSER. The client validates too,
    for the immediate feedback, but a route handler that trusts the form it
    shipped is a route handler with no validation.
@@ -44,6 +58,14 @@ const LIMITS = { name: 100, email: 254, message: 5000 } as const;
 
 /** Minimum seconds on the form. A human cannot type a message in two. */
 const MIN_SECONDS = 2;
+
+/* THE FALLBACK SENDER. On the verified domain, which is the only kind of
+   address that may go in From: a From header claiming to be gmail.com, sent
+   from a domain that is not gmail.com, is how a sending reputation gets
+   burned. The visitor's own address rides in Reply-To instead, which is what
+   makes "reply" go to the right place and is all anybody actually wants.
+   CONTACT_FROM overrides this. */
+const DEFAULT_FROM = `Portfolio <noreply@${site.domain}>`;
 
 /* Deliberately loose. Email validation by regex is a well-known way to reject
    real addresses, so this checks the shape (something, an @, a dot in the
@@ -113,12 +135,14 @@ export async function POST(request: Request) {
   }
 
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.CONTACT_FROM;
+  const from = process.env.CONTACT_FROM || DEFAULT_FROM;
   const to = process.env.CONTACT_TO || site.email;
 
   /* NOT CONFIGURED. 503, not 500: the service is unavailable, the request was
-     fine. The message names the address so the visitor is not stranded. */
-  if (!key || !from) {
+     fine. The message names the address so the visitor is not stranded.
+
+     ONLY THE KEY CAN TRIGGER THIS NOW. See the note at the top. */
+  if (!key) {
     return NextResponse.json(
       {
         error: `The form is not connected yet. Please email ${site.email} directly.`,

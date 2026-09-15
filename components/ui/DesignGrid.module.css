@@ -44,3 +44,110 @@
   .span8,
   .span12 { grid-column: span 12; }
 }
+
+/* ============================================================================
+   THE COMPOSED PATH
+   ============================================================================
+   Placed rows, for a section that declares a layout. See DesignGrid.tsx and
+   the note on DesignLayoutRow in content/design.ts.
+
+   THE EQUAL-HEIGHT RULE IS ENTIRELY THIS FILE'S DOING and it is worth reading
+   once. `.row` is a grid with `align-items: stretch`, so every cell in it is
+   already the height of the tallest. `.cellFill` then removes a cell's own
+   contribution to that height by taking its picture out of flow, which leaves
+   exactly one cell with intrinsic height: the first. Everything else takes the
+   first cell's height and crops to it. There are no pixel values in this and
+   nothing to keep in sync with the content. */
+
+.composed {
+  display: flex;
+  flex-direction: column;
+  gap: var(--grid-gap);
+}
+
+.row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols), minmax(0, 1fr));
+  gap: var(--grid-gap);
+  align-items: stretch;
+}
+
+.cell {
+  min-width: 0;
+}
+
+/* A STACK. Two or more pictures in one cell with NO gap between them, which is
+   the whole reason cells hold more than one file: "the padding between the two
+   removed" is not something a grid gap can be asked for selectively. */
+.cellStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* The cells that take the row's height rather than setting it. */
+.cellFill {
+  position: relative;
+  min-height: 0;
+}
+
+.imageFill {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: var(--color-bg-sunk);
+  border: var(--rule);
+}
+
+/* --- Collapse -------------------------------------------------------------
+   A COMPOSED ROW IS A DESKTOP COMPOSITION. Below the grid's own collapse the
+   cells stack, which means an equal-height row stops being a row: there is
+   nothing beside a cell for it to match. `.cellFill` goes back into flow and
+   its picture back to its own proportion, so a phone gets the pictures at
+   their real shapes, uncropped, in the order the layout put them in. That is
+   the same trade `.span*` above already makes. */
+
+@media (max-width: 62rem) {
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--grid-gap);
+  }
+
+  .cell {
+    /* The inline grid-column from the layout has nothing to apply to here. */
+    grid-column: auto !important;
+    aspect-ratio: auto !important;
+  }
+
+  .cellFill { position: static; }
+
+  .imageFill {
+    position: static;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 30rem) {
+  .composed,
+  .row { gap: var(--space-4); }
+}
+
+/* The first cell of a row that declares its own `ratio`. It still sets the
+   row's height, but from the declared box rather than from its picture, so it
+   crops like every other cell in the row. `.cellFill` does the positioning;
+   this only stops the inline aspect-ratio being overridden by the collapse. */
+.cellRatio {
+  min-height: 0;
+}
+
+@media (max-width: 62rem) {
+  .cellRatio { aspect-ratio: auto !important; }
+}

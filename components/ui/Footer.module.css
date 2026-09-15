@@ -15,19 +15,33 @@
   align-items: start;
 }
 
-/* Two columns now, not three. The colophon held 10 / -1 and is gone, so the
-   sign-off takes the space rather than leaving a third of the footer empty. */
-.identity { grid-column: 1 / 8; }
+/* THE SIGN-OFF TAKES THE WHOLE ROW WHILE THERE IS NOTHING BESIDE IT.
+   `site.social` is empty, so `.elsewhere` renders nothing at all and the
+   seven-column box the name used to sit in left five columns of the footer
+   permanently blank while forcing the name onto two lines. It spans
+   everything and gives the second column back when there is something to put
+   in it. */
+.identity { grid-column: 1 / -1; }
 .elsewhere { grid-column: 8 / -1; }
 
-/* The one place the name is set large. It is the sign-off. */
+.inner:has(.elsewhere) .identity { grid-column: 1 / 8; }
+
+/* The one place the name is set large. It is the sign-off.
+
+   ONE LINE, ALWAYS. "Trevor Riggle, Columbus Ohio" is 28 characters and at
+   --type-section (57px at a 1440 window) it measured about 1470px against a
+   733px box, so it broke after "Riggle" and the sign-off read as two
+   separate facts. `nowrap` states the requirement and the vw term is what
+   makes it keepable: the type comes down rather than the line breaking. The
+   ceiling is unchanged, so on a wide enough window nothing shrinks at all. */
 .name {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
   font-variation-settings: "wdth" var(--width-display-mid);
-  font-size: var(--type-section);
+  font-size: min(var(--type-section), 4.6vw);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
+  white-space: nowrap;
 }
 
 .heading {

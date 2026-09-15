@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Band } from "@/components/ui/Band";
-import { PullQuote } from "@/components/ui/PullQuote";
 import { MetaRail, Meta } from "@/components/ui/MetaRail";
 import { getResume } from "@/lib/resume";
 import { site } from "@/lib/site";
@@ -24,23 +24,20 @@ export const metadata: Metadata = {
    comes to mind. It's all part of the process.", which was a dangling
    fragment followed by a sentence that said nothing. Nothing was added.
 
-   WHAT THE OVERHAUL CHANGED IS COMPOSITION, NOT WORDS. The page was four
-   paragraphs stacked in one column at two sizes, which is the flat, minimal
-   thing the brief is about. The same four paragraphs now run through three
-   registers: the first as a serif standfirst, the middle two as body on the
-   reading measure beside a metadata rail, and the fourth lifted out as the
-   page's one pull quote on an ochre field.
-
-   THE FOURTH PARAGRAPH IS THE PULL QUOTE AND IS NOT ALSO IN THE PROSE. It is
-   one sentence, it is the ask, and it was already being given its own rule
-   and its own air at the bottom of the column. Setting it twice would be the
-   same mistake the case study heads were making with the wordmark.
+   THREE PARAGRAPHS NOW, NOT FOUR. The fourth was the ask, "What I'm looking
+   for is the job where the design and the building are the same job.", set as
+   the page's one pull quote on an ultramarine field. It is deleted, by
+   instruction, along with the block that carried it. What it was saying is
+   now said literally rather than rhetorically, by the "Looking for" row in
+   the rail: see `availability` in lib/site.ts.
 
    THE RAIL IS REAL METADATA. Based and Looking for come from lib/site.ts and
    render nothing when empty, so the rail cannot become a labelled void.
 
-   THE RESUME IS ITS OWN SECTION, not a button in the rail, and it appears
-   only when a real file exists. See lib/resume.ts.
+   THE RESUME IS DISPLAYED, not just linked. Its own section, centred, with a
+   render of page one on the page and the download under it. Both the PDF and
+   the image have to be on disk or the part that is missing does not render.
+   See lib/resume.ts.
 
    THE REAL RESUME IS ON DISK NOW. public/resume/trevor-riggle-resume.pdf,
    one page, 87 KB. The *-PLACEHOLDER.pdf stub that used to sit there is
@@ -56,10 +53,12 @@ export const metadata: Metadata = {
    closer and as the subnav's active rule, which is the rationing tokens.css
    describes.
 
-   ARCHIVO AND DM SANS, AND THE SERIF ONLY IN THE PULL QUOTE. The standfirst
-   used to be set in Instrument Serif via the global `.intro` utility and the
-   resume's file size in DM Mono, which put all four of the site's faces on
-   one page. The serif is now on this page exactly once, in the quote.
+ARCHIVO AND DM SANS, AND NOTHING ELSE. The standfirst used to be set in
+   Instrument Serif via the global `.intro` utility and the resume's file size
+   in DM Mono, which put all four of the site's faces on one page. Both moved
+   to the display and text faces. With the pull quote deleted the serif is now
+   absent from this page entirely, which is the correct end state for a page
+   with no quotation on it.
    ========================================================================= */
 
 const LEAD =
@@ -70,11 +69,8 @@ const BODY = [
   "The through-line is that I don’t hand off. That means I’ve had to make real engineering decisions with real costs: architecture I had to migrate, features I had to cut, a product I shelved because the economics didn’t work. Those are on this site too.",
 ];
 
-const ASK =
-  "What I’m looking for is the job where the design and the building are the same job.";
-
-export default function AboutPage() {
-  const resume = getResume();
+export default async function AboutPage() {
+  const resume = await getResume();
   const hasRail = Boolean(site.location || site.availability);
 
   return (
@@ -120,34 +116,50 @@ export default function AboutPage() {
           third state where it is present and broken. */}
       {resume && (
         <Container as="section" className={styles.resumeBlock}>
-          <div className={styles.resumeGrid}>
-            <h2 className={styles.resumeHeading}>Resume</h2>
-            <div className={styles.resumeBody}>
-              <p className={styles.resumeCopy}>
-                The whole thing on one page, for reading offline or passing
-                along.
-              </p>
-              <a
-                href={resume.url}
-                download={resume.filename}
-                className={styles.resume}
-              >
-                <span className={styles.resumeLabel}>Download resume</span>
-                <span className={styles.resumeMeta}>
-                  PDF{resume.sizeKb > 0 && `, ${resume.sizeKb} KB`}
-                </span>
-              </a>
-            </div>
-          </div>
+          <h2 className={styles.resumeHeading}>Resume</h2>
+
+          {/* THE DOCUMENT ITSELF, ON THE PAGE. A download button on its own
+              asks a reader to commit to a file before they can see whether it
+              is worth opening, which on the one page where somebody is
+              deciding about a person is the wrong way round. The PDF is still
+              there and still the thing to take away; this is so they do not
+              have to take it away in order to read it.
+
+              It renders only when the image is actually on disk. See
+              lib/resume.ts. */}
+          {resume.image && (
+            <Image
+              src={resume.image.url}
+              alt="Trevor Riggle's resume, one page: experience at American Scientific and RIG Tech, freelance design, a BFA from West Virginia University, and a list of technical, creative and marketing skills"
+              width={resume.image.width}
+              height={resume.image.height}
+              sizes="(max-width: 62rem) 100vw, 46rem"
+              className={styles.resumeSheet}
+            />
+          )}
+
+          <a
+            href={resume.url}
+            download={resume.filename}
+            className={styles.resume}
+          >
+            <span className={styles.resumeLabel}>Download resume</span>
+            <span className={styles.resumeMeta}>
+              PDF{resume.sizeKb > 0 && `, ${resume.sizeKb} KB`}
+            </span>
+          </a>
         </Container>
       )}
 
-      {/* The ask, as the page's one pull quote. Ink on ochre: the brief asked
-          for ochre pull quotes, and ochre type on this ground is 2.00:1. The
-          field carries the colour and the sentence stays readable. */}
-      <Container className={styles.askBlock}>
-        <PullQuote ground="ultramarine">{ASK}</PullQuote>
-      </Container>
+      {/* NO PULL QUOTE. "What I'm looking for is the job where the design and
+          the building are the same job." sat here on an ultramarine field as
+          the page's one pull quote. The sentence and the block are both gone,
+          by instruction. The page now closes on the resume and the band.
+
+          This leaves /about with no pull quote at all, which is why the serif
+          no longer appears on it: the standfirst was moved off the serif in an
+          earlier pass precisely so the quote could be the one place it showed
+          up. Instrument Serif is now absent from this page entirely. */}
 
       {/* A closing band, and the only navigation this page offers. Somebody
           who has read to the bottom of the about page is the reader most

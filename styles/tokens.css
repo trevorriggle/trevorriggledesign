@@ -454,11 +454,19 @@
      EVERY PAGE PAYS THE SUBNAV'S HEIGHT, including the ones without a subnav,
      where it lands as 3.25rem of air above the heading. That is the safe
      direction to be wrong in: too much clearance reads as breathing room and
-     too little hides the heading behind a bar. */
+     too little hides the heading behind a bar.
+
+     THE BREATH IS space-1, NOT space-3. It used to be 12px on the argument
+     that SectionHead's heavy rule would otherwise sit flush against the
+     subnav's bottom border and read as one doubled line. Measured, the two
+     bars come to 123.4px and the stack was 136px, so a section landed with
+     12.6px of the PREVIOUS section's tail showing above its own divider.
+     The brief asks for the divider immediately under the bar. 4px is enough
+     to keep the two rules separate and too little to show anything. */
   --masthead-h: 4.5rem;
   --subnav-h: 3.25rem;
   --sticky-stack: calc(
-    var(--masthead-h) + var(--subnav-h) + var(--space-3)
+    var(--masthead-h) + var(--subnav-h) + var(--space-1)
   );
 }
 

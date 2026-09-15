@@ -247,8 +247,14 @@
       justify-content: flex-start;
     }
 
+    /* THE PLATE FILLS THE STAGE. At 82vh in a 100vh pinned stage, 18vh of
+       every screen the sequence occupies was empty, split evenly above and
+       below the shot: about 160px of nothing on a 900px window, on the one
+       block whose whole job is to show the product at size. 96vh leaves the
+       breathing room a framed plate needs against the viewport edge and
+       returns the rest to the picture. */
     .portrait .plate {
-      --cap: 82vh;
+      --cap: 96vh;
     }
 
     .portrait .side {
@@ -292,8 +298,14 @@
        slightly under it so a short window clips nothing: the stage is
        `overflow: hidden` and a plate taller than its row would lose its
        bottom edge rather than scale. */
+    /* Same cut as `.portrait` above. The caption bar under a wide shot is
+       real and has to be subtracted, but 11rem was budgeting 176px for a
+       single line of type plus its rule: the two American Scientific
+       galleries were each running with a band of empty blue above and below
+       the screenshot that was the entire point of the section. 6.5rem is the
+       bar plus its padding and nothing else. */
     .wide .plate {
-      --cap: calc(100vh - 11rem);
+      --cap: calc(100vh - 6.5rem);
     }
 
     .wide .side {

@@ -17,9 +17,16 @@
 }
 
 /* --- The chrome ----------------------------------------------------------
-   From / Subject / Date, or whatever this artefact's envelope is. Mono,
-   because it is machine-written metadata, and this is one of the few places
-   on the site where that is literally true. */
+   Run / Source / Action, or whatever this artefact's envelope is.
+
+   NOT MONO ANY MORE. The values were set in DM Mono on the argument that
+   machine-written metadata should look machine-written. The face is real and
+   is used in eleven other places on the site — the pager, gallery and frame
+   captions, external links, code in prose — but NONE of them is on the
+   Agentic AI page, so on that page it was a fourth typeface appearing exactly
+   once, in the block sitting beside the diagrams. It is the text face now,
+   at the same size. Tabular figures keep the columns of a timestamp lined up,
+   which was the only thing the mono was actually doing here. */
 
 .chrome {
   display: grid;
@@ -47,8 +54,9 @@
 }
 
 .chromeValue {
-  font-family: var(--font-mono);
+  font-family: var(--font-text);
   font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
   color: var(--color-text);
   min-width: 0;
   overflow-wrap: anywhere;
@@ -147,15 +155,5 @@
   text-wrap: pretty;
 }
 
-/* --- The disclosure ------------------------------------------------------
-   Outside the card, so it is the page speaking rather than the artefact. It
-   is required by the component's type: see SampleCard.tsx. */
-
-.note {
-  margin-top: var(--space-3);
-  font-size: var(--text-3xs);
-  font-weight: var(--weight-medium);
-  letter-spacing: var(--tracking-caps);
-  text-transform: uppercase;
-  color: var(--color-text-meta);
-}
+/* NO `.note`. The disclosure line that sat under every card is gone, and so
+   is the rule that styled it. See SampleCard.tsx. */

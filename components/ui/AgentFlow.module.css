@@ -27,11 +27,18 @@
 
 .scroller::-webkit-scrollbar { display: none; }
 
+/* IT FILLS THE CONTAINER. `max-width: 100%` was here instead, and a max-width
+   can only ever shrink a box: the two four-node diagrams are drawn at about
+   1044 user units and were rendering at 1044px inside a 1282px container,
+   leaving 238px of the page unused and their labels at the size they were
+   drawn. Width is the only thing that sets the rendered size of type inside an
+   SVG with a viewBox, so this is most of the answer to "the type is too
+   small". The diagrams now render between about 0.97x and 1.7x depending on
+   how wide each one is drawn, which is the point: a short flow gets big type
+   because it has the room for it. */
 .svg {
   display: block;
-  /* Never wider than it was drawn: on a desktop the diagram sits at its own
-     size rather than stretching to fill a 90rem measure. */
-  max-width: 100%;
+  width: 100%;
   height: auto;
 }
 
@@ -65,10 +72,15 @@
 
 /* --- Type inside the nodes ----------------------------------------------- */
 
+/* THE TYPE IS IN USER UNITS, NOT PIXELS, because the SVG scales. These went
+   up by about a fifth alongside the geometry in AgentFlow.tsx; the rest of the
+   gain is the scaling. Measured on the rendered page, a label now sets at
+   roughly 14.5px on the five-node diagram and 18px on the four-node ones,
+   against 12.5px everywhere before. */
 .ordinal {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
-  font-size: 12px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   font-variant-numeric: tabular-nums;
 }
@@ -76,7 +88,7 @@
 .label {
   font-family: var(--font-display);
   font-weight: var(--weight-medium);
-  font-size: 12.5px;
+  font-size: 15px;
   letter-spacing: -0.005em;
 }
 
@@ -113,7 +125,7 @@
 .edgeLabel {
   font-family: var(--font-text);
   font-weight: var(--weight-semibold);
-  font-size: 10.5px;
+  font-size: 12.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }

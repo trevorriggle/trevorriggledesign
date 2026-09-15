@@ -69,6 +69,18 @@ export type CaseStudy = {
   href: string;
   title: string;
   deck: string;
+  /**
+   * A SECOND LINE OF ORIENTATION, under the deck.
+   *
+   * The deck is one line and it names the thing. This says what the thing
+   * actually does, which is what a stranger needs and what the deck alone
+   * never gave them. It renders under the deck on the entry's own page, and
+   * the browse tier joins the two into one description rather than showing
+   * the deck by itself. See lib/cards.ts.
+   *
+   * Absent renders nothing, like every other optional field here.
+   */
+  deckB: string;
   role: string[];
   context: string;
   state: string;
@@ -216,6 +228,7 @@ function load(): CaseStudy[] {
       href: `/work/${slug}`,
       title: str(d.title, slug),
       deck: str(d.deck),
+      deckB: str(d.deckB),
       role: strArray(d.role),
       context: str(d.context),
       state: str(d.state),

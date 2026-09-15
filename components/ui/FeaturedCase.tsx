@@ -25,9 +25,14 @@ import styles from "./FeaturedCase.module.css";
    IT IS A BAND, NOT A CARD. The brief bans cards, and a "featured" treatment
    built as a bordered box with a badge on it is exactly the SaaS-landing-page
    look it bans. A full-bleed colour block that interrupts the page is the
-   editorial version of the same emphasis, and it does not need a label
-   reading FEATURED to be read as featured. The eyebrow says what the thing
-   is, not how important it is.
+   editorial version of the same emphasis.
+
+   THERE IS NO EYEBROW AND NO ORDINAL. The band used to open with an index and
+   the word "Featured" above its title. Both are gone by instruction, and the
+   argument for the eyebrow was always thin: the file's own note said a band
+   like this "does not need a label reading FEATURED to be read as featured",
+   and then printed one anyway. The title is the first thing in the band now
+   and the deck follows it.
 
    THE ORDER OF THE SECTION IS AN ARGUMENT AND IT IS DELIBERATE:
 
@@ -56,17 +61,7 @@ import styles from "./FeaturedCase.module.css";
    visitor to see.
    ========================================================================= */
 
-export function FeaturedCase({
-  data,
-  /* ITS PLACE IN THE RUN. The section is numbered with the folder sections
-     now rather than sitting above them unnumbered, so the page counts
-     01, 02, 03 straight through instead of skipping the largest thing on it.
-     Absent renders no ordinal, which is what a page with no subnav wants. */
-  number,
-}: {
-  data: FeaturedCaseData;
-  number?: string;
-}) {
+export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
   const showTodo = process.env.NODE_ENV !== "production" && data.todo.length > 0;
   const dir = data.compareDir;
 
@@ -79,14 +74,6 @@ export function FeaturedCase({
       aria-label={data.title}
     >
       <div>
-        <p className={styles.eyebrow}>
-          {number && (
-            <span className={`ordinal ${styles.number}`} aria-hidden="true">
-              {number}
-            </span>
-          )}
-          <span className="label">{data.eyebrow}</span>
-        </p>
         <h2 className={styles.title}>{data.title}</h2>
         <p className={styles.deck}>{data.deck}</p>
       </div>

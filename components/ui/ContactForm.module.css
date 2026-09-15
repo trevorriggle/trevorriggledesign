@@ -25,17 +25,32 @@
   color: var(--color-text-meta);
 }
 
+/* A BOX, NOT A BASELINE.
+
+   These were a bottom rule and nothing else: no left, right or top edge and a
+   transparent ground, which is a beautiful form and a bad one. An underline
+   marks where writing will appear; it does not say "this is a thing you click
+   into", and on a page whose ground is already paper-coloured there was
+   nothing to distinguish an empty field from the space above it.
+
+   So each field is a real bordered box on the sunk ground. The heavy bottom
+   rule stays as the bottom edge, which keeps the underline idiom the form was
+   built around and keeps the focus treatment below working unchanged: it is
+   still the rule that thickens and colours, and it is now the bottom of a
+   box rather than the whole of the field.
+
+   STILL NO RADIUS. Nothing on this site has one. */
 .input,
 .textarea {
   font-family: var(--font-text);
   font-size: var(--text-md);
   line-height: var(--leading-normal);
   color: var(--color-text);
-  background: transparent;
-  border: 0;
+  background: var(--color-bg-sunk);
+  border: var(--rule-strong);
   border-bottom: var(--rule-heavy);
   border-radius: 0;
-  padding: var(--space-3) 0;
+  padding: var(--space-3) var(--space-4);
   width: 100%;
   /* iOS zooms the page when a focused input is under 16px. --text-md is 17px,
      which is above that line on purpose. */
@@ -67,7 +82,16 @@
 .input:disabled,
 .textarea:disabled {
   color: var(--color-text-meta);
+  border-color: var(--color-rule);
   border-bottom-color: var(--color-rule);
+}
+
+/* The box answers the pointer before it is clicked, which is the other half
+   of "obvious that it is an input". */
+.input:hover:not(:disabled),
+.textarea:hover:not(:disabled) {
+  border-color: var(--color-text-meta);
+  border-bottom-color: var(--color-text);
 }
 
 /* An invalid field takes the flare, which is one of its two licensed uses on

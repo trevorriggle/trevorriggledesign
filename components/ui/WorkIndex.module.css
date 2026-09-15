@@ -31,7 +31,7 @@
   color: inherit;
 }
 
-/* --- The head: ordinal, name, out ---------------------------------------- */
+/* --- The head: name, out ------------------------------------------------- */
 
 .head {
   grid-column: 1 / -1;
@@ -43,13 +43,6 @@
 /* Small, beside a title that runs to 57px. The brief's "very big vs very
    small, little in between" is this pair, and it is the same relationship
    <SectionHead> sets up. */
-.ordinal {
-  flex: none;
-  font-size: var(--text-lg);
-  transform: translateY(-0.12em);
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
 .title {
   font-family: var(--font-display);
   font-weight: var(--weight-display);
@@ -59,7 +52,7 @@
   letter-spacing: var(--tracking-display);
 }
 
-/* Closes the row on the right, so the line reads ordinal, name, out. A glyph,
+/* Closes the row on the right, so the line reads name, out. A glyph,
    not copy. */
 .arrow {
   flex: none;
@@ -140,25 +133,27 @@
 
 /* --- The deck ------------------------------------------------------------ */
 
+/* THE DESCRIPTION, AND IT IS THE ONLY PROSE ON A BROWSE PAGE.
+
+   It was 17px at regular weight on a 34ch measure, which set it a full step
+   under the copy on every other page and let it read as a caption beside a
+   57px name. It is the one thing telling a stranger what the project is, so
+   it goes up a step to 21px and to medium, and the 34ch cap comes off: the
+   column is four of twelve and already bounds it. */
 .deck {
   grid-column: 9 / -1;
   align-self: start;
-  font-size: var(--text-md);
-  line-height: var(--leading-body);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
   color: var(--color-text);
   text-wrap: pretty;
-  max-width: 34ch;
 }
 
 /* --- Hover and focus, ON TOP OF VISIBLE CONTENT --------------------------
    Every rule in this block can be deleted without changing what the page
    communicates, which is the test for whether motion is an enhancement or a
    gate. Nothing here reveals anything. */
-
-.link:hover .ordinal,
-.link:focus-visible .ordinal {
-  color: var(--color-text);
-}
 
 .link:hover .arrow,
 .link:focus-visible .arrow {
@@ -217,16 +212,6 @@
     gap: var(--space-2);
   }
 
-  .ordinal {
-    /* Takes its own line above the title. At phone width an ordinal plus a
-       gap plus a 38px title is most of the line box before the first word. */
-    flex-basis: 100%;
-    transform: none;
-    font-size: var(--text-base);
-  }
-
-  /* The arrow's auto margin has nothing to push against once the ordinal
-     wraps, so it is pinned to the title's line instead. */
   .arrow { margin-left: auto; }
 }
 

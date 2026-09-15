@@ -1,5 +1,7 @@
+import type { CSSProperties } from "react";
 import Image from "next/image";
 import type { DesignItem } from "@/lib/design-images";
+import type { DesignLayoutRow } from "@/content/design";
 import { AutoVideo } from "./AutoVideo";
 import styles from "./DesignGrid.module.css";
 
@@ -120,15 +122,206 @@ function sizesFor(ratio: number): string {
   return "(max-width: 30rem) 50vw, (max-width: 62rem) 33vw, 21rem";
 }
 
+/* ============================================================================
+   THE COMPOSED PATH
+   ============================================================================
+   Everything above this is the automatic grid and is untouched. A section that
+   declares a `layout` renders through here instead: explicit rows, explicit
+   spans, and an equal-height rule that is expressed as layout rather than as
+   arithmetic. See the note on DesignLayoutRow in content/design.ts.
+
+   HOW `equal` WORKS, because it is the only non-obvious thing here. The first
+   cell of the row is in normal flow and sizes itself from its own pictures.
+   Every other cell is `position: relative` with its image absolutely filling
+   it, so it contributes NO height of its own and simply takes whatever the
+   row is. The grid stretches all cells to the tallest, the tallest is the
+   first cell because it is the only one with intrinsic height, and the rest
+   crop to fill. No pixel values, correct at every viewport width.
+
+   `ratio` puts an explicit aspect-ratio on the first cell as well, for a row
+   where no single file should decide the shape of the others. */
+
+/** The filename at the end of a URL, which is what a layout names. */
+function fileOf(url: string): string {
+  return url.slice(url.lastIndexOf("/") + 1);
+}
+
+function Piece({
+  item,
+  eager,
+  fill,
+  focus,
+  sizes,
+}: {
+  item: DesignItem;
+  eager: boolean;
+  /** Absolutely fill the cell and crop. Off for the cell that sets the height. */
+  fill: boolean;
+  focus?: string;
+  sizes: string;
+}) {
+  if (item.kind === "video" && item.poster) {
+    return (
+      <AutoVideo
+        src={item.src}
+        poster={item.poster}
+        width={item.width}
+        height={item.height}
+        label={item.alt}
+      />
+    );
+  }
+
+  return (
+    <Image
+      src={item.src}
+      alt={item.alt}
+      width={item.width}
+      height={item.height}
+      sizes={sizes}
+      priority={eager}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      unoptimized={item.passthrough}
+      className={fill ? styles.imageFill : styles.image}
+      style={focus ? ({ objectPosition: focus } as CSSProperties) : undefined}
+    />
+  );
+}
+
+function ComposedGrid({
+  rows,
+  byFile,
+  priorityFirst,
+}: {
+  rows: DesignLayoutRow[];
+  byFile: Map<string, DesignItem>;
+  priorityFirst: boolean;
+}) {
+  let seen = 0;
+
+  return (
+    <div className={styles.composed}>
+      {rows.map((row, r) => {
+        /* A row whose spans do not reach twelve is offset by half the
+           remainder when it is centred, which is what puts a ten-column
+           banner in the middle of the page rather than against its left. */
+        const total = row.cells.reduce((n, c) => n + c.span, 0);
+        const offset = row.center ? Math.max(0, (12 - total) / 2) : 0;
+
+        return (
+          <ul
+            key={r}
+            className={[styles.row, row.equal ? styles.rowEqual : ""]
+              .filter(Boolean)
+              .join(" ")}
+          >
+            {row.cells.map((cell, c) => {
+              const items = cell.files
+                .map((f) => byFile.get(f))
+                .filter((i): i is DesignItem => Boolean(i));
+              if (items.length === 0) return null;
+
+              /* The first cell of an `equal` row is the one in normal flow,
+                 because something has to give the row its height. Everywhere
+                 else, and in every non-equal row, the cell sizes itself from
+                 its pictures as usual.
+
+                 UNLESS THE ROW DECLARES A `ratio`, in which case the box is
+                 already fixed and the first cell crops into it like all the
+                 others. Without this the first picture sat at its natural
+                 height inside a taller box with dead space under it, which is
+                 exactly the ragged bottom edge the row exists to remove. */
+              const sets = Boolean(row.equal) && c === 0;
+              const fills = Boolean(row.equal) && (c > 0 || Boolean(row.ratio));
+
+              /* ONLY THE FIRST CELL OF A CENTRED ROW NAMES A START LINE, and
+                 it is 1-based: column 1 is line 1. Writing a start line on
+                 every cell is what broke this the first time round — an
+                 off-by-one put cell one at line 2, which pushed the last cell
+                 of the row past line 13 and wrapped it onto a row of its own.
+                 Everything else spans from wherever it lands. */
+              const style: CSSProperties = {
+                gridColumn:
+                  c === 0 && offset > 0
+                    ? `${1 + offset} / span ${cell.span}`
+                    : `span ${cell.span}`,
+              };
+              if (sets && row.ratio) style.aspectRatio = String(row.ratio);
+
+              const sizes = `(max-width: 62rem) 100vw, ${Math.round(
+                (cell.span / 12) * 90,
+              )}rem`;
+
+              return (
+                <li
+                  key={cell.files.join("+")}
+                  className={[
+                    styles.cell,
+                    fills ? styles.cellFill : "",
+                    sets && row.ratio ? styles.cellRatio : "",
+                    items.length > 1 ? styles.cellStack : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
+                  style={style}
+                >
+                  {items.map((item) => {
+                    const eager = priorityFirst && seen === 0;
+                    seen += 1;
+                    return (
+                      <Piece
+                        key={item.src}
+                        item={item}
+                        eager={eager}
+                        fill={fills}
+                        focus={cell.focus}
+                        sizes={sizes}
+                      />
+                    );
+                  })}
+                </li>
+              );
+            })}
+          </ul>
+        );
+      })}
+    </div>
+  );
+}
+
 export function DesignGrid({
   images,
   /** Mark the first image as the LCP candidate. Only on a page's lead grid. */
   priorityFirst = false,
+  /** Placed rows. Absent is the automatic grid, which is the default. */
+  layout,
 }: {
   images: DesignItem[];
   priorityFirst?: boolean;
+  layout?: DesignLayoutRow[];
 }) {
   if (images.length === 0) return null;
+
+  if (layout && layout.length > 0) {
+    const byFile = new Map(images.map((i) => [fileOf(i.src), i]));
+
+    /* ANY FILE THE LAYOUT DID NOT NAME STILL RENDERS, in the automatic grid
+       under the composed rows. A layout that forgets a picture loses its
+       placement; it never loses the picture, and it never silently drops
+       something a new file in the folder would have added. */
+    const placed = new Set(
+      layout.flatMap((row) => row.cells.flatMap((cell) => cell.files)),
+    );
+    const rest = images.filter((i) => !placed.has(fileOf(i.src)));
+
+    return (
+      <>
+        <ComposedGrid rows={layout} byFile={byFile} priorityFirst={priorityFirst} />
+        {rest.length > 0 && <DesignGrid images={rest} />}
+      </>
+    );
+  }
 
   return (
     <ul className={styles.grid}>

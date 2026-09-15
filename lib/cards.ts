@@ -84,7 +84,11 @@ export function caseStudyRows(entries: CaseStudy[]): WorkEntry[] {
   return entries.map((entry) => ({
     href: entry.href,
     title: entry.title,
-    description: entry.deck || undefined,
+    /* BOTH LINES, JOINED. The deck names the thing and `deckB` says what it
+       does; the browse tier is the one place a reader has neither the page
+       nor the pictures yet, so it gets both. Still composed of existing
+       fields verbatim and still empty when they are. */
+    description: [entry.deck, entry.deckB].filter(Boolean).join(" ") || undefined,
     preview:
       fromImageRef(entry.thumb) ??
       fromImageRef(entry.video?.poster) ??

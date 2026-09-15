@@ -14,7 +14,7 @@ import { MetaRail, Meta, MetaChips, MetaLinks } from "@/components/ui/MetaRail";
 import { MdxBody } from "@/components/mdx/MdxBody";
 import { Reveal } from "@/components/motion/Reveal";
 
-import { SELECTED, getSelected, getCaseStudy, getNeighbours } from "@/content";
+import { SELECTED, getCaseStudy, getNeighbours } from "@/content";
 import grid from "@/components/ui/grid.module.css";
 import styles from "./page.module.css";
 
@@ -45,6 +45,25 @@ export async function generateMetadata({
   };
 }
 
+/**
+ * Split a markdown body into its first `##` section and everything after it.
+ *
+ * Returns ["", body] when there is no second heading, which is the safe
+ * direction: nothing moves above the sequence unless there is genuinely a
+ * section to leave behind.
+ *
+ * The match is anchored to the line start so a `##` inside a fenced code
+ * block or mid-sentence cannot split the body.
+ */
+function splitAtSecondHeading(body: string): [string, string] {
+  const heading = /^## /gm;
+  const first = heading.exec(body);
+  if (!first) return ["", body];
+  const second = heading.exec(body);
+  if (!second) return ["", body];
+  return [body.slice(0, second.index).trimEnd(), body.slice(second.index)];
+}
+
 export default async function CaseStudyPage({
   params,
 }: {
@@ -55,7 +74,6 @@ export default async function CaseStudyPage({
   if (!entry) notFound();
 
   const { prev, next } = getNeighbours(slug);
-  const position = getSelected().findIndex((s) => s.slug === slug) + 1;
 
   /* Plates the body did not place itself. */
   const plates = entry.images.filter(
@@ -75,17 +93,34 @@ export default async function CaseStudyPage({
     entry.sequence && entry.cover?.exists ? [entry.cover, ...plates] : [];
   const hasSequence = sequence.length >= 2;
 
+  /* THE FIRST SECTION OF PROSE RUNS ABOVE THE SEQUENCE.
+
+     The sequence is the page's lead visual and it stays high, which is a
+     decision this file already records and does not reverse. But it was
+     landing directly under a one-line deck, so a reader met five screenshots
+     of a product before a single sentence explaining what problem it solves.
+     "The premise" is that sentence, and it belongs in front of the pictures
+     it is the premise for.
+
+     ONLY THE FIRST SECTION MOVES. Splitting at the second `## ` puts one
+     section above and the remaining five below, so the argument is still
+     read after the evidence — which is the ordering the sequence was raised
+     for in the first place. Moving the whole body would put four sections
+     of prose in front of the one thing that shows the thing running.
+
+     An entry with no sequence, or a body with fewer than two headings, is
+     untouched: `lead` is empty and `rest` is the whole body. */
+  const [leadBody, restBody] = hasSequence
+    ? splitAtSecondHeading(entry.body)
+    : ["", entry.body];
+
   return (
     <>
+      {/* NO BREADCRUMB. The head opened with "Applications / 01" on a ruled
+          row above the mark. The block is gone, not just its text, and the
+          head's own top padding now does the whole job of opening the page.
+          The masthead's Applications tab is the way back. */}
       <Container as="header" className={styles.head}>
-        <p className={styles.breadcrumb}>
-          <Link href="/applications">Applications</Link>
-          <span aria-hidden="true">/</span>
-          <span className={styles.crumbOrdinal}>
-            {String(position).padStart(2, "0")}
-          </span>
-        </p>
-
         <div className={styles.headGrid}>
           <div className={styles.headMain}>
             {/* THE MARK IS THE HEADING. It used to sit above an <h1> that
@@ -135,6 +170,10 @@ export default async function CaseStudyPage({
                 word, and a wordmark for an app nobody has heard of is a
                 picture of a name. This says what the thing actually is. */}
             {entry.deck && <p className={styles.deck}>{entry.deck}</p>}
+
+            {/* The second line. The deck names the thing; this says what it
+                does. A mark plus four words is not orientation. */}
+            {entry.deckB && <p className={styles.deckB}>{entry.deckB}</p>}
 
             {/* NO STATUS CHIP. `entry.state` is still read from frontmatter
                 and still shown in the rail as Context, but it no longer gets
@@ -207,6 +246,21 @@ export default async function CaseStudyPage({
           back, which would mean the one block on this page whose entire point
           is that the first shot is visible on arrival would start invisible
           and depend on a JS chunk to appear. */}
+      {/* The premise, above the pictures it is the premise for. */}
+      {leadBody && (
+        <Container as="section" className={styles.leadBlock}>
+          <div className={styles.body}>
+            <div className={styles.prose}>
+              <MdxBody
+                source={leadBody}
+                images={entry.images}
+                entryPath={`content/work/${entry.slug}/index.mdx`}
+              />
+            </div>
+          </div>
+        </Container>
+      )}
+
       {hasSequence && (
         <Container as="section" className={styles.sequence}>
           <ScrollSequence
@@ -224,12 +278,12 @@ export default async function CaseStudyPage({
         </Container>
       )}
 
-      {entry.body && (
+      {restBody && (
         <Container as="section" className={styles.block}>
           <Reveal className={styles.body}>
             <div className={styles.prose}>
               <MdxBody
-                source={entry.body}
+                source={restBody}
                 images={entry.images}
                 entryPath={`content/work/${entry.slug}/index.mdx`}
               />
