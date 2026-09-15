@@ -247,14 +247,25 @@
       justify-content: flex-start;
     }
 
-    /* THE PLATE FILLS THE STAGE. At 82vh in a 100vh pinned stage, 18vh of
-       every screen the sequence occupies was empty, split evenly above and
-       below the shot: about 160px of nothing on a 900px window, on the one
-       block whose whole job is to show the product at size. 96vh leaves the
-       breathing room a framed plate needs against the viewport edge and
-       returns the rest to the picture. */
+    /* At 82vh in a 100vh pinned stage, 18vh of every screen the sequence
+       occupies was empty, split above and below the shot: about 160px of
+       nothing on a 900px window, on the block whose whole job is to show the
+       product at size.
+
+       96vh WENT TOO FAR IN THE OTHER DIRECTION AND CLIPPED THE PICTURE. The
+       stage is `top: 0`, so its first 73px is behind the masthead; at 96vh the
+       air either side came to 18px and the top of every screenshot sat under
+       the bar. Measured at 1440x900: the plate's top edge was 5px above the
+       masthead's bottom.
+
+       Subtracting a fixed 11rem instead of taking a percentage makes the air a
+       constant 88px at every window height, which clears the 73px masthead
+       with room to spare and is still roughly half of what 82vh was leaving.
+       The portrait stage is NOT moved below the bars the way `.wide` is: a
+       case study has no subnav, so pinning at --sticky-stack would open a 50px
+       strip above the stage with the prose scrolling through it. */
     .portrait .plate {
-      --cap: 96vh;
+      --cap: calc(100vh - 11rem);
     }
 
     .portrait .side {
@@ -284,8 +295,22 @@
        texture. Giving it the full stage roughly doubles that, which is the
        difference between a picture of a website and a website you can read. */
 
+    /* TWO CONTENT-SIZED ROWS, CENTRED AS ONE BLOCK, and this is what finally
+       gets both halves of it right at once.
+
+       The figure row was `minmax(0, 1fr)`: it took every pixel the caption did
+       not, and the plate then had to choose an edge of a row much taller than
+       itself. Centred in that row it left a gap between the picture and its
+       own caption; bottom-aligned it closed the gap and threw the space
+       upward. The row was the problem, not which way the plate sat in it.
+
+       `auto auto` sizes both rows to their contents, so the plate and the
+       caption are one object with only the row gap between them, and
+       `align-content: center` centres that object in the stage. The leftover
+       is then air around the block rather than a hole inside it. */
     .wide .shot {
-      grid-template-rows: minmax(0, 1fr) auto;
+      grid-template-rows: auto auto;
+      align-content: center;
       align-items: stretch;
       row-gap: var(--space-3);
     }
@@ -326,12 +351,25 @@
       margin-inline: calc(50% - 50vw + var(--gutter));
     }
 
-    /* Bottom-aligned, so what slack is left after the plate has grown sits
-       above it as breathing room and the caption stays against the picture it
-       describes. With the breakout that is now tens of pixels, not hundreds. */
+    /* THE STAGE PINS BELOW THE BARS RATHER THAN BEHIND THEM.
+
+       It was `top: 0; height: 100vh`, so its first 123px sat under the
+       masthead and the subnav and could never hold anything. Every attempt to
+       place the plate inside it was therefore working against a box a fifth of
+       which was invisible: centred, the shot looked low; bottom-aligned, all
+       the slack piled into the hidden strip and the plate came right up under
+       the subnav.
+
+       Sticking below the bars makes the stage exactly the visible area, so
+       "centred in the stage" and "centred on screen" are finally the same
+       thing and the air above and below the picture is equal and real. */
+    .wide .stage {
+      top: var(--sticky-stack);
+      height: calc(100vh - var(--sticky-stack));
+    }
+
     .wide .figure {
       justify-content: center;
-      align-items: flex-end;
     }
 
     /* The height left over once the caption bar has taken its share. Held
@@ -358,8 +396,19 @@
        makes the clearance a property of the layout rather than of how much
        slack a given window happens to leave over. Measured after: the top of
        the plate clears the bars by about 30px at every size tested. */
+    /* WHAT IS LEFT OVER IS THE AIR AROUND THE BLOCK, so this number is now a
+       composition decision rather than a fitting one. The stage is the visible
+       viewport; the caption bar and the row gap take about 57px; everything
+       else this subtracts becomes margin, split evenly above and below by
+       `align-content: center` above.
+
+       12rem leaves roughly 67px of blue over the picture and the same under
+       the caption at every size tested. The plate comes out slightly smaller
+       than it could be, which is the trade: at 7rem it grew until it was
+       within 48px of the subnav with the caption against the bottom edge of
+       the window, and read as cramped rather than as large. */
     .wide .plate {
-      --cap: calc(100vh - var(--sticky-stack) - 7rem);
+      --cap: calc(100vh - var(--sticky-stack) - 12rem);
     }
 
     .wide .side {
