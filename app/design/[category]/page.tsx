@@ -63,10 +63,16 @@ export async function generateMetadata({
 
    THREE SHAPES, DECIDED BY THE CONTENT, and the third one is new:
 
-   1. A FEATURED CASE plus an archive. American Scientific: the website
-      rebuild is a band at the top of the page, above everything, because it
-      is production engineering on a live business system rather than a fourth
-      kind of collateral. Then the subnav and the four sections.
+   1. A FEATURED CASE INSIDE the archive. American Scientific: the website
+      rebuild is a band that sits between two of the folder sections, in the
+      subnav alongside them, numbered with them. `after` in content/design.ts
+      names the group it follows. It used to sit above the whole run and stay
+      out of the index, on the argument that a subnav entry between "Print"
+      and "Social Media" would make it read as a fourth kind of collateral;
+      see that file for why that reversed. What makes it read as the feature
+      is the treatment, which has not changed: it is the page's only colour
+      band, and the only section with a deck, a table, statistics and scroll
+      sequences.
 
    2. GROUPS AS SECTIONS. Personal Works: subnav and sections, no feature.
 
@@ -139,14 +145,36 @@ export default async function DesignCategoryPage({
   const featured = getFeatured(found.slug);
   const { prev, next } = categoryNeighbours(found.slug);
 
-  /* The subnav indexes the SECTIONS, which are the groups. The featured case
-     is deliberately not in it: the brief is explicit that it must not read as
-     a peer of "Print". A bar with one item is furniture, so one group gets
-     none. */
-  const navItems = groups.map((group) => ({
-    id: group.slug,
-    label: group.title,
-  }));
+  /* ONE RUNNING ORDER, BUILT ONCE, and the subnav and the page read from the
+     same array. They used to be derived separately, which is how the featured
+     case ended up present on the page and absent from the index.
+
+     Each entry is either a folder section or the featured case. The featured
+     case is spliced in after the group named by `after`; with no `after`, or
+     with a name that matches no folder, it leads, which is where it used to
+     live and is a safe place to land. A bar with one item is furniture, so a
+     single-entry run still renders no subnav. */
+  type Row =
+    | { kind: "group"; id: string; label: string; group: (typeof groups)[number] }
+    | { kind: "featured"; id: string; label: string };
+
+  const rows: Row[] = [];
+  if (featured && !featured.after) {
+    rows.push({ kind: "featured", id: featured.slug, label: featured.nav });
+  }
+  for (const group of groups) {
+    rows.push({ kind: "group", id: group.slug, label: group.title, group });
+    if (featured && featured.after === group.slug) {
+      rows.push({ kind: "featured", id: featured.slug, label: featured.nav });
+    }
+  }
+  /* `after` naming a folder that is not on disk would drop the section
+     entirely. It leads instead. */
+  if (featured && featured.after && !rows.some((r) => r.kind === "featured")) {
+    rows.unshift({ kind: "featured", id: featured.slug, label: featured.nav });
+  }
+
+  const navItems = rows.map((row) => ({ id: row.id, label: row.label }));
 
   return (
     <>
@@ -186,9 +214,16 @@ export default async function DesignCategoryPage({
         </Container>
       )}
 
-      {featured && <FeaturedCase data={featured} />}
+      {rows.map((row, i) => {
+        const number = String(i + 1).padStart(2, "0");
 
-      {groups.map((group, i) => {
+        if (row.kind === "featured") {
+          return (
+            <FeaturedCase key={row.id} data={featured!} number={number} />
+          );
+        }
+
+        const group = row.group;
         const copy = getSection(found.slug, group.slug);
 
         /* A section may lead with a before/after. When it does, the two files
@@ -221,11 +256,7 @@ export default async function DesignCategoryPage({
             key={group.slug}
             className={styles.section}
           >
-            <SectionHead
-              id={group.slug}
-              number={String(i + 1).padStart(2, "0")}
-              title={group.title}
-            />
+            <SectionHead id={group.slug} number={number} title={group.title} />
 
             {compare && copy?.compare && (
               <div className={styles.sectionCompare}>

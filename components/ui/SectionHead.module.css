@@ -5,12 +5,10 @@
    section. Using it anywhere else is what turns a page full of rules into
    noise rather than structure. */
 
-.head {
-  /* An anchor target under a sticky subnav has to clear it, or clicking a
-     subnav item scrolls the heading underneath the bar that sent you there.
-     Generous, because the subnav's height is fluid. */
-  scroll-margin-top: var(--space-9);
-}
+/* NO scroll-margin-top HERE. It used to carry --space-9, which added to the
+   scroll-padding-top on `html` on every native fragment navigation and put
+   the heading 176px down against 124px of bars. The offset is the
+   scrollport's job and is set once, in reset.css. */
 
 .rule {
   border-top: 1.5px solid currentColor;

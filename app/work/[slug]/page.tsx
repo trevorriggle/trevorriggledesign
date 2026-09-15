@@ -178,9 +178,15 @@ export default async function CaseStudyPage({
           inside the run it opens. */}
       {entry.cover?.exists && !hasSequence && (
         <Container className={styles.lead}>
+          {/* `sizes` HAS TO MATCH THE BOX, and it did not. This said 40rem,
+              which is 640px, while <Frame> lets the picture run to the full
+              container: 1282px at a 90rem window. The browser was picking a
+              source for a 640px slot and scaling it up to twice that, so the
+              lead shot on every entry without a clip rendered soft. It read
+              as a small image because it was a small image, stretched. */}
           <Frame
             image={entry.cover}
-            sizes="(max-width: 62rem) 100vw, 40rem"
+            sizes="(max-width: 62rem) 100vw, (max-width: 90rem) 92vw, 80rem"
             priority={!entry.video}
           />
         </Container>

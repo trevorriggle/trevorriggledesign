@@ -70,23 +70,24 @@
    as a directory, the masthead gets enormous air so it reads as an opening,
    and a case study's movements sit tight so the argument stays continuous. */
 
+/* NONE OF THESE SET scroll-margin-top ANY MORE. They each carried
+   --space-6, which was a third guess at the height of the sticky bars and
+   added to the scroll-padding-top on `html`. One value, in reset.css. */
+
 /* A major movement, with air. */
 .section {
   margin-top: var(--rhythm-normal);
-  scroll-margin-top: var(--space-6);
 }
 
 /* A major movement that CROWDS the one above it, used where two blocks
    should read as one thought. */
 .sectionTight {
   margin-top: var(--rhythm-crowd);
-  scroll-margin-top: var(--space-6);
 }
 
 /* A major movement with the most air on the site. Used once or twice. */
 .sectionLoose {
   margin-top: var(--rhythm-loose);
-  scroll-margin-top: var(--space-6);
 }
 
 /* The heavy rule is the loudest structural mark here and is reserved for

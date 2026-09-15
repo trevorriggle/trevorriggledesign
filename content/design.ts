@@ -240,8 +240,13 @@ export const designSections: Record<string, DesignSection[]> = {
           width: 1366,
           height: 1228,
           alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in grey with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
+          /* MATCHED PAIR. These two used to run to twenty-two and nineteen
+             words in different shapes, so the eye read them as two separate
+             notes rather than as one measurement taken twice. Same length,
+             same construction, same order of terms: colour, weight, what
+             surrounds the elephant. */
           caption:
-            "Five colours, a heavy outline, a character, a badge, a ring of type and two atoms. Every element is doing something.",
+            "Five colours, a heavy outline, and a badge ringed with type and atoms.",
         },
         after: {
           src: "02-after.png",
@@ -249,7 +254,7 @@ export const designSections: Record<string, DesignSection[]> = {
           height: 857,
           alt: "The rebranded system: at left the same elephant badge redrawn as a single-weight outline in one dark red with no fills, at right the am-sci shorthand set in a heavy lowercase with a left-to-right gradient running from red through violet into blue",
           caption:
-            "The same elephant, reduced to one value and one colour, beside the am-sci shorthand it now travels with.",
+            "One colour, one weight, and the am-sci shorthand it now travels with.",
         },
       },
       body: [
@@ -376,12 +381,23 @@ export function getSection(
    One per category, at most, rendered above the archive rather than as a
    section inside it.
 
-   WHY THE WEBSITE IS NOT A SUBNAV ITEM. The brief is explicit and it is
-   right: the American Scientific website is a rebuild of a live commercial
-   system that integrates with a backend ERP and runs lead acquisition, which
-   is design plus production engineering. Listed between "Print" and "Social
-   Media" it reads as a fourth kind of collateral. It is the strongest piece
-   of evidence on the design side of this site and it gets the top of the page.
+   IT IS IN THE SUBNAV AND IT IS NOT AT THE TOP. BOTH OF THOSE REVERSED.
+
+   This file used to argue the opposite at length: that listing the website
+   between "Print" and "Social Media" would make a rebuild of a live commercial
+   system read as a fourth kind of collateral, and that it therefore had to sit
+   above the run with no entry in the index. That argument was about the wrong
+   risk. A section long enough to need an index entry and missing from the
+   index is not protected, it is unreachable: the one control for moving around
+   the page silently refuses to admit the biggest thing on it.
+
+   It sits after Rebrand instead, with its own entry, and it keeps every
+   treatment that made it read as the feature in the first place. It is the
+   only full-bleed colour band on the page, the only section with a deck, a
+   table and a set of statistics, and the only one carrying scroll sequences.
+   None of that is a function of its position. `after` names the group it
+   follows and `nav` gives it its label, so the order is data rather than a
+   branch in the template.
 
    EVERY PROSE STRING HERE COMES FROM THE AUTHOR'S OWN BRIEF, and nothing has
    been added to it. The brief said: rebuilt from scratch, integrates with the
@@ -417,6 +433,15 @@ export type Sequence = {
 export type FeaturedCase = {
   /** Anchor id and the section's own slug. */
   slug: string;
+  /** The subnav label. Short, like a group's. */
+  nav: string;
+  /**
+   * The group slug this section follows, or absent for the top of the page.
+   *
+   * IT IS A SECTION IN THE RUN NOW, NOT A PREAMBLE ABOVE IT. See the note on
+   * the running order below.
+   */
+  after?: string;
   /** Small label above the title, naming what kind of thing this is. */
   eyebrow: string;
   title: string;
@@ -453,6 +478,10 @@ export type FeaturedCase = {
 export const designFeatured: Record<string, FeaturedCase> = {
   "american-scientific": {
     slug: "website",
+    nav: "Website",
+    /* Directly after the rebrand, which is the section that establishes the
+       mark this site was then built in. */
+    after: "rebrand",
     eyebrow: "Featured",
     title: "The company website, rebuilt",
     deck: "A B2B wholesaler whose site was guessing at a number its ERP already knew exactly.",

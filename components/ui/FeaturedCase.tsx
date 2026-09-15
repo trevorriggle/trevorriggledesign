@@ -8,10 +8,14 @@ import styles from "./FeaturedCase.module.css";
 /* ============================================================================
    FEATURED CASE
    ============================================================================
-   The one piece of work on a design page that is not part of the archive
-   below it. Rendered as a deep blue band at the top of the page, which is the
-   loudest structural move the system has, because the whole point is that
-   this is not a fourth category of collateral.
+   The one piece of work on a design page that is a case study rather than a
+   folder of pictures. Rendered as a deep blue band, which is the loudest
+   structural move the system has.
+
+   IT SITS IN THE RUN NOW, not above it, and it is in the subnav. See
+   app/design/[category]/page.tsx and the note on the running order in
+   content/design.ts for why that reversed. Its position is no longer what
+   marks it as the feature; the treatment is, and none of that moved.
 
    THE GROUND IS `ultramarine-deep` RATHER THAN `ultramarine`. Ultramarine is
    right for a band carrying one sentence. This band carries a case study, and
@@ -52,7 +56,17 @@ import styles from "./FeaturedCase.module.css";
    visitor to see.
    ========================================================================= */
 
-export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
+export function FeaturedCase({
+  data,
+  /* ITS PLACE IN THE RUN. The section is numbered with the folder sections
+     now rather than sitting above them unnumbered, so the page counts
+     01, 02, 03 straight through instead of skipping the largest thing on it.
+     Absent renders no ordinal, which is what a page with no subnav wants. */
+  number,
+}: {
+  data: FeaturedCaseData;
+  number?: string;
+}) {
   const showTodo = process.env.NODE_ENV !== "production" && data.todo.length > 0;
   const dir = data.compareDir;
 
@@ -65,7 +79,14 @@ export function FeaturedCase({ data }: { data: FeaturedCaseData }) {
       aria-label={data.title}
     >
       <div>
-        <p className={`label ${styles.eyebrow}`}>{data.eyebrow}</p>
+        <p className={styles.eyebrow}>
+          {number && (
+            <span className={`ordinal ${styles.number}`} aria-hidden="true">
+              {number}
+            </span>
+          )}
+          <span className="label">{data.eyebrow}</span>
+        </p>
         <h2 className={styles.title}>{data.title}</h2>
         <p className={styles.deck}>{data.deck}</p>
       </div>

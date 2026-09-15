@@ -355,6 +355,15 @@
   --width-page: 90rem;     /* 1440px, outer bound              */
   --width-prose: 34rem;    /*  544px, narrow measure           */
   --measure: 62ch;         /* long-form reading measure         */
+  /* THE WIDE MEASURE, for single-column prose with nothing beside it.
+     --measure is 62ch, which is the right line length when copy shares a row
+     with a rail or a picture. Alone in a 90rem container it reads as a narrow
+     column pinned to the left of a much wider box, which looks like a bug
+     rather than a decision. 82ch at --text-md is about 770px in a 1282px
+     container: noticeably wider, still short of edge to edge, still inside
+     the range a line can be read at without the eye losing its place.
+     Paired layouts keep --measure. */
+  --measure-wide: 82ch;
   --measure-lead: 24ch;    /* deck / lead, short lines on purpose */
 
   --rail: 14rem;
@@ -409,6 +418,46 @@
   --z-rail: 5;
   --z-subnav: 90;
   --z-nav: 100;
+
+  /* ---- 8. THE STICKY STACK ----------------------------------------------
+     How much of the top of the viewport is permanently covered, and therefore
+     how far an anchor has to clear it.
+
+     THIS EXISTS BECAUSE THREE PLACES WERE GUESSING AT IT. `html` carried
+     scroll-padding-top: 3.5rem, <SectionHead> carried scroll-margin-top:
+     7.5rem, grid.module.css carried 2.25rem, and lib/lenis.ts read the
+     second of those and ignored the first. Native fragment navigation applies
+     scroll-padding AND scroll-margin, so it landed 176px down; the Lenis
+     click handler applied only the margin and landed at 120px. Two paths to
+     the same link, 56px apart, and neither matched the bars.
+
+     MEASURED, not estimated. The masthead is a 3rem logo plus space-3 above
+     and below plus its rule: 4.5rem. The subnav is a 12px label with space-4
+     above and below plus two borders: 3.25rem. space-3 of breath stops the
+     heavy rule <SectionHead> draws from sitting flush against the subnav's
+     own bottom border and reading as one doubled line.
+
+     EVERY PAGE PAYS THE SUBNAV'S HEIGHT, including the ones without a subnav,
+     where it lands as 3.25rem of air above the heading. That is the safe
+     direction to be wrong in: too much clearance reads as breathing room and
+     too little hides the heading behind a bar. */
+  --masthead-h: 4.5rem;
+  --subnav-h: 3.25rem;
+  --sticky-stack: calc(
+    var(--masthead-h) + var(--subnav-h) + var(--space-3)
+  );
+}
+
+/* The masthead wraps its tabs under the wordmark on a narrow screen, so it is
+   taller there and the stack has to follow. These two breakpoints are the
+   ones SubNav.module.css already had; they live here now so the bar and the
+   anchor offset cannot drift apart. */
+@media (max-width: 46rem) {
+  :root { --masthead-h: 6.5rem; }
+}
+
+@media (max-width: 30rem) {
+  :root { --masthead-h: 5.75rem; }
 }
 
 /* ============================================================================

@@ -7,10 +7,11 @@
    masthead's height changes at the breakpoint where its tabs wrap. */
 
 .bar {
-  --masthead: 4.5rem;
-
   position: sticky;
-  top: var(--masthead);
+  /* --masthead-h is in tokens.css, beside the anchor offset that has to clear
+     this bar. It used to be declared here and duplicated there, which is how
+     the two drifted. */
+  top: var(--masthead-h);
   z-index: var(--z-subnav);
 
   background: var(--color-bg);
@@ -93,12 +94,6 @@
    scrollbar, and the bar keeps its height. */
 
 @media (max-width: 46rem) {
-  .bar {
-    /* The masthead stacks its tabs under the wordmark below 46rem, so it is
-       taller here and the offset has to follow it. */
-    --masthead: 6.5rem;
-  }
-
   .list {
     overflow-x: auto;
     overscroll-behavior-x: contain;
@@ -120,6 +115,5 @@
 }
 
 @media (max-width: 30rem) {
-  .bar { --masthead: 5.75rem; }
   .link { font-size: var(--text-3xs); }
 }

@@ -55,13 +55,18 @@ export function scrollToId(id: string): boolean {
 
   const lenis = getLenis();
   if (lenis) {
-    /* `offset` is read from the element's own scroll-margin-top, so the
-       anchor offset lives in CSS beside the sticky bars that cause it,
-       rather than as a number duplicated in here. */
-    const margin = parseFloat(
-      getComputedStyle(target).scrollMarginTop || "0",
+    /* READ THE SAME NUMBER THE BROWSER WOULD. This used to read the target's
+       own scroll-margin-top, which meant a click through Lenis and a click
+       without it resolved to different positions: native fragment navigation
+       applies the scrollport's scroll-padding-top AS WELL as the target's
+       scroll-margin-top, so the two paths were 56px apart on the same link.
+
+       There is now one value, scroll-padding-top on the document element, and
+       this reads it. See the sticky stack note in tokens.css. */
+    const pad = parseFloat(
+      getComputedStyle(document.documentElement).scrollPaddingTop || "0",
     );
-    lenis.scrollTo(target, { offset: -margin });
+    lenis.scrollTo(target, { offset: Number.isFinite(pad) ? -pad : 0 });
     return true;
   }
 

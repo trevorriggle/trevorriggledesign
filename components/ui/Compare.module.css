@@ -1,13 +1,19 @@
 /* A before and an after, side by side. See Compare.tsx.
 
-   The pair is a two-column grid with a real gap rather than a divider rule:
-   two framed pictures already have four edges between them and a fifth line
-   down the middle is a line too many. */
+   THREE COLUMNS, AND THE TWO OUTER ONES ARE NOT EQUAL. `grid-template-columns`
+   is set inline, proportional to each picture's own aspect ratio, which is
+   what makes the two frames the same HEIGHT. The equal-width version rendered
+   a 1.11 badge two and a half times taller than a 2.80 lockup.
+
+   THREE ROWS, SHARED. label / frame / caption, declared here and adopted by
+   each figure with `grid-template-rows: subgrid`, so the two sides line up
+   across all three and the arrow can be placed on the frame row alone. */
 
 .pair {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--grid-gap);
+  /* grid-template-columns is inline, per pair. See Compare.tsx. */
+  grid-template-rows: auto auto auto;
+  column-gap: var(--grid-gap);
   align-items: start;
   margin: 0;
 }
@@ -15,9 +21,25 @@
 .side {
   margin: 0;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
+  display: grid;
+  grid-row: 1 / -1;
+  grid-template-rows: subgrid;
+  row-gap: var(--space-3);
+}
+
+/* OLD TO NEW, AND IT IS DECORATIVE. The order is already carried by BEFORE
+   and AFTER on the frames and by the reading direction, so this is
+   aria-hidden: a screen reader gets "Before ... After" and does not need to
+   be told "right arrow" in between. It sits on the frame row so it centres
+   against the pictures rather than against the whole column, which would put
+   it low by half a caption. */
+.arrow {
+  grid-row: 2;
+  align-self: center;
+  font-size: var(--display-1);
+  line-height: 1;
+  color: var(--color-text-meta);
+  user-select: none;
 }
 
 /* BEFORE / AFTER. Uppercase, letterspaced, in the text face — the global
@@ -32,14 +54,16 @@
   color: var(--color-text-meta);
 }
 
-/* THE BOX TAKES THE IMAGE'S OWN RATIO, declared per side as --ratio. This is
-   what makes the percentage-positioned redactions land correctly: the frame
-   is never a different shape from the picture in it, at any width, so a panel
-   at 17% from the left is over the same content at every size. It is also how
-   the pair reserves its height before either file has loaded. */
+/* THE BOX TAKES THE IMAGE'S OWN RATIO, declared per side as --ar. Three
+   things depend on it: the percentage-positioned redactions land correctly
+   because the frame is never a different shape from the picture in it; the
+   pair reserves its height before either file has loaded; and, with the
+   column widths set proportional to the same number, the two frames resolve
+   to the same height at every viewport. */
 .frame {
   position: relative;
-  aspect-ratio: var(--ratio);
+  grid-row: 2;
+  aspect-ratio: var(--ar);
   background: var(--color-bg-sunk);
   border: var(--rule);
   overflow: hidden;
@@ -92,7 +116,26 @@
 
 @media (max-width: 52rem) {
   .pair {
-    grid-template-columns: 1fr;
-    gap: var(--rhythm-tight);
+    /* Overrides the inline value, which is the one thing a stylesheet can
+       still do to an inline style: `!important`. One column, three items
+       stacked, rows auto. */
+    grid-template-columns: 1fr !important;
+    grid-template-rows: none;
+    row-gap: var(--rhythm-tight);
+  }
+
+  .side {
+    grid-row: auto;
+    grid-template-rows: none;
+  }
+
+  .frame { grid-row: auto; }
+
+  /* Points down the page now, because that is the direction the pair reads
+     in once it has stacked. */
+  .arrow {
+    grid-row: auto;
+    justify-self: center;
+    rotate: 90deg;
   }
 }

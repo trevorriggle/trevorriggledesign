@@ -91,11 +91,14 @@
   margin-top: var(--rhythm-tight);
 }
 
+/* SINGLE-COLUMN PROSE, so it takes the wide measure. Nothing sits beside a
+   section's copy: the comparison is above it and the gallery is below it, at
+   full width. At --measure (62ch) it was a 583px column hanging off the left
+   of a 1282px container with 700px of nothing to its right. See the note on
+   --measure-wide in tokens.css. */
 .sectionCopy {
   margin-top: var(--space-6);
-  /* Hangs in the first half of the grid, so the copy reads at a measure and
-     the images below it get the full width. */
-  max-width: var(--measure);
+  max-width: var(--measure-wide);
 }
 
 .sectionPara {

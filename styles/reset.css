@@ -4,8 +4,12 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  /* Nothing on this page is anchored mid-scroll without a rail above it. */
-  scroll-padding-top: var(--space-7);
+  /* THE ONLY ANCHOR OFFSET ON THE SITE. It belongs on the scrollport rather
+     than on each target: a fixed bar obscures the top of the viewport, which
+     is a property of the viewport and not of the thing being scrolled to.
+     Nothing else may set scroll-margin-top, or the two add up. See the sticky
+     stack note in tokens.css. */
+  scroll-padding-top: var(--sticky-stack);
 }
 
 body, h1, h2, h3, h4, h5, h6,
