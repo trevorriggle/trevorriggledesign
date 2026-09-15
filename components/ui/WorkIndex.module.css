@@ -101,6 +101,43 @@
   transition: transform var(--duration-slow) var(--ease-out);
 }
 
+/* THE UNIFORM BOX, /design ONLY.
+   ============================================================================
+   One 4:3 frame per row, filled edge to edge and centre-cropped, so the three
+   bodies of work are the same size on the page instead of three different
+   sizes derived from three different source exports.
+
+   4:3 IS CHOSEN BY THE SOURCES, not by taste. Personal Works is 1448x1086,
+   which is exactly 4:3 and loses nothing. American Scientific is 1920x1371,
+   or 1.40, so it gives up 2.4% off each side. Taranto's is a 2:1 menu spread
+   and there is no ratio that makes it uniform without either cropping a third
+   of the spread away or letting it dictate a 2:1 box that would halve the
+   other two; it is re-exported to 4:3 by hand instead.
+
+   THE CAP IS ON WIDTH, NOT HEIGHT, and that is the whole reason the geometry
+   stays predictable. `max-height` on an aspect-ratio box clamps the height and
+   leaves the width alone, so the frame silently stops being 4:3 on a short
+   window and the crop deepens with the viewport. Capping the WIDTH at the
+   height budget's own 4:3 equivalent keeps the ratio exact at every size: the
+   box shrinks, it never reshapes. 52vh is the same height budget the
+   proportional rows run on, so the page's rhythm is unchanged. */
+.mediaUniform {
+  aspect-ratio: 4 / 3;
+  max-width: min(100%, calc(52vh * 4 / 3));
+}
+
+/* Fills the frame. The bounds on `.image` are what the default rows are laid
+   out by, so all four have to come off here or the picture sits inside the
+   box at its own size and the crop never happens. */
+.mediaUniform .image {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: cover;
+  object-position: center;
+}
+
 /* --- The deck ------------------------------------------------------------ */
 
 .deck {
@@ -167,6 +204,11 @@
   /* Taller allowance on a phone: the column is the full screen width, so a
      portrait screenshot capped at 52vh would render tiny. */
   .image { max-height: 68vh; }
+
+  /* The uniform frame tracks the same budget, still capped on width so the
+     4:3 holds. */
+  .mediaUniform { max-width: min(100%, calc(68vh * 4 / 3)); }
+  .mediaUniform .image { max-height: none; }
 }
 
 @media (max-width: 34rem) {

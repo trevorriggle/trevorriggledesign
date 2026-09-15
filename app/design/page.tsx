@@ -21,8 +21,14 @@ export const metadata: Metadata = {
 
    AN INDEX, the same browse tier /applications uses. This has been three
    editorial rows with mismatched lead images, then three 4:3 preview cards,
-   then a hover-gated list. Every category's picture is now in the layout, at
-   its own proportion, visible on load. See components/ui/WorkIndex.
+   then a hover-gated list. Every category's picture is now in the layout,
+   visible on load. See components/ui/WorkIndex.
+
+   `uniform` IS SET HERE AND NOWHERE ELSE. These three are covers for three
+   sections of one body of work and they are read as a set, so they take one
+   4:3 frame at one size rather than each deriving its own from whatever its
+   source export happened to be. Applications does not: those previews are
+   portrait phone screenshots, and their shape is information.
 
    A category with an empty folder gets a row and no picture rather than a grey
    box, same standing rule as everywhere else.
@@ -54,6 +60,7 @@ export default function DesignPage() {
           entries={rows}
           label="Bodies of design work"
           priorityFirst
+          uniform
         />
       </Container>
     </>

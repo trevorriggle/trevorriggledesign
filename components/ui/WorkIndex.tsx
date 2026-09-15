@@ -36,11 +36,18 @@ import styles from "./WorkIndex.module.css";
    and the page is unchanged in what it communicates, which is the test for
    whether motion is an enhancement or a gate.
 
-   PROPORTION IS PRESERVED, EXACTLY AS IT WAS. Each picture renders at its own
-   ratio, bounded on both axes, never cropped to a uniform tile. A print
-   spread comes out wide and a phone screenshot comes out tall, because the
-   shape of the thing is one of the things the picture has to say. The height
-   cap is what stops a 2064x2752 iPad grab from being three screens tall.
+   PROPORTION IS PRESERVED BY DEFAULT. Each picture renders at its own ratio,
+   bounded on both axes, never cropped to a uniform tile. A print spread comes
+   out wide and a phone screenshot comes out tall, because the shape of the
+   thing is one of the things the picture has to say. The height cap is what
+   stops a 2064x2752 iPad grab from being three screens tall.
+
+   `uniform` OPTS OUT OF THAT, AND ONLY /design USES IT. Three bodies of design
+   work are three covers for three sections, and read as a set: a 2:1 spread
+   filling the column beside a 4:3 card stopping 220px short read as a ragged
+   list rather than as three doors. Applications keeps native proportion,
+   because those previews are portrait phone screenshots and a landscape tile
+   would crop the product out of its own picture.
 
    NO META ROW. Entries used to carry a derived count or a status word on the
    right. Both are gone site-wide, see lib/cards.ts.
@@ -69,10 +76,17 @@ export function WorkIndex({
   label,
   /** Eager-loads the first picture. It is the LCP candidate on these pages. */
   priorityFirst = false,
+  /**
+   * One 4:3 box for every row, filled edge to edge, centre-cropped. Off by
+   * default: it throws away the picture's own shape, which is only the right
+   * trade where the set matters more than the individual frame.
+   */
+  uniform = false,
 }: {
   entries: WorkEntry[];
   label?: string;
   priorityFirst?: boolean;
+  uniform?: boolean;
 }) {
   if (entries.length === 0) return null;
 
@@ -95,7 +109,11 @@ export function WorkIndex({
             </span>
 
             {entry.preview && (
-              <span className={styles.media}>
+              <span
+                className={
+                  uniform ? `${styles.media} ${styles.mediaUniform}` : styles.media
+                }
+              >
                 <Image
                   src={entry.preview.url}
                   alt=""
