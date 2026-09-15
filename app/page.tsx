@@ -55,11 +55,12 @@ import styles from "./page.module.css";
 /** The site's opening line. Split on spaces for the reveal, never edited. */
 const STATEMENT = "Graphic Designer & Developer";
 
-/* The band's sentence is the author's own, lifted verbatim from /about. It is
-   the site's argument in one line, which is what a pull quote is for, and
-   nothing was written for this slot. */
+/* The band's sentence is the author's own, supplied for this slot. It used to
+   be lifted verbatim from /about; it is its own line now, and /about no
+   longer carries a version of it, so the two do not say the same thing in two
+   places. */
 const BAND_LINE =
-  "I design the thing, build the thing, and own the parts of it that break.";
+  "I design, build and break software before putting it back together. It’s all part of the process.";
 
 export default function HomePage() {
   const applications = caseStudyRows(getSelected());

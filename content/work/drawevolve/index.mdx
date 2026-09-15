@@ -56,13 +56,13 @@ logo:
 # of it.
 thumb:
   src: thumbnail.jpg
-  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a color portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
+  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a colour portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
   aspect: "4:3"
   minWidth: 1600
 
 cover:
   src: 1.jpg
-  alt: "DrawEvolve on an iPad: a finished color portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
+  alt: "DrawEvolve on an iPad: a finished colour portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
   aspect: "2064:2752"
   minWidth: 2064
   caption: "The critique itself. A Quick Take, then what is working, then one focus area, in that order, because an artist told what is wrong first stops reading."
@@ -136,16 +136,14 @@ status: published
 
 Most AI feedback on creative work is stateless. You show it a drawing, it
 tells you what's wrong, and next time you show it a drawing it has no idea
-it's ever met you. That's not coaching. That's a very confident stranger with
-opinions.
+it's ever met you. Every session starts over with a very confident stranger.
 
-DrawEvolve is built on the opposite principle: the critique remembers. A
-second critique on the same piece references the first one and evaluates
-whether you actually acted on it. Progress is the thing being measured, not
-the individual drawing.
+DrawEvolve remembers. A second critique on the same piece references the
+first one and evaluates whether you acted on it. What gets measured is your
+progress across drawings.
 
-The product position is *AI as mentor, not replacement*. The app has an
-Artist Bill of Rights, and nothing in it generates art on your behalf.
+The app has an Artist Bill of Rights, and nothing in it generates art on your
+behalf. It coaches. You draw.
 
 ## The constraint
 
@@ -177,20 +175,18 @@ tiered rate limits, and hard-caps daily spend. Supabase with row-level
 security behind it. Sign in with Apple and Google via authorization code flow
 with PKCE.
 
-That work isn't glamorous and it's the reason the product exists. A solo
-developer shipping an LLM-backed app without a spend ceiling is one abusive
-script away from a five-figure bill. The ceiling went in before the app went
-out.
+None of that is glamorous and it is why the product exists. A solo developer
+shipping an LLM-backed app without a spend ceiling is one abusive script away
+from a five-figure bill. The ceiling went in before the app went out.
 
 ## The tradeoff I made
 
-I shipped the tile-based renderer before retrofitting wet-ink onto it, which
-means the stroke system is running on architecture it wasn't originally
-written for until I go back and finish that work. I took the visible progress
-over the clean sequence, deliberately, because a renderer nobody can use
-isn't verified.
+I shipped the tile-based renderer before retrofitting wet-ink onto it. The
+stroke system is running on architecture it was not written for until I go
+back and finish that work. I chose the visible progress over the clean
+sequence, because a renderer nobody can use is a renderer nobody has tested.
 
-That's a debt I named rather than hid, and it's scheduled.
+It is a real debt. It is named here and it is scheduled.
 
 ## How I worked
 
@@ -199,8 +195,8 @@ That was the only way one person covers that much surface area in six months.
 Each agent held a bounded scope on its own branch, and I did integration and
 review.
 
-Learning to decompose work so that agents don't collide is a real skill, and
-it's most of why the timeline was possible at all.
+Decomposing work so the agents don't collide is a real skill. It is most of
+why six months was enough.
 
 ## Outcome
 

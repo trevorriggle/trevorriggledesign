@@ -141,7 +141,7 @@ export const agents: AgentSection[] = [
         ],
         footer:
           "Every other ticket on this run was verified, invoiced and sent without intervention.",
-        note: "Sample artifact. Every value in it is invented.",
+        note: "Sample artefact. Every value in it is invented.",
       },
     },
     stat: null,
@@ -251,7 +251,7 @@ export const agents: AgentSection[] = [
             body: "The agent stops here. What to offer, and when, is not its call.",
           },
         ],
-        note: "Sample artifact. Every value in it is invented.",
+        note: "Sample artefact. Every value in it is invented.",
       },
     },
     stat: null,
@@ -259,7 +259,7 @@ export const agents: AgentSection[] = [
       "ANSWER: what it actually researches. Which sources, which signals?",
       "ANSWER: where the output lands. A sheet, a CRM, an inbox?",
       "ANSWER: who consumes it, and whether they act on it directly.",
-      "WRITE: the sample lead card above is a reasonable guess at the shape of the artifact and it should be replaced with the real shape once the three answers above exist.",
+      "WRITE: the sample lead card above is a reasonable guess at the shape of the artefact and it should be replaced with the real shape once the three answers above exist.",
     ],
   },
 
@@ -317,7 +317,7 @@ export const agents: AgentSection[] = [
         ],
         footer:
           "Everything else from the day was filtered out, each with the reason it was dropped, in case the filter is wrong.",
-        note: "Sample artifact. Every value in it is invented.",
+        note: "Sample artefact. Every value in it is invented.",
       },
     },
     stat: null,

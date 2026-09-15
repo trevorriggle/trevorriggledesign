@@ -42,14 +42,10 @@ export const metadata: Metadata = {
    THE RESUME IS ITS OWN SECTION, not a button in the rail, and it appears
    only when a real file exists. See lib/resume.ts.
 
-   A PLACEHOLDER PDF IS CURRENTLY ON DISK, at the author's explicit request,
-   and it is the one thing on this page that should not ship as it stands.
-   lib/resume.ts argues at length against exactly this file, and the argument
-   still holds: the reader most likely to click it is a hiring manager in a
-   debrief, and handing that reader a stub is worse than showing them no
-   button. It is named *-PLACEHOLDER.pdf so it cannot be mistaken for the
-   real thing in a directory listing. Drop the real export into
-   public/resume/ and delete it; no code changes.
+   THE REAL RESUME IS ON DISK NOW. public/resume/trevor-riggle-resume.pdf,
+   one page, 87 KB. The *-PLACEHOLDER.pdf stub that used to sit there is
+   deleted: lib/resume.ts takes the first PDF in the folder, so leaving both
+   would have been a coin toss between them.
 
    THE PALETTE WAS REBALANCED OFF OCHRE. The page carried an ochre pull quote
    AND an ink closing band with ochre type on it, and navy-plus-gold at that

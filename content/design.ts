@@ -55,7 +55,7 @@ export const designCategories: DesignCategory[] = [
     slug: "tarantos",
     title: "Taranto's",
     intro:
-      "A neighborhood pizzeria, and the whole of its printed and posted output: the menu, the promotions that run on top of it, and the marks that go where the main logo does not fit.",
+      "A neighbourhood pizzeria, and the whole of its printed and posted output: the menu, the promotions that run on top of it, and the marks that go where the main logo does not fit.",
     body: [],
     demonstrates: "",
   },
@@ -239,9 +239,9 @@ export const designSections: Record<string, DesignSection[]> = {
           src: "01-before.png",
           width: 1366,
           height: 1228,
-          alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in gray with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
+          alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in grey with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
           caption:
-            "Five colors, a heavy outline, a character, a badge, a ring of type and two atoms. Every element is doing something.",
+            "Five colours, a heavy outline, a character, a badge, a ring of type and two atoms. Every element is doing something.",
         },
         after: {
           src: "02-after.png",
@@ -249,13 +249,13 @@ export const designSections: Record<string, DesignSection[]> = {
           height: 857,
           alt: "The rebranded system: at left the same elephant badge redrawn as a single-weight outline in one dark red with no fills, at right the am-sci shorthand set in a heavy lowercase with a left-to-right gradient running from red through violet into blue",
           caption:
-            "The same elephant, reduced to one value and one color, beside the am-sci shorthand it now travels with.",
+            "The same elephant, reduced to one value and one colour, beside the am-sci shorthand it now travels with.",
         },
       },
       body: [
         "The original mark was overdesigned in a specific and datable way. A character illustration with a black keyline. A rendered gradient on the body, a prop in the trunk, a hard-edged badge behind it, and the full company name curved around the ring, with two atoms tucked into the border in case the test tube had not made the point. It belonged to the era of design that produced it, and it fell apart at small sizes, which by then was most of where it had to live.",
         "The obvious move was to kill it. That was not on the table. The founder was attached to the elephant, and the attachment had a reason behind it: the company had traded under that mark for a long time. A rebrand that opens by throwing away the one thing leadership cares about does not get approved.",
-        "So the elephant stayed and everything around it was reduced. The mark is now a single-value line drawing in one color. No fills. No keyline sitting separately from the art, no rendered gradient on the body, no second ring of type competing with the first. The ornament is still there, quiet enough now to read as texture. I adopted “am-sci” as the shorthand at the same time, which is what the company was already called out loud, and put the weight the old mark spent on ornament into one device: a gradient running red to blue across the letterforms.",
+        "So the elephant stayed and everything around it was reduced. The mark is now a single-value line drawing in one colour. No fills. No keyline sitting separately from the art, no rendered gradient on the body, no second ring of type competing with the first. The ornament is still there, quiet enough now to read as texture. I adopted “am-sci” as the shorthand at the same time, which is what the company was already called out loud, and put the weight the old mark spent on ornament into one device: a gradient running red to blue across the letterforms.",
         "I built the full AMERICAN SCIENTIFIC wordmark as an alternative lockup, carrying the same gradient. Some applications want the whole name. Mostly, though, it let leadership see the new system next to the old one and read it as continuity. Showing only the abbreviation would have made the change look bigger than it is.",
         "The mark is not the interesting part of this project. Reducing an overdrawn logo is a known exercise, and any competent designer can do it. The actual problem was the constraint: solve for a stakeholder’s real attachment to a specific piece of artwork, and do it without shipping something dated. Those two requirements pull against each other. The work was finding the version that satisfies both.",
       ],
@@ -322,7 +322,7 @@ export const designSections: Record<string, DesignSection[]> = {
       placeholder: false,
       body: [
         "Alternate marks, drawn for the places the primary logo does not go. The main lockup is a full wordmark in a banner with a tagline under it, which is right on a menu cover and wrong on anything small, square, or aimed at children.",
-        "The variants solve those cases one at a time: a single illustrated character mark, built from the same pizza and the same two brand colors, that reads at any size and in any orientation without the wordmark beside it. A variant that only works when the original is also present is a decoration.",
+        "The variants solve those cases one at a time: a single illustrated character mark, built from the same pizza and the same two brand colours, that reads at any size and in any orientation without the wordmark beside it. A variant that only works when the original is also present is a decoration.",
       ],
     },
   ],
@@ -332,7 +332,7 @@ export const designSections: Record<string, DesignSection[]> = {
       slug: "misc-art",
       placeholder: true,
       body: [
-        "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colors, and usually an excuse to draw letterforms rather than set them.",
+        "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colours, and usually an excuse to draw letterforms rather than set them.",
       ],
     },
     {
@@ -346,7 +346,7 @@ export const designSections: Record<string, DesignSection[]> = {
       slug: "drawings",
       placeholder: true,
       body: [
-        "Illustration, mostly figures and characters, mostly finished in color. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
+        "Illustration, mostly figures and characters, mostly finished in colour. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
       ],
     },
     {
@@ -477,7 +477,7 @@ export const designFeatured: Record<string, FeaturedCase> = {
             label: "Before",
             width: 2560,
             height: 1315,
-            alt: "The previous American Scientific home page: the old elephant badge above a site search field, a gray navigation bar, a carousel promoting an Understanding Coronavirus kit over a spread of lab equipment, and four flat color tiles below it linking to protective equipment, sale items, a 2020 catalog and product videos",
+            alt: "The previous American Scientific home page: the old elephant badge above a site search field, a grey navigation bar, a carousel promoting an Understanding Coronavirus kit over a spread of lab equipment, and four flat colour tiles below it linking to protective equipment, sale items, a 2020 catalog and product videos",
             caption:
               "A carousel, four tiles, and a 2020 catalog link still on the page.",
           },
@@ -500,7 +500,7 @@ export const designFeatured: Record<string, FeaturedCase> = {
             label: "Before",
             width: 2560,
             height: 1315,
-            alt: "The previous Physics and Physical Science listing: a gray banner over a breadcrumb, a count reading 1-15 of 560, a plain text list of subcategories down the left, a Featured Products carousel of four items, and a product below it whose image has failed to load and renders as a broken-image placeholder",
+            alt: "The previous Physics and Physical Science listing: a grey banner over a breadcrumb, a count reading 1-15 of 560, a plain text list of subcategories down the left, a Featured Products carousel of four items, and a product below it whose image has failed to load and renders as a broken-image placeholder",
             caption:
               "The same category on the old site. A featured-products carousel, a plain list of subcategories, and an image that had stopped loading.",
           },
@@ -526,13 +526,27 @@ export const designFeatured: Record<string, FeaturedCase> = {
     ],
 
     blocks: [
+      /* RESTORED. This block was cut in the first pass on a misread of the
+         brief, which asked for the section to come down "potentially by half"
+         and not for this argument to go. It is the reason the rebuild
+         happened, so the section does not work without it. The standfirst
+         that used to sit above it stays deleted: it was a compressed
+         duplicate of these three paragraphs, which is why the brief named
+         that copy and not this. */
       {
-        heading: "The old site",
+        heading: "The number nobody could produce",
         body: [
           "American Scientific is a wholesale distributor. Almost nobody pays list. What an account pays depends on its price level and on the quantity on the line, and NetSuite, the ERP the business is run on, holds all of that exactly.",
-          "The old site never asked. It synced a base price out of NetSuite, then let a WordPress plugin work out each customer's discount from their WordPress user role. The role was maintained by hand, in a second system, with nothing reconciling the two.",
-          "Under that sat thirty-plus plugins, all depending on each other. Upgrading one meant first finding out what the other twenty-nine would do about it, so none of them were upgraded. By the end most of the product images had stopped loading and nothing had said so.",
+          "The old site synced a base price out of NetSuite and threw the rest away. A pair of custom SOAP plugins pulled the matrix down. A WordPress plugin then re-derived each customer’s tier from their WordPress user role and applied a discount to the base figure. The role stood in for the price level, maintained by hand, in a second system, with nothing reconciling the two.",
+          "So the price a customer saw was a WordPress plugin’s reconstruction of a number that already existed, correct and authoritative, one API call away. A site that cannot state a price is a catalog with a phone number on it, and the ordering happens somewhere else.",
+        ],
+      },
+      {
+        heading: "What was actually running",
+        body: [
+          "Thirty-plus plugins, all depending on each other. The catalog, the faceting, the pricing and the ERP integration each belonged to a different one, so upgrading any of them meant first finding out what the other twenty-nine would do about it. None of them were upgraded.",
           "The catalog ran off a NetSuite saved search called DO NOT DELETE. Nobody still at the company knew what was in it or who had built it. They knew the catalog stopped working without it.",
+          "By the end the backend data had stopped reaching the customer. Most of the product images no longer resolved and the sync meant to keep the listings current had quietly failed. Nothing alerted. It degraded until somebody noticed.",
         ],
       },
       {
