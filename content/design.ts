@@ -119,10 +119,16 @@ export const designThumbs: Record<string, string> = {
      55 MB and 33 MB clips beside it, which matters on a browsing page. */
   "american-scientific/motion-graphics": "02.gif",
 
-  /* The menu trifold. Centre of the spread is the branded cover panel, which
-     is exactly what a landscape crop keeps. The path gained a folder when
-     Taranto's stopped being a flat gallery and became three sections. */
-  tarantos: "01-menu/01.jpg",
+  /* A card-only asset, the second one on the site. See the note under
+     `personal` below for what `card.jpg` is and why it is not in the gallery.
+
+     It replaces the menu trifold at 01-menu/01.jpg, which was 2400x1200: a 2:1
+     spread, and the one picture on /design that could not be made the same
+     size as the other two without losing a third of itself. The browse rows
+     take a single 4:3 frame now, so the trifold was re-exported by hand at
+     1920x1440 rather than centre-cropped to fit. The spread is still the first
+     piece inside the menu section; this is the cover for the whole category. */
+  tarantos: "card.jpg",
   "tarantos/menu": "01.jpg",
   "tarantos/marketing": "01.jpg",
   "tarantos/logo-variants": "01.jpg",
