@@ -9,8 +9,8 @@
      columns are one object.
    · The lead media is CONTAINED and framed, like every other image on the
      site. Nothing here touches the viewport edge.
-   · The prose runs the FULL WIDTH of the body, the same edges as the media
-     above it and the pager below it. No measure cap.
+   · The prose starts at the content column's own left edge and is bounded by
+     the reading measure.
    · Plates are a horizontal snap strip. See components/ui/Gallery.
 
    WHAT CHANGED. This page was drawn for a left-pinned container: the title
@@ -184,16 +184,15 @@
   column-gap: var(--grid-gap);
 }
 
-/* SINGLE COLUMN, FULL BODY WIDTH. Nothing sits beside it: `.body` has exactly
-   one child. It has been constrained three ways over time, by
-   `grid-column: 1 / 9`, by a 62ch cap and then by an 82ch one, and every
-   version left the argument in a column hugging the left with dead page to the
-   right of it. The cap is gone. The prose takes the same left and right edges
-   as the lead media, the sequence and the pager, which is what "the body of
-   the page" means here. */
+/* SINGLE COLUMN, SO IT TAKES THE WIDE MEASURE. Nothing sits beside it:
+   `.body` has exactly one child. It used to be constrained twice, by
+   `grid-column: 1 / 9` and by a 62ch cap, and the grid-column never bound
+   anything because 62ch is about 583px and eight of twelve columns is about
+   842px. Two constraints, one of them dead, and the result was the narrowest
+   prose on the site on its three longest pages. */
 .prose,
 .argument {
-  max-width: none;
+  max-width: var(--measure-wide);
 }
 
 .systems { grid-column: 1 / -1; }

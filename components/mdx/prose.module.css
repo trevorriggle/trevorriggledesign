@@ -1,16 +1,9 @@
 /* ============================================================================
    PROSE
    ============================================================================
-   Long-form body copy for a case study. Full ink at 17px, with 1.62 leading,
-   the only place on the site running comfortable leading, because it is the
-   only place anyone reads more than two sentences.
-
-   NO MEASURE CAP. It ran at --measure-wide, about 770px, inside a container
-   that is up to 1280px wide, so the argument on all three entries sat in a
-   column against the left edge with a third of the page empty beside it and
-   nothing in that space. The copy now runs the full width of the body it
-   belongs to, the same edges as the media above and the pager below it, and
-   the container is the only thing setting its measure.
+   Long-form body copy for a case study. Full ink at 17px on a 62ch measure,
+   with 1.62 leading, the only place on the site running comfortable leading,
+   because it is the only place anyone reads more than two sentences.
 
    Subheads are the copy's OWN headings ("The premise", "What I built"). They
    take the display serif at a real step of the scale, d1, 25.5px, so the
@@ -23,6 +16,7 @@
   font-size: var(--text-md);
   line-height: var(--leading-body);
   color: var(--color-text);
+  max-width: var(--measure-wide);
 }
 
 .prose > * + * { margin-top: var(--space-5); }
