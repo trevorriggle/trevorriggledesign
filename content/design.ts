@@ -52,7 +52,7 @@ export const designCategories: DesignCategory[] = [
        itself with a name and a picture. It names the five kinds of work the
        page actually contains, in the order the page runs them. */
     intro:
-      "Four years of in-house design for a wholesale science supplier. The elephant mark reduced to one colour and one weight, a sell-sheet system that absorbs whatever state the product data arrives in, an on-this-day social series, looping banners, and the company's e-commerce site rebuilt from scratch.",
+      "Four years of in-house design for a wholesale science supplier. The elephant mark reduced to one color and one weight, a sell-sheet system that absorbs whatever state the product data arrives in, an on-this-day social series, looping banners, and the company's e-commerce site rebuilt from scratch.",
     body: [],
     demonstrates: "",
   },
@@ -60,7 +60,7 @@ export const designCategories: DesignCategory[] = [
     slug: "tarantos",
     title: "Taranto's",
     intro:
-      "A neighbourhood pizzeria, and the whole of its printed and posted output. A trifold menu dense enough to carry thirteen categories and still be read at a table, the seasonal promotions that run on top of it, and the alternate marks drawn for the places the main logo does not fit.",
+      "A neighborhood pizzeria, and the whole of its printed and posted output. A trifold menu dense enough to carry thirteen categories and still be read at a table, the seasonal promotions that run on top of it, and the alternate marks drawn for the places the main logo does not fit.",
     body: [],
     demonstrates: "",
   },
@@ -68,7 +68,7 @@ export const designCategories: DesignCategory[] = [
     slug: "personal",
     title: "Personal Works",
     intro:
-      "Illustration, comics and motion, made outside any brief. Figures finished in colour, short strips written and drawn to a fixed panel count, lettering as an excuse to draw letterforms rather than set them, and the 3D work where a technique gets tried before it reaches a client. One comic reached the front page of Reddit, which was not the plan.",
+      "Illustration, comics and motion, made outside any brief. Figures finished in color, short strips written and drawn to a fixed panel count, lettering as an excuse to draw letterforms rather than set them, and the 3D work where a technique gets tried before it reaches a client. One comic reached the front page of Reddit, which was not the plan.",
     body: [],
     demonstrates: "",
   },
@@ -355,14 +355,14 @@ export const designSections: Record<string, DesignSection[]> = {
           src: "01-before.png",
           width: 1366,
           height: 1228,
-          alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in grey with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
+          alt: "The original American Scientific logo: a cartoon elephant's head in three-quarter view, drawn in gray with a heavy black outline, wearing a blue cap and holding a test tube in its raised trunk, set inside a red circular badge with AMERICAN arcing over the top and SCIENTIFIC around the bottom in white, and two small atom symbols in the ring",
           /* MATCHED PAIR. These two used to run to twenty-two and nineteen
              words in different shapes, so the eye read them as two separate
              notes rather than as one measurement taken twice. Same length,
              same construction, same order of terms: colour, weight, what
              surrounds the elephant. */
           caption:
-            "Five colours, a heavy outline, and a badge ringed with type and atoms.",
+            "Five colors, a heavy outline, and a badge ringed with type and atoms.",
         },
         after: {
           src: "02-after.png",
@@ -370,13 +370,13 @@ export const designSections: Record<string, DesignSection[]> = {
           height: 857,
           alt: "The rebranded system: at left the same elephant badge redrawn as a single-weight outline in one dark red with no fills, at right the am-sci shorthand set in a heavy lowercase with a left-to-right gradient running from red through violet into blue",
           caption:
-            "One colour, one weight, and the am-sci shorthand it now travels with.",
+            "One color, one weight, and the am-sci shorthand it now travels with.",
         },
       },
       body: [
         "The original mark was overdesigned in a specific and datable way. A character illustration with a black keyline. A rendered gradient on the body, a prop in the trunk, a hard-edged badge behind it, and the full company name curved around the ring, with two atoms tucked into the border in case the test tube had not made the point. It belonged to the era of design that produced it, and it fell apart at small sizes, which by then was most of where it had to live.",
         "The obvious move was to kill it. That was not on the table. The founder was attached to the elephant, and the attachment had a reason behind it: the company had traded under that mark for a long time. A rebrand that opens by throwing away the one thing leadership cares about does not get approved.",
-        "So the elephant stayed and everything around it was reduced. The mark is now a single-value line drawing in one colour. No fills. No keyline sitting separately from the art, no rendered gradient on the body, no second ring of type competing with the first. The ornament is still there, quiet enough now to read as texture. I adopted “am-sci” as the shorthand at the same time, which is what the company was already called out loud, and put the weight the old mark spent on ornament into one device: a gradient running red to blue across the letterforms.",
+        "So the elephant stayed and everything around it was reduced. The mark is now a single-value line drawing in one color. No fills. No keyline sitting separately from the art, no rendered gradient on the body, no second ring of type competing with the first. The ornament is still there, quiet enough now to read as texture. I adopted “am-sci” as the shorthand at the same time, which is what the company was already called out loud, and put the weight the old mark spent on ornament into one device: a gradient running red to blue across the letterforms.",
         "I built the full AMERICAN SCIENTIFIC wordmark as an alternative lockup, carrying the same gradient. Some applications want the whole name. Mostly, though, it let leadership see the new system next to the old one and read it as continuity. Showing only the abbreviation would have made the change look bigger than it is.",
         "The mark is not the interesting part of this project. Reducing an overdrawn logo is a known exercise, and any competent designer can do it. The constraint was the problem. Solve for a stakeholder’s real attachment to a specific piece of artwork, and do it without shipping something dated. Those two requirements pull against each other. The work was finding the version that satisfies both.",
       ],
@@ -512,7 +512,7 @@ export const designSections: Record<string, DesignSection[]> = {
       layout: [{ center: true, cells: [{ files: ["01.jpg"], span: 6 }] }],
       body: [
         "Alternate marks, drawn for the places the primary logo does not go. The main lockup is a full wordmark in a banner with a tagline under it, which is right on a menu cover and wrong on anything small, square, or aimed at children.",
-        "The variants solve those cases one at a time: a single illustrated character mark, built from the same pizza and the same two brand colours, that reads at any size and in any orientation without the wordmark beside it. A variant that only works when the original is also present is a decoration.",
+        "The variants solve those cases one at a time: a single illustrated character mark, built from the same pizza and the same two brand colors, that reads at any size and in any orientation without the wordmark beside it. A variant that only works when the original is also present is a decoration.",
       ],
     },
   ],
@@ -542,7 +542,7 @@ export const designSections: Record<string, DesignSection[]> = {
         },
       ],
       body: [
-        "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colours, and usually an excuse to draw letterforms rather than set them.",
+        "Lettering and one-off pieces made outside of any brief. Heavy, high-contrast, usually two or three colors, and usually an excuse to draw letterforms rather than set them.",
       ],
     },
     {
@@ -612,7 +612,7 @@ export const designSections: Record<string, DesignSection[]> = {
         },
       ],
       body: [
-        "Illustration, mostly figures and characters, mostly finished in colour. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
+        "Illustration, mostly figures and characters, mostly finished in color. This is the work that the drawing app grew out of: the same problems of construction, value and focal point that DrawEvolve's critique system is built to talk about.",
       ],
     },
     {
@@ -790,7 +790,7 @@ export const designFeatured: Record<string, FeaturedCase> = {
             label: "Before",
             width: 2560,
             height: 1315,
-            alt: "The previous American Scientific home page: the old elephant badge above a site search field, a grey navigation bar, a carousel promoting an Understanding Coronavirus kit over a spread of lab equipment, and four flat colour tiles below it linking to protective equipment, sale items, a 2020 catalog and product videos",
+            alt: "The previous American Scientific home page: the old elephant badge above a site search field, a gray navigation bar, a carousel promoting an Understanding Coronavirus kit over a spread of lab equipment, and four flat color tiles below it linking to protective equipment, sale items, a 2020 catalog and product videos",
             caption:
               "A carousel, four tiles, and a 2020 catalog link still on the page.",
           },
@@ -813,7 +813,7 @@ export const designFeatured: Record<string, FeaturedCase> = {
             label: "Before",
             width: 2560,
             height: 1315,
-            alt: "The previous Physics and Physical Science listing: a grey banner over a breadcrumb, a count reading 1-15 of 560, a plain text list of subcategories down the left, a Featured Products carousel of four items, and a product below it whose image has failed to load and renders as a broken-image placeholder",
+            alt: "The previous Physics and Physical Science listing: a gray banner over a breadcrumb, a count reading 1-15 of 560, a plain text list of subcategories down the left, a Featured Products carousel of four items, and a product below it whose image has failed to load and renders as a broken-image placeholder",
             caption:
               "The same category on the old site. A featured-products carousel, a plain list of subcategories, and an image that had stopped loading.",
           },

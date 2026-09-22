@@ -93,9 +93,11 @@ export default function HomePage() {
       </Container>
 
       {/* THE HERO'S OWN VISUAL. Real footage, the site's existing clip.
-          <AutoVideo> refuses to autoplay on a metered or unknown connection,
-          under reduced motion, or off screen, and preloads metadata only, so
-          a 14MB file is not pulled down to decorate a page nobody scrolled. */}
+          <AutoVideo> autoplays it muted and inline once it is on screen,
+          pauses it when it leaves, and preloads metadata only, so the 14MB
+          body is not pulled down to decorate a page nobody scrolled. Under
+          reduced motion, or wherever the browser refuses, it stays on the
+          poster frame and offers a play button rather than native chrome. */}
       {clip && (
         <Container width="full" className={styles.band}>
           <VideoSlot video={clip} sizes="100vw" />

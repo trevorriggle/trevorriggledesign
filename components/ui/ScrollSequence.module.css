@@ -5,12 +5,16 @@
 
      1. THE STACK. Everything above the enhancement block. Plain vertical
         flow, every screenshot visible with its caption under it, no pinning,
-        no animation. This is what a phone gets, what Firefox gets, what
-        reduced motion gets, and what anything without CSS scroll-driven
-        animation gets.
+        no animation, no progress bar. This is what a phone gets, what Firefox
+        gets, and what anything without CSS scroll-driven animation gets.
 
-     2. THE SEQUENCE. One block, gated on three conditions at once. It
-        converts the stack into a pinned stage.
+     2. THE SEQUENCE. One block, gated on two conditions at once. It converts
+        the stack into a pinned stage: one screenshot at a time, a hard cut
+        between them, and a bar along the bottom of each plate measuring how
+        much further there is to scroll before the cut.
+
+   REDUCED MOTION GETS THE SEQUENCE NOW, WHERE IT USED TO GET THE STACK. That
+   gate existed for the cross-fade this no longer does. See ScrollSequence.tsx.
 
    The stack is FIRST and it is the default, not a fallback written after the
    fact. See the header of ScrollSequence.tsx for why that ordering is the
@@ -118,6 +122,14 @@
   pointer-events: none;
 }
 
+/* THE PROGRESS BAR, and in the stack state there is no progress to report.
+   Every screenshot is on the page at once here, in order, so a bar measuring
+   the distance to the next one would be measuring nothing. It is switched on
+   inside the enhancement and nowhere else. */
+.progress {
+  display: none;
+}
+
 .side {
   min-width: 0;
   max-width: 44ch;
@@ -144,7 +156,7 @@
 }
 
 /* --- 2. The sequence ----------------------------------------------------
-   THREE CONDITIONS, ALL REQUIRED.
+   TWO CONDITIONS, BOTH REQUIRED.
 
    The @supports test is not decoration. Without it, Firefox would apply the
    pinned LAYOUT with nothing driving the animation: a tall block showing shot
@@ -152,7 +164,7 @@
    fails exactly that way, which is why this is written as an enhancement. */
 
 @supports (animation-timeline: view()) {
-  @media (min-width: 62rem) and (prefers-reduced-motion: no-preference) {
+  @media (min-width: 62rem) {
     .track {
       /* One viewport of scroll per shot. The track is what the timeline
          measures and what the stage sticks inside. */
@@ -193,24 +205,99 @@
       /* Ascending, so each shot covers the one before it. */
       z-index: var(--i);
 
-      /* Every shot after the first starts transparent and fades in across
-         its own slice of the track. The first is the base layer and is
-         overridden below. */
-      opacity: 0;
-      animation: sequence-in linear both;
-      animation-timeline: --sequence;
+      /* A HARD CUT, NOT A FADE, AND `steps(1, end)` IS THE WHOLE MECHANISM.
+         One step means the animation holds its FROM value for the entire
+         range and jumps to its TO value at the very end of it. So this shot
+         is `opacity: 0` for everything before `--start` and `opacity: 1` from
+         `--start` onward, with no interpolated frame in between and nothing
+         for the compositor to blend. There is no scroll position at which two
+         screenshots are both on screen.
 
-      /* `contain` is the range in which the track fully covers the viewport,
+         THE RANGE RUNS FROM THE TOP OF THE TRACK, not from just before the
+         cut. It could be a hairline window around `--start` and behave the
+         same going forwards; anchoring it at 0% is what makes scrolling
+         BACKWARDS exact, because the fill-mode then has an unambiguous
+         answer at every position above the cut rather than depending on how
+         wide the window happened to be.
+
+         `contain` is the range in which the track fully covers the viewport,
          which is exactly the window the sticky stage is pinned for. The
          default `cover` range would start the sequence while the block was
-         still sliding into view. The two percentages are computed per shot
-         in the component. */
-      animation-range: contain var(--from) contain var(--to);
+         still sliding into view. */
+      opacity: 0;
+      animation: sequence-in steps(1, end) both;
+      animation-timeline: --sequence;
+      animation-range: contain 0% contain var(--start);
     }
 
-    /* THE FIRST SHOT NEVER ANIMATES. It is on screen the moment the block
-       arrives, which is the brief's requirement, and it has no window of its
-       own to fade in across. */
+    /* ---- The progress bar -------------------------------------------
+       WHERE IT SITS AND WHY THERE. Flush along the bottom inside edge of the
+       plate, full width, 3px, sitting on its own faint track so the unfilled
+       remainder is as legible as the filled part — a bar you can only see the
+       filled half of does not answer "how much further".
+
+       IT IS AN OVERLAY AND IT COSTS NO LAYOUT, which is not a detail. The
+       `.wide` height budget below is tuned to the pixel against the sticky
+       bars and the caption row (see the notes on `--cap`), and the portrait
+       cap clears the masthead by a measured 88px. An 11px bar in normal flow
+       would have put every one of those numbers out and needed the lot
+       re-measured. Absolutely positioned inside the plate, it changes
+       nothing.
+
+       3px, WHICH IS THE `.current` NAV UNDERLINE'S WEIGHT. A hairline reads
+       as a border and disappears against the plate's own edge; 3px is the
+       thinnest this site draws anything it wants read as a mark rather than
+       as a rule, and the precedent is already set in Nav.module.css. */
+    .progress {
+      display: block;
+      position: absolute;
+      inset: auto 0 0 0;
+      height: 3px;
+      background: var(--ground-rule, var(--color-rule));
+      /* The fill is scaled, and a transform can paint outside its box. */
+      overflow: hidden;
+    }
+
+    /* THE FILL TAKES THE GROUND'S ACCENT, AND THAT IS WHY IT IS NOT ONE
+       LITERAL BLUE. On the case study pages there is no [data-ground] above
+       this block, so the fallback applies and the bar is `--color-signal`,
+       which IS the deep blue: --ultramarine, #1b2ecc.
+
+       Inside the American Scientific feature the same component renders on a
+       `ultramarine-deep` band. A #111b78 bar on a #111b78 field is a bar
+       nobody can see, so there the ground rebinds the accent to ochre, which
+       measures 6.60:1 on that ground and is the colour this site already uses
+       for exactly this job — every label, ordinal and hover state inside a
+       band reads the same variable. No new colour is introduced in either
+       case; both values are existing tokens. See the grounds block in
+       tokens.css.
+
+       SCALED, NOT WIDTH-ANIMATED. `transform` is compositor-only; animating
+       `width` would lay out and paint the bar on every frame of a scroll,
+       which is the one thing a scroll-driven effect must not do. */
+    .progressFill {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform: scaleX(0);
+      transform-origin: left center;
+      background: var(--ground-accent, var(--color-signal));
+
+      animation: sequence-fill linear both;
+      animation-timeline: --sequence;
+      /* This shot's own slice, and nothing else: empty when the shot arrives,
+         full at the instant the next one cuts in over it. */
+      animation-range: contain var(--start) contain var(--end);
+    }
+
+    /* THE FIRST SHOT NEVER ANIMATES ITS OPACITY. It is on screen the moment
+       the block arrives, which is the brief's requirement, and it has nothing
+       to cut in over.
+
+       ITS BAR STILL FILLS. `animation: none` is scoped to this element and
+       the fill is a separate one on a child, so shot one measures the
+       distance to shot two exactly like every other shot measures the
+       distance to its successor. */
     .shot:first-child {
       opacity: 1;
       animation: none;
@@ -440,9 +527,16 @@
   }
 }
 
+/* Driven with `steps(1, end)`, so these two are the only states that ever
+   render. Nothing between 0 and 1 is ever painted. */
 @keyframes sequence-in {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes sequence-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
 }
 
 /* --- Print ---------------------------------------------------------------

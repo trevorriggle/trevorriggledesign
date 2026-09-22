@@ -72,28 +72,24 @@
 
 /* --- Hover and focus, on top of visible content -------------------------
    Deletable without changing what the page communicates. Nothing here is a
-   reveal. */
+   reveal.
 
-/* THE PICTURE MOVES ENOUGH TO READ AS AN ANSWER.
+   FOCUS AND HOVER ARE SPLIT, and the split is the point of this block.
+   Keyboard focus has to answer on every device, including a tablet with a
+   Bluetooth keyboard, so `:focus-visible` lives out here unconditionally.
+   Hover does not: a touchscreen has no hover, and a browser resolves `:hover`
+   on tap, so every one of these states used to fire on a finger and then
+   STICK until the next tap somewhere else. The pointer query below is what
+   confines them to a device that can actually hover. */
 
-   This was 1.03, which on a 380px-wide card is about five pixels of travel
-   across 420ms. That is under the threshold where a change of state reads as
-   deliberate: it registers as the image having twitched rather than as the
-   card having responded, which is worse than no hover at all. 1.06 is still
-   a restrained move — the frame crops it, nothing reflows, and the whole
-   effect is deletable without changing what the page communicates — but it
-   is unambiguously a response. */
-.tile:hover .image,
 .tile:focus-visible .image {
   transform: scale(1.06);
 }
 
-.tile:hover .title,
 .tile:focus-visible .title {
   color: var(--color-signal);
 }
 
-.tile:hover .arrow,
 .tile:focus-visible .arrow {
   color: var(--color-signal);
   transform: translateX(0.3em);
@@ -102,6 +98,69 @@
 .tile:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 4px;
+}
+
+/* --- The pointer states -------------------------------------------------
+   `(hover: hover) and (pointer: fine)` is a mouse or a trackpad. A phone, a
+   tablet and a TV remote all fail it and get no hover behaviour at all,
+   which is the correct answer rather than a reduced one. */
+
+@media (hover: hover) and (pointer: fine) {
+  /* THE PICTURE MOVES ENOUGH TO READ AS AN ANSWER.
+
+     This was 1.03, which on a 380px-wide card is about five pixels of travel
+     across 420ms. That is under the threshold where a change of state reads
+     as deliberate: it registers as the image having twitched rather than as
+     the card having responded, which is worse than no hover at all. 1.06 is
+     still a restrained move — the frame crops it, nothing reflows — but it
+     is unambiguously a response. */
+  .tile:hover .image {
+    transform: scale(1.06);
+  }
+
+  .tile:hover .title {
+    color: var(--color-signal);
+  }
+
+  .tile:hover .arrow {
+    color: var(--color-signal);
+    transform: translateX(0.3em);
+  }
+
+  /* ---- THE TILT ------------------------------------------------------
+     The one piece of the "lean into the early-computer feel" brief that is
+     in here. The frame tips its top edge away from the reader, hinged on its
+     bottom edge, which is the angle a monitor sits at on a desk. It reads as
+     the picture being an object on a surface rather than a rectangle on a
+     page, and on a site whose whole register is beige machines and Windows
+     blue that is the right association to reach for.
+
+     IT IS 3.5 DEGREES, WHICH IS DELIBERATELY UNDER WHAT READS AS AN EFFECT.
+     Far enough that the frame's top edge visibly foreshortens against the
+     grid it sits on; nowhere near far enough to be a card trick. A tilt you
+     notice as a tilt is the gimmick the brief rules out.
+
+     IT DOES NOT TRACK THE POINTER, and that is a decision rather than a
+     shortcut. A tilt that follows the cursor needs a mousemove handler per
+     tile writing transforms on the main thread during the one interaction it
+     decorates, which is the same mistake the scroll sequence was written to
+     avoid. A fixed hinge is pure CSS, composited, and costs nothing.
+
+     NO SHADOW UNDER IT. There are no shadows anywhere in this project (see
+     tokens.css) and a tilt propped up by one would be the first. The
+     foreshortened top edge and the existing image scale carry it.
+
+     `transform-style` IS NOT SET, and must not be. The frame is `overflow:
+     hidden` so the image inside stays clipped to it; flattening is exactly
+     what is wanted. */
+  .media {
+    transition: transform var(--duration-slow) var(--ease-out);
+    transform-origin: center bottom;
+  }
+
+  .tile:hover .media {
+    transform: perspective(1200px) rotateX(3.5deg);
+  }
 }
 
 /* --- Collapse ------------------------------------------------------------ */
@@ -117,13 +176,22 @@
   .grid { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* --- Reduced motion -------------------------------------------------------
+   Every transform goes, the tilt included. The colour changes stay: a hover
+   state that does not move is still a hover state, and removing the
+   affordance entirely would make the page worse for somebody who asked for
+   less movement rather than better. Same rule as WorkIndex. */
+
 @media (prefers-reduced-motion: reduce) {
   .image,
-  .arrow { transition: none; }
+  .arrow,
+  .media { transition: none; }
 
   .tile:hover .image,
   .tile:focus-visible .image { transform: none; }
 
   .tile:hover .arrow,
   .tile:focus-visible .arrow { transform: none; }
+
+  .tile:hover .media { transform: none; }
 }

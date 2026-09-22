@@ -18,14 +18,13 @@ import styles from "./ScrollSequence.module.css";
 
    THE UNENHANCED STATE IS THE DEFAULT, NOT THE FALLBACK. The base CSS in the
    stylesheet is a plain vertical stack: every screenshot in normal flow, full
-   width, in order, all visible. The pinning is layered on top inside three
-   stacked conditions, and if any of them fails you get the stack. That
+   width, in order, all visible. The pinning is layered on top inside two
+   stacked conditions, and if either of them fails you get the stack. That
    ordering is the whole design of this component, because the stack is the
    state that has to be right: it is what a phone gets, what Firefox gets,
-   what anyone who asked for reduced motion gets, and what the printed page
-   and a text browser get.
+   and what the printed page and a text browser get.
 
-   THE THREE CONDITIONS, and why each one is there:
+   THE TWO CONDITIONS, and why each one is there:
 
    1. `@supports (animation-timeline: view())`. Scroll-driven animations are
       in Chrome, Edge and Safari and are still not in Firefox. Without the
@@ -41,9 +40,15 @@ import styles from "./ScrollSequence.module.css";
       stack, which is genuinely the better thumb-first answer rather than a
       consolation prize: full-width screenshots you flick through.
 
-   3. `(prefers-reduced-motion: no-preference)`. A pinned stage where the
-      content changes under a stationary viewport is exactly the vestibular
-      trigger the preference exists for.
+   THERE USED TO BE A THIRD CONDITION, `(prefers-reduced-motion:
+   no-preference)`, AND IT IS GONE ON PURPOSE. It was there because the
+   sequence used to cross-fade: content dissolving under a stationary viewport
+   is exactly the vestibular trigger the preference exists for. Nothing
+   dissolves any more. The swap is a hard cut with no interpolated frames, and
+   the only thing that moves is a 3px bar growing along one edge, which is the
+   same class of motion as a scrollbar. Under the preference the block now
+   behaves identically to the way it behaves without it, which is what was
+   asked for: the bar still fills, and the picture still changes instantly.
 
    WHY A `view-timeline` AND NOT A `scroll-timeline`. The track is not a
    scroller, it is a tall block inside the document scroll. `view-timeline`
@@ -59,10 +64,32 @@ import styles from "./ScrollSequence.module.css";
    so a screen reader gets every description and nothing is gated behind an
    interaction that a screen reader user is not performing.
 
-   THE FIRST SHOT NEVER ANIMATES. It is the base layer at full opacity, and
-   the others fade in over it in ascending stacking order. Each screenshot
-   fully covers the one under it, so there is no cross-fade through a gap and
-   no moment where two are half-visible over the page ground.
+   ---- ONE PICTURE AT A TIME, AND A BAR THAT SAYS HOW FAR -----------------
+   THIS REPLACED A SCROLL-LINKED CROSS-FADE, and the reason is worth keeping.
+   Opacity used to be scrubbed by scroll position: each shot faded in across
+   30% of its own slice, so for a real stretch of the track two screenshots
+   were genuinely superimposed. Two things were wrong with it. A blend of two
+   interfaces is not a picture of either one, and — worse — scroll position
+   carried no information about how much further there was to go. The reader
+   was inside a transition with no idea how long it was.
+
+   So opacity is now a STEP rather than a ramp. `steps(1, end)` over the range
+   [0, --start] holds a shot at `opacity: 0` for the whole range and flips it
+   to 1 at the end of it, which is a hard cut on a single frame. At no scroll
+   position are two shots both visible. The first shot is the base layer at
+   full opacity and never animates at all; the rest flip on over it in
+   ascending stacking order, and because each one fully covers the one beneath
+   it, the cut is clean.
+
+   THE BAR IS WHAT THE OPACITY RAMP WAS DOING BADLY. It fills linearly across
+   the shot's own slice, so its width is the answer to "how much further" —
+   stated continuously, in the one place a reader is already looking, without
+   putting it inside the picture. Full bar, next picture, immediately.
+
+   BOTH HALVES RUN OFF THE SAME TIMELINE AND NEITHER IS STATEFUL, which is
+   what makes scrolling back up correct for free. There is no "current index"
+   held anywhere; both the cut and the fill are pure functions of scroll
+   position, so reversing the scroll reverses both exactly.
 
    ---- TWO LAYOUTS, AND THE SHOTS DECIDE WHICH ----------------------------
    `portrait` is the original: a tall screenshot on the left with its copy
@@ -106,10 +133,9 @@ import styles from "./ScrollSequence.module.css";
    of an ultramarine section. See the grounds block in tokens.css.
    ========================================================================= */
 
-/** Half-width of each cross-fade, as a fraction of one shot's share of the
- *  track. 0.3 leaves each screenshot fully settled for most of its slice
- *  rather than permanently in transit between two states. */
-const FADE = 0.3;
+/** Two decimal places is plenty for a percentage of a scroll range, and it
+ *  keeps `animation-range` short enough to read in devtools. */
+const pct = (n: number) => `${(n * 100).toFixed(2)}%`;
 
 export type SequenceRedaction = {
   /** Percentages of the image box. See the note above on why not pixels. */
@@ -165,24 +191,28 @@ export function ScrollSequence({
       <div className={styles.stage}>
         <ol className={styles.shots}>
           {shots.map((shot, i) => {
-            /* The window in which this shot takes over, as a percentage of
-               the track's `contain` range. Computed here rather than in a
-               calc() so the numbers are readable and so `animation-range`
-               never has to parse arithmetic.
+            /* THIS SHOT'S SLICE OF THE TRACK, as percentages of the `contain`
+               range. The slices are equal and they tile it exactly: shot i
+               owns [i/n, (i+1)/n), so there is no gap between one shot's
+               window and the next one's and no overlap either.
 
-               THE FIRST SHOT GETS NO WINDOW AT ALL. It is the base layer and
-               the stylesheet gives it `animation: none`, so a range would be
-               inert, and the arithmetic would produce a negative start that
-               is not a value `animation-range` accepts. Emitting nothing is
-               both tidier and one less thing for a parser to reject. */
-            const centre = (i / count) * 100;
-            const half = (100 / count) * FADE;
+               Both numbers do one job each, and neither is a fade:
 
-            const style: Record<string, string | number> = { "--i": i };
-            if (i > 0) {
-              style["--from"] = `${(centre - half).toFixed(2)}%`;
-              style["--to"] = `${(centre + half).toFixed(2)}%`;
-            }
+                 --start  the instant this shot replaces the one under it, and
+                          the instant its own progress bar starts filling
+                 --end    the instant the bar is full, which is by definition
+                          --start for the shot after it
+
+               Computed here rather than in a calc() so the numbers are
+               readable in devtools and so `animation-range` never has to
+               parse arithmetic. The first shot still gets both: it is the
+               base layer and never animates its own opacity, but its bar
+               fills like every other one. */
+            const style: Record<string, string | number> = {
+              "--i": i,
+              "--start": pct(i / count),
+              "--end": pct((i + 1) / count),
+            };
 
             return (
               <li
@@ -235,6 +265,23 @@ export function ScrollSequence({
                         }
                       />
                     ))}
+
+                    {/* HOW MUCH FURTHER TO SCROLL BEFORE THE PICTURE CHANGES.
+                        It renders in every state and the stylesheet hides it
+                        in the stack, where there is nothing to be part-way
+                        through: on a phone and in Firefox every screenshot is
+                        already on the page in order.
+
+                        IT IS `aria-hidden` AND THAT IS NOT AN OVERSIGHT. The
+                        plate mark beside it already reads "01/05" or
+                        "BEFORE", so the position in the run is in the
+                        accessibility tree as text. A second announcement of
+                        the same fact as a live-updating percentage is noise,
+                        and a screen reader user is not scrolling through a
+                        pinned stage to begin with. */}
+                    <span aria-hidden="true" className={styles.progress}>
+                      <span className={styles.progressFill} />
+                    </span>
                   </div>
                 </div>
 

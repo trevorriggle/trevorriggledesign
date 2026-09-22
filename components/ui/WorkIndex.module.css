@@ -155,7 +155,12 @@
    communicates, which is the test for whether motion is an enhancement or a
    gate. Nothing here reveals anything. */
 
-.link:hover .arrow,
+/* FOCUS IS UNCONDITIONAL, HOVER IS NOT. A touchscreen resolves `:hover` on
+   tap and then leaves it resolved, so these used to stick to whichever row
+   was last tapped. Keyboard focus has to answer everywhere, so it stays out
+   here; the pointer states move into the query below. Same split as
+   WorkGrid. */
+
 .link:focus-visible .arrow {
   color: var(--color-signal);
   transform: translateX(0.35em);
@@ -166,14 +171,27 @@
    index plates are much larger than the grid's cards, so they need less
    multiplier to travel the same visible distance: 1.03 here reads as roughly
    the same gesture as 1.06 does on a card. */
-.link:hover .image,
 .link:focus-visible .image {
   transform: scale(1.03);
 }
 
-.link:hover .title,
 .link:focus-visible .title {
   color: var(--color-signal);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .link:hover .arrow {
+    color: var(--color-signal);
+    transform: translateX(0.35em);
+  }
+
+  .link:hover .image {
+    transform: scale(1.03);
+  }
+
+  .link:hover .title {
+    color: var(--color-signal);
+  }
 }
 
 /* The focus ring lands on the row rather than on the picture inside it, so a

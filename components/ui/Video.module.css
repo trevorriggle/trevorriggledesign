@@ -1,5 +1,14 @@
 .slot { margin: 0; }
 
+/* THE POSITIONING CONTEXT FOR THE PLAY AFFORDANCE, and nothing else. It is
+   `display: block` with no size of its own, so it takes the clip's box
+   exactly and every layout that used to hold a bare <video> — the home page
+   band, the case study slot, a design grid cell — is unchanged. */
+.player {
+  position: relative;
+  display: block;
+}
+
 /* Capped like every other piece of media on the site. The clip is 16:9 and
    contained, and 82vh bounds it on a short wide window; the element's own
    `object-fit: contain` default keeps the frame intact rather than cropping.
@@ -14,6 +23,63 @@
   max-height: 82vh;
   background: var(--color-bg-sunk);
   border: var(--rule);
+}
+
+/* THE ONE CONTROL, and it only exists when the browser has actually refused
+   to start the clip: Low Power Mode on iOS, or a reduced-motion preference.
+   See AutoVideo.tsx for why this is here rather than the `controls`
+   attribute — in short, because native media chrome on a silent looping clip
+   is a scrubber and a volume slider for a thing with no sound and nowhere to
+   scrub to, drawn in a style this site does not own.
+
+   IT SITS ON THE POSTER, BOTTOM LEFT, clear of the middle of the frame so it
+   covers none of the picture it is offering to play. Same mono label, same
+   hairline, same uppercase tracking as every other small control here. */
+.play {
+  position: absolute;
+  left: var(--space-4);
+  bottom: var(--space-4);
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+
+  margin: 0;
+  padding: var(--space-2) var(--space-4);
+
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+
+  color: var(--color-bg);
+  background: var(--color-text);
+  border: var(--hairline) solid var(--color-text);
+  cursor: pointer;
+
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.play:hover {
+  background: var(--color-signal);
+  border-color: var(--color-signal);
+}
+
+.play:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.playMark {
+  /* Optically centred: the glyph's own bearing sits it low against caps. */
+  font-size: 0.9em;
+  transform: translateY(-0.02em);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .play { transition: none; }
 }
 
 .caption {

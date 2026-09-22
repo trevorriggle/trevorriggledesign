@@ -28,10 +28,17 @@ export function Nav() {
           <ul className={styles.links}>
             {nav.map((item) => {
               /* Exact match, or a descendant route, /work/<slug> keeps Work
-                 marked as current. */
+                 marked as current.
+
+                 THE ROOT IS EXACT-MATCH ONLY. Every path on the site is a
+                 descendant of "/", so the prefix test has to be skipped for
+                 the Home tab or it would be marked current on every page and
+                 the mark would stop meaning anything. */
               const current =
-                pathname === item.href ||
-                pathname.startsWith(`${item.href}/`);
+                item.href === "/"
+                  ? pathname === "/"
+                  : pathname === item.href ||
+                    pathname.startsWith(`${item.href}/`);
 
               return (
                 <li key={item.href}>

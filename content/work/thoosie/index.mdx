@@ -55,8 +55,10 @@ logo:
 # THE POSTER IS A FRAME OF THE CLIP, pulled at t=20s, so it is 1920x1080 like
 # the video and the box is exactly right in both states: no letterbox when the
 # still swaps for the moving picture. It is what a visitor sees whenever
-# autoplay is refused, which is most of them, since AutoVideo fails closed on
-# any connection it cannot read.
+# autoplay is refused — Low Power Mode on iOS, or a reduced-motion
+# preference — with the site's own play button on it. That is now the
+# exception rather than the rule: AutoVideo used to fail closed on any
+# connection it could not read, which meant every Safari.
 # THE BROWSING THUMBNAIL. Composed for the 4:3 card: the editor on a desktop
 # in a real room. The card used to use the clip's poster frame, which is a
 # 16:9 action still and lost its own subject to the 4:3 crop.
@@ -96,42 +98,46 @@ stack: [JavaScript, Reddit Developer Platform, itch.io, Web]
 status: published
 ---
 
+- **What it is** — draw a line freehand and thoosie turns it into a rideable roller coaster, running real physics on it.
+- **My role** — everything: design, engineering, physics, launch.
+- **Built with** — JavaScript, one codebase, shipped to the Reddit Developer Platform, itch.io and the open web.
+- **Outcome** — live on all three platforms; two testers played for twenty-five minutes unprompted.
+
 ## The premise
 
-You draw a track freehand. thoosie turns it into a rideable coaster and runs
-real physics on it, measuring speed, vertical G, airtime and inversions,
+**You draw a track freehand.** thoosie turns it into a rideable coaster and
+runs real physics on it, measuring speed, vertical G, airtime and inversions,
 then lets you ride it from the train.
 
-Everything hard about this sits in the gap between those two things. Drawing
-is loose and expressive. Physics is unforgiving. A line that looks great is
-often a ride that either stalls out halfway up the hill or pulls G-forces
-that would put a person in the hospital. The app has to let people draw
-freely and still produce something that works.
+**Everything hard about this sits in the gap between those two things.**
+Drawing is loose and expressive. Physics is unforgiving. A line that looks
+great is often a ride that either stalls out halfway up the hill or pulls
+G-forces that would put a person in the hospital. The app has to let people
+draw freely and still produce something that works.
 
 ## The constraint
 
 One codebase, three platforms, and they do not agree about anything.
 
-thoosie ships to the Reddit Developer Platform, to itch.io, and to its own
-standalone site at thoosie.net. Those are three genuinely different
-environments: Reddit runs the game inside a sandboxed embed on someone
-else's page, in a viewport it controls and can resize under you; itch.io
-runs it in an iframe with its own fullscreen and sizing rules; the
-standalone build owns the whole window and can assume nothing about either
-of the other two.
+**Three genuinely different environments.** thoosie ships to the Reddit
+Developer Platform, to itch.io, and to its own standalone site at
+thoosie.net. Reddit runs the game inside a sandboxed embed on someone else's
+page, in a viewport it controls and can resize under you; itch.io runs it in
+an iframe with its own fullscreen and sizing rules; the standalone build owns
+the whole window and can assume nothing about either of the other two.
 
-It is all JavaScript, and it is one codebase. A core with three forks looks
-the same from outside and rots within a month, because the third platform's
-bug fix never makes it back into the first. Everything that differs between
-the three is isolated at the
-edges: how the canvas learns what size it is, how input arrives, where a
-saved coaster is persisted, how fullscreen is requested. The game does not
-know which of the three it is running in.
+**It is all JavaScript, and it is one codebase.** A core with three forks
+looks the same from outside and rots within a month, because the third
+platform's bug fix never makes it back into the first. Everything that
+differs between the three is isolated at the edges: how the canvas learns
+what size it is, how input arrives, where a saved coaster is persisted, how
+fullscreen is requested. The game does not know which of the three it is
+running in.
 
-That constraint is a design decision before it is an engineering one. Every
-feature has to be specified in a way that survives all three. Anything that
-depends on a known viewport, on a real URL, or on a window the game controls
-gets designed differently or does not get built.
+**That constraint is a design decision before it is an engineering one.**
+Every feature has to be specified in a way that survives all three. Anything
+that depends on a known viewport, on a real URL, or on a window the game
+controls gets designed differently or does not get built.
 
 ## What I built
 
@@ -161,21 +167,21 @@ changed to agree.
 
 ## The decision that mattered
 
-The physics readouts started as debug output. I kept them and made them a
+**The physics readouts started as debug output.** I kept them and made them a
 first-class part of the interface, because watching airtime tick up while
 you're cresting a hill you drew is the thing that makes the feedback loop
 work. Players learn what makes a good coaster by watching the numbers move
 while they ride.
 
-It's the same instinct as DrawEvolve. The system teaches you to get better.
-It does not do it for you.
+**It's the same instinct as DrawEvolve.** The system teaches you to get
+better. It does not do it for you.
 
 ## Outcome
 
-Launched, on all three platforms, off the one codebase. Promoted through the
-coaster and indie dev communities with a single gameplay clip.
+**Launched, on all three platforms, off the one codebase.** Promoted through
+the coaster and indie dev communities with a single gameplay clip.
 
-Two testers played for twenty-five minutes unprompted, without being asked
-to and without stopping to give feedback. That is the number I watched for.
-A physics toy has no goals and no score, so time spent playing is the only
-thing left to measure.
+**Two testers played for twenty-five minutes unprompted**, without being
+asked to and without stopping to give feedback. That is the number I watched
+for. A physics toy has no goals and no score, so time spent playing is the
+only thing left to measure.

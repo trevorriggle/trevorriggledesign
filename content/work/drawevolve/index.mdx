@@ -48,24 +48,24 @@ logo:
 # serving a logo, a deck and no screenshots at all. The numbers now run 1-5 in
 # the order the critique loop does, and `1.jpg` is the cover.
 #
-# `1.jpg` is the strongest of the five: the finished colour
+# `1.jpg` is the strongest of the five: the finished color
 # portrait with the AI Feedback panel open on it, Quick Take, What's Working
 # and a Focus Area, which is the frame that proves the deck.
 # THE BROWSING THUMBNAIL, and the only thing the preview card shows. Composed
 # for the 4:3 card at ~380px: the app in context on a desk, which survives
 # being 380px wide in a way a cropped portrait screenshot does not. The card
 # used to fall back to `cover`, so the same 2064x2752 portrait grab was being
-# centre-cropped to a landscape box and losing the AI panel that is the point
+# center-cropped to a landscape box and losing the AI panel that is the point
 # of it.
 thumb:
   src: thumbnail.jpg
-  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a colour portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
+  alt: "DrawEvolve running on an iPad propped on a desk beside an Apple Pencil, the AI Feedback panel open over a color portrait with a Quick Take on head construction, a What's Working list and a Focus Area"
   aspect: "4:3"
   minWidth: 1600
 
 cover:
   src: 1.jpg
-  alt: "DrawEvolve on an iPad: a finished colour portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
+  alt: "DrawEvolve on an iPad: a finished color portrait of a bearded man in glasses on the canvas, with the AI Feedback panel open over it giving a Quick Take on the head construction, a What's Working list, and a Focus Area on solid head construction and feature alignment"
   aspect: "2064:2752"
   minWidth: 2064
   caption: "The critique itself. A Quick Take, then what is working, then one focus area, in that order, because an artist told what is wrong first stops reading."
@@ -135,27 +135,32 @@ stack: [Swift, Metal, Cloudflare Workers, Supabase]
 status: published
 ---
 
+- **What it is** — an iOS drawing app whose AI coaches instead of critiques, and remembers what it told you last time.
+- **My role** — everything: design, iOS, backend, infrastructure. One person, six months.
+- **Built with** — Swift, Metal, Cloudflare Workers, Supabase.
+- **Outcome** — shipped to TestFlight and approved for external testing, running with a beta group of working artists.
+
 ## The premise
 
-Most AI feedback on creative work is stateless. You show it a drawing, it
+**Most AI feedback on creative work is stateless.** You show it a drawing, it
 tells you what's wrong, and next time you show it a drawing it has no idea
 it's ever met you. Every session starts over with a very confident stranger.
 
-DrawEvolve remembers. A second critique on the same piece references the
+**DrawEvolve remembers.** A second critique on the same piece references the
 first one and evaluates whether you acted on it. What gets measured is your
 progress across drawings.
 
-The app has an Artist Bill of Rights, and nothing in it generates art on your
-behalf. It coaches. You draw.
+**The app has an Artist Bill of Rights**, and nothing in it generates art on
+your behalf. It coaches. You draw.
 
 ## The constraint
 
-I was the entire team. Design, iOS, backend, infrastructure, and every
+**I was the entire team.** Design, iOS, backend, infrastructure, and every
 decision in between. That shapes everything downstream: I couldn't afford
 architecture that required a team to maintain, and I couldn't afford a cost
 structure that could bankrupt me while I slept.
 
-I also started this not knowing Swift. I learned it in about two weeks and
+**I also started this not knowing Swift.** I learned it in about two weeks and
 started building.
 
 ## What I built
@@ -184,26 +189,27 @@ from a five-figure bill. The ceiling went in before the app went out.
 
 ## The tradeoff I made
 
-I shipped the tile-based renderer before retrofitting wet-ink onto it. The
+**I shipped the tile-based renderer before retrofitting wet-ink onto it.** The
 stroke system is running on architecture it was not written for until I go
 back and finish that work. I chose the visible progress over the clean
 sequence, because a renderer nobody can use is a renderer nobody has tested.
 
-It is a real debt. It is named here and it is scheduled.
+**It is a real debt.** It is named here and it is scheduled.
 
 ## How I worked
 
-I ran parallel Claude Code agents across git worktrees for most of the build.
-That was the only way one person covers that much surface area in six months.
-Each agent held a bounded scope on its own branch, and I did integration and
-review.
+**I ran parallel Claude Code agents across git worktrees** for most of the
+build. That was the only way one person covers that much surface area in six
+months. Each agent held a bounded scope on its own branch, and I did
+integration and review.
 
-Decomposing work so the agents don't collide is a real skill. It is most of
-why six months was enough.
+**Decomposing work so the agents don't collide is a real skill.** It is most
+of why six months was enough.
 
 ## Outcome
 
-Shipped to TestFlight. Three builds; the third passed Beta App
-Review and was approved for external testing. Running with a beta group of
-working artists, including a tattoo artist who's been the heaviest user of
-the critique system.
+**Shipped to TestFlight.** Three builds; the third passed Beta App Review and
+was approved for external testing.
+
+**Running with a beta group of working artists**, including a tattoo artist
+who's been the heaviest user of the critique system.

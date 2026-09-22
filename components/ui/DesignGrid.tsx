@@ -31,10 +31,11 @@ import styles from "./DesignGrid.module.css";
    of it. A GIF that arrived as a GIF leaves as a GIF, animation intact.
 
    The .mp4 pieces render through <AutoVideo>, which already carries the rules
-   this site wants: muted, looping, no controls, paused until the clip is actually on
-   screen, and never autoplayed at all for a visitor who has asked for reduced
-   motion or is on a metered connection. Those visitors get the poster frame,
-   which is a real picture of the work rather than a dead rectangle.
+   this site wants: muted, looping, inline, no native controls, autoplaying
+   once the clip is actually on screen and paused again when it leaves. A
+   visitor who has asked for reduced motion, or whose browser refuses to start
+   it, gets the poster frame with one small play button on it — a real picture
+   of the work rather than a dead rectangle.
 
    An empty array renders nothing at all, no placeholder boxes, no "coming
    soon". The page is its copy until there are files in the folder.

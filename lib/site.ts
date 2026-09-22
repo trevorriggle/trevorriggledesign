@@ -54,12 +54,24 @@ export const site = {
   social: [] as { label: string; href: string }[],
 } as const;
 
-/* Five tabs.
+/* Six tabs.
 
    This departs from portfolio-copy.md, which specifies three (Work, About,
    Contact) and argues for keeping it to three. The three-label version named
    only the software half of "designer who ships software", which argued
    against the site's own claim on every page.
+
+   HOME IS FIRST, AND IT IS THE ONE TAB THAT DUPLICATES SOMETHING. The logo
+   lockup at the left of the masthead has always linked to `/`, so the route
+   was never unreachable. It was, however, only discoverable to someone who
+   already expects a wordmark to be a home link, which is a convention and not
+   an affordance: nothing about the mark announces it. An explicit label is
+   what makes the way back legible to somebody who has clicked into a case
+   study and wants out.
+
+   It leads the list because the nav is ordered by depth — the root, then the
+   three bodies of work, then the two pages about the person. Putting it last,
+   beside Contact, would group it with the things it is not.
 
    "Applications" is the three shipped products. "Agentic AI" is its own
    section rather than a subsection of them, because the multi-agent build
@@ -74,6 +86,7 @@ export const site = {
    deleted. A section that is not work belongs in the nav, not in the grid of
    work. */
 export const nav = [
+  { label: "Home", href: "/" },
   { label: "Applications", href: "/applications" },
   { label: "Design", href: "/design" },
   { label: "Agentic AI", href: "/agentic-ai" },

@@ -18,8 +18,8 @@
   justify-content: space-between;
   gap: var(--space-3) var(--space-5);
   padding-block: var(--space-3);
-  /* Five labels do not fit beside the wordmark on a phone. They wrap to a
-     second line rather than being hidden behind a menu button: five items is
+  /* Six labels do not fit beside the wordmark on a phone. They wrap to a
+     second line rather than being hidden behind a menu button: six items is
      not enough to justify a drawer, and a nav you can see is a nav you can
      use. */
   flex-wrap: wrap;

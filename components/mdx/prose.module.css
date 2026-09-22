@@ -59,6 +59,44 @@
 
 .prose li::marker { color: var(--color-text-meta); }
 
+/* ---- THE SUMMARY BLOCK -------------------------------------------------
+   The four-line skim at the top of every case study: what it is, the role,
+   what it is built with, what came of it. In the source it is an ordinary
+   Markdown list; it is the FIRST thing in the body, before any heading, and
+   `:first-child` is what identifies it. No component, no frontmatter field,
+   no wrapper to remember — write a list at the top of the file and it gets
+   this treatment, write one anywhere else and it stays a list.
+
+   IT IS SET AS RULED ROWS RATHER THAN BULLETS. A bulleted list directly
+   under the deck reads as the body starting early, which is the opposite of
+   what it is for: this has to be skimmable in about three seconds and
+   visibly not prose. Hairline rows are how the rest of this site states
+   structured facts — see MetaRail and SpecTable — so the block borrows a
+   shape a reader has already met rather than inventing one.
+
+   THE RAIL IN THE HEAD STILL CARRIES ROLE, STACK AND LINKS, and this
+   deliberately repeats two of them. They answer different questions in
+   different places: the rail is a reference panel off to one side, and this
+   is the first thing in the reading column. Somebody skimming the page top
+   to bottom should not have to look sideways to find out what they are
+   looking at. */
+.prose > ul:first-child {
+  list-style: none;
+  padding-left: 0;
+  gap: 0;
+  border-top: var(--rule);
+  /* Air beneath, so the first real heading is not crowded by it. */
+  margin-bottom: var(--space-6);
+}
+
+.prose > ul:first-child > li {
+  padding-block: var(--space-3);
+  border-bottom: var(--rule);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  text-wrap: pretty;
+}
+
 .prose strong {
   color: var(--color-text);
   font-weight: var(--weight-semibold);
