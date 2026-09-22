@@ -244,15 +244,16 @@
        re-measured. Absolutely positioned inside the plate, it changes
        nothing.
 
-       3px, WHICH IS THE `.current` NAV UNDERLINE'S WEIGHT. A hairline reads
-       as a border and disappears against the plate's own edge; 3px is the
-       thinnest this site draws anything it wants read as a mark rather than
-       as a rule, and the precedent is already set in Nav.module.css. */
+       8px. It began at 3px, the `.current` nav underline's weight, and at
+       that weight it read as an edge of the plate rather than as a gauge
+       filling. 8px is heavy enough to be watched while scrolling and still
+       thin enough to sit under the picture without covering any of it that
+       matters. */
     .progress {
       display: block;
       position: absolute;
       inset: auto 0 0 0;
-      height: 3px;
+      height: 8px;
       background: var(--ground-rule, var(--color-rule));
       /* The fill is scaled, and a transform can paint outside its box. */
       overflow: hidden;
@@ -272,6 +273,10 @@
        case; both values are existing tokens. See the grounds block in
        tokens.css.
 
+       A HOST CAN OVERRIDE BOTH WITH `--sequence-fill`. The American
+       Scientific feature does, to flare: 4.38:1 on the deep ground, well past
+       the 3:1 a non-text mark needs. See FeaturedCase.module.css.
+
        SCALED, NOT WIDTH-ANIMATED. `transform` is compositor-only; animating
        `width` would lay out and paint the bar on every frame of a scroll,
        which is the one thing a scroll-driven effect must not do. */
@@ -281,7 +286,7 @@
       height: 100%;
       transform: scaleX(0);
       transform-origin: left center;
-      background: var(--ground-accent, var(--color-signal));
+      background: var(--sequence-fill, var(--ground-accent, var(--color-signal)));
 
       animation: sequence-fill linear both;
       animation-timeline: --sequence;

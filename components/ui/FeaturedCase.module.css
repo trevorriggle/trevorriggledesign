@@ -74,7 +74,10 @@
    where the last unpins. A rhythm gap here would be a band of empty blue
    between two full-height stages. */
 
+/* The sequences' progress bars fill in flare here rather than the ground's
+   ochre accent. See `.progressFill` in ScrollSequence.module.css. */
 .compareSlot {
+  --sequence-fill: var(--color-flare);
   display: flex;
   flex-direction: column;
   margin-top: var(--rhythm-normal);

@@ -45,7 +45,7 @@ import styles from "./ScrollSequence.module.css";
    sequence used to cross-fade: content dissolving under a stationary viewport
    is exactly the vestibular trigger the preference exists for. Nothing
    dissolves any more. The swap is a hard cut with no interpolated frames, and
-   the only thing that moves is a 3px bar growing along one edge, which is the
+   the only thing that moves is an 8px bar growing along one edge, which is the
    same class of motion as a scrollbar. Under the preference the block now
    behaves identically to the way it behaves without it, which is what was
    asked for: the bar still fills, and the picture still changes instantly.
